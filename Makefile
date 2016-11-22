@@ -18,3 +18,5 @@ all : byte-code-library byte-code
 
 -include OCamlMakefile
 
+js : pdfex
+	js_of_ocaml pdfex
