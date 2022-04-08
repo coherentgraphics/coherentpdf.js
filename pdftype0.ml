@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 (* Convert an Type 0 composite font containing CFF / Type 1 / Truetype
 descendant font into a Type 3 font. The resultant font is for internal use only
 and is not a valid PDF font. Only deals with Identity-H at the moment. A full
@@ -23,4 +22,3 @@ let to_type3 pdf = function
       in
         Pdfcff.to_type3 pdf font
   | _ -> raise (Pdf.PDFError "Pdftype0.to_type3 : not supported")
-

@@ -1,7 +1,4 @@
-(*pp camlp4o *)
 open Pdfutil
-
-type rotation = DNR | N | S | E | W | L | R | D
 
 (* We read all the files, read their pages and concatenate them, dealing with
 clashing object numbers. We then build a new page tree, and build the output
@@ -51,6 +48,8 @@ let merge_bookmarks changes pdfs ranges pdf =
     let process_mark oldnums changes mark = 
       let pageobjectnumber_of_target = function
         | Pdfdest.NullDestination -> 0
+        | Pdfdest.NamedDestinationElsewhere _ -> 0
+        | Pdfdest.Action _ -> 0
         | Pdfdest.XYZ (t, _, _, _) | Pdfdest.Fit t | Pdfdest.FitH (t, _) | Pdfdest.FitV (t, _)
         | Pdfdest.FitR (t, _, _, _, _) | Pdfdest.FitB t | Pdfdest.FitBH (t, _) | Pdfdest.FitBV (t, _) ->
             match t with
@@ -67,7 +66,9 @@ let merge_bookmarks changes pdfs ranges pdf =
                   | Pdfdest.PageObject _ -> Pdfdest.PageObject n 
                 in
                   match target with
+                  | Pdfdest.Action a -> Pdfdest.Action a
                   | Pdfdest.NullDestination -> Pdfdest.NullDestination
+                  | Pdfdest.NamedDestinationElsewhere s -> Pdfdest.NamedDestinationElsewhere s
                   | Pdfdest.XYZ (t, a, b, c) -> Pdfdest.XYZ (change_targetpage t, a, b, c)
                   | Pdfdest.Fit t -> Pdfdest.Fit (change_targetpage t)
                   | Pdfdest.FitH (t, a) -> Pdfdest.FitH (change_targetpage t, a)
@@ -109,7 +110,7 @@ let merge_bookmarks changes pdfs ranges pdf =
         in
           Pdfmarks.add_bookmarks bookmarks' pdf
   with
-    e -> Printf.eprintf "failure in merge_bookmarks %s\n" (Printexc.to_string e); pdf
+    e -> Printf.eprintf "failure in merge_bookmarks %s\n%!" (Printexc.to_string e); pdf
 
 let debug_pagelabels ls =
   iter (Printf.printf "%s\n") (map Pdfpagelabels.string_of_pagelabel ls)
@@ -117,9 +118,11 @@ let debug_pagelabels ls =
 let debug_collection_of_pagelabels =
   iter (fun ls -> debug_pagelabels ls; flprint "\n")
 
-(* Merging /Dests (Named destinations). Since the new /Dests must be an indirect
-reference, we add the new object to the pdf, returning the new pdf and the
-reference. *)
+(* Merging /Dests (Named destinations) in the catalog (PDF v1.1 style, rather
+ * than in the PDF 1.3 style in the name tree). Since the new /Dests must be an
+ * indirect reference, we add the new object to the pdf, returning the new pdf
+ * and the reference.
+FIXME: merging a v1.1 file with a v1.2 file will result in both sets of dests, confusing the reader...*)
 let new_dests pdf pdfs =
   let dests =
     option_map
@@ -130,10 +133,11 @@ let new_dests pdf pdfs =
           | _ -> None)
       pdfs
   in
-    let new_dests =
-      Pdf.Dictionary (flatten dests)
-    in
-      Pdf.addobj pdf new_dests
+    if dests = [] then None else
+      let new_dests =
+        Pdf.Dictionary (flatten dests)
+      in
+        Some (Pdf.addobj pdf new_dests)
 
 (* Names distinguish PDFs which are actually the same. So we only use the first
 of each group of same ones. Then renumber them. and return. *)
@@ -151,18 +155,17 @@ let merge_pdfs_renumber names pdfs =
         let table = combine first_names (Pdf.renumber_pdfs first_pdfs) in
           map (function k -> lookup_failnull k table) names
       
-(*
-  let first_names, first_pdfs = split (setify (combine names pdfs)) in
-    let table = combine first_names (Pdf.renumber_pdfs first_pdfs) in
-      map (function k -> lookup_failnull k table) names*)
-
 (* Reading a name tree, flattened. *)
 let rec read_name_tree pdf tree =
   let names =
     match Pdf.lookup_direct pdf "/Names" tree with
     | Some (Pdf.Array elts) ->
         if odd (length elts)
-          then raise (Pdf.PDFError "Bad /Names")
+          then
+             begin
+               Printf.eprintf "Bad /Names array. Name tree will be read as empty\n%!";
+               []
+             end
           else pairs_of_list elts
     | _ -> []
   in
@@ -171,19 +174,57 @@ let rec read_name_tree pdf tree =
         names @ flatten (map (read_name_tree pdf) kids)
     | _ -> names
 
-(* Build a name tree from a flattened list, FIXME: Inefficient: we should build
-a proper tree. *)
-let build_name_tree _ ls =
-  let ls = sort (fun (k, _) (k', _) -> compare k k') ls in
-    let list_of_pair (k, v) = [k; v] in
-      let arr = flatten (map list_of_pair ls) in
-        Pdf.Dictionary ["/Names", Pdf.Array arr]
+let read_name_tree pdf tree =
+  let r = read_name_tree pdf tree in
+    try
+      map (function (Pdf.String s, x) -> (s, x) | _ -> raise Exit) r
+    with
+      Exit ->
+        Printf.eprintf "Pdfmerge.read_names tree: skipping malformed name tree\n%!";
+        []
 
-(* Merge name trees *)
-let merge_name_trees pdf trees =
+let maxsize = 10 (* Must be at least two *)
+
+type ('k, 'v) nt =
+  Br of 'k * ('k, 'v) nt list * 'k
+| Lf of 'k * ('k * 'v) list * 'k
+
+let left l = fst (hd l)
+let right l = fst (last l)
+
+let rec build_nt_tree l =
+  if length l = 0 then assert false;
+  if length l <= maxsize
+    then Lf (left l, l, right l)
+    else Br (left l, map build_nt_tree (splitinto (length l / maxsize) l), right l)
+
+let rec name_tree_of_nt isroot pdf = function
+  Lf (llimit, items, rlimit) ->
+    Pdf.Dictionary
+      ([("/Names", Pdf.Array (flatten (map (fun (k, v) -> [Pdf.String k; v]) items)))] @
+       if isroot then [] else [("/Limits", Pdf.Array [Pdf.String llimit; Pdf.String rlimit])])
+| Br (llimit, nts, rlimit) ->
+    let indirects =
+      let kids = map (name_tree_of_nt false pdf) nts in
+        map (Pdf.addobj pdf) kids
+    in
+      Pdf.Dictionary
+       [("/Kids", Pdf.Array (map (fun x -> Pdf.Indirect x) indirects));
+        ("/Limits", Pdf.Array [Pdf.String llimit; Pdf.String rlimit])]
+
+let build_name_tree pdf = function
+  | [] -> Pdf.Dictionary [("/Names", Pdf.Array [])]
+  | ls ->
+      let nt = build_nt_tree (sort compare ls) in
+        name_tree_of_nt true pdf nt
+
+
+
+(* Once we know there are no clashes *)
+let merge_name_trees_no_clash pdf trees =
   build_name_tree pdf (flatten (map (read_name_tree pdf) trees))
 
-(* Merging entries in the Name Dictionary *)
+(* Merging entries in the Name Dictionary. [pdf] here is the new merged pdf, [pdfs] the original ones. *)
 let merge_namedicts pdf pdfs =
   let names =
     ["/Dests"; "/AP"; "/JavaScript"; "/Pages"; "/Templates"; "/IDS";
@@ -195,7 +236,7 @@ let merge_namedicts pdf pdfs =
         | Some d -> Pdf.lookup_direct pdf name d
         | None -> None
     in
-    (* Build a list of the lists of number trees for each name *)
+    (* Build a list of the lists of trees for each name *)
     let trees_in_each =
       map (fun name -> option_map (gettree name) pdfs) names
     in
@@ -207,7 +248,7 @@ let merge_namedicts pdf pdfs =
       in
         let new_trees =
           map
-            (fun (name, trees) -> name, merge_name_trees pdf trees)
+            (fun (name, trees) -> name, merge_name_trees_no_clash pdf trees)
             with_names
         in
           (* Add all the trees as indirect references to the pdf *)
@@ -228,35 +269,136 @@ let merge_namedicts pdf pdfs =
             (* Return the new pdf, and the new dictionary. *)
             Pdf.addobj pdf newdict
 
-(* Things which we don't yet properly merge, are just copied across from the
-first document, if they're there. *)
-let copied_from_first_document pdf =
-  let names =
-    ["/Threads";
-     "/AcroForm";
-     "/AA";
-     "/URI";
-     "/StructTreeRoot";
-     "/SpiderInfo";
-     "/OCProperties"]
-  in let catalog = Pdf.catalog_of_pdf pdf in
-    option_map
-      (function name ->
-        match Pdf.lookup_direct pdf name catalog with
-        | None -> None
-        | Some x -> Some (name, x))
-      names
+(* Merge name trees This needs to return some changes to be made to Annots when
+ * names in the trees might clash. e.g if the name /A appears in two trrees, we
+ * might return (6, "/A", "/A-6") to indicate all uses of "/A" in PDF number 6
+ * must be rewritten to "/A-6" *)
+(* For now, only operates on /Dests, because for now we only know how to find all
+ * the uses of these dest names. To merge any of the others properly, we need
+ * to find out how to find every instance of their use in the file. We can't
+ * just assume any string object is a name tree key *)
+(* This runs after merge_pdfs_renumber, so there can be no clashing of values.
+ * We can return the OCaml name tree structure safe in the knowledge that it
+ * can be written to the eventual merged PDF and the object numbers will be
+ * correct. *)
+let merge_pdfs_rename_name_trees names pdfs = pdfs
+  (* Find the /Dests nametree in each file *)
+  (* Calculate the changes *)
+  (* Apply the changes to the name tree *)
+  (* Apply the changes to each PDFs annots entries and anywhere else Dests can be used. *)
+  (* Build our name tree OCaml structure for the merged tree and return. *)
 
-let merge_pdfs ?rotations retain_numbering do_remove_duplicate_fonts (names : string list) pdfs ranges =
-  let rotations = match rotations with Some r -> r | None -> many DNR (length pdfs) in
-  (*Printf.printf "merge_pdfs: retain_numbering = %b, do_remove_duplicate_fonts = %b \n %i names, %i pdfs, %i ranges\n"
-  retain_numbering do_remove_duplicate_fonts (length names) (length pdfs) (length ranges);
-  flprint "names:\n";
-  iter (Printf.printf "%s\n") names;
-  (*flprint "ranges:\n";
-  iter (Printf.printf "%s\n") (map string_of_range ranges);*)
-  flprint "ONE";*)
+(* FIXME: The problem here is that we may need to break the non-copy of a file
+ * multiply included in a merge, since we need to alter its destination
+ * objects. It's hard to see a way around this without removing that
+ * functionality. See comments in cpdf-source github issue 79. *)
+
+(* Merge catalog items from the PDFs, taking an abitrary instance of any one we
+ * find. Items we know how to merge properly, like /Dests, /Names, /PageLabels,
+ * /Outlines, will be overwritten, so we don't worry about them here. *)
+let catalog_items_from_original_documents pdfs =
+  let catalog_entries =
+    flatten
+      (map
+        (fun pdf ->
+           match Pdf.catalog_of_pdf pdf with
+             Pdf.Dictionary es -> es
+           | _ -> failwith "catalog_items_from_original_documents")
+        pdfs)
+  in
+    fold_left (fun d (k, v) -> add k v d) [] catalog_entries
+
+(* Optional Content Groups. We merge the /OCProperties entries like this:
+  * a) append /OCGs entries
+  * b) append /Configs entries, or leave absent if everywhere-absent.
+  * c) combine /D dictionary by appending its subentries:
+    *    1) /ON / /OFF arrays, merge or absent if everywhere-absent
+    *    2) /Order ditto
+    *    3) /RBGroups ditto
+    *    4) Use first or any found /Locked /ListMode /AS /Intent /BaseState /Creator /Name *)
+let merge_entries pdf n maindict =
+  flatten
+    (option_map
+       (fun dict -> match Pdf.lookup_direct pdf n dict with Some (Pdf.Array a) -> Some a | _ -> None)
+       maindict)
+
+let merge_default_dictionaries pdf dics =
+  let merge_empty_is_none n =
+    match option_map (Pdf.lookup_direct pdf n) dics with
+    | [] -> []
+    | l -> [(n, Pdf.Array (flatten (option_map (function Pdf.Array a -> Some a | _ -> None) l)))]
+  in
+    let merged_on = merge_empty_is_none "/ON" in
+    let merged_off = merge_empty_is_none "/OFF" in
+    let merged_order = merge_empty_is_none "/Order" in
+    let merged_rbgroups = merge_empty_is_none "/RBGroups" in
+    let simple_copies =
+      let keys =
+        ["/Locked"; "/ListMode"; "/AS"; "/Intent"; "/BaseState"; "/Creator"; "/Name"]
+      in
+      let find_first_item key =
+        match option_map (Pdf.lookup_direct pdf key) dics with
+        | [] -> []
+        | h::_ -> [(key, h)]
+      in
+        flatten (map find_first_item keys)
+    in
+      (*Printf.printf "merged_on length %i\n" (length merged_on);
+      Printf.printf "merged_off length %i\n" (length merged_off);
+      Printf.printf "merged_order length %i\n" (length merged_order);
+      Printf.printf "merged_rbgroups length %i\n" (length merged_rbgroups);
+      Printf.printf "simple_copies length %i\n" (length simple_copies);*)
+      merged_on @ merged_off @ merged_order @ merged_rbgroups @ simple_copies
+
+let merge_optional_content_groups pdf pdfs =
+  let ocp_dicts =
+    option_map
+      (fun pdf -> Pdf.lookup_direct pdf "/OCProperties" (Pdf.catalog_of_pdf pdf))
+      pdfs
+  in
+    if ocp_dicts = [] then None else
+    let merged_ocg_arrays = merge_entries pdf "/OCGs" ocp_dicts in
+    let merged_config_arrays = merge_entries pdf "/Configs" ocp_dicts in
+    let merged_default_dictionary =
+      merge_default_dictionaries pdf (option_map (Pdf.lookup_direct pdf "/D") ocp_dicts)
+    in
+    let new_ocproperties =
+      Pdf.Dictionary
+        ([("/OCGs", Pdf.Array merged_ocg_arrays); ("/D", Pdf.Dictionary merged_default_dictionary)]
+         @ if merged_config_arrays = [] then [] else [("/Configs",  Pdf.Array merged_config_arrays)])
+    in
+      Some (Pdf.addobj pdf new_ocproperties)
+
+(* Look up any acroforms and merge their fields entries, retaining any
+   other entries from any found. This is very basic, and we need to
+   see more example files to know what to do properly. *)
+let merge_acroforms pdf pdfs =
+  let form_dicts =
+    option_map
+      (fun pdf -> Pdf.lookup_direct pdf "/AcroForm" (Pdf.catalog_of_pdf pdf))
+      pdfs
+  in
+    if form_dicts = [] then None else
+    let merged_field_arrays =
+      flatten
+        (map
+          (fun d -> match Pdf.lookup_direct pdf "/Fields" d with Some (Pdf.Array a) -> a | _ -> [])
+          form_dicts)
+    in
+    let merged_nonfield_items =
+      fold_left
+        (fun d (k, v) -> Pdf.add_dict_entry d k v)
+        (Pdf.Dictionary [])
+        (flatten (map (function (Pdf.Dictionary d) -> d | _ -> []) form_dicts))
+    in
+    let new_dict =
+      Pdf.add_dict_entry merged_nonfield_items "/Fields" (Pdf.Array merged_field_arrays)
+    in
+      Some (Pdf.addobj pdf new_dict)
+
+let merge_pdfs retain_numbering do_remove_duplicate_fonts names pdfs ranges =
   let pdfs = merge_pdfs_renumber names pdfs in
+  let pdfs = merge_pdfs_rename_name_trees names pdfs in
     let minor' = fold_left max 0 (map (fun p -> p.Pdf.minor) pdfs) in
       let pagelists = map Pdfpage.pages_of_pagetree pdfs
       in let pdf = Pdf.empty () in
@@ -265,53 +407,56 @@ let merge_pdfs ?rotations retain_numbering do_remove_duplicate_fonts (names : st
             iter (fun n -> pages =| select n pagelist) range;
             rev !pages
         in
-          let newrotation rotate = function
-            | DNR -> rotate
-            | N -> Pdfpage.Rotate0
-            | S -> Pdfpage.Rotate180
-            | E -> Pdfpage.Rotate90
-            | W -> Pdfpage.Rotate270
-            | L -> Pdfpage.rotation_of_int ((Pdfpage.int_of_rotation rotate - 90) mod 360) 
-            | R -> Pdfpage.rotation_of_int ((Pdfpage.int_of_rotation rotate + 90) mod 360) 
-            | D -> Pdfpage.rotation_of_int ((Pdfpage.int_of_rotation rotate + 180) mod 360) 
-          in
-          let rotate_pages pages rotation =
-            map (function p -> {p with Pdfpage.rotate = newrotation p.Pdfpage.rotate rotation}) pages
-          in
-          let pages = flatten (map2 rotate_pages (map2 select_pages ranges pagelists) rotations) in
-            iter (Pdf.objiter (fun k v -> ignore (Pdf.addobj_given_num pdf (k, v)))) pdfs;
-            (* Make the hints for preserving... *)
-            let pdf, pagetree_num = Pdfpage.add_pagetree pages pdf in
-              let page_labels =
-                if retain_numbering
-                 then Pdfpagelabels.merge_pagelabels pdfs ranges
-                 else []
+  let pages = flatten (map2 select_pages ranges pagelists) in
+    iter (Pdf.objiter (fun k v -> ignore (Pdf.addobj_given_num pdf (k, v)))) pdfs;
+    let pdf, pagetree_num = Pdfpage.add_pagetree pages pdf in
+      let page_labels =
+        if retain_numbering
+         then Pdfpagelabels.merge_pagelabels pdfs ranges
+         else []
+      in
+        let dests = new_dests pdf pdfs in
+          let namedict = merge_namedicts pdf pdfs in
+            let extra_catalog_entries =
+              let with_names =
+                (add  "/Names" (Pdf.Indirect namedict)
+                  (catalog_items_from_original_documents pdfs))
               in
-                let dests = new_dests pdf pdfs in
-                  let namedict = merge_namedicts pdf pdfs in
-                    let extra_catalog_entries =
-                      [("/Dests", Pdf.Indirect dests);
-                       ("/Names", Pdf.Indirect namedict)]
-                      @ copied_from_first_document (hd pdfs)
-                    in
-                      let pdf = Pdfpage.add_root pagetree_num extra_catalog_entries pdf in
-                      (* To sort out annotations etc. *)
-                      let old_page_numbers =
-                        let select_page_numbers range pageobjnums =
-                          let pages = ref [] in
-                            iter (fun n -> pages =| select n pageobjnums) range;
-                            rev !pages
-                        in
-                          flatten (map2 select_page_numbers ranges (map Pdf.page_reference_numbers pdfs))
-                      in let new_page_numbers =
-                        Pdf.page_reference_numbers pdf
-                      in
-                        let changes = combine old_page_numbers new_page_numbers in
-                          Pdf.objselfmap
-                          (Pdf.renumber_object_parsed pdf (hashtable_of_dictionary changes))
-                          pdf;
-                        let pdf = {pdf with Pdf.major = 1; Pdf.minor = minor'} in
-                          let pdf = merge_bookmarks changes pdfs ranges pdf in
-                            Pdfpagelabels.write pdf page_labels;
-                            if do_remove_duplicate_fonts then remove_duplicate_fonts pdf;
-                            pdf
+                match dests with
+                  None -> with_names
+                | Some dests ->
+                    add "/Dests" (Pdf.Indirect dests) with_names
+            in
+            (* Merge Optional content groups *)
+            let extra_catalog_entries =
+              match merge_optional_content_groups pdf pdfs with
+                None -> extra_catalog_entries
+              | Some ocgpropnum -> add "/OCProperties" (Pdf.Indirect ocgpropnum) extra_catalog_entries
+            in
+            let extra_catalog_entries =
+              match merge_acroforms pdf pdfs with
+              | None -> extra_catalog_entries
+              | Some acroformnum -> add "/AcroForm" (Pdf.Indirect acroformnum) extra_catalog_entries
+            in
+   let pdf = Pdfpage.add_root pagetree_num extra_catalog_entries pdf in
+      (* To sort out annotations etc. *)
+      let old_page_numbers =
+        let select_page_numbers range pageobjnums =
+          let pages = ref [] in
+            iter (fun n -> pages =| select n pageobjnums) range;
+            rev !pages
+        in
+          flatten (map2 select_page_numbers ranges (map Pdf.page_reference_numbers pdfs))
+      in let new_page_numbers =
+        Pdf.page_reference_numbers pdf
+      in
+        let changes = combine old_page_numbers new_page_numbers in
+          Pdf.objselfmap
+          (Pdf.renumber_object_parsed pdf (hashtable_of_dictionary changes))
+          pdf;
+   let pdf = {pdf with Pdf.major = 1; Pdf.minor = minor'} in
+     let pdf = merge_bookmarks changes pdfs ranges pdf in
+       Pdfpagelabels.write pdf page_labels;
+       if do_remove_duplicate_fonts then remove_duplicate_fonts pdf;
+       Pdf.change_id pdf "";
+       pdf

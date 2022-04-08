@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 (* Type for paper sizes --- unit, width, height. *)
 type t = Paper of (Pdfunits.t * float * float)
 
@@ -27,5 +26,3 @@ let a10 = Paper (Pdfunits.Millimetre, 26., 37.)
 (* US Imperial sizes. *)
 let usletter = Paper (Pdfunits.Inch, 8.5, 11.)
 let uslegal = Paper (Pdfunits.Inch, 8.5, 14.)
-
-

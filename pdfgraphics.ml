@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 (* \chaptertitle{Pdfgraphics}{Structured Graphics} *)
 open Pdfutil
 open Pdfio
@@ -431,7 +430,7 @@ let rec initial_colour pdf resources = function
             initial_colour pdf resources alternate
         | [Pdf.Name "/Pattern"; alternate] ->
             initial_colour pdf resources alternate
-        | _ -> Printf.eprintf "%s\n" (Pdfwrite.string_of_pdf cs); raise (Pdf.PDFError "Unknown colourspace A")
+        | _ -> Printf.eprintf "%s\n%!" (Pdfwrite.string_of_pdf cs); raise (Pdf.PDFError "Unknown colourspace A")
       end
   | Pdf.Indirect _ as indirect ->
       initial_colour pdf resources (Pdf.direct pdf indirect)
@@ -1095,7 +1094,7 @@ and process_op pdf page (partial, graphic) op =
       (!state).dash <- spec, phase;
       ret
   | Pdfops.Op_Unknown _ -> ret
-  | _ -> Printf.eprintf "Operator shouldn't appear at this place"; ret
+  | _ -> Printf.eprintf "Operator shouldn't appear at this place%!"; ret
 
 and getuntil_matching_emc level prev = function
   | (Pdfops.Op_BMC _ | Pdfops.Op_BDC (_, _)) as h::t ->
@@ -1351,7 +1350,7 @@ let pattern_object_of_pattern xobject_level opdo_matrix pdf = function
         Pdftransform.NonInvertable -> raise (Pdf.PDFError "Pdfgraphics.Bad pattern")
       end
   | _ ->
-      Printf.eprintf "Unknown pattern\n";
+      Printf.eprintf "Unknown pattern%!\n";
       Pdf.Dictionary []
 
 (* Output a move and line/curve ops. *)
@@ -1744,5 +1743,3 @@ let transform_element tr = function
 
 let transform_graphic tr g =
   {g with elements = map (transform_element tr) g.elements} 
-
-

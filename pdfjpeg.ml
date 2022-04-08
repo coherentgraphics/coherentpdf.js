@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 (* JPEG images *)
 open Pdfutil
 open Pdfio
@@ -21,4 +20,3 @@ let get_jpeg_data i =
       | n -> last := n; s.output_byte n
     done;
     extract_bytes_from_input_output s data
-

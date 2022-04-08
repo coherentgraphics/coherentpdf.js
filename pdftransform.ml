@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 (* Affine transforms in 2D *)
 
 (* This module provides affine transformation on cartesian coordinates, using
@@ -239,4 +238,3 @@ let recompose scale aspect rotation shear tx ty =
       matrix_compose (mkrotate (0., 0.) rotation) scale_aspect_shear
     in
       matrix_compose (mktranslate tx ty) rotated
-

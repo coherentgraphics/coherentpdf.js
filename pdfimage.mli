@@ -1,6 +1,5 @@
-(** Extract Images. *)
+(** Extract Images *)
 
-(* FIXME: Also CMYK etc... *)
 type pixel_layout =
   | BPP1 (* Black and white *)
   | BPP8 (* Greyscale *)
@@ -40,4 +39,3 @@ byte values prior to any decoding, i.e in the raw input image data before /Decod
 /Index lookups and so on. Returns array of components as bytes. *)
 val get_image_unprocessed_pixel : Pdf.t -> Pdf.pdfobject -> Pdf.pdfobject
 -> (int -> int array) option
-

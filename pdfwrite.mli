@@ -31,33 +31,36 @@ type encryption =
 linearizing. For now, linearization will not preserve object streams. If
 [?preserve_objstm] is set (default is false), object streams which were in the
 original file will be preserved. If [?create_objstm] is set (default is false),
-additional new object streams will be created. The unlabelled boolean argument
-is true if linearization is required. *)
+additional new object streams will be created. To re-encrypt the file using its
+existing encryption, provide the user or owner password in the [?recrypt]
+argument. The unlabelled boolean argument is true if linearization is required.
+*)
 val pdf_to_output :
-  ?preserve_objstm:bool -> ?generate_objstm:bool -> bool ->
-  encryption option -> Pdf.t -> Pdfio.output -> unit
+  ?preserve_objstm:bool ->
+  ?generate_objstm:bool ->
+  ?compress_objstm:bool ->
+  ?recrypt:string option ->
+  bool -> encryption option -> Pdf.t -> Pdfio.output -> unit
 
 (** As [pdf_to_output] but to an OCaml channel. If the second boolean is set, build a new
 /ID (don't set this for encrypted documents). *)
 val pdf_to_channel :
-  ?preserve_objstm:bool -> ?generate_objstm:bool -> bool ->
-  encryption option -> bool -> Pdf.t -> out_channel -> unit
+  ?preserve_objstm:bool ->
+  ?generate_objstm:bool ->
+  ?compress_objstm:bool ->
+  ?recrypt:string option -> 
+  bool -> encryption option -> bool -> Pdf.t -> out_channel -> unit
 
 (** As [pdf_to_channel] but to a named file. *)
 val pdf_to_file_options :
-  ?preserve_objstm:bool -> ?generate_objstm:bool -> bool ->
-  encryption option -> bool -> Pdf.t -> string -> unit
+  ?preserve_objstm:bool ->
+  ?generate_objstm:bool ->
+  ?compress_objstm:bool ->
+  ?recrypt:string option ->
+  bool -> encryption option -> bool -> Pdf.t -> string -> unit
 
 (** Simple write to given file name. Equivalent to [pdf_to_file_options false None true] *)
 val pdf_to_file : Pdf.t -> string -> unit
-
-(** {2 Recrypting} *)
-
-(** Given an original PDF, a decrypted-and-modified PDF, the user password and
-a filename, write the modified PDF as a file, encrypted with the original
-encryption, but modified contents. This allows modifying an encrypted file
-directly without knowledge of the owner password. *)
-val pdf_to_file_recrypting : Pdf.t -> Pdf.t -> string -> string -> unit
 
 (** {2 String of a PDF object} *)
 
@@ -66,11 +69,5 @@ on string length, this should be used only when the length of the output is
 known to be limited (for example for debug purposes). *)
 val string_of_pdf : Pdf.pdfobject -> string
 
-(**/**)
-
-(* For internal module recursion use only *)
-val pagetree_make_explicit : (Pdf.t -> Pdf.t) ref
-
-(* For debug, print out the PDFs objects to standard output *)
+(** For debug, print out the PDFs objects to standard output. *)
 val debug_whole_pdf : Pdf.t -> unit
-

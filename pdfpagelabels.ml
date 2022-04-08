@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 (* Page Labels. 1-based. All functions assume input lists of page labels are
 well-formed. *)
 open Pdfutil
@@ -9,9 +8,10 @@ type labelstyle =
   | LowercaseRoman
   | UppercaseLetters
   | LowercaseLetters
+  | NoLabelPrefixOnly
 
 type t =
-  {labelstyle : labelstyle option;
+  {labelstyle : labelstyle;
    labelprefix : string option;
    startpage : int;
    startvalue : int} 
@@ -23,10 +23,10 @@ let string_of_labelstyle = function
   | LowercaseRoman -> "LowercaseRoman"
   | UppercaseLetters -> "UppercaseLetters"
   | LowercaseLetters -> "LowercaseLetters"
+  | NoLabelPrefixOnly -> "NoLabelPrefixOnly"
 
 let string_of_pagelabel l =
-  (Printf.sprintf "labelstyle: %s\n"
-     (match l.labelstyle with None -> "None" | Some s -> string_of_labelstyle s)) ^
+  (Printf.sprintf "labelstyle: %s\n" (string_of_labelstyle l.labelstyle)) ^
   (Printf.sprintf "labelprefix: %s\n"
      (match l.labelprefix with None -> "None" | Some s -> s)) ^
   (Printf.sprintf "startpage: %i\n" l.startpage) ^
@@ -39,12 +39,12 @@ let label_of_range pdf (startpage, thing) =
     | _ -> raise (Pdf.PDFError "Bad Number Tree")
   and labelstyle =
     match Pdf.lookup_direct pdf "/S" thing with
-    | Some (Pdf.Name "/D") -> Some DecimalArabic
-    | Some (Pdf.Name "/R") -> Some UppercaseRoman
-    | Some (Pdf.Name "/r") -> Some LowercaseRoman
-    | Some (Pdf.Name "/A") -> Some UppercaseLetters
-    | Some (Pdf.Name "/a") -> Some LowercaseLetters
-    | _ -> None
+    | Some (Pdf.Name "/D") -> DecimalArabic
+    | Some (Pdf.Name "/R") -> UppercaseRoman
+    | Some (Pdf.Name "/r") -> LowercaseRoman
+    | Some (Pdf.Name "/A") -> UppercaseLetters
+    | Some (Pdf.Name "/a") -> LowercaseLetters
+    | _ -> NoLabelPrefixOnly
   and labelprefix =
     match Pdf.lookup_direct pdf "/P" thing with
     | Some (Pdf.String s) -> Some s
@@ -69,7 +69,7 @@ let read pdf =
         map (label_of_range pdf) labelranges
 
 (** Add a label, rearranging existing labels. *)
-let add_label ls l e =
+let add_label endpage ls l e =
   let beforeorduringorequal, after =
     List.partition (function x -> x.startpage <= e) ls
   in
@@ -78,11 +78,14 @@ let add_label ls l e =
     in
       let replica =
         match after with
-        | x::xs when x.startpage = e + 1 -> []
+        | _ when e = endpage -> []
+        | x::_ when x.startpage = e + 1 -> []
         | _ ->
-          match beforeorduringorequal with [] -> [] | _ ->
-            let lst = last beforeorduringorequal in
-              [{lst with startpage = e + 1; startvalue = e + 1 + (lst.startvalue - lst.startpage)}]
+            match beforeorduringorequal with [] -> [] | _ ->
+              let lst = last beforeorduringorequal in
+                [{lst with
+                    startpage = e + 1;
+                    startvalue = e + 1 + (lst.startvalue - lst.startpage)}]
       and before =
         lose
           (function x -> x.startpage > l.startpage && x.startpage <= e)
@@ -91,7 +94,7 @@ let add_label ls l e =
         before @ [l] @ replica @ after
 
 let basic =
-  {labelstyle = Some DecimalArabic;
+  {labelstyle = DecimalArabic;
    labelprefix = None;
    startpage = 1;
    startvalue = 1}
@@ -102,18 +105,17 @@ let complete = function
   | x::xs when x.startpage > 1 -> basic::x::xs
   | ls -> ls
 
-let rec letter_string n =
-  if n <= 26 then [char_of_int (n + 64)] else
-    letter_string ((n - 1) / 26) @ letter_string (((n - 1) mod 26) + 1)
+let letter_string n =
+  implode (many (char_of_int ((n - 1) mod 26 + 65)) (((n - 1) / 26) + 1))
 
 (* Make a page label string *)
 let string_of_pagenumber n = function
-  | None -> "" (* Don't substitute page number here *)
-  | Some DecimalArabic -> string_of_int n
-  | Some UppercaseRoman -> roman_upper n
-  | Some LowercaseRoman -> roman_lower n
-  | Some UppercaseLetters -> implode (letter_string n)
-  | Some LowercaseLetters -> String.lowercase (implode (letter_string n))
+  | NoLabelPrefixOnly -> ""
+  | DecimalArabic -> string_of_int n
+  | UppercaseRoman -> roman_upper n
+  | LowercaseRoman -> roman_lower n
+  | UppercaseLetters -> letter_string n
+  | LowercaseLetters -> String.lowercase_ascii (letter_string n)
 
 let pagelabeltext_of_single n l =
   let realnumber =
@@ -171,10 +173,19 @@ let merge_pagelabels pdfs ranges =
       in
         coalesce (change_labels (flatten new_labels))
 
+let remove pdf =
+  let root = Pdf.lookup_obj pdf pdf.Pdf.root in
+    let rootnum =
+      Pdf.addobj pdf (Pdf.remove_dict_entry root "/PageLabels")
+    in
+      pdf.Pdf.root <- rootnum;
+      pdf.Pdf.trailerdict <-
+        Pdf.add_dict_entry pdf.Pdf.trailerdict "/Root" (Pdf.Indirect rootnum)
+
 (* For now, just a flat number tree. Doesn't check ranges are well-formed (i.e
 contiguous / nonoverlapping) *)
 let write pdf labels =
-  if labels <> [] then
+  if labels = [] then remove pdf else
     let arr =
       flatten
         (map
@@ -182,12 +193,12 @@ let write pdf labels =
              [Pdf.Integer (label.startpage - 1);
               Pdf.Dictionary
                 ((match label.labelstyle with
-                 | None -> []
-                 | Some DecimalArabic -> [("/S", Pdf.Name "/D")]
-                 | Some UppercaseRoman -> [("/S", Pdf.Name "/R")]
-                 | Some LowercaseRoman -> [("/S", Pdf.Name "/r")]
-                 | Some UppercaseLetters -> [("/S", Pdf.Name "/A")]
-                 | Some LowercaseLetters -> [("/S", Pdf.Name "/a")])
+                 | NoLabelPrefixOnly -> []
+                 | DecimalArabic -> [("/S", Pdf.Name "/D")]
+                 | UppercaseRoman -> [("/S", Pdf.Name "/R")]
+                 | LowercaseRoman -> [("/S", Pdf.Name "/r")]
+                 | UppercaseLetters -> [("/S", Pdf.Name "/A")]
+                 | LowercaseLetters -> [("/S", Pdf.Name "/a")])
                 @
                 (match label.labelprefix with
                  | None -> []
@@ -201,18 +212,10 @@ let write pdf labels =
       let root = Pdf.lookup_obj pdf pdf.Pdf.root in
         let rootnum =
           Pdf.addobj pdf
-            (Pdf.add_dict_entry root "/PageLabels" (Pdf.Dictionary ["/Nums", Pdf.Array arr]))
+            (Pdf.add_dict_entry
+              root "/PageLabels" (Pdf.Dictionary ["/Nums", Pdf.Array arr]))
         in
           pdf.Pdf.root <- rootnum;
           pdf.Pdf.trailerdict <-
-            Pdf.add_dict_entry pdf.Pdf.trailerdict "/Root" (Pdf.Indirect rootnum)
-
-let remove pdf =
-  let root = Pdf.lookup_obj pdf pdf.Pdf.root in
-    let rootnum =
-      Pdf.addobj pdf (Pdf.remove_dict_entry root "/PageLabels")
-    in
-      pdf.Pdf.root <- rootnum;
-      pdf.Pdf.trailerdict <-
-        Pdf.add_dict_entry pdf.Pdf.trailerdict "/Root" (Pdf.Indirect rootnum)
-  
+            Pdf.add_dict_entry
+              pdf.Pdf.trailerdict "/Root" (Pdf.Indirect rootnum)

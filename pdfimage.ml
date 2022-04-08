@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 (* \chaptertitle{PDFImage}{PDF Images} *)
 open Pdfutil
 open Pdfio
@@ -468,7 +467,7 @@ let get_raw_image pdf resources width height dict data =
     read_raw_image size colspace bpc pdf resources width height dict data
   with
     e ->
-      (*i Printf.eprintf (Pdfwrite.string_of_pdf (Pdf.direct pdf dict)); i*)
+      (*i Printf.eprintf ((Pdfwrite.string_of_pdf (Pdf.direct pdf dict)) ^ "%!"); i*)
       raise e 
 
 (* Print some debug information about an image. *)
@@ -710,5 +709,3 @@ let get_image_unprocessed_pixel pdf resources stream =
                  _ -> raise (Pdf.PDFError "bad serial in get_image_unprocessed_pixel"))
       end 
   | _ -> None 
-
-

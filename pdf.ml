@@ -1,8 +1,8 @@
-(*pp camlp4o *)
 (* This module declares a data type which represents an Adobe PDF document,
 and defines various simple operations on it. *)
 open Pdfutil
 open Pdfio
+
 
 (* Predicate on characters delimiting entities. *)
 let is_delimiter = function
@@ -10,10 +10,63 @@ let is_delimiter = function
   | _ -> false
 
 (* Streams of binary data, byte-addressable, can either be in memory (Got) or
-still in an input channel (ToGet). *)
+still in an input channel (ToGet). It may have been decrypted or encrypted, but
+the actual calculations deferred: this is indicated by the crypt record
+element. *)
+
+type saved_encryption =
+  {from_get_encryption_values :
+     Pdfcryptprimitives.encryption * string * string * int32 * string *
+     string option * string option;
+   encrypt_metadata : bool;
+   perms : string}
+
+type deferred_encryption =
+  {crypt_type : Pdfcryptprimitives.encryption;
+   file_encryption_key : string option;
+   obj : int;
+   gen : int;
+   key : int array;
+   keylength : int;
+   r : int}
+
+let print_deferred_encryption e =
+  begin match e.crypt_type with
+  | Pdfcryptprimitives.ARC4 (a, b) -> Printf.printf "crypt_type = ARC4 (%i, %i)\n" a b
+  | Pdfcryptprimitives.AESV2 -> Printf.printf "crypt_type = AESV2\n"
+  | Pdfcryptprimitives.AESV3 x -> Printf.printf "crypt_type = AESV3 %b\n" x
+  end;
+  begin match e.file_encryption_key with
+  | None -> Printf.printf "file_encryption_key: None\n"
+  | Some _ -> Printf.printf "file_encryption_key: Some\n"
+  end;
+  Printf.printf "key = ";
+  Array.iter (fun x -> Printf.printf "%C" (char_of_int x)) e.key;
+  Printf.printf "\n";
+  Printf.printf "obj = %i, gen = %i\n" e.obj e.gen;
+  Printf.printf "keylength = %i\n" e.keylength;
+  Printf.printf "r = %i\n" e.r
+
+type toget_crypt =
+  | NoChange
+  | ToDecrypt of deferred_encryption
+
+type toget =
+  {input : input;
+   position : int;
+   length : int;
+   crypt : toget_crypt}
+
+let toget ?(crypt = NoChange) input position length =
+  {input = input; position = position; length = length; crypt = crypt}
+
+let length_of_toget t = t.length
+let position_of_toget t = t.position
+let input_of_toget t = t.input
+
 type stream =
   | Got of bytes
-  | ToGet of input * int * int (*r input, position, length *)
+  | ToGet of toget
 
 (* Type for individual PDF objects. A Name includes the initial `/'. A
 Stream consists of a reference to a pair of the stream dictionary (another
@@ -36,17 +89,30 @@ type pdfobject =
   | Stream of (pdfobject * stream) ref
   | Indirect of int
 
+(* For debug. Filled in by Pdfwrite *)
+let string_of_pdf : (pdfobject -> string) ref = ref (function _ -> "") 
+
 (* An object is either lexed, or needs to be lexed from a position in the
-input. *)
-(* Parsed - Not from an object stream, fully parsed, not necessarily decrypted yet *)
-(* ParsedAlreadyDecrypted - Was from an object stream, decrypted already when object stream read *)
-(* ToParse - Not parsed yet. Needs to be read from an object, which may still be encrypted *)
-(* ToParseFromObjectStream - (stream object number, index in stream) Not parsed yet. Will come from an object stream. *)
+input.
+  Parsed -
+    Not from an object stream, fully parsed, not necessarily decrypted yet
+  ParsedAlreadyDecrypted -
+    Was from an object stream, decrypted already when object stream read
+  ToParse -
+    Not parsed yet. Needs to be read from an object, which may still be
+    encrypted
+  ToParseFromObjectStream -
+    (stream object number, index in stream) Not parsed yet.
+    Will come from an object stream.
+*)
+
 type objectdata =
   | Parsed of pdfobject
   | ParsedAlreadyDecrypted of pdfobject
   | ToParse
-  | ToParseFromObjectStream of int * int * (int -> int list -> (int * (objectdata ref * int)) list)
+  | ToParseFromObjectStream of
+      (int, int list) Hashtbl.t * int * int *
+      (int -> int list -> (int * (objectdata ref * int)) list)
 
 type pdfobjmap_key = int
 
@@ -63,15 +129,12 @@ let pdfobjmap_bindings_inorder map =
   sort (fun (a, _) (b, _) -> compare a b) !r
 
 let pdfobjmap_iter_inorder f map =
-  let bindings = pdfobjmap_bindings_inorder map in
-    iter (function (k, v) -> f k v) bindings
+  iter (function (k, v) -> f k v) (pdfobjmap_bindings_inorder map)
 
 let pdfobjmap_bindings map =
   let r = ref [] in Hashtbl.iter (fun k v -> r := (k, v)::!r) map; !r
 
-let pdfobjmap_iter f map =
-  let bindings = pdfobjmap_bindings map in
-    iter (function (k, v) -> f k v) bindings
+let pdfobjmap_iter = Hashtbl.iter
 
 let pdfobjmap_remove key map = Hashtbl.remove map key; map
 
@@ -83,6 +146,7 @@ type pdfobjects =
    mutable pdfobjects : pdfobjmap;
    mutable object_stream_ids : (int, int) Hashtbl.t}
 
+
 (* PDF Document. The major and minor version numbers, the root object number,
 the list of objects and the trailer dictionary.
 
@@ -93,7 +157,9 @@ type t =
    mutable minor : int;
    mutable root : int;
    mutable objects : pdfobjects; 
-   mutable trailerdict : pdfobject}
+   mutable trailerdict : pdfobject;
+   mutable was_linearized : bool;
+   mutable saved_encryption : saved_encryption option}
 
 (* The null PDF document. *)
 let empty () =
@@ -105,13 +171,17 @@ let empty () =
       parse = None;
       pdfobjects = pdfobjmap_empty ();
       object_stream_ids = null_hash ()};
-   trailerdict = Dictionary []}
+   trailerdict = Dictionary [];
+   was_linearized = false;
+   saved_encryption = None}
 
 (* General exception for low-level errors. *)
 exception PDFError of string
 
 let input_pdferror i s =
-  Printf.sprintf "%s whilst reading file %s at position %i" s i.Pdfio.source (i.Pdfio.pos_in ())
+  Printf.sprintf
+    "%s whilst reading file %s at position %i"
+    s i.Pdfio.source (i.Pdfio.pos_in ())
 
 (* Predicate on those characters considered whitespace in PDF files. *)
 let is_whitespace = function
@@ -122,25 +192,85 @@ let is_not_whitespace = function
   | '\000' | '\009' | '\010' | '\012' | ' ' | '\013' -> false
   | _ -> true
 
+let process_deferred_cryption toget_crypt data =
+  match toget_crypt with
+    NoChange -> data
+  | ToDecrypt saved ->
+      (*Printf.printf "Forcing...\n";
+      print_deferred_encryption saved;*)
+      Pdfcryptprimitives.decrypt_stream_data
+        saved.crypt_type
+        false
+        saved.file_encryption_key
+        saved.obj
+        saved.gen
+        saved.key
+        saved.keylength
+        saved.r
+        data
+
+let remove_string_compare (k' : string) l =
+  let rec remove_inner r (k' : string) = function
+    | [] -> r
+    | (k, _)::t when k = k' -> List.rev_append r t
+    | h::t -> remove_inner (h::r) k' t
+  in
+    remove_inner [] k' l
+
+(* Remove a dictionary entry. Also works for streams. *)
+let rec remove_dict_entry dict key =
+  match dict with
+  | Dictionary d -> Dictionary (remove_string_compare key d)
+  | Stream ({contents = (dict', stream)} as s) ->
+      s := (remove_dict_entry dict' key, stream);
+      Stream s
+  | _ -> raise (PDFError "remove_dict_entry: not a dictionary")
+
+(* Replace dict entry, raising Not_found if it's not there. Also works
+for streams. *)
+let rec replace_dict_entry dict key value =
+  match dict with
+  | Null -> Dictionary (replace key value [])
+  | Dictionary d -> Dictionary (replace key value d)
+  | Stream ({contents = (dict', stream)} as s) ->
+      s := (replace_dict_entry dict' key value, stream);
+      Stream s
+  | _ -> raise (PDFError "replace_dict_entry: not a dictionary.")
+
+(* Add a dict entry, replacing if there. Also works for streams. *)
+let rec add_dict_entry dict key value =
+  match dict with
+  | Null -> Dictionary (add key value [])
+  | Dictionary d -> Dictionary (add key value d)
+  | Stream ({contents = (dict', stream)} as s) ->
+      s := (add_dict_entry dict' key value, stream);
+      Stream s
+  | _ -> raise (PDFError "add_dict_entry: not a dictionary.")
+
 (* Get a stream from disk if it hasn't already been got. *)
 let getstream = function
-  | Stream ({contents = (d, ToGet (i, o, l))} as stream) ->
+  | Stream ({contents = (d, ToGet {input = i; position = o; length = l; crypt = crypt})} as stream) ->
       if l = 0 then stream := (d, Got (mkbytes 0)) else
-        let s = mkbytes l in
-          begin try
-            i.seek_in o;
-            for c = 0 to l - 1 do
-              match i.input_byte () with
-              | b when b = Pdfio.no_more -> raise End_of_file
-              | b -> bset_unsafe s c b
-            done;
-            stream := (d, Got s)
-          with
-            End_of_file ->
-              raise (PDFError "Pdf.getstream: can't read stream.")
-          end
-  | Stream _ -> ()
+        begin try
+          let data =
+            process_deferred_cryption crypt (Pdfio.bytes_of_input i o l)
+          in
+            (* Correct the length *)
+            let d' =
+              match d with
+                Dictionary _ -> replace_dict_entry d "/Length" (Integer (bytes_size data))
+              | _ -> d (* May be null in Pdfwrite.WStream *)
+            in
+              stream := (d', Got data)
+        with
+          e ->
+            raise
+              (PDFError
+                ("Pdf.getstream: can't read stream" ^ Printexc.to_string e))
+        end
+  | Stream {contents = (_, Got _)} -> ()
   | _ -> raise (PDFError "Pdf.getstream: not a stream")
+
 
 let recurse_array (f : pdfobject -> pdfobject) elts =
   Array (map f elts)
@@ -187,7 +317,8 @@ let parse_lazy pdf n =
 
 (* Remove an object. *)
 let removeobj doc o =
-  doc.objects <- {doc.objects with pdfobjects = pdfobjmap_remove o doc.objects.pdfobjects}
+  doc.objects <-
+    {doc.objects with pdfobjects = pdfobjmap_remove o doc.objects.pdfobjects}
 
 (* Look up an object. On an error return Null *)
 let rec lookup_obj doc i =
@@ -195,8 +326,9 @@ let rec lookup_obj doc i =
     match fst (pdfobjmap_find i doc.objects.pdfobjects) with
     | {contents = Parsed obj | ParsedAlreadyDecrypted obj} -> obj
     | {contents = ToParse} -> parse_lazy doc i
-    | {contents = ToParseFromObjectStream (streamobjnum, _, objstreamparser)} ->
-         parse_delayed_object_stream i streamobjnum doc objstreamparser
+    | {contents =
+        ToParseFromObjectStream (themap, streamobjnum, _, objstreamparser)} ->
+         parse_delayed_object_stream themap i streamobjnum doc objstreamparser
   with
     Not_found -> Null
 
@@ -204,36 +336,33 @@ let rec lookup_obj doc i =
 a) Find all the ToParseFromObjectStream objects in the PDF with the same stream
 object number
 b) Read the object stream in the usual way
-c) Replace each object in the PDF with the parsed one, marked as already decrypted.
+c) Replace each object in the PDF with the parsed one, marked as already
+decrypted.
 d) Delete the object stream, since it is no longer required.
 e) Return the new object. *)
-and parse_delayed_object_stream objnum streamobjnum pdf objstreamparser =
-  (*Printf.printf "Access of object %i triggered parsing of object stream %i" objnum streamobjnum; flprint "\n";*)
-  let indexes = ref [] in
-    pdfobjmap_iter
-      (fun _ o -> match o with
-       | {contents = ToParseFromObjectStream (strm, index, _)}, _ when strm = streamobjnum ->
-            indexes := index::!indexes
-       | _ -> ())
-      pdf.objects.pdfobjects;
-    let objectsfromstream = objstreamparser streamobjnum !indexes in
+and parse_delayed_object_stream themap objnum streamobjnum pdf objstreamparser =
+  let indexes = Hashtbl.find themap objnum in
+    let objectsfromstream = objstreamparser streamobjnum indexes in
       iter
         (function (objnum, newobject) ->
-           pdf.objects.pdfobjects <- pdfobjmap_add objnum newobject pdf.objects.pdfobjects)
+           pdf.objects.pdfobjects <-
+             pdfobjmap_add objnum newobject pdf.objects.pdfobjects)
         objectsfromstream;
-      removeobj pdf streamobjnum; 
+      removeobj pdf streamobjnum;
       (* In the event that the object number we're looking for wasn't actually
       in the object stream due to a malformed file, we would enter an infinite
       loop parse_delayed_object_stream -> lookup_obj ->
       parse_delayed_object_stream etc. Check object was actually returned to
       avoid that. *)
-      if mem objnum (map fst objectsfromstream) then lookup_obj pdf objnum else Null
+      if mem objnum (map fst objectsfromstream)
+        then lookup_obj pdf objnum
+        else Null
 
 (* Parse all object streams in a document *)
 let resolve_all_delayed_object_streams pdf =
   iter
-    (function n -> ignore (lookup_obj pdf n))
-    (map fst (pdfobjmap_bindings pdf.objects.pdfobjects))
+    (function (n, _) -> ignore (lookup_obj pdf n))
+    (pdfobjmap_bindings pdf.objects.pdfobjects)
 
 let catalog_of_pdf pdf =
   try lookup_obj pdf pdf.root with
@@ -245,10 +374,14 @@ let rec direct pdf = function
   | Indirect i ->
       begin try
         match fst (pdfobjmap_find i pdf.objects.pdfobjects) with
-        | {contents = Parsed pdfobject | ParsedAlreadyDecrypted pdfobject} -> direct pdf pdfobject
+        | {contents = Parsed pdfobject | ParsedAlreadyDecrypted pdfobject} ->
+            direct pdf pdfobject
         | {contents = ToParse} -> parse_lazy pdf i
-        | {contents = ToParseFromObjectStream (streamobjnum, _, objstreamparser)} ->
-             parse_delayed_object_stream i streamobjnum pdf objstreamparser
+        | {contents =
+             ToParseFromObjectStream (themap, streamobjnum, _, objstreamparser)}
+           ->
+             parse_delayed_object_stream
+               themap i streamobjnum pdf objstreamparser
       with
         Not_found -> Null
       end
@@ -262,7 +395,9 @@ let iter_stream f pdf =
     | {contents = ToParse}  as r, g ->
         r := Parsed (parse_lazy pdf i);
         iter_stream_inner f i (r, g)
-    | {contents = ToParseFromObjectStream _}, _ -> () (* Can't be any streams in here.. *)
+    | {contents = ToParseFromObjectStream _}, _ ->
+        (* Can't be any streams in here.. *)
+        ()
     | _ -> ()
   in
     pdfobjmap_iter (iter_stream_inner f) pdf.objects.pdfobjects
@@ -277,7 +412,7 @@ let lookup_direct pdf key dict =
   match direct pdf dict with
   | Dictionary d | Stream {contents = (Dictionary d, _)} ->
       begin match lookup_string_compare key d with
-      | None -> None
+      | None | Some Null -> None
       | Some o -> Some (direct pdf o)
       end
   | _ -> None
@@ -286,7 +421,10 @@ let indirect_number pdf key dict =
   match direct pdf dict with
   | Dictionary d | Stream {contents = (Dictionary d, _)} ->
       begin match lookup_string_compare key d with
-      | Some (Indirect i) -> Some i (* If the indirect points to an indirect, this will still be unique, but isn't the "actual" object number *)
+      | Some (Indirect i) ->
+          (* If the indirect points to an indirect, this will still be unique,
+          but isn't the "actual" object number *)
+          Some i
       | _ -> None
       end
   | _ -> None
@@ -305,10 +443,10 @@ let lookup_exception (exp : exn) pdf key dict =
   let dict' =
     match direct pdf dict with
     | Dictionary d | Stream {contents = Dictionary d, _} -> d
-    | _ -> raise (PDFError "not a dictionary")
+    | _ -> raise (PDFError ("lookup_exception: not a dictionary, key = " ^ key))
   in
     match lookup key dict' with
-    | None -> raise exp
+    | None | Some Null -> raise exp
     | Some v -> direct pdf v
 
 (* A specialised one raising PDFError. *)
@@ -332,16 +470,18 @@ let make_matrix tr =
     [Real tr.Pdftransform.a; Real tr.Pdftransform.b; Real tr.Pdftransform.c;
      Real tr.Pdftransform.d; Real tr.Pdftransform.e; Real tr.Pdftransform.f]
 
-(* Iterate over the objects in a document, in order of increasing object number. *)
+(* Iterate over the objects in a document, in order of increasing
+object number. *)
 let objiter f doc =
-  resolve_all_delayed_object_streams doc; (* PdfObjMap.iter doesn't like you altering the map inside the iteration. *)
+  (* PdfObjMap.iter doesn't like you altering the map inside the iteration. *)
+  resolve_all_delayed_object_streams doc;
   let f' k v =
     match v with
     | {contents = Parsed obj}, _ -> f k obj
     | {contents = ParsedAlreadyDecrypted obj}, _ -> f k obj
     | {contents = ToParse}, _ -> f k (parse_lazy doc k)
-    | {contents = ToParseFromObjectStream (s, _, func)}, _ ->
-         f k (parse_delayed_object_stream k s doc func)
+    | {contents = ToParseFromObjectStream (themap, s, _, func)}, _ ->
+         f k (parse_delayed_object_stream themap k s doc func)
   in
     pdfobjmap_iter f' doc.objects.pdfobjects
 
@@ -349,37 +489,42 @@ let objselfmap f doc =
   resolve_all_delayed_object_streams doc;
   let rec f' k v =
     match v with
-    | {contents = Parsed obj} as r, _ -> r := Parsed (f obj)
-    | {contents = ParsedAlreadyDecrypted obj} as r, _ -> r := ParsedAlreadyDecrypted (f obj)
-    | {contents = ToParse}, _ -> ignore (parse_lazy doc k); f' k v
-    | {contents = ToParseFromObjectStream (s, _, func)}, _ ->
-         ignore (parse_delayed_object_stream k s doc func);
-         f' k v
+    | {contents = Parsed obj} as r, _ ->
+        r := Parsed (f obj)
+    | {contents = ParsedAlreadyDecrypted obj} as r, _ ->
+        r := ParsedAlreadyDecrypted (f obj)
+    | {contents = ToParse}, _ ->
+        ignore (parse_lazy doc k); f' k v
+    | {contents = ToParseFromObjectStream (themap, s, _, func)}, _ ->
+        ignore (parse_delayed_object_stream themap k s doc func);
+        f' k v
   in
     pdfobjmap_iter f' doc.objects.pdfobjects
 
 let objiter_inorder f doc =
-  resolve_all_delayed_object_streams doc; (* PdfObjMap.iter doesn't like you altering the map inside the iteration. *)
+  (* PdfObjMap.iter doesn't like you altering the map inside the iteration. *)
+  resolve_all_delayed_object_streams doc;
   let f' k v =
     match v with
     | {contents = Parsed obj}, _ -> f k obj
     | {contents = ParsedAlreadyDecrypted obj}, _ -> f k obj
     | {contents = ToParse}, _ -> f k (parse_lazy doc k)
-    | {contents = ToParseFromObjectStream (s, _, func)}, _ ->
-         f k (parse_delayed_object_stream k s doc func)
+    | {contents = ToParseFromObjectStream (themap, s, _, func)}, _ ->
+         f k (parse_delayed_object_stream themap k s doc func)
   in
     pdfobjmap_iter_inorder f' doc.objects.pdfobjects
 
 (* Same, but also pass generation number. *)
 let objiter_gen f doc =
-  resolve_all_delayed_object_streams doc; (* PdfObjMap.iter doesn't like you altering the map inside the iteration. *)
+  (* PdfObjMap.iter doesn't like you altering the map inside the iteration. *)
+  resolve_all_delayed_object_streams doc;
   let f' k v =
     match v with
     | {contents = Parsed obj}, g -> f k g obj
     | {contents = ParsedAlreadyDecrypted obj}, g -> f k g obj
     | {contents = ToParse}, g -> f k g (parse_lazy doc k)
-    | {contents = ToParseFromObjectStream (s, _, func)}, g ->
-         f k g (parse_delayed_object_stream k s doc func)
+    | {contents = ToParseFromObjectStream (themap, s, _, func)}, g ->
+         f k g (parse_delayed_object_stream themap k s doc func)
   in
     pdfobjmap_iter f' doc.objects.pdfobjects
 
@@ -403,10 +548,13 @@ let list_of_objs doc =
 
 (* Add an object, given an object number. *)
 let addobj_given_num doc (num, obj) =
-  doc.objects.maxobjnum <- max doc.objects.maxobjnum num;
-  doc.objects.pdfobjects <- pdfobjmap_add num (ref (Parsed obj), 0) doc.objects.pdfobjects
+  doc.objects.maxobjnum <-
+    max doc.objects.maxobjnum num;
+  doc.objects.pdfobjects <-
+    pdfobjmap_add num (ref (Parsed obj), 0) doc.objects.pdfobjects
 
-(* Add an object. We use the first number larger than the maxobjnum, and update that. *)
+(* Add an object. We use the first number larger than the maxobjnum,
+and update that. *)
 let addobj doc obj =
   let num = doc.objects.maxobjnum + 1 in
     addobj_given_num doc (num, obj);
@@ -429,28 +577,29 @@ let objects_of_list parse l =
 (* Find the page reference numbers, given the top level node of the page tree *)
 let rec page_reference_numbers_inner pdf pages_node node_number =
   match lookup_direct pdf "/Type" pages_node with
-  | Some (Name "/Pages") | None ->
-      begin match lookup_direct pdf "/Kids" pages_node with
-      | Some (Array elts) ->
+    Some (Name "/Page") -> [node_number]
+  | _ ->
+      match lookup_direct pdf "/Kids" pages_node with
+        Some (Array elts) ->
           flatten
-            (map
-              (let x1 = (function
+            (option_map
+              (function
                | Indirect i ->
-                   page_reference_numbers_inner
-                     pdf (direct pdf (Indirect i)) i
-               | _ -> raise (PDFError "badly formed page tree A")) in x1)
+                   Some
+                     (page_reference_numbers_inner
+                        pdf (direct pdf (Indirect i)) i)
+               | _ -> None)
               elts)
-      | _ -> raise (PDFError "badly formed page tree B")
-      end
-  | Some (Name "/Page") -> [node_number]
-  | _ -> raise (PDFError "badly formed page tree C")
+      | _ ->
+          (* Missing /Type /Page in a malformed file would end up here *)
+          [node_number]
 
 let page_reference_numbers pdf =
   let root = lookup_obj pdf pdf.root in
     let pages_node =
-        match lookup_direct pdf "/Pages" root with
-        | Some p -> p
-        | None -> raise (PDFError "badly formed page tree D")
+      match lookup_direct pdf "/Pages" root with
+      | Some p -> p
+      | None -> raise (PDFError "No /Pages found in /Root")
     in
       page_reference_numbers_inner pdf pages_node (-1)
 
@@ -476,8 +625,9 @@ let rec renumber_object_parsed (pdf : t) changes obj =
 let renumber_object pdf changes objnum = function
   | ToParse -> 
       renumber_object_parsed pdf changes (parse_lazy pdf objnum)
-  | ToParseFromObjectStream (s, _, func) ->
-      renumber_object_parsed pdf changes (parse_delayed_object_stream objnum s pdf func)
+  | ToParseFromObjectStream (themap, s, _, func) ->
+      renumber_object_parsed
+        pdf changes (parse_delayed_object_stream themap objnum s pdf func)
   | Parsed obj | ParsedAlreadyDecrypted obj ->
       renumber_object_parsed pdf changes obj
 
@@ -502,13 +652,17 @@ let renumber change_table pdf =
       let objs' =
         map2 (renumber_object pdf change_table) nums objs
       in let nums' =
-        map (function k -> match tryfind change_table k with Some x -> x | None -> k) nums
+        map
+          (function k ->
+            match tryfind change_table k with Some x -> x | None -> k)
+          nums
       in
         objects_of_list
           pdf.objects.parse
           (combine nums' (map (fun x -> ref (Parsed x), 0) objs'))
   in
-    (* Update the object_stream_ids so object streams will be conserved over PDF merges *)
+    (* Update the object_stream_ids so object streams will be
+    conserved over PDF merges *)
     let newids = null_hash () in
       Hashtbl.iter
         (fun o s ->
@@ -566,7 +720,9 @@ let refset_mem n rs = Hashtbl.mem rs n
 let refset_elts rs =
   let r = ref [] in Hashtbl.iter (fun k _ -> r := k::!r) rs; !r
 
-let rec referenced_pdfobj no_follow_entries no_follow_contains pdf found i = function
+let rec
+  referenced_pdfobj no_follow_entries no_follow_contains pdf found i
+= function
   | Indirect j ->
       if not (refset_mem j !found) then
         begin
@@ -579,18 +735,25 @@ let rec referenced_pdfobj no_follow_entries no_follow_contains pdf found i = fun
                 if tocontinue no_follow_entries no_follow_contains d then
                   begin
                   found := refset_add j !found;
-                  referenced_pdfobj no_follow_entries no_follow_contains pdf found j obj
+                  referenced_pdfobj
+                    no_follow_entries no_follow_contains pdf found j obj
                   end
             | _ ->
               found := refset_add j !found;
-              referenced_pdfobj no_follow_entries no_follow_contains pdf found j obj
+              referenced_pdfobj
+                no_follow_entries no_follow_contains pdf found j obj
         end
   | Dictionary d ->
       iter
-        (function (_, v) -> referenced_pdfobj no_follow_entries no_follow_contains pdf found i v)
-        (if no_follow_entries <> [] then (lose (fun (k, _) -> mem k no_follow_entries) d) else d)
+        (function (_, v) ->
+          referenced_pdfobj no_follow_entries no_follow_contains pdf found i v)
+        (if no_follow_entries <> []
+           then (lose (fun (k, _) -> mem k no_follow_entries) d)
+           else d)
   | Array a -> 
-      iter (referenced_pdfobj no_follow_entries no_follow_contains pdf found i) a
+      iter
+        (referenced_pdfobj no_follow_entries no_follow_contains pdf found i)
+        a
   | Stream {contents = (s, _)} ->
       referenced_pdfobj no_follow_entries no_follow_contains pdf found i s
   | _ -> ()
@@ -601,10 +764,14 @@ and referenced no_follow_entries no_follow_contains pdf found i = function
   | ParsedAlreadyDecrypted x ->
       referenced no_follow_entries no_follow_contains pdf found i (Parsed x)
   | ToParse ->
-      referenced no_follow_entries no_follow_contains pdf found i (Parsed (parse_lazy pdf i))
-  | ToParseFromObjectStream (s, _, func) ->
-      let result = parse_delayed_object_stream i s pdf func in
-        referenced no_follow_entries no_follow_contains pdf found i (ParsedAlreadyDecrypted result)
+      referenced
+        no_follow_entries no_follow_contains pdf found i
+        (Parsed (parse_lazy pdf i))
+  | ToParseFromObjectStream (themap, s, _, func) ->
+      let result = parse_delayed_object_stream themap i s pdf func in
+        referenced
+          no_follow_entries no_follow_contains pdf found i
+          (ParsedAlreadyDecrypted result)
   | _ -> ()
 
 (* Nullify all references to page objects which are no longer in the page tree.
@@ -624,7 +791,8 @@ let nullify_deleted_page_references pdf =
         (let f2 = function objnum ->
            (let f1 = function
              | Dictionary d when
-                   (match lookup "/Type" d with Some (Name "/Page") -> true | _ -> false) ->
+                   (match lookup "/Type" d with
+                      Some (Name "/Page") -> true | _ -> false) ->
                  nums := objnum :: !nums
              | _ -> () in f1) in f2)
         pdf;
@@ -660,44 +828,10 @@ let remove_unreferenced pdf =
 (* Objects referenced from a given one. *)
 let objects_referenced no_follow_entries no_follow_contains pdf pdfobject =
   let set = ref (refset_empty ()) in
-    referenced no_follow_entries no_follow_contains pdf set 0 (Parsed pdfobject);
+    referenced
+      no_follow_entries no_follow_contains pdf set 0 (Parsed pdfobject);
     refset_elts !set
 
-let remove_string_compare (k' : string) l =
-  let rec remove_inner r (k' : string) = function
-    | [] -> r
-    | (k, _)::t when k = k' -> List.rev_append r t
-    | h::t -> remove_inner (h::r) k' t
-  in
-    remove_inner [] k' l
-
-(* Remove a dictionary entry. Also works for streams. *)
-let rec remove_dict_entry dict key =
-  match dict with
-  | Dictionary d -> Dictionary (remove_string_compare key d)
-  | Stream ({contents = (dict', stream)} as s) ->
-      s := (remove_dict_entry dict' key, stream);
-      Stream s
-  | _ -> raise (PDFError "remove_dict_entry: not a dictionary")
-
-(* Replace dict entry, raising Not_found if it's not there. Also works
-for streams. *)
-let rec replace_dict_entry dict key value =
-  match dict with
-  | Dictionary d -> Dictionary (replace key value d)
-  | Stream ({contents = (dict', stream)} as s) ->
-      s := (replace_dict_entry dict' key value, stream);
-      Stream s
-  | _ -> raise (PDFError "replace_dict_entry: not a dictionary.")
-
-(* Add a dict entry, replacing if there. Also works for streams. *)
-let rec add_dict_entry dict key value =
-  match dict with
-  | Dictionary d -> Dictionary (add key value d)
-  | Stream ({contents = (dict', stream)} as s) ->
-      s := (add_dict_entry dict' key value, stream);
-      Stream s
-  | _ -> raise (PDFError "add_dict_entry: not a dictionary.")
 
 (* Find the contents of a stream as a bytes. *)
 let bigarray_of_stream s =
@@ -714,16 +848,20 @@ let unique_key prefix obj =
     | Stream {contents = Dictionary es, _} -> es
     | _ -> raise (PDFError "unique_key: Not a dictionary or stream")
   in
-    let names = fst (split elts)
-    in let name_of_num n = "/" ^ prefix ^ string_of_int n
-    in let num = ref 0 in
+    let names = fst (split elts) in
+    let name_of_num n = Printf.sprintf "/%s%i" prefix n in
+    let num = ref 0 in
       while mem (name_of_num !num) names do incr num done;
       name_of_num !num
 
 (* Given a PDF and potential filename, calculate an MD5 string and build a
 suitable /ID entry from it. *)
 let generate_id _ path gettime =
-  let d = Digest.string (path ^ string_of_float (gettime ())) in
+  let d =
+    match Sys.getenv_opt "CAMLPDF_REPRODUCIBLE_IDS" with
+    | Some "true" -> Digest.string "camlpdf"
+    | _ -> Digest.string (path ^ string_of_float (gettime ()))
+  in
     Array [String d; String d]
 
 (* Find the indirect reference given by the value associated with a key in a
@@ -746,7 +884,7 @@ let rec nametree_lookup_kids pdf k = function
       | Some result -> Some result
       end
   | Array [] -> None
-  | _ -> raise (PDFError "malformed name tree")
+  | _ -> raise (PDFError "nametree_lookup_kids: malformed name tree")
 
 and array_lookup k = function
   | Array elts ->
@@ -802,29 +940,37 @@ let rec contents_of_nametree pdf tree =
       | _ -> raise (PDFError "contents_of_nametree: neither names nor kids")
 
 let deep_copy_pdfobjects frompdf from =
+  resolve_all_delayed_object_streams frompdf;
   let deep_copy_objdata objdata =
     let deep_copy_pdfobject = function
       | Stream _ as s ->
           begin
             getstream s;
             match s with
-            | Stream {contents = (dict, Got stream)} -> Stream (ref (dict, Got (copybytes stream)))
-            | _ -> assert false (* getstream only returns things of above form *)
+            | Stream {contents = (dict, Got stream)} ->
+                Stream (ref (dict, Got (copybytes stream)))
+            | _ ->
+                (* getstream only returns things of above form *)
+                assert false
           end
       | x -> x
     in
-      resolve_all_delayed_object_streams frompdf;
       match objdata with
       | Parsed obj -> Parsed (deep_copy_pdfobject obj)
-      | ParsedAlreadyDecrypted obj -> ParsedAlreadyDecrypted (deep_copy_pdfobject obj)
+      | ParsedAlreadyDecrypted obj ->
+          ParsedAlreadyDecrypted (deep_copy_pdfobject obj)
       | ToParse -> ToParse
-      | ToParseFromObjectStream (x, y, z) -> ToParseFromObjectStream (x, y, z)
+      | ToParseFromObjectStream (themap, x, y, z) ->
+          ToParseFromObjectStream (themap, x, y, z)
   in
-    (* shouldn't occur due to resolve_all_delayed_object_streams above - do we really need that? *)
+    (* shouldn't occur due to resolve_all_delayed_object_streams above -
+    do we really need that? *)
     let pdfobjmap = pdfobjmap_empty () in
       pdfobjmap_iter
         (fun objnum ({contents = objdata}, gen) ->
-           ignore (pdfobjmap_add objnum (ref (deep_copy_objdata objdata), gen) pdfobjmap))
+           ignore
+             (pdfobjmap_add
+                objnum (ref (deep_copy_objdata objdata), gen) pdfobjmap))
         from;
       pdfobjmap
 
@@ -837,5 +983,13 @@ let deep_copy from =
       parse = from.objects.parse;
       pdfobjects = deep_copy_pdfobjects from from.objects.pdfobjects;
       object_stream_ids = Hashtbl.copy from.objects.object_stream_ids};
-   trailerdict = from.trailerdict}
+   trailerdict = from.trailerdict;
+   was_linearized = from.was_linearized;
+   saved_encryption = from.saved_encryption}
 
+let change_id pdf f =
+  match pdf.trailerdict with
+  | Dictionary d ->
+      pdf.trailerdict <-
+        Dictionary (add "/ID" (generate_id pdf f (fun () -> Random.float 1.)) d)
+  | _ -> raise (PDFError "Bad trailer dictionary")

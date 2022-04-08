@@ -1,40 +1,20 @@
-(*pp camlp4o *)
 (* Parse Adobe Font Metrics files *)
-(* FIXME: Faster a) remove genlex. b) remove list processing *)
 open Pdfutil
 
-let print_lexeme = function
-  | Genlex.Kwd s -> Printf.printf "KEYWORD: %s\n" s
-  | Genlex.Ident s -> Printf.printf "IDENT: %s\n" s
-  | Genlex.Int i -> Printf.printf "INT: %i\n" i
-  | Genlex.Float f -> Printf.printf "FLOAT: %f\n" f
-  | Genlex.String s -> Printf.printf "STRING: %s\n" s
-  | Genlex.Char c -> Printf.printf "CHAR: %c\n" c
-
-let read_char_metrics_lexer = Genlex.make_lexer ["C"; ";"; "WX"; "N"]
-
 let read_char_metrics_line l =
-  match
-    Stream.npeek 8 (read_char_metrics_lexer (Stream.of_string l))
-  with
-  | Genlex.Kwd "C"::Genlex.Int charnum::Genlex.Kwd ";"::
-    Genlex.Kwd "WX"::Genlex.Int width::Genlex.Kwd ";"::
-    Genlex.Kwd "N"::(Genlex.Ident name | Genlex.Kwd name)::_ ->
-      (name, (charnum, width))
-  | x -> iter print_lexeme x; failwith "badline"
+  match String.split_on_char ' ' l with
+  | "C"::charnum::";"::"WX"::width::";"::"N"::name::_ ->
+      (name, (int_of_string charnum, int_of_string width))
+  | _ -> failwith "badline in read_char_metrics_line"
 
 let lookup_charnum table name =
   match Hashtbl.find table name with (c', _) -> c'
 
-let read_kern_line_lexer = Genlex.make_lexer ["KPX"]
-
 let read_kern_line l =
-  match
-    Stream.npeek 4 (read_kern_line_lexer (Stream.of_string l))
-  with
-    | Genlex.Kwd "KPX"::Genlex.Ident n::Genlex.Ident n'::Genlex.Int i::_ ->
-        n, n', i
-    | x -> iter print_lexeme x; failwith "badline2"
+  match String.split_on_char ' ' l with
+  | "KPX"::n::n'::i::_ ->
+      n, n', int_of_string (implode (option_map (function '\r' | '\n' -> None | c -> Some c) (explode i)))
+  | _ -> failwith "badline in read_kern_line"
 
 let string_starts_with sub s =
   let sublength = String.length sub in
@@ -47,9 +27,20 @@ let string_starts_with sub s =
 
 let get_tables lines =
   let char_metrics_lines =
-    isolate (string_starts_with "StartCharMetrics") (string_starts_with "EndCharMetrics") lines
+    isolate
+      (string_starts_with "StartCharMetrics")
+      (string_starts_with "EndCharMetrics")
+      lines
   and kern_lines =
-    isolate (string_starts_with "StartKernPairs") (string_starts_with "EndKernPairs") lines
+    isolate
+      (string_starts_with "StartKernPairs")
+      (string_starts_with "EndKernPairs")
+      lines
+  and header_lines =
+    map
+      (fun s ->
+         let a, b = cleavewhile (neq ' ') (explode s) in (implode a, implode b))
+      (takewhile (notpred (string_starts_with "C ")) lines)
   in
     let remove_empty = lose (fun x -> String.length x < 5) in
     let charmetrics =
@@ -59,6 +50,7 @@ let get_tables lines =
       let kerns =
         map read_kern_line (remove_empty kern_lines)
       in
+        header_lines,
         option_map
           (fun (_, (c, w)) -> if c > -1 then Some (c, w) else None)
           charmetrics,
@@ -67,7 +59,10 @@ let get_tables lines =
              let p = lookup_charnum charmetrics_hash n
              and p' = lookup_charnum charmetrics_hash n' in
              if p > -1 && p' > -1 then Some (p, p', kern) else None)
-          kerns
+          kerns,
+        option_map
+        (fun (name, (_, w)) -> Some (name, w))
+          charmetrics
 
 let read i =
   try
@@ -75,4 +70,3 @@ let read i =
       get_tables lines
   with
     e -> failwith (Printexc.to_string e)
-

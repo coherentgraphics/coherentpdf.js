@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 (* \chaptertitle{Shapes}{Stroking lines and making shapes} *)
 
 (* This module provides for the stroking of lines, and production of shape
@@ -145,4 +144,3 @@ let rectangle x y w h =
        Pdfgraphics.Straight ((x +. w, y), (x +. w, y +. h));
        Pdfgraphics.Straight ((x +. w, y +. h), (x, y +. h));
        Pdfgraphics.Straight ((x, y +. h), (x, y))])]))
-

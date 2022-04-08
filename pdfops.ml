@@ -1,8 +1,7 @@
-(*pp camlp4o *)
 open Pdfutil
 open Pdfio
 
-(* Types *)
+let debug = ref false
 
 (* Graphics operators. *)
 type t =
@@ -97,7 +96,8 @@ let lexemes_of_op f = function
   | Op_d (fl, y) ->
       f (Obj Pdfgenlex.LexLeftSquare);
       iter (fun x -> f (Obj (Pdfgenlex.LexReal x))) fl;
-      f (Obj Pdfgenlex.LexRightSquare); f (Obj (Pdfgenlex.LexReal y)); f (Op "d")
+      f (Obj Pdfgenlex.LexRightSquare);
+      f (Obj (Pdfgenlex.LexReal y)); f (Op "d")
   | Op_ri s -> f (Obj (Pdfgenlex.LexName s)); f (Op "ri")
   | Op_i i -> f (Obj (Pdfgenlex.LexInt i)); f (Op "i")
   | Op_gs s -> f (Obj (Pdfgenlex.LexName s)); f (Op "gs")
@@ -147,23 +147,33 @@ let lexemes_of_op f = function
   | Op_Tw w -> f (Obj (Pdfgenlex.LexReal w)); f (Op "Tw")
   | Op_Tz z -> f (Obj (Pdfgenlex.LexReal z)); f (Op "Tz")
   | Op_TL l -> f (Obj (Pdfgenlex.LexReal l)); f (Op "TL") 
-  | Op_Tf (k, s) -> f (Obj (Pdfgenlex.LexName k)); f (Obj (Pdfgenlex.LexReal s)); f (Op "Tf")
+  | Op_Tf (k, s) ->
+      f (Obj (Pdfgenlex.LexName k)); f (Obj (Pdfgenlex.LexReal s)); f (Op "Tf")
   | Op_Tr i -> f (Obj (Pdfgenlex.LexInt i)); f (Op "Tr")
   | Op_Ts k -> f (Obj (Pdfgenlex.LexReal k)); f (Op "Ts")
-  | Op_Td (k, k') -> f (Obj (Pdfgenlex.LexReal k)); f (Obj (Pdfgenlex.LexReal k')); f (Op "Td")
-  | Op_TD (k, k') -> f (Obj (Pdfgenlex.LexReal k)); f (Obj (Pdfgenlex.LexReal k')); f (Op "TD")
+  | Op_Td (k, k') ->
+      f (Obj (Pdfgenlex.LexReal k)); f (Obj (Pdfgenlex.LexReal k')); f (Op "Td")
+  | Op_TD (k, k') ->
+      f (Obj (Pdfgenlex.LexReal k)); f (Obj (Pdfgenlex.LexReal k')); f (Op "TD")
   | Op_Tm t ->
-       f (Obj (Pdfgenlex.LexReal t.Pdftransform.a)); f (Obj (Pdfgenlex.LexReal t.Pdftransform.b));
-       f (Obj (Pdfgenlex.LexReal t.Pdftransform.c)); f (Obj (Pdfgenlex.LexReal t.Pdftransform.d));
-       f (Obj (Pdfgenlex.LexReal t.Pdftransform.e)); f (Obj (Pdfgenlex.LexReal t.Pdftransform.f));
+       f (Obj (Pdfgenlex.LexReal t.Pdftransform.a));
+       f (Obj (Pdfgenlex.LexReal t.Pdftransform.b));
+       f (Obj (Pdfgenlex.LexReal t.Pdftransform.c));
+       f (Obj (Pdfgenlex.LexReal t.Pdftransform.d));
+       f (Obj (Pdfgenlex.LexReal t.Pdftransform.e));
+       f (Obj (Pdfgenlex.LexReal t.Pdftransform.f));
        f (Op "Tm")
   | Op_T' -> f (Op "T*")
   | Op_Tj s -> f (Obj (Pdfgenlex.LexString s)); f (Op "Tj")
   | Op_TJ pdfobject -> f (PdfObj pdfobject); f (Op "TJ")
   | Op_' s -> f (Obj (Pdfgenlex.LexString s)); f (Op "'")
   | Op_'' (k, k', s) -> 
-      f (Obj (Pdfgenlex.LexReal k)); f (Obj (Pdfgenlex.LexReal k')); f (Obj (Pdfgenlex.LexString s)); f (Op "\"")
-  | Op_d0 (k, k') -> f (Obj (Pdfgenlex.LexReal k)); f (Obj (Pdfgenlex.LexReal k')); f (Op "d0")
+      f (Obj (Pdfgenlex.LexReal k));
+      f (Obj (Pdfgenlex.LexReal k'));
+      f (Obj (Pdfgenlex.LexString s));
+      f (Op "\"")
+  | Op_d0 (k, k') ->
+      f (Obj (Pdfgenlex.LexReal k)); f (Obj (Pdfgenlex.LexReal k')); f (Op "d0")
   | Op_d1 (a, b, c, d, e, k) ->
       f (Obj (Pdfgenlex.LexReal a)); f (Obj (Pdfgenlex.LexReal b));
       f (Obj (Pdfgenlex.LexReal c)); f (Obj (Pdfgenlex.LexReal d));
@@ -175,26 +185,34 @@ let lexemes_of_op f = function
   | Op_SCN fs -> iter (fun x -> f (Obj (Pdfgenlex.LexReal x))) fs; f (Op "SCN")
   | Op_scn fs -> iter (fun x -> f (Obj (Pdfgenlex.LexReal x))) fs; f (Op "scn")
   | Op_SCNName (s, fs) ->
-      iter (fun x -> f (Obj (Pdfgenlex.LexReal x))) fs; f (Obj (Pdfgenlex.LexName s)); f (Op "SCN")
+      iter (fun x -> f (Obj (Pdfgenlex.LexReal x))) fs;
+      f (Obj (Pdfgenlex.LexName s)); f (Op "SCN")
   | Op_scnName (s, fs) ->
-      iter (fun x -> f (Obj (Pdfgenlex.LexReal x))) fs; f (Obj (Pdfgenlex.LexName s)); f (Op "scn")
+      iter (fun x -> f (Obj (Pdfgenlex.LexReal x))) fs;
+      f (Obj (Pdfgenlex.LexName s)); f (Op "scn")
   | Op_G k -> f (Obj (Pdfgenlex.LexReal k)); f (Op "G")
   | Op_g k -> f (Obj (Pdfgenlex.LexReal k)); f (Op "g") 
   | Op_RG (r, g, b) ->
-      f (Obj (Pdfgenlex.LexReal r)); f (Obj (Pdfgenlex.LexReal g)); f (Obj (Pdfgenlex.LexReal b)); f (Op "RG")
+      f (Obj (Pdfgenlex.LexReal r)); f (Obj (Pdfgenlex.LexReal g));
+      f (Obj (Pdfgenlex.LexReal b)); f (Op "RG")
   | Op_rg (r, g, b) ->
-      f (Obj (Pdfgenlex.LexReal r)); f (Obj (Pdfgenlex.LexReal g)); f (Obj (Pdfgenlex.LexReal b)); f (Op "rg")
+      f (Obj (Pdfgenlex.LexReal r)); f (Obj (Pdfgenlex.LexReal g));
+      f (Obj (Pdfgenlex.LexReal b)); f (Op "rg")
   | Op_K (c, m, y, k) ->
-      f (Obj (Pdfgenlex.LexReal c)); f (Obj (Pdfgenlex.LexReal m)); f (Obj (Pdfgenlex.LexReal y)); f (Obj (Pdfgenlex.LexReal k)); f (Op "K")
+      f (Obj (Pdfgenlex.LexReal c)); f (Obj (Pdfgenlex.LexReal m));
+      f (Obj (Pdfgenlex.LexReal y)); f (Obj (Pdfgenlex.LexReal k)); f (Op "K")
   | Op_k (c, m, y, k) ->
-      f (Obj (Pdfgenlex.LexReal c)); f (Obj (Pdfgenlex.LexReal m)); f (Obj (Pdfgenlex.LexReal y)); f (Obj (Pdfgenlex.LexReal k)); f (Op "k")
+      f (Obj (Pdfgenlex.LexReal c)); f (Obj (Pdfgenlex.LexReal m));
+      f (Obj (Pdfgenlex.LexReal y)); f (Obj (Pdfgenlex.LexReal k)); f (Op "k")
   | Op_sh s -> f (Obj (Pdfgenlex.LexName s)); f (Op "sh")
   | InlineImage (dict, data) -> f (LexInlineImage (dict, data))
   | Op_Do s -> f (Obj (Pdfgenlex.LexName s)); f (Op "Do")
   | Op_MP s -> f (Obj (Pdfgenlex.LexName s)); f (Op "MP")
-  | Op_DP (s, obj) -> f (Obj (Pdfgenlex.LexName s)); f (PdfObj obj); f (Op "DP")
+  | Op_DP (s, obj) ->
+      f (Obj (Pdfgenlex.LexName s)); f (PdfObj obj); f (Op "DP")
   | Op_BMC s -> f (Obj (Pdfgenlex.LexName s)); f (Op "BMC")
-  | Op_BDC (s, obj) -> f (Obj (Pdfgenlex.LexName s)); f (PdfObj obj); f (Op "BDC")
+  | Op_BDC (s, obj) ->
+      f (Obj (Pdfgenlex.LexName s)); f (PdfObj obj); f (Op "BDC")
   | Op_EMC -> f (Op "EMC")
   | Op_BX -> f (Op "BX")
   | Op_EX -> f (Op "EX")
@@ -232,7 +250,9 @@ let string_of_lexeme = function
           string_of_bytes data
         in let space =
           let filters =
-            match Pdf.lookup_direct_orelse (Pdf.empty ()) "/F" "/Filter" dict with
+            match
+              Pdf.lookup_direct_orelse (Pdf.empty ()) "/F" "/Filter" dict
+            with
             | Some (Pdf.Array filters) -> filters
             | Some (Pdf.Name f) -> [Pdf.Name f]
             | _ -> []
@@ -245,7 +265,20 @@ let b = Buffer.create 30
 
 let string_of_lexemes lexemes =
   Buffer.clear b;
-  iter (fun l -> Buffer.add_string b (string_of_lexeme l); Buffer.add_char b ' ') lexemes;
+  iter
+    (fun l ->
+       let str = string_of_lexeme l in
+         (* Add a space character if neither the current last character in the
+          * buffer nor the first character of the new string is a delimiter *)
+         if
+           Buffer.length b > 0 &&
+           not (Pdf.is_delimiter (Buffer.nth b (Buffer.length b - 1))) &&
+           String.length str > 0 &&
+           not (Pdf.is_delimiter str.[0])
+         then
+           Buffer.add_char b ' ';
+         Buffer.add_string b str)
+    lexemes;
   Buffer.contents b
 
 (* Make a string of an operation, for debug purposes only. *)
@@ -261,30 +294,30 @@ let lex_name i =
   nudge i;
   Obj (Pdfgenlex.LexName ("/" ^ Pdfread.getuntil_white_or_delimiter_string i))
 
-(* Lex a number *)
-let lex_number i =
-  match Pdfread.lex_number i with
-  | Pdfgenlex.LexReal r -> Obj (Pdfgenlex.LexReal r)
-  | Pdfgenlex.LexInt i -> Obj (Pdfgenlex.LexReal (float_of_int i))
-  | _ -> raise LexingEnd
-
-(* Lex and parse a dictionary to a Pdf.pdfobject. This constitutes a single
-lexeme in terms of this module. *)
-let get_dictionary i =
-  PdfObj (snd (Pdfread.parse (Pdfread.lex_dictionary i)))
-
 (* This is raised when we can't deal with some content. This should only happen
 in the case of a malformed operator stream, not on any legitimate content. *)
 exception Couldn'tHandleContent
 
 let nocontent i =
-  Printf.eprintf "Failed to understand content on page\n";
+  Printf.eprintf "Failed to understand content on page\n%!";
   if !Pdfread.read_debug then
     begin
       Pdfio.debug_next_n_chars 20 i;
       flprint "\n"
     end;
   raise Couldn'tHandleContent
+
+(* Lex a number *)
+let lex_number i =
+  match Pdfread.lex_number i with
+  | Pdfgenlex.LexReal r -> Obj (Pdfgenlex.LexReal r)
+  | Pdfgenlex.LexInt i -> Obj (Pdfgenlex.LexReal (float_of_int i))
+  | _ -> nocontent i
+
+(* Lex and parse a dictionary to a Pdf.pdfobject. This constitutes a single
+lexeme in terms of this module. *)
+let get_dictionary i =
+  PdfObj (snd (Pdfread.parse (Pdfread.lex_dictionary i)))
 
 (* Given a colourspace and the number of bits per component, give the number of
 bytes per pixel in the stored image data. *)
@@ -310,8 +343,9 @@ let rec components pdf resources t =
       | Some (Pdf.Integer n) -> n
       | _ -> raise (Pdf.PDFError "Bad iccstream")
       end
-  | Pdf.Array (Pdf.Name "/DeviceN"::_::alternate::_) ->
-      components pdf resources (Pdf.direct pdf alternate)
+  | Pdf.Array (Pdf.Name "/DeviceN"::Pdf.Array items::_) ->
+      (* 4th July 2017. Changed from looking at alternate to counting items. *)
+      length items
   | Pdf.Array [Pdf.Name "/Separation"; _; _; _]
   | Pdf.Array (Pdf.Name ("/Indexed" | "/I")::_::_) -> 1
   | Pdf.Array [Pdf.Name "/CalRGB"; _] -> 3
@@ -320,128 +354,172 @@ let rec components pdf resources t =
   | Pdf.Array [Pdf.Name "/Pattern"; alternate] ->
       components pdf resources (Pdf.direct pdf alternate)
   | cs ->
-     Printf.eprintf "%s\n" (Pdfwrite.string_of_pdf cs);
+     Printf.eprintf "%s\n%!" (Pdfwrite.string_of_pdf cs);
      raise (Pdf.PDFError "Unknown colourspace")
 
 (* Lex an inline image. We read the dictionary, and then the stream. *)
 let lex_inline_image pdf resources i =
+  if !debug then Printf.eprintf "lex_inline_image at %i\n%!" (i.pos_in ());
   try
   let dict =
     let lexemes = Pdfread.lex_dictionary i in
-      snd (Pdfread.parse ([Pdfgenlex.LexLeftDict] @ lexemes @ [Pdfgenlex.LexRightDict]))
+      snd
+        (Pdfread.parse
+          ([Pdfgenlex.LexLeftDict] @ lexemes @ [Pdfgenlex.LexRightDict]))
   in
+    if !debug then Printf.eprintf "dict was %s\n%!" (Pdfwrite.string_of_pdf dict);
     (* Read ID token *)
     Pdfread.dropwhite i;
     let c = char_of_int (i.input_byte ()) in
-      let c' = char_of_int (i.input_byte ()) in
-        match c, c' with
-        | 'I', 'D' ->
-          (* Skip a byte if not ASCII85 / ASCIIHex as one of the filters. *)
-          let toskip =
-            let filters =
-              match Pdf.lookup_direct_orelse pdf "/F" "/Filter" dict with
-              | Some (Pdf.Array filters) -> filters
-              | Some (Pdf.Name f) -> [Pdf.Name f]
-              | _ -> []
-            in
-              not (filterspecial filters)
+    let c' = char_of_int (i.input_byte ()) in
+    match c, c' with
+    | 'I', 'D' ->
+      (* Skip a byte if not ASCII85 / ASCIIHex as one of the filters. *)
+      let toskip =
+        let filters =
+          match Pdf.lookup_direct_orelse pdf "/F" "/Filter" dict with
+          | Some (Pdf.Array filters) -> filters
+          | Some (Pdf.Name f) -> [Pdf.Name f]
+          | _ -> []
+        in
+          not (filterspecial filters)
+      in
+        if toskip then ignore (i.input_byte ());
+        if !debug then Printf.eprintf "**got ID header, skipped possble byte%!";
+        let bytes =
+          let bpc =
+            match
+              Pdf.lookup_direct_orelse pdf "/BPC" "/BitsPerComponent" dict
+            with
+            | Some (Pdf.Integer bpc) -> bpc
+            | _ ->
+                Printf.eprintf "no BPC\n%!";
+                nocontent i
           in
-            if toskip then ignore (i.input_byte ());
-            let bytes =
-              let bpc =
-                match Pdf.lookup_direct_orelse pdf "/BPC" "/BitsPerComponent" dict with
-                | Some (Pdf.Integer bpc) -> bpc
-                | _ -> nocontent i
-              in
-              let cspace =
-                match Pdf.lookup_direct_orelse pdf "/CS" "/ColorSpace" dict with
-                | Some (Pdf.Name ("/DeviceGray" | "/DeviceRGB" | "/DeviceCMYK") as n) -> n
-                | Some (Pdf.Name ("/G" | "/RGB" | "/CMYK") as n) -> n
-                | Some ((Pdf.Array _) as n) -> n
-                | Some (Pdf.Name cspace) ->
-                    begin match Pdf.lookup_direct pdf "/ColorSpace" resources with
-                    | Some (Pdf.Dictionary _ as d) ->
-                        begin match Pdf.lookup_direct pdf cspace d with
-                        | Some c -> c
-                        | _ -> nocontent i
-                        end
-                    | _ -> nocontent i
+          let cspace =
+            match Pdf.lookup_direct_orelse pdf "/CS" "/ColorSpace" dict with
+            | Some
+                (Pdf.Name
+                   ("/DeviceGray" | "/DeviceRGB" | "/DeviceCMYK") as n) -> n
+            | Some (Pdf.Name ("/G" | "/RGB" | "/CMYK") as n) -> n
+            | Some ((Pdf.Array _) as n) -> n
+            | Some (Pdf.Name cspace) ->
+                if !debug then Printf.eprintf "resources is %s\n%!" (Pdfwrite.string_of_pdf resources);
+                begin match Pdf.lookup_direct pdf "/ColorSpace" resources with
+                | Some (Pdf.Dictionary _ as d) ->
+                    begin match Pdf.lookup_direct pdf cspace d with
+                    | Some c -> c
+                    | _ ->
+                        Printf.eprintf "no colourspace A\n%!";
+                        nocontent i
                     end
-                | None ->
-                    (* Could it be an image mask? *)
-                    begin match Pdf.lookup_direct_orelse pdf "/IM" "/ImageMask" dict with
-                    | Some (Pdf.Boolean true) -> Pdf.Name "/DeviceGray"
-                    | _ -> nocontent i
-                    end
-                | _ -> nocontent i
-              in let width =
-                match Pdf.lookup_direct_orelse pdf "/W" "/Width" dict with
-                | Some (Pdf.Integer w) -> w
-                | _ -> nocontent i 
-              in let height =
-                match Pdf.lookup_direct_orelse pdf "/H" "/Height" dict with
-                | Some (Pdf.Integer h) -> h
-                | _ -> nocontent i
-              in
-                let bitwidth =
-                  components pdf resources cspace * bpc * width
-                in
-                  let bytewidth =
-                    if bitwidth mod 8 = 0 then bitwidth / 8 else bitwidth / 8 + 1
-                  in
-                    bytewidth * height
+                | _ ->
+                    Printf.eprintf "no colourspace B\n%!";
+                    nocontent i
+                end
+            | None ->
+                (* Could it be an image mask? *)
+                begin match
+                  Pdf.lookup_direct_orelse pdf "/IM" "/ImageMask" dict
+                with
+                | Some (Pdf.Boolean true) -> Pdf.Name "/DeviceGray"
+                | _ ->
+                    Printf.eprintf "no colourspace C\n%!";
+                    nocontent i
+                end
+            | _ ->
+                Printf.eprintf "no colourspace D\n%!";
+                nocontent i
+          in let width =
+            match Pdf.lookup_direct_orelse pdf "/W" "/Width" dict with
+            | Some (Pdf.Integer w) -> w
+            | _ ->
+                Printf.eprintf "no or malformed /W%!";
+                nocontent i 
+          in let height =
+            match Pdf.lookup_direct_orelse pdf "/H" "/Height" dict with
+            | Some (Pdf.Integer h) -> h
+            | _ ->
+                Printf.eprintf "no or malformed /H%!";
+                nocontent i
+          in
+            let bitwidth =
+              components pdf resources cspace * bpc * width
             in
-              let data =
-                match Pdf.lookup_direct_orelse (Pdf.empty ()) "/F" "/Filter" dict with
-                | None | Some (Pdf.Array []) ->
-                    begin try let data = mkbytes bytes in
-                      if bytes > 0 then
-                        for x = 0 to bytes_size data - 1 do
-                          bset_unsafe data x (i.input_byte ());
-                        done;
-                      data
-                    with
-                    | e -> Printf.eprintf "%s" (Printexc.to_string e); raise e
-                    end
-                | Some (Pdf.Name ("/DCT" | "/DCTDecode")) ->
-                    Pdfjpeg.get_jpeg_data i
-                | Some _ ->
-                    try
-                      match Pdfcodec.decode_from_input i dict with
-                      | None -> nocontent i
-                      | Some data -> data 
-                    with
-                      | Pdfcodec.DecodeNotSupported d ->
-                          Printf.eprintf "Content DecodeNotSupported: %s\n" d;
-                          nocontent i
-                      | Pdfcodec.Couldn'tDecodeStream r ->
-                          raise (Pdf.PDFError ("Inline image, bad data: " ^ r))
-                      | e -> raise e
+              let bytewidth =
+                if bitwidth mod 8 = 0 then bitwidth / 8 else bitwidth / 8 + 1
               in
-                (* Read EI token *)
-                Pdfread.dropwhite i;
-                let c = char_of_int (i.input_byte ()) in
-                  let c' = char_of_int (i.input_byte ()) in
-                    begin match c, c' with
-                    | 'E', 'I' ->
-                        (* Remove filter, predictor, if it wasn't JPEG. *)
-                        let dict' =
-                          match Pdf.lookup_direct_orelse (Pdf.empty ()) "/F" "/Filter" dict with
-                          | Some (Pdf.Name ("/DCT" | "/DCTDecode")) -> dict
-                          | _ -> 
-                              fold_left
-                                Pdf.remove_dict_entry
-                                dict
-                                ["/Filter"; "/F"; "/DecodeParms"; "/DP"] 
-                        in
-                          dict', data
-                    | x, y ->
-                       Printf.eprintf "bad end to inline image %C, %C" x y;
-                       nocontent i
-                    end
-        | _ -> nocontent i
+                bytewidth * height
+        in
+          let data =
+            match
+              Pdf.lookup_direct_orelse (Pdf.empty ()) "/F" "/Filter" dict
+            with
+            | None | Some (Pdf.Array []) ->
+                begin try let data = mkbytes bytes in
+                  if bytes > 0 then
+                    for x = 0 to bytes_size data - 1 do
+                      bset_unsafe data x (i.input_byte ());
+                    done;
+                  data
+                with
+                | e -> Printf.eprintf "%s%!" (Printexc.to_string e); raise e
+                end
+            | Some (Pdf.Name ("/DCT" | "/DCTDecode") | Pdf.Array [Pdf.Name ("/DCT" | "/DCTDecode")]) ->
+                (* FIXME. The case of DCT combined with another one is possible e.g ["/DCT"; "/A85"]. Need to re-work. But have not seen an example yet. *)
+                begin try Pdfjpeg.get_jpeg_data i with
+                  e ->
+                    Printf.eprintf "Couldn't read inline image JPEG data %s\n%!" (Printexc.to_string e);
+                    raise e
+                end
+            | Some _ ->
+                try
+                  match Pdfcodec.decode_from_input i dict with
+                  | None ->
+                      Printf.eprintf "decode_from_input failed\n%!";
+                      nocontent i
+                  | Some data -> data 
+                with
+                  | Pdfcodec.DecodeNotSupported d ->
+                      Printf.eprintf "Content DecodeNotSupported: %s\n%!" d;
+                      nocontent i
+                  | Pdfcodec.Couldn'tDecodeStream r ->
+                      raise (Pdf.PDFError ("Inline image, bad data: " ^ r))
+                  | e -> raise e
+          in
+            (* Read EI token *)
+            Pdfread.dropwhite i;
+            let c = char_of_int (i.input_byte ()) in
+              let c' = char_of_int (i.input_byte ()) in
+                if c <> 'E' || c' <> 'I' then
+                  begin
+                    Printf.eprintf "warning: bad end to inline image %C, %C\n%!" c c';
+                    (* We try to find "EI" anyway, in case there is just some junk.
+                     * To do this, we drop any whitespace and any E or I character. *)
+                    Pdfread.ignoreuntil true (fun x -> Pdf.is_not_whitespace x && x <> 'E' && x <> 'I') i;
+                  end;
+                (* Remove filter, predictor, if it wasn't JPEG. *)
+                let dict' =
+                  match
+                    Pdf.lookup_direct_orelse
+                    (Pdf.empty ()) "/F" "/Filter" dict
+                  with
+                  (* FIXME as above *)
+                  | Some (Pdf.Name ("/DCT" | "/DCTDecode") | Pdf.Array [Pdf.Name ("/DCT" | "/DCTDecode")]) -> dict
+                  | _ -> 
+                      fold_left
+                        Pdf.remove_dict_entry
+                        dict
+                        ["/Filter"; "/F"; "/DecodeParms"; "/DP"] 
+                in
+                  dict', data
+    | _ ->
+        Printf.eprintf "Did not recognise beginning of inline image ID\n%!";
+        nocontent i
   with
-    _ -> nocontent i
+    e ->
+      Printf.eprintf "inline image reading failed: %s\n%!" (Printexc.to_string e);
+      nocontent i
 
 (* Lex a keyword. *)
 let lex_keyword pdf resources i =
@@ -449,28 +527,29 @@ let lex_keyword pdf resources i =
   | "true" -> Obj (Pdfgenlex.LexBool true)
   | "false" -> Obj (Pdfgenlex.LexBool false)
   | "BI" -> LexInlineImage (lex_inline_image pdf resources i)
-  | "ID" | "EI" -> raise LexingEnd (*r [lex_inline_image] should consume these *)
-  | "" -> raise LexingEnd
+  | "ID" | "EI" -> nocontent i (* lex_inline_image should consume these *)
+  | "" -> nocontent i
   | opstring -> Op opstring
 
 (* Lex a string. *)
 let lex_string i =
   match Pdfread.lex_string i with
   | Pdfgenlex.LexString str -> Obj (Pdfgenlex.LexString str)
-  | _ -> raise LexingEnd
+  | _ -> nocontent i
 
 (* Lex a hexadecimal string. *)
 let lex_hexstring i =
   match Pdfread.lex_hexstring i with
   | Pdfgenlex.LexString str -> Obj (Pdfgenlex.LexString str)
-  | _ -> raise LexingEnd
+  | _ -> nocontent i
 
 (* Lex one token *)
 let lex_next pdf resources i =
   try
     Pdfread.dropwhite i;
     match peek_byte i with
-    | x when x = Pdfio.no_more -> raise LexingEnd
+    | x when x = Pdfio.no_more ->
+        raise LexingEnd
     | chr ->
         match char_of_int chr with
         | '/' -> lex_name i
@@ -489,8 +568,10 @@ let lex_next pdf resources i =
   with
     | Pdf.PDFError r -> 
         raise (Pdf.PDFError ("Pdfpages.lex_next => " ^ r))
-    | Failure "unopt" | End_of_file -> raise LexingEnd 
-    | Couldn'tHandleContent -> raise LexingEnd
+    | Failure _ (*"unopt"*) | End_of_file ->
+        raise LexingEnd 
+    | Couldn'tHandleContent ->
+        raise (Pdf.PDFError "Malformed page content")
 
 let print_lexeme = function
   | Obj p -> Pdfread.print_lexeme p
@@ -547,33 +628,46 @@ let parse_operator compatibility = function
   | Op "T*"::r -> Op_T', r
   | Op "BX"::r -> incr compatibility; Op_BX, r
   | Op "EX"::r -> decr compatibility; Op_EX, r
-  | Obj (Pdfgenlex.LexReal tx)::Obj (Pdfgenlex.LexReal ty)::Op "Td"::r -> Op_Td (tx, ty), r
-  | Obj (Pdfgenlex.LexReal tx)::Obj (Pdfgenlex.LexReal ty)::Op "TD"::r -> Op_TD (tx, ty), r
+  | Obj (Pdfgenlex.LexReal tx)::Obj (Pdfgenlex.LexReal ty)::Op "Td"::r ->
+      Op_Td (tx, ty), r
+  | Obj (Pdfgenlex.LexReal tx)::Obj (Pdfgenlex.LexReal ty)::Op "TD"::r ->
+      Op_TD (tx, ty), r
   | Obj (Pdfgenlex.LexReal width)::Op "w"::r -> Op_w width, r
   | Obj (Pdfgenlex.LexReal cap)::Op "J"::r -> Op_J (int_of_float cap), r
   | Obj (Pdfgenlex.LexReal join)::Op "j"::r -> Op_j (int_of_float join), r
-  | Obj (Pdfgenlex.LexReal x)::Obj (Pdfgenlex.LexReal y)::Op "m"::r -> Op_m (x, y), r
-  | Obj (Pdfgenlex.LexReal x)::Obj (Pdfgenlex.LexReal y)::Op "l"::r -> Op_l (x, y), r
+  | Obj (Pdfgenlex.LexReal x)::Obj (Pdfgenlex.LexReal y)::Op "m"::r ->
+      Op_m (x, y), r
+  | Obj (Pdfgenlex.LexReal x)::Obj (Pdfgenlex.LexReal y)::Op "l"::r ->
+      Op_l (x, y), r
   | Obj (Pdfgenlex.LexReal leading)::Op "TL"::r -> Op_TL leading, r
-  | Obj (Pdfgenlex.LexName n)::Obj (Pdfgenlex.LexReal s)::Op "Tf"::r -> Op_Tf (n, s), r
+  | Obj (Pdfgenlex.LexName n)::Obj (Pdfgenlex.LexReal s)::Op "Tf"::r ->
+      Op_Tf (n, s), r
   | Obj (Pdfgenlex.LexString s)::Op "Tj"::r -> Op_Tj s, r
-  | Obj (Pdfgenlex.LexReal r)::Obj (Pdfgenlex.LexReal g)::Obj (Pdfgenlex.LexReal b)::Op "RG"::rest ->
+  | Obj (Pdfgenlex.LexReal r)::
+    Obj (Pdfgenlex.LexReal g)::
+    Obj (Pdfgenlex.LexReal b)::Op "RG"::rest ->
       Op_RG (r, g, b), rest
-  | Obj (Pdfgenlex.LexReal r)::Obj (Pdfgenlex.LexReal g)::Obj (Pdfgenlex.LexReal b)::Op "rg"::rest ->
+  | Obj (Pdfgenlex.LexReal r)::
+    Obj (Pdfgenlex.LexReal g)::
+      Obj (Pdfgenlex.LexReal b)::Op "rg"::rest ->
       Op_rg (r, g, b), rest
   | Obj (Pdfgenlex.LexReal g)::Op "G"::r -> Op_G g, r
   | Obj (Pdfgenlex.LexReal g)::Op "g"::r -> Op_g g, r
   | Obj (Pdfgenlex.LexReal c)::Obj (Pdfgenlex.LexReal m)::
-    Obj (Pdfgenlex.LexReal y)::Obj (Pdfgenlex.LexReal k)::Op "k"::r -> Op_k (c, m, y, k), r
+    Obj (Pdfgenlex.LexReal y)::Obj (Pdfgenlex.LexReal k)::
+    Op "k"::r -> Op_k (c, m, y, k), r
   | Obj (Pdfgenlex.LexReal c)::Obj (Pdfgenlex.LexReal m)::
-    Obj (Pdfgenlex.LexReal y)::Obj (Pdfgenlex.LexReal k)::Op "K"::r -> Op_K (c, m, y, k), r
-  | Obj (Pdfgenlex.LexReal a)::Obj (Pdfgenlex.LexReal b)::Obj (Pdfgenlex.LexReal c)::
-    Obj (Pdfgenlex.LexReal d)::Obj (Pdfgenlex.LexReal e)::Obj (Pdfgenlex.LexReal f):: Op "cm"::r ->
+    Obj (Pdfgenlex.LexReal y)::Obj (Pdfgenlex.LexReal k)::
+    Op "K"::r -> Op_K (c, m, y, k), r
+  | Obj (Pdfgenlex.LexReal a)::Obj (Pdfgenlex.LexReal b)::
+    Obj (Pdfgenlex.LexReal c)::Obj (Pdfgenlex.LexReal d)::
+    Obj (Pdfgenlex.LexReal e)::Obj (Pdfgenlex.LexReal f):: Op "cm"::r ->
        Op_cm
          {Pdftransform.a = a; Pdftransform.b = b; Pdftransform.c = c;
           Pdftransform.d = d; Pdftransform.e = e; Pdftransform.f = f}, r
-  | Obj (Pdfgenlex.LexReal a)::Obj (Pdfgenlex.LexReal b)::Obj (Pdfgenlex.LexReal c):: 
-    Obj (Pdfgenlex.LexReal d)::Obj (Pdfgenlex.LexReal e)::Obj (Pdfgenlex.LexReal f)::Op "Tm"::r ->
+  | Obj (Pdfgenlex.LexReal a)::Obj (Pdfgenlex.LexReal b)::
+    Obj (Pdfgenlex.LexReal c)::Obj (Pdfgenlex.LexReal d)::
+    Obj (Pdfgenlex.LexReal e)::Obj (Pdfgenlex.LexReal f)::Op "Tm"::r ->
        Op_Tm
          {Pdftransform.a = a; Pdftransform.b = b; Pdftransform.c = c;
           Pdftransform.d = d; Pdftransform.e = e; Pdftransform.f = f}, r
@@ -590,8 +684,9 @@ let parse_operator compatibility = function
   | Obj (Pdfgenlex.LexName n)::Op "Do"::r -> Op_Do n, r
   | Obj (Pdfgenlex.LexName n)::Op "CS"::r -> Op_CS n, r
   | Obj (Pdfgenlex.LexName n)::Op "cs"::r -> Op_cs n, r
-  | Obj (Pdfgenlex.LexReal x1)::Obj (Pdfgenlex.LexReal y1)::Obj (Pdfgenlex.LexReal x2)::
-    Obj (Pdfgenlex.LexReal y2)::Obj (Pdfgenlex.LexReal x3):: Obj (Pdfgenlex.LexReal y3)::
+  | Obj (Pdfgenlex.LexReal x1)::Obj (Pdfgenlex.LexReal y1)::
+    Obj (Pdfgenlex.LexReal x2)::Obj (Pdfgenlex.LexReal y2)::
+    Obj (Pdfgenlex.LexReal x3)::Obj (Pdfgenlex.LexReal y3)::
      Op "c"::r -> Op_c (x1, y1, x2, y2, x3, y3), r
   | Obj (Pdfgenlex.LexReal x2)::Obj (Pdfgenlex.LexReal y2)::
     Obj (Pdfgenlex.LexReal x3)::Obj (Pdfgenlex.LexReal y3)::
@@ -606,7 +701,9 @@ let parse_operator compatibility = function
   | Obj (Pdfgenlex.LexReal i)::Op "i"::r -> Op_i (int_of_float i), r
   | Obj (Pdfgenlex.LexReal m)::Op "M"::r -> Op_M m, r
   | Obj (Pdfgenlex.LexString s)::Op "\'"::r -> Op_' s, r
-  | Obj (Pdfgenlex.LexReal aw)::Obj (Pdfgenlex.LexReal ac)::Obj (Pdfgenlex.LexString s)::Op "\""::r ->
+  | Obj (Pdfgenlex.LexReal aw)::
+    Obj (Pdfgenlex.LexReal ac)::
+    Obj (Pdfgenlex.LexString s)::Op "\""::r ->
       Op_'' (aw, ac, s), r
   | Obj (Pdfgenlex.LexReal wx)::Obj (Pdfgenlex.LexReal wy)::Op "d0"::r ->
       Op_d0 (wx, wy), r
@@ -648,7 +745,9 @@ let parse_operator compatibility = function
               Op_scn (reals_of_real_lexemes "Malformed 'scn'" nums)
           | Op "SCN"::nums ->
               Op_SCN (reals_of_real_lexemes "Malformed 'SCN'" nums)
-          | Op "d"::Obj (Pdfgenlex.LexReal phase)::Obj Pdfgenlex.LexRightSquare::r ->
+          | Op "d"::
+            Obj (Pdfgenlex.LexReal phase)::
+            Obj Pdfgenlex.LexRightSquare::r ->
               begin match rev r with
               | Obj Pdfgenlex.LexLeftSquare::t ->
                   let reals =
@@ -666,20 +765,24 @@ let parse_operator compatibility = function
               begin match rev r with
               | Obj Pdfgenlex.LexLeftSquare::t ->
                   let elements =
-                    map
+                    option_map
                       (function
-                       | (Obj (Pdfgenlex.LexReal i)) -> Pdf.Real i
-                       | (Obj (Pdfgenlex.LexString s)) -> Pdf.String s
-                       | _ -> raise (Pdf.PDFError "malformed TJ elt"))
+                       | (Obj (Pdfgenlex.LexReal i)) -> Some (Pdf.Real i)
+                       | (Obj (Pdfgenlex.LexString s)) -> Some (Pdf.String s)
+                       | e ->
+                           Printf.eprintf "Warning: malformed TJ element; skipping\n%!";
+                           None)
                       t
                   in
                     Op_TJ (Pdf.Array elements)
               | _ -> raise (Pdf.PDFError "malformed TJ op")
               end
-          | Op _::_ as l -> Op_Unknown (string_of_lexemes l)
+          | Op _::_ as l ->
+             Printf.eprintf "Empty or malformed graphics operation %s.\n%!" (string_of_lexemes (rev l));
+             Op_Unknown (string_of_lexemes (rev l))
           | l ->
-             Printf.eprintf "Empty or malformed graphics operation.";
-             Op_Unknown (string_of_lexemes l)
+             Printf.eprintf "Empty or malformed graphics operation %s.\n%!" (string_of_lexemes (rev l));
+             Op_Unknown (string_of_lexemes (rev l))
       in
         r, more
 
@@ -732,29 +835,40 @@ let parse_operators pdf resources streams =
 (* Give a bigarray representing a list of graphics operators. *)
 let stream_of_lexemes (oplists : lexeme list list) =
   let strings =
-    map
-      (fun ls ->
-         let s = string_of_lexemes ls in
-           if lastchar s <> Some ' ' then s ^ " " else s)
-      oplists
+    map string_of_lexemes oplists
   in
-    let total_length =
-      let l = ref 0 in iter (fun s -> l := !l + String.length s) strings; !l
+    (* Insert a space if the neither the last character of a string nor the
+     * first character of the next is a delimiter *)
+    let rec addspaces prev = function
+      [] -> rev prev
+    | [x] -> addspaces (x :: prev) []
+    | x::y::r ->
+        if
+             String.length x > 0 && Pdf.is_delimiter x.[String.length x - 1]
+          || String.length y > 0 && Pdf.is_delimiter y.[0]
+        then
+          addspaces (x :: prev) (y :: r)
+        else
+          addspaces (" " :: x :: prev) (y :: r)
     in
-      let s = mkbytes total_length
-      in let strings = ref strings
-      in let pos = ref 0 in
-        while !strings <> [] do
-          let str = hd !strings in
-            let l = String.length str in
-              if l > 0 then
-                for n = 0 to l - 1 do
-                  bset_unsafe s !pos (int_of_char str.[n]);
-                  incr pos
-                done;
-              strings := tl !strings
-        done;
-        s
+      let strings = addspaces [] strings in
+        let total_length =
+          let l = ref 0 in iter (fun s -> l := !l + String.length s) strings; !l
+        in
+          let s = mkbytes total_length
+          in let strings = ref strings
+          in let pos = ref 0 in
+            while !strings <> [] do
+              let str = hd !strings in
+                let l = String.length str in
+                  if l > 0 then
+                    for n = 0 to l - 1 do
+                      bset_unsafe s !pos (int_of_char str.[n]);
+                      incr pos
+                    done;
+                  strings := tl !strings
+            done;
+            s
 
 let print_stream s =
   if bytes_size s > 0 then 
@@ -767,5 +881,6 @@ let print_stream s =
 let stream_of_ops ops =
   let data = stream_of_lexemes (lexemelists_of_ops ops) in
     Pdf.Stream
-      (ref (Pdf.Dictionary [("/Length", Pdf.Integer (bytes_size data))], Pdf.Got data))
-
+      (ref
+        (Pdf.Dictionary
+          [("/Length", Pdf.Integer (bytes_size data))], Pdf.Got data))

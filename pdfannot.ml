@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 (* Read and Write Annotations *)
 open Pdfutil
 
@@ -68,7 +67,8 @@ let rec read_annotation pdf annot =
         begin match Pdf.direct pdf annot with
         | Pdf.Dictionary d ->
             begin match lookup "/Parent" d with
-            | Some (Pdf.Indirect i) -> Popup (read_annotation pdf (Pdf.Indirect i))
+            | Some (Pdf.Indirect i) ->
+                Popup (read_annotation pdf (Pdf.Indirect i))
             | _ -> Unknown
             end
         | _ -> raise (Pdf.PDFError "read_annotation failed")
@@ -104,7 +104,8 @@ let rec read_annotation pdf annot =
         in let dasharray =
           match Pdf.lookup_direct pdf "/D" bsdict with
           | Some (Pdf.Array dash) ->
-              Array.of_list (map int_of_float (map Pdf.getnum (map (Pdf.direct pdf) dash)))
+              Array.of_list
+                (map int_of_float (map Pdf.getnum (map (Pdf.direct pdf) dash)))
           | _ -> [||]
         in
           {width = width;
@@ -125,7 +126,11 @@ let rec read_annotation pdf annot =
              vradius = Pdf.getnum (Pdf.direct pdf v);
              hradius = Pdf.getnum (Pdf.direct pdf h);
              style = NoStyle;
-             dasharray = Array.of_list (map int_of_float (map Pdf.getnum (map (Pdf.direct pdf) dash)))}
+             dasharray =
+               Array.of_list
+                 (map
+                   int_of_float
+                   (map Pdf.getnum (map (Pdf.direct pdf) dash)))}
         | _ ->
             {width = 1.;
              vradius = 0.;
@@ -143,7 +148,9 @@ let rec read_annotation pdf annot =
     match Pdf.direct pdf annot with
     | Pdf.Dictionary entries ->
         Pdf.Dictionary
-          (lose (fun (k, _) -> mem k ["/Subtype"; "/Contents"; "/Rect"; "/Border"]) entries)
+          (lose
+            (fun (k, _) -> mem k ["/Subtype"; "/Contents"; "/Rect"; "/Border"])
+            entries)
     | _ -> raise (Pdf.PDFError "Bad annotation dictionary")
   in
     {subtype = subtype;
@@ -161,7 +168,7 @@ let get_popup_parent pdf annotation =
       | Some (Pdf.Indirect i) -> Some i
       | _ -> None
       end
-  | _ -> raise (Pdf.PDFError "Pdfannot.get_popup_parent: this is not a dictionary")
+  | _ -> raise (Pdf.PDFError "Pdfannot.get_popup_parent: not a dictionary")
 
 (* Read the annotations from a page. *)
 let annotations_of_page pdf page =
@@ -175,10 +182,66 @@ let annotations_of_page pdf page =
       in
         map
           (read_annotation pdf)
-          (lose (function Pdf.Indirect i -> mem i popup_parents | _ -> false) annotations)
+          (lose
+            (function Pdf.Indirect i -> mem i popup_parents | _ -> false)
+            annotations)
   | _ -> []
 
 (* Add an annotation to a page *)
-(*i let add_annotation pdf page annotation = () i*)
 
+let string_of_subtype = function
+  | Text -> "/Text" | Link -> "/Link" | FreeText -> "/FreeText" | Line -> "/Line"
+  | Square -> "/Square" | Circle -> "/Circle" | Polygon -> "/Polygon"
+  | PolyLine -> "/PolyLine" | Highlight -> "/Highlight" | Underline -> "/Underline"
+  | Squiggly -> "/Squiggly" | StrikeOut -> "/StrikeOut" | Stamp -> "/Stamp"
+  | Caret -> "/Caret" | Ink -> "/Ink" | FileAttachment -> "/FileAttachment" | Sound -> "/Sound"
+  | Movie -> "/Movie" | Widget -> "/Widget" | Screen -> "/Screen"
+  | PrinterMark -> "/PrinterMark" | TrapNet -> "/TrapNet" | Watermark -> "/Watermark"
+  | Unknown -> "/Unknown" | Popup _ -> "/Popup" | ThreeDee -> "/3D"
 
+let obj_of_annot t =
+  let d =
+    ["/Subtype", Pdf.Name (string_of_subtype t.subtype);
+     "/Contents", (match t.annot_contents with None -> Pdf.Null | Some s -> Pdf.String s);
+     "/Rect", (let a, b, c, d = t.rectangle in Pdf.Array [Pdf.Real a; Pdf.Real b; Pdf.Real c; Pdf.Real d]);
+     "/Border", match t.border.dasharray with
+                | [||] -> Pdf.Array [Pdf.Real t.border.hradius; Pdf.Real t.border.vradius; Pdf.Real t.border.width]
+                | _    -> raise (Pdf.PDFError "non-empty dash array unsupported")]
+  in
+  let d = match t.annotrest with
+    | Pdf.Null -> d
+    | Pdf.Dictionary d' -> d @ d'
+    | _ -> raise (Pdf.PDFError "Bad annotation dictionary") in
+  let colorize d = match t.colour with
+    | None -> d
+    | Some (r,g,b) -> (("/C", Pdf.Array [Pdf.Integer r; Pdf.Integer g; Pdf.Integer b]))::d
+  in
+  let subject d = match t.subject with
+    | None -> d
+    | Some s -> (("/Subj", Pdf.String s)::d)
+  in
+  Pdf.Dictionary (subject (colorize d))
+
+let make_border ?(vradius=0.0) ?(hradius=0.0) ?(style=NoStyle) ?(dasharray = [||]) width =
+  {vradius; hradius; style; dasharray; width}
+
+let make ?content ?(border=make_border 0.0) ?(rectangle=(0., 0., 0., 0.)) ?colour ?subject subtype =
+  {annot_contents = content;
+   border;
+   rectangle;
+   colour;
+   subject;
+   subtype;
+   annotrest = Pdf.Null}
+
+let add_annotation pdf page anno =
+  let obj = obj_of_annot anno in
+  match Pdf.lookup_direct pdf "/Annots" page.Pdfpage.rest with
+  | Some (Pdf.Array annotations) ->
+      {page with
+         Pdfpage.rest = Pdf.add_dict_entry page.Pdfpage.rest "/Annots" (Pdf.Array (obj::annotations))}
+  | Some _  ->
+      raise (Pdf.PDFError "Bad annotation dictionary")
+  | None ->
+      {page with
+         Pdfpage.rest = Pdf.add_dict_entry page.Pdfpage.rest "/Annots" (Pdf.Array [obj])}

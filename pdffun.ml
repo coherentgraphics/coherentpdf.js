@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 open Pdfutil
 open Pdfio
 
@@ -135,7 +134,7 @@ let keyword_of_string = function
   | "copy" -> Copy | "exch" -> Exch | "pop" -> Pop
   | "dup" -> Dup | "index" -> Index | "roll" -> Roll
   | s ->
-      Printf.eprintf "%s" ("Bad keyword " ^ s); assert false
+      Printf.eprintf "%s%!" ("Bad keyword " ^ s); assert false
 
 let parse_calculator s =
   let lexemes =
@@ -167,7 +166,7 @@ let parse_calculator s =
           Float f::parse t
       | [Pdfgenlex.LexInt i]::t-> Int (i32ofi i)::parse t (* FIXME: range *)
       | [Pdfgenlex.LexName x]::t -> keyword_of_string x::parse t
-      | h::_ -> (*i Printf.eprintf (Cgenlex.string_of_tokens h); i*) raise (Failure "Bad lexeme")
+      | h::_ -> (*i Printf.eprintf ((Cgenlex.string_of_tokens h) ^ "%!"); i*) raise (Failure "Bad lexeme")
     and procss lexemes =
       try
         parse (group_operators (strip_outer_braces lexemes))
@@ -738,7 +737,7 @@ let rec eval_function f inputs =
                             * c d; *)
                            fun x -> interpolate x a b c d
                        with
-                         Invalid_argument "select" ->
+                         Invalid_argument _ (*"select"*) ->
                            raise (BadFunctionEvaluation "stitching: encode/domain")
                      in
                        eval_function f [encode i]
@@ -805,4 +804,3 @@ and pdfobject_of_function pdf f =
     Pdf.Dictionary
       (["/FunctionType", Pdf.Integer (funtype_of_function f); "/Domain", domain]
       @ range @ extra_entries_of_function pdf f)
-

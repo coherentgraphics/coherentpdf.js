@@ -1,9 +1,17 @@
-(*pp camlp4o *)
 (* This module contains general-purpose functions used in many modules.
 Typically a module will use the [open] keyword to bring these definitions up to
 top level, so their names are considered reserved words in other modules.
 
 All functions in this module are tail-recursive, unless otherwise noted. *)
+
+let rec position_gen n e = function
+  [] -> None
+| e'::t when e = e' -> Some n
+| _::t -> position_gen (n + 1) e t
+
+let position e l = position_gen 0 e l
+
+let position_1 e l = position_gen 1 e l
 
 (* Replace all instances of x with x' in s *)
 let string_replace_all x x' s =
@@ -22,9 +30,28 @@ let string_replace_all x x' s =
         done;
         Buffer.contents output
 
+let string_replace_all_lazy x x' s =
+  if x = "" then s else
+    let p = ref 0
+    and slen = String.length s
+    and xlen = String.length x in
+      let output = Buffer.create (slen * 2) in
+        while !p < slen do
+          try
+            if String.sub s !p xlen = x
+              then (Buffer.add_string output (x' ()); p := !p + xlen)
+              else (Buffer.add_char output s.[!p]; incr p)
+          with
+            _ -> Buffer.add_char output s.[!p]; incr p
+        done;
+        Buffer.contents output
+
 (* Print something and then flush standard output. *)
 let flprint s =
   print_string s; flush stdout
+
+let fleprint s =
+  print_string s; flush stderr
 
 (* Debug printing *)
 let dp_print = ref false
@@ -51,7 +78,7 @@ let rec iter3 f a b c =
   | ah::a', bh::b', ch::c' ->
       f ah bh ch;
       iter3 f a' b' c'
-  | _ -> raise (Invalid_argument "iter3")
+  | _ -> raise (Invalid_argument "Pdfutil.iter3")
 
 let append a b =
   List.rev_append (rev a) b
@@ -94,6 +121,14 @@ let split5 l =
   in
     split5_inner ([], [], [], [], []) l
 
+let split6 l =
+  let rec split6_inner (l1, l2, l3, l4, l5, l6) = function
+    | [] -> rev l1, rev l2, rev l3, rev l4, rev l5, rev l6
+    | (a, b, c, d, e, f)::t ->
+        split6_inner (a::l1, b::l2, c::l3, d::l4, e::l5, f::l6) t
+  in
+    split6_inner ([], [], [], [], [], []) l
+
 let split8 l =
   let rec split8_inner (l1, l2, l3, l4, l5, l6, l7, l8) = function
     | [] -> rev l1, rev l2, rev l3, rev l4, rev l5, rev l6, rev l7, rev l8
@@ -108,7 +143,7 @@ let combine a b =
       List.iter2 (fun x y -> pairs := (x, y)::!pairs) a b;
       rev !pairs
     with
-      Invalid_argument _ -> raise (Invalid_argument "Utility.combine")
+      Invalid_argument _ -> raise (Invalid_argument "Pdfutil.combine")
 
 let combine3 a b c =
   let pairs = ref [] in
@@ -116,7 +151,7 @@ let combine3 a b c =
       iter3 (fun x y z -> pairs := (x, y, z)::!pairs) a b c;
       rev !pairs
     with
-      Invalid_argument _ -> raise (Invalid_argument "Utility.combine3")
+      Invalid_argument _ -> raise (Invalid_argument "Pdfutil.combine3")
  
 let fold_left f b l = List.fold_left f b l
 
@@ -130,7 +165,7 @@ let rec rev_map3_inner f a b c outputs =
   | [], [], [] -> outputs
   | ha::ta, hb::tb, hc::tc ->
       rev_map3_inner f ta tb tc (f ha hb hc::outputs)
-  | _ -> raise (Invalid_argument "map3")
+  | _ -> raise (Invalid_argument "Pdfutil.map3")
 
 let rev_map3 f a b c =
   rev_map3_inner f a b c []
@@ -143,7 +178,7 @@ let rec rev_map4_inner f a b c d outputs =
   | [], [], [], [] -> outputs
   | ha::ta, hb::tb, hc::tc, hd::td ->
       rev_map4_inner f ta tb tc td (f ha hb hc hd::outputs)
-  | _ -> raise (Invalid_argument "map4")
+  | _ -> raise (Invalid_argument "Pdfutil.map4")
 
 let rev_map4 f a b c d =
   rev_map4_inner f a b c d []
@@ -156,7 +191,7 @@ let rec rev_map5_inner f a b c d e outputs =
   | [], [], [], [], [] -> outputs
   | ha::ta, hb::tb, hc::tc, hd::td, he::te ->
       rev_map5_inner f ta tb tc td te (f ha hb hc hd he::outputs)
-  | _ -> raise (Invalid_argument "map5")
+  | _ -> raise (Invalid_argument "Pdfutil.map5")
 
 let rev_map5 f a b c d e =
   rev_map5_inner f a b c d e []
@@ -222,19 +257,17 @@ let explode s =
 
 (* Make a string from a list of characters, preserving order. *)
 let implode l =
-  let s = String.create (length l) in
+  let s = Bytes.create (length l) in
     let rec list_loop x = function
        [] -> ()
-     | i::t -> String.unsafe_set s x i; list_loop (x + 1) t
+     | i::t -> Bytes.unsafe_set s x i; list_loop (x + 1) t
     in
       list_loop 0 l;
-      s
+      Bytes.to_string s
 
 (* String of character. *)
 let string_of_char c =
-  let s = String.create 1 in
-    String.unsafe_set s 0 c;
-    s
+  String.make 1 c
 
 (* Long-integer function abbreviations *)
 let i32ofi = Int32.of_int
@@ -267,9 +300,9 @@ let i32succ = Int32.succ
 
 let i32pred = Int32.pred
 
-let i32max = Pervasives.max
+let i32max = Stdlib.max
 
-let i32min = Pervasives.min
+let i32min = Stdlib.min
 
 let i64ofi = Int64.of_int
 
@@ -301,9 +334,9 @@ let i64succ = Int64.succ
 
 let i64pred = Int64.pred
 
-let i64max = Pervasives.max
+let i64max = Stdlib.max
 
-let i64min = Pervasives.min
+let i64min = Stdlib.min
 
 let i32ofi64 = Int64.to_int32
 
@@ -324,7 +357,7 @@ let do_return v f =
 
 (* Call [f ()] some number of times. *)
 let rec do_many f = function
-  | n when n < 0 -> raise (Invalid_argument "do_many")
+  | n when n < 0 -> raise (Invalid_argument "Pdfutil.do_many")
   | 0 -> ()
   | n -> f (); do_many f (n - 1) 
 
@@ -338,13 +371,14 @@ let interleave e l =
   in
     interleave_inner [] e l
 
-(* Interleave two same-length lists together, taking from the first list first. *)
+(* Interleave two same-length lists together, taking from the first list first.
+*)
 let interleave_lists a b =
   let rec interleave_lists_inner r a b =
     match a, b with
     | [], [] -> rev r
     | h::t, h'::t' -> interleave_lists_inner (h'::h::r) t t'
-    | _ -> raise (Invalid_argument "interleave_lists")
+    | _ -> raise (Invalid_argument "Pdfutil.interleave_lists")
   in
     interleave_lists_inner [] a b
 
@@ -449,7 +483,7 @@ let conspairopt ((xo, yo), (xs, ys)) =
 let pairs_of_list l =
   let rec pairs_of_list_inner r = function
     | [] -> rev r
-    | [_] -> raise (Invalid_argument "pairs_of_list")
+    | [_] -> raise (Invalid_argument "Pdfutil.pairs_of_list")
     | h::h'::t -> pairs_of_list_inner ((h, h')::r) t
   in
     pairs_of_list_inner [] l
@@ -493,7 +527,8 @@ let setify_simple l =
     setify_inner [] l
 
 (* The same, preserving the order of the first occurance of each distinct
-element in the input list. FIXME: This is still n^2, of course. How to improve? *)
+element in the input list. FIXME: This is still n^2, of course. How to improve?
+*)
 let setify_preserving_order l =
   setify_simple (rev l)
 
@@ -568,8 +603,8 @@ let really_drop_evens l =
   in
     really_drop_evens_inner [] l
 
-(* Remove the first, third etc. The last odd element is not saved. e.g [drop_odds
-  [1;2;3;4;5;6;7] is [2;4;6]]. *)
+(* Remove the first, third etc. The last odd element is not saved. e.g
+[drop_odds [1;2;3;4;5;6;7] is [2;4;6]]. *)
 let drop_odds l =
   let rec drop_odds_inner r = function
     | _::h'::t -> drop_odds_inner (h'::r) t
@@ -604,7 +639,7 @@ let couple_ext f g l =
 (* Apply [couple] repeatedly until only one element remains. Return that
 element. *)
 let rec couple_reduce f = function
-  | [] -> raise (Invalid_argument "Utility.couple_reduce")
+  | [] -> raise (Invalid_argument "Pdfutil.couple_reduce")
   | [a] -> a
   | l -> couple_reduce f (couple f l)
 
@@ -629,7 +664,7 @@ let pair_ext f g l =
 
 (* As [couple_reduce] is to [couple], so this is to [pair]. *)
 let rec pair_reduce f = function
-  | [] -> raise (Invalid_argument "Utility.pair_reduce")
+  | [] -> raise (Invalid_argument "Pdfutil.pair_reduce")
   | [a] -> a
   | l -> pair_reduce f (pair f l)
 
@@ -662,11 +697,11 @@ let manyunique f n =
 
 (* Take [n] elements from the front of a list [l], returning them in order. *)
 let take l n =
-  if n < 0 then raise (Invalid_argument "Utility.take") else
+  if n < 0 then raise (Invalid_argument "Pdfutil.take") else
   let rec take_inner r l n =
     if n = 0 then rev r else
       match l with
-      | [] -> raise (Invalid_argument "Utility.take")
+      | [] -> raise (Invalid_argument "Pdfutil.take")
       | h::t -> take_inner (h::r) t (n - 1)
   in
     take_inner [] l n
@@ -693,11 +728,11 @@ let takewhile p l =
 (* Drop [n] elements from the front of a list, returning the remainder in
 order. *)
 let rec drop_inner n = function
-  | [] -> raise (Invalid_argument "drop")
+  | [] -> raise (Invalid_argument "Pdfutil.drop")
   | _::t -> if n = 1 then t else drop_inner (n - 1) t
 
 let drop l n =
-  if n < 0 then raise (Invalid_argument "drop") else
+  if n < 0 then raise (Invalid_argument "Pdfutil.drop") else
   if n = 0 then l else
     drop_inner n l
 
@@ -712,11 +747,11 @@ let cleave l n =
   let rec cleave_inner l left n =
     if n = 0 then rev left, l else
       match l with
-      | [] -> raise (Invalid_argument "cleave: not enough elements")
+      | [] -> raise (Invalid_argument "Pdfutil.cleave: not enough elements")
       | _  -> cleave_inner (tl l) (hd l::left) (n - 1)
   in
     if n < 0
-      then raise (Invalid_argument "cleave: negative argument")
+      then raise (Invalid_argument "Pdfutil.cleave: negative argument")
       else cleave_inner l [] n
 
 (* Returns elements for which p is true, until one is not, paired with the
@@ -794,7 +829,8 @@ let rec splitinto_small n l =
       let first = takeatmost n l in
         first :: splitinto_small n (dropatmost n l)
 
-(* Split a list [l] at the given points. Point 1 means after the first element. *)
+(* Split a list [l] at the given points. Point 1 means after the first element.
+*)
 let rec splitat_inner prev l = function
   | [] -> begin match l with [] -> rev prev | _ -> rev (l::prev) end
   | h::t ->
@@ -807,7 +843,8 @@ let splitat points l =
 (* Select the nth element in a list (first is element 1) *)
 let select n l =
   try hd (drop l (n - 1)) with
-    Invalid_argument "drop" | Failure "hd" -> raise (Invalid_argument "select")
+    Invalid_argument _ (*"drop"*)
+  | Failure _ (*"hd"*) -> raise (Invalid_argument "Pdfutil.select")
 
 (* Replace the nth element of a list (first is element 1) *)
 let rec replace_number_inner prev n e = function
@@ -827,7 +864,7 @@ let notnull = function [] -> false | _ -> true
 
 (* Find the last element of a list. *)
 let rec last = function
-  | [] -> raise (Invalid_argument "Utility.last")
+  | [] -> raise (Invalid_argument "Pdfutil.last")
   | x::[] -> x
   | _::xs -> last xs
 
@@ -839,7 +876,7 @@ let all_but_last = function
 (* Find the first and last element of a list. If the list has one element, that
 is returned twice. *)
 let extremes = function
-  | [] -> raise (Invalid_argument "Utility.extremes")
+  | [] -> raise (Invalid_argument "Pdfutil.extremes")
   | x::[] -> x, x
   | x::xs -> x, last xs
 
@@ -847,7 +884,7 @@ let extremes = function
 least two. *)
 let extremes_and_middle = function
   | [] | [_] ->
-      raise (Invalid_argument "extremes_and_middle")
+      raise (Invalid_argument "Pdfutil.extremes_and_middle")
   | h::t ->
       let m, l = cleave t (length t - 1) in
          h, m, hd l
@@ -972,7 +1009,7 @@ let rev_compare a b =
  
 (* The integer range between $[s..e]$ inclusive. *)
 let ilist s e =
-  if e < s then raise (Invalid_argument "Utility.ilist") else
+  if e < s then raise (Invalid_argument "Pdfutil.ilist") else
     let nums = ref [] in
       let rec ilist s e =
         if s = e
@@ -1022,13 +1059,13 @@ let array_iter2 f a b =
         f (Array.get a x) (Array.get b x)
       done
   else
-    raise (Invalid_argument "Utility.array_iter2")
+    raise (Invalid_argument "Pdfutil.array_iter2")
    
 let array_map2 f a b =
   if Array.length a = Array.length b then
     Array.init (Array.length a) (function i -> f a.(i) b.(i))
   else
-    raise (Invalid_argument "Utility.array_map2")
+    raise (Invalid_argument "Pdfutil.array_map2")
  
 (* Some simple functions for working with the [option] type. *)
 let some = function None -> false | _ -> true
@@ -1053,7 +1090,7 @@ let option_map2 f a b =
   losenones (map2 f a b)
 
 (* Integer-specialised minimum and maximum functions for speed, overriding
-\emph{Pervasives.min} and \emph{Pervasives.max}. *)
+Stdlib.min and Stdlib.max. *)
 let min (a : int) b = if a < b then a else b
 let max (a : int) b = if a > b then a else b
 
@@ -1133,6 +1170,11 @@ let hashtable_of_dictionary pairs =
     iter (fun (k, v) -> Hashtbl.add table k v) pairs;
     table
 
+let hashset_of_list l =
+  let table = Hashtbl.create (length l * 2) in
+    iter (fun k -> Hashtbl.add table k ()) l;
+    table
+
 (* Round a number. *)
 let round x =
   let c = ceil x in let f = floor x in
@@ -1172,11 +1214,6 @@ let print_int32s is =
   iter (fun x -> Printf.printf "%li " x) is;
   print_newline ()
 
-let slash =
-  match Sys.os_type with
-  | "Win32" -> "\\"
-  | _ -> "/"
-
 let leafnames_of_dir d =
   Array.to_list (Sys.readdir d)
 
@@ -1202,7 +1239,7 @@ let rec roman n =
 
 let roman_upper = roman
 
-let roman_lower n = String.lowercase (roman n)
+let roman_lower n = String.lowercase_ascii (roman n)
 
 let memoize f =
   let result = ref None in
@@ -1211,3 +1248,30 @@ let memoize f =
       | Some thing -> thing
       | None -> result := Some (f ()); unopt !result
 
+(* A clock for debugging huge files without needing the Unix module.
+Does not work on Windows. Needs GNU version of POSIX date command (gdate
+with homebrew on MacOS). *)
+let clock () =
+  let contents_of_file filename =
+    let ch = open_in_bin filename in
+      let s = really_input_string ch (in_channel_length ch) in
+        close_in ch;
+        s
+  in
+    let tempfile = Filename.temp_file "cpdf" "strftime" in
+    let command = Filename.quote_command "gdate" ~stdout:tempfile ["+%S-%M-%H-%3N"] in
+    let outcode = Sys.command command in
+      if outcode > 0 then raise (Failure "Date command returned non-zero exit code") else
+        let r = contents_of_file tempfile in
+          Sys.remove tempfile;
+          let get_int o l = int_of_string (String.sub r o l) in
+              float_of_int (get_int 6 2 * 3600 + get_int 3 2 * 60 + get_int 0 2)
+           +. float_of_int (get_int 9 3) /. 1000.
+
+let time = ref 0. (*ref (clock ())*)
+
+let tt' () = ()
+  (*(*Gc.major ();*)
+  let t = clock () in
+    Printf.eprintf "Elapsed: %.2f\n%!" (t -. !time);
+    time := t*)

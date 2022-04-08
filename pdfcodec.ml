@@ -1,6 +1,10 @@
-(*pp camlp4o *)
 open Pdfutil
 open Pdfio
+
+let debug = ref false
+
+(* Zlib inflate level *)
+let flate_level = ref 6
 
 (* Get the next non-whitespace character in a stream. *)
 let rec get_streamchar skipped s =
@@ -50,14 +54,27 @@ let decode_ASCIIHex i =
         let b = get_streamchar (ref 0) i in
           let b' = get_streamchar (ref 0) i in
             match b, b' with
-            | '>', _ -> set enddata; rewind i (* 10th May 2012 Added rewind for inline images *)
+            | '>', _ ->
+                (* Rewind for inline images *)
+                set enddata; rewind i
             | c, '>'
-                when (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F') ->
+                when
+                  (c >= '0' && c <= '9') ||
+                  (c >= 'a' && c <= 'f') ||
+                  (c >= 'A' && c <= 'F')
+                ->
                   output =| char_of_hex c '0';
                   set enddata
             | c, c'
-                when ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))
-                && ((c' >= '0' && c' <= '9') || (c' >= 'a' && c' <= 'f') || (c' >= 'A' && c' <= 'F')) ->
+                when
+                    ((c >= '0' && c <= '9') ||
+                     (c >= 'a' && c <= 'f') ||
+                     (c >= 'A' && c <= 'F'))
+                  &&
+                    ((c' >= '0' && c' <= '9') ||
+                     (c' >= 'a' && c' <= 'f') ||
+                     (c' >= 'A' && c' <= 'F')) 
+                ->
                   output =| char_of_hex c c'
             | _ -> raise Not_found (*r Bad data. *)
       done;
@@ -77,7 +94,9 @@ let decode_5bytes c1 c2 c3 c4 c5 n o =
     i32mul (i32ofi (int_of_char x - 33)) (i32ofi (pow p 85))
   in
     let total =
-      i32add (i32add (d c1 4) (d c2 3)) (i32add (d c3 2) (i32add (d c4 1) (d c5 0)))
+      i32add
+        (i32add (d c1 4) (d c2 3))
+        (i32add (d c3 2) (i32add (d c4 1) (d c5 0)))
     in
       let extract t =
         char_of_int (i32toi (lsr32 (lsl32 total (24 - t)) 24))
@@ -151,7 +170,8 @@ let encode_4bytes = function
                 let t, c3 = t - rem t three85, rem t three85 / two85 in
                   let t, c2 = t - rem t four85, rem t four85 / three85 in
                     let i1, i2, i3, i4, i5 =
-                    i64toi (t / four85), i64toi c2, i64toi c3, i64toi c4, i64toi c5
+                      i64toi (t / four85),
+                      i64toi c2, i64toi c3, i64toi c4, i64toi c5
                     in
                       i1, i2, i3, i4, i5
   | _ -> assert false
@@ -212,7 +232,8 @@ let bytes_of_strings_rev strings =
       iter
         (fun str ->
            for x = String.length str - 1 downto 0 do
-             bset_unsafe s !pos (int_of_char (String.unsafe_get str x)); decr pos
+             bset_unsafe s !pos (int_of_char (String.unsafe_get str x));
+             decr pos
            done)
         strings;
       s
@@ -223,15 +244,17 @@ let flate_process f data =
   and inlength = bytes_size data in
     let input =
       (fun buf ->
-         let s = String.length buf in
+         let s = Bytes.length buf in
            let towrite = min (inlength - !pos) s in
              for x = 0 to towrite - 1 do
-               String.unsafe_set buf x (Char.unsafe_chr (bget_unsafe data !pos)); incr pos
+               Bytes.unsafe_set
+                 buf x (Char.unsafe_chr (bget_unsafe data !pos));
+                 incr pos
              done;
              towrite)
     and output =
       (fun buf length ->
-         if length > 0 then strings =| String.sub buf 0 length)
+         if length > 0 then strings =| Bytes.sub_string buf 0 length)
     in
       f input output;
       bytes_of_strings_rev !strings
@@ -239,34 +262,51 @@ let flate_process f data =
 (* This is for reading zlib compressed things in streams where we need to
 commence lexing straightaway afterwards. And so, we can only supply one byte at
 a time, continuing until zlib has finished uncompressing. *)
-let decode_flate_input i = mkbytes 0
-(*
+let decode_flate_input i =
   let strings = ref [] in
     let input =
       (fun buf ->
-         let s = String.length buf in
+         let s = Bytes.length buf in
            if s > 0 then
              begin
                match i.input_byte () with
                | x when x = Pdfio.no_more -> raise End_of_file
-               | x -> String.unsafe_set buf 0 (char_of_int x); 1
+               | x -> Bytes.unsafe_set buf 0 (char_of_int x); 1
              end
            else 0)
     and output =
       (fun buf length ->
-         if length > 0 then strings =| String.sub buf 0 length)
+         if length > 0 then strings =| Bytes.sub_string buf 0 length)
     in
       Pdfflate.uncompress input output;
-      bytes_of_strings_rev !strings*)
+      bytes_of_strings_rev !strings
 
-let encode_flate stream = mkbytes 0
+let encode_flate stream =
+  flate_process (Pdfflate.compress ~level:!flate_level) stream
 
- (* flate_process Pdfflate.compress stream *)
+let debug_stream_serial = ref 0
 
-let decode_flate stream = mkbytes 0
-  (*if bytes_size stream = 0 then mkbytes 0 else (* Accept the empty stream. *)
+let debug_stream s =
+  (*Printf.eprintf "First 50 bytes%!\n";
+  for x = 0 to 50 do
+    Printf.eprintf "%C = %i\n%!" (char_of_int (bget s x)) (bget s x)
+  done*)
+  (* Write stream to current directory as <length>_<serial>.zlib *)
+  let name = string_of_int (bytes_size s) ^ "_" ^ string_of_int !debug_stream_serial ^ ".zlib" in
+  Printf.eprintf "Writing %s\n%!" name;
+    debug_stream_serial += 1;
+    let fh = open_out_bin name in
+      for x = 0 to bytes_size s - 1 do
+        output_byte fh (bget s x)
+      done;
+      close_out fh
+
+let decode_flate stream =
+  if bytes_size stream = 0 then mkbytes 0 else (* Accept the empty stream. *)
     try flate_process Pdfflate.uncompress stream with
-      Pdfflate.Error (a, b) -> raise (Couldn'tDecodeStream ("Flate" ^ " " ^ a ^ " " ^ b))*)
+      Pdfflate.Error (a, b) ->
+        if !debug then debug_stream stream;
+        raise (Couldn'tDecodeStream ("Flate" ^ " " ^ a ^ " " ^ b ^ " length " ^ string_of_int (bytes_size stream)))
 
 (* LZW *)
 
@@ -295,7 +335,8 @@ let decode_lzw early i =
               if !endflush = 0 then raise End_of_file else (decr endflush; 0)
           | b -> b
         in
-          bit_buffer := lor32 !bit_buffer (lsl32 (i32ofi streambyte) (24 - !bit_count));
+          bit_buffer :=
+            lor32 !bit_buffer (lsl32 (i32ofi streambyte) (24 - !bit_count));
           bit_count += 8
       done;
       let result = Int32.to_int (lsr32 !bit_buffer (32 - !code_length)) in
@@ -726,7 +767,9 @@ let decode_CCITTFax k eol eba c r eob bone dra input =
             end
         in let find_b1 () =
           let pos = ref !column
-          in let curr, opp = if !white then whiteval, blackval else blackval, whiteval in
+          in let curr, opp =
+            if !white then whiteval, blackval else blackval, whiteval
+          in
             let find v =
               while
                 let r = !refline in
@@ -746,7 +789,9 @@ let decode_CCITTFax k eol eba c r eob bone dra input =
                 _ -> c
         in let find_b2 () =
           let pos = ref !column
-          in let curr, opp = if !white then whiteval, blackval else blackval, whiteval in
+          in let curr, opp =
+            if !white then whiteval, blackval else blackval, whiteval
+          in
             let find v =
               while
                 let r = !refline in
@@ -784,7 +829,9 @@ let decode_CCITTFax k eol eba c r eob bone dra input =
                     (* Group 4 *)
                     match read_mode b with
                     | Pass ->
-                        output_span (find_b2 () - !column) (if !white then whiteval else blackval)
+                        output_span
+                          (find_b2 () - !column)
+                          (if !white then whiteval else blackval)
                     | Horizontal ->
                         if !white then
                           begin
@@ -797,13 +844,18 @@ let decode_CCITTFax k eol eba c r eob bone dra input =
                             output_span (read_white_code b) whiteval;
                           end
                     | Vertical n ->
-                        output_span (find_b1 () - !column - n) (if !white then whiteval else blackval);
+                        output_span
+                          (find_b1 () - !column - n)
+                          (if !white then whiteval else blackval);
                         flip white
                     | EOFB -> raise End_of_file
-                    | Uncompressed -> raise (DecodeNotSupported "CCITT Uncompressed")
+                    | Uncompressed ->
+                        raise (DecodeNotSupported "CCITT Uncompressed")
                   else if k = 0 then
                     (* Group 3 *)
-                    begin match (if !white then read_white_code else read_black_code) b with
+                    begin match
+                      (if !white then read_white_code else read_black_code) b
+                    with
                     | -1 ->
                        (* Pad it out *)
                        if !column > 0 then output_span (c - !column) whiteval
@@ -843,7 +895,8 @@ let decode_tiff_predictor colors bpc columns stream =
             let p = ref colors in
               while !p < scanline_width do
                 bset stream (linestart + !p)
-                  ((bget stream (linestart + !p - colors) + bget stream (linestart + !p)) mod 256);
+                  ((bget stream (linestart + !p - colors) +
+                    bget stream (linestart + !p)) mod 256);
                 p := !p + 1 
               done
         done;
@@ -875,7 +928,9 @@ let decode_scanline_pair prior_encoded prior_decoded current pred bpc cols =
     | 4 -> (* Paeth *)
         let paeth a b c =
           let p = a + b - c in
-            let pa = abs (p - a) in let pb = abs (p - b) in let pc = abs (p - c) in
+            let pa = abs (p - a) in
+            let pb = abs (p - b) in
+            let pc = abs (p - c) in
               if pa <= pb && pa <= pc then a
               else if pb <= pc then b
               else c
@@ -1043,7 +1098,7 @@ let decode_runlength i =
         done
       with
         End_of_file ->
-          Printf.eprintf "Warning: Missing EOD marker in runlength decode...\n"
+          Printf.eprintf "Warning: Missing EOD marker in runlength decode...\n%!"
       end;
       extract_bytes_from_input_output o data
 
@@ -1082,10 +1137,13 @@ let decoder pdf dict source name =
           in
             decode_lzw early i
       | "/CCITTFaxDecode" | "/CCF" ->
-          begin match Pdf.lookup_direct_orelse pdf "/DecodeParms" "/DP" dict with
+          begin match
+            Pdf.lookup_direct_orelse pdf "/DecodeParms" "/DP" dict
+          with
           | None -> decode_CCITTFax 0 false false 1728 0 true false 0 i
           | Some (Pdf.Dictionary _ as dparms)
-          | Some (Pdf.Array (dparms::_)) -> (* Copes with null ok, because lookup_direct used below *)
+          | Some (Pdf.Array (dparms::_)) ->
+              (* Copes with null ok, because lookup_direct used below *)
               let dparms = Pdf.direct pdf dparms in
               let k =
                 match Pdf.lookup_direct pdf "/K" dparms with
@@ -1116,7 +1174,9 @@ let decoder pdf dict source name =
                 | Some (Pdf.Boolean b) -> b
                 | _ -> false
               in let dra =
-                match Pdf.lookup_direct pdf "/DamagedRowsBeforeError" dparms with
+                match
+                  Pdf.lookup_direct pdf "/DamagedRowsBeforeError" dparms
+                with
                 | Some (Pdf.Integer i) -> i
                 | _ -> 0
               in
@@ -1162,7 +1222,8 @@ let decode_one pdf dict source =
                 | _ -> raise (Pdf.PDFError "malformed /Columns")
               in
                 begin try
-                  decode_predictor pred colors bits_per_component columns decoded
+                  decode_predictor
+                    pred colors bits_per_component columns decoded
                 with
                   _ -> raise (Couldn'tDecodeStream "Predictor")
                 end
@@ -1171,10 +1232,13 @@ let decode_one pdf dict source =
   | _ ->
     raise (Pdf.PDFError "PDF.decode: Bad filter specification")
 
-(* Need to make sure /Filter, /F, /DecodeParms, /DP are not indirect. d on entry is a name -> pdfobject map *)
+(* Need to make sure /Filter, /F, /DecodeParms, /DP are not indirect. d on entry
+is a name -> pdfobject map *)
 let prepare_decoder pdf d =
   map
-    (function (("/Filter" | "/F" | "/DecodeParms" | "/DP") as k, v) -> k, Pdf.direct pdf v
+    (function
+        (("/Filter" | "/F" | "/DecodeParms" | "/DP") as k, v) ->
+          k, Pdf.direct pdf v
      | x -> x)
     d
 
@@ -1184,8 +1248,10 @@ let remove_decoder d =
   let d' =
     match lookup "/Filter" d, lookup "/F" d with
     | None, None -> d
-    | Some (Pdf.Name _ | Pdf.Array [_]), None -> lose (fun (n, _) -> n = "/Filter") d
-    | None, Some (Pdf.Name _ | Pdf.Array [_]) -> lose (fun (n, _) -> n = "/F") d
+    | Some (Pdf.Name _ | Pdf.Array [_]), None ->
+        lose (fun (n, _) -> n = "/Filter") d
+    | None, Some (Pdf.Name _ | Pdf.Array [_]) ->
+        lose (fun (n, _) -> n = "/F") d
     | Some (Pdf.Array (_::t)), _ -> replace "/Filter" (Pdf.Array t) d
     | _, Some (Pdf.Array (_::t)) -> replace "/F" (Pdf.Array t) d
     | _ -> raise (Pdf.PDFError "PDF.remove_decoder: malformed /Filter")
@@ -1202,14 +1268,21 @@ let remove_decoder d =
 let decode_pdfstream_onestage pdf stream =
   Pdf.getstream stream;
   match stream with
-  | Pdf.Stream ({contents = (Pdf.Dictionary d as dict, Pdf.Got s)} as stream_contents) ->
-      begin match Pdf.direct pdf (Pdf.lookup_fail "no /Length" pdf "/Length" dict) with
-      | Pdf.Integer _ -> () (*i if l <> bytes_size s then raise (PDFError "Wrong /Length") i*)
+  | Pdf.Stream
+      ({contents = (Pdf.Dictionary d as dict, Pdf.Got s)} as stream_contents) ->
+      begin match
+        Pdf.direct pdf (Pdf.lookup_fail "no /Length" pdf "/Length" dict)
+      with
+      | Pdf.Integer _ -> ()
+      (*i if l <> bytes_size s then raise (PDFError "Wrong /Length") i*)
       | _ -> raise (Pdf.PDFError "No /Length")
       end;
       let stream' = decode_one pdf dict (StreamSource s) in
         let d' =
-          replace "/Length" (Pdf.Integer (bytes_size stream')) (remove_decoder (prepare_decoder pdf d))
+          replace
+            "/Length"
+            (Pdf.Integer (bytes_size stream'))
+            (remove_decoder (prepare_decoder pdf d))
         in
           stream_contents := (Pdf.Dictionary d', Pdf.Got stream')
   | _ -> raise (Pdf.PDFError "Pdf.decode_pdfstream: not a valid Stream")
@@ -1256,8 +1329,12 @@ let decode_from_input i dict =
               /F can denote a file specification, but this can never be in an
               inline image (which is currrently the only use of
               decode_from_input, so that's ok for now. *)
-              let filters = Pdf.lookup_direct_orelse (Pdf.empty ()) "/F" "/Filter" dict
-              in let decodeparms = Pdf.lookup_direct_orelse (Pdf.empty ()) "/DP" "/DecodeParms" dict in
+              let filters =
+                Pdf.lookup_direct_orelse (Pdf.empty ()) "/F" "/Filter" dict
+              in let decodeparms =
+                Pdf.lookup_direct_orelse
+                  (Pdf.empty ()) "/DP" "/DecodeParms" dict
+              in
                 let dict = Pdf.remove_dict_entry dict "/Filter" in
                 let dict = Pdf.remove_dict_entry dict "/F" in
                 let dict = Pdf.remove_dict_entry dict "/DP" in
@@ -1316,7 +1393,8 @@ let add_encoding length pdf encoding d =
         Pdf.Array (Pdf.Name (name_of_encoding encoding)::a)
     | _ -> raise (Pdf.PDFError "Malformed /Filter")
   in
-    Pdf.replace_dict_entry (Pdf.add_dict_entry d "/Filter" filter') "/Length" (Pdf.Integer length)
+    Pdf.replace_dict_entry
+      (Pdf.add_dict_entry d "/Filter" filter') "/Length" (Pdf.Integer length)
 
 (* Find the encoding function. *)
 let encoder_of_encoding = function
@@ -1365,4 +1443,3 @@ let encode_pdfstream pdf encoding ?predictor ?(predictor_columns = 1) stream =
           let d'' = add_encoding (bytes_size data) pdf encoding d' in
             stream := d'', Pdf.Got data
   | _ -> raise (Pdf.PDFError "Pdf.encode_pdfstream: malformed Stream")
-

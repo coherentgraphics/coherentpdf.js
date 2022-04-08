@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 (* Convert a TrueType Font to a Type 3 font. *)
 open Pdfutil
 open Pdfio
@@ -76,7 +75,7 @@ let read_encoding_table fmt length version b =
   match fmt with
   | 0 -> Array.init 256 (function _ -> read_byte b)
   | 6 -> read_format_6_encoding_table b
-  | n -> if !dbg then Printf.printf "read_encoding_table: format %i not known\n" n; [||]
+  | n -> if !dbg then Printf.eprintf "read_encoding_table: format %i not known\n%!" n; [||]
 
 let read_loca_table indexToLocFormat numGlyphs b =
   let fix_empties arr =
@@ -118,13 +117,13 @@ let rec read_flags flags b pts =
             flag land 0b00_10_00_00 = 0b10_00_00
         in
         if !dbg then
-          Printf.printf
-            "flag has on curve %b, xshort %b, yshort %b, repeat %b, xsame %b, ysame %b\n"
+          Printf.eprintf
+            "flag has on curve %b, xshort %b, yshort %b, repeat %b, xsame %b, ysame %b\n%!"
             oncurve xshort yshort rp xsame ysame;
         if rp then
           begin
             let rs = read_byte b in
-            if !dbg then Printf.printf "There are %i repeats of this flag...\n" rs;
+            if !dbg then Printf.eprintf "There are %i repeats of this flag...\n%!" rs;
               repeats := rs;
               lastval := (oncurve, xshort, yshort, xsame, ysame);
               !lastval
@@ -198,7 +197,7 @@ let break_coordinates = function
            break_coordinates_inner [] (map tofloat closed)
 
 let print_unbroken_coordinates (t, (x, y)) =
-   Printf.printf "%b, %i, %i\n" t x y
+   Printf.eprintf "%b, %i, %i\n%!" t x y
 
 let break_coordinates cs =
   if !dbg then begin flprint "This contour:\n"; iter print_unbroken_coordinates cs end;

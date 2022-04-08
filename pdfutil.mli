@@ -1,9 +1,13 @@
-(** General Functions. Typically one will [open Pdfutil] and not use [open] elsewhere. *)
+(** General Functions. Typically one will [open Pdfutil]. *)
+
 
 (** {2 Debug Printing} *)
 
-(** Print a string and flush standard output. *)
+(** Print a string to standard output and flush. *)
 val flprint : string -> unit
+
+(** Print a string to standard error and flush. *)
+val fleprint : string -> unit
 
 (** Print a list of floating point numbers separated by spaces. *)
 val print_floats : float list -> unit
@@ -38,6 +42,9 @@ val string_of_char : char -> string
 in [s], returning a new string. *)
 val string_replace_all : string -> string -> string -> string
 
+(** The same, but provide a function for the replacement string *)
+val string_replace_all_lazy : string -> (unit -> string) -> string -> string
+
 (** {2 Lists} *)
 
 val hd : ('a list -> 'a)
@@ -55,6 +62,8 @@ val map2 : ('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list
 val split : ('a * 'b) list -> 'a list * 'b list
 val split3 : ('a * 'b * 'c) list -> 'a list * 'b list * 'c list
 val split5 : ('a * 'b * 'c * 'd * 'e) list -> 'a list * 'b list * 'c list * 'd list * 'e list
+val split6 : ('a * 'b * 'c * 'd * 'e * 'f) list -> 'a list * 'b list * 'c list *
+'d list * 'e list * 'f list
 val split8 : ('a * 'b * 'c * 'd * 'e * 'f * 'g * 'h) list ->
   'a list * 'b list * 'c list * 'd list * 'e list * 'f list * 'g list * 'h list
 val combine : 'a list -> 'b list -> ('a * 'b) list
@@ -64,7 +73,7 @@ val fold_right : ('a -> 'b -> 'b) -> 'a list -> 'b -> 'b
 val length : ('a list -> int)
 val sort : (('a -> 'a -> int) -> 'a list -> 'a list)
 (** Tail-recursive versions of list functions (and some simple variations). See
-[Pervasives] for documentation. *)
+[Stdlib] for documentation. *)
 
 (** Cumulative sum of a list given an initial value. For example, [cumulative_sum 1 [2; 3; 4]] is [[3; 6; 10]] *)
 val cumulative_sum : int -> int list -> int list
@@ -86,6 +95,12 @@ val option_map2 : ('a -> 'b -> 'c option) -> 'a list -> 'b list -> 'c list
 
 (** Synonym for [List.mem]. *)
 val mem : ('a -> 'a list -> bool)
+
+(** Position of an element in a list, or [None] if not found *)
+val position : 'a -> 'a list -> int option
+
+(** Position (1-based) in a list, or [None] if not found *)
+val position_1 : 'a -> 'a list -> int option
 
 (** Similar to [rev_map], but 3 arguments. *)
 val rev_map3 :
@@ -471,17 +486,17 @@ val log2of : int -> int
 (** [pow x y] is y to the power x *)
 val pow : int -> int -> int
 
-(** Monomorphic integer version of [Pervasives.compare] *)
+(** Monomorphic integer version of [Stdlib.compare] *)
 val compare_i : int -> int -> int
 
 val min : int -> int -> int
 val max : int -> int -> int
-(** Monomorphic integer versions of [Pervasives] functions. *)
+(** Monomorphic integer versions of [Stdlib] functions. *)
 
 val fmin : float -> float -> float
 val fmax : float -> float -> float
 val fabs : float -> float
-(** Monomorphic floating-point versions of [Pervasives] functions *)
+(** Monomorphic floating-point versions of [Stdlib] functions *)
 
 val even : int -> bool
 val odd : (int -> bool)
@@ -503,7 +518,7 @@ val sign_extend : int -> int -> int
 (** A character is a decimal digit. *)
 val isdigit : char -> bool
 
-(** Same as [Pervasives.int_of_float] *)
+(** Same as [Stdlib.int_of_float] *)
 val toint : float -> int
 
 (** Make sure a floating point number is no degenarate, by making it zero if it is. *)
@@ -532,6 +547,9 @@ val list_of_hashtbl : ('a, 'b) Hashtbl.t -> ('a * 'b) list
 (** Build a hashtable from a dictionary (list of key-value pairs). Items are
 added from left to right, with no checking for duplicate keys being performed. *)
 val hashtable_of_dictionary : ('a * 'b) list -> ('a, 'b) Hashtbl.t
+
+(* Build a hashtable from a list of keys. *)
+val hashset_of_list : 'a list -> ('a, unit) Hashtbl.t
 
 (** {2 Trees} *)
 
@@ -598,7 +616,7 @@ val eq : ('a -> 'a -> bool)
 (** Inequality. *)
 val neq : ('a -> 'a -> bool)
 
-(** Like [Pervasives.compare], but the other way around. *)
+(** Like [Stdlib.compare], but the other way around. *)
 val rev_compare : 'a -> 'a -> int
 
 (** {2 Logic} *)
@@ -636,9 +654,6 @@ val box_overlap_float :
 
 (** {2 Filenames} *)
 
-(** The correct separator for filenames on the current platform. *)
-val slash : string
-
 (** Return a list of leafnames for the given folder in the current folder *)
 val leafnames_of_dir : string -> string list
 
@@ -650,3 +665,8 @@ val roman_upper : int -> string
 (** Lowercase roman representation of a number *)
 val roman_lower : int -> string
 
+(**/**)
+
+(* This is legitimately not documented because it requires altering the source
+   to use. See the .ml *)
+val tt' : unit -> unit

@@ -1,6 +1,14 @@
-(*pp camlp4o *)
 (* General Input and Output *)
 open Pdfutil
+
+(* On 64 bit platforms, bigarray isn't used since max_string is big. If
+ * this is set, we use bigarray always, for testing... *)
+let test_bigarray = false
+
+(* We used to have a type called "bytes" before OCaml did.  In order
+   not to break client code using e.g. Pdfio.bytes, we keep the name
+   but expose an alias caml_bytes for the built-in type. *)
+type caml_bytes = bytes
 
 (* External type for big streams of bytes passed to C*)
 type rawbytes =
@@ -9,7 +17,7 @@ type rawbytes =
 (* But for speed, we use strings of length < Sys.max_string_length *)
 type bytes =
   | Long of rawbytes
-  | Short of string
+  | Short of caml_bytes
 
 let bigarray_unsafe_get =
   Bigarray.Array1.unsafe_get
@@ -20,9 +28,9 @@ let bigarray_unsafe_set =
 (* Extract the raw bytes, without necessarily copying *)
 let raw_of_bytes = function
   | Short b ->
-      let l = Bigarray.Array1.create Bigarray.int8_unsigned Bigarray.c_layout (String.length b) in
-        for x = 0 to String.length b - 1 do
-          bigarray_unsafe_set l x (int_of_char (String.unsafe_get b x))
+      let l = Bigarray.Array1.create Bigarray.int8_unsigned Bigarray.c_layout (Bytes.length b) in
+        for x = 0 to Bytes.length b - 1 do
+          bigarray_unsafe_set l x (int_of_char (Bytes.unsafe_get b x))
         done;
         l
   | Long b -> b
@@ -32,33 +40,33 @@ let bytes_of_raw b = Long b
 
 (* Make a stream of a given size. *)
 let mkbytes l =
-  if l <= Sys.max_string_length
-    then Short (String.create l)
+  if l <= (if test_bigarray then max_int else Sys.max_string_length)
+    then Short (Bytes.create l)
     else Long (Bigarray.Array1.create Bigarray.int8_unsigned Bigarray.c_layout l)
 
 (* Find the size of a stream. *)
 let bytes_size = function
-  | Short s -> String.length s
+  | Short s -> Bytes.length s
   | Long b -> Bigarray.Array1.dim b
 
 let bset s n v =
   match s with
-  | Short s -> s.[n] <- Char.unsafe_chr v
+  | Short s -> Bytes.set s n (Char.unsafe_chr v)
   | Long s -> Bigarray.Array1.set s n v
 
 let bset_unsafe s n v =
   match s with
-  | Short s -> String.unsafe_set s n (Char.unsafe_chr v)
+  | Short s -> Bytes.unsafe_set s n (Char.unsafe_chr v)
   | Long s -> bigarray_unsafe_set s n v
 
 let bget s n =
   match s with
-  | Short s -> int_of_char (s.[n])
+  | Short s -> int_of_char (Bytes.get s n)
   | Long s -> Bigarray.Array1.get s n
 
 let bget_unsafe s n =
   match s with
-  | Short s -> int_of_char (String.unsafe_get s n)
+  | Short s -> int_of_char (Bytes.unsafe_get s n)
   | Long s -> bigarray_unsafe_get s n
 
 (* For lexing / parsing byte streams, keep the position. Starts at zero. *)
@@ -83,6 +91,15 @@ let bytes_of_string s =
       if l > 0 then
         for k = 0 to l - 1 do
           bset_unsafe stream k (int_of_char (String.unsafe_get s k))
+        done;
+      stream
+
+let bytes_of_caml_bytes s =
+  let l = Bytes.length s in
+    let stream = mkbytes l in
+      if l > 0 then
+        for k = 0 to l - 1 do
+          bset_unsafe stream k (int_of_char (Bytes.unsafe_get s k))
         done;
       stream
 
@@ -219,7 +236,7 @@ let input_of_channel ?(source = "channel") ch =
      in_channel_length =
        in_channel_length ch;
      set_offset =
-       (fun o -> offset := o);
+       (fun o -> if !offset = 0 then offset := o);
      caml_channel = Some ch;
      source = source}
 
@@ -228,18 +245,11 @@ let input_of_stream ?(source = "bytes") s =
   let offset = ref 0 in
     let ssize = bytes_size !(s.data) in
       let input_int () =
-        if s.pos > ssize - 1
-          then
-            begin
-              s.pos <- s.pos + 1;
-              no_more
-            end
-          else
-            begin
-              let r = bget_unsafe !(s.data) s.pos in
-                s.pos <- s.pos + 1;
-                r
-            end
+        let r =
+          if s.pos > ssize - 1 then no_more else bget_unsafe !(s.data) s.pos
+        in
+          s.pos <- s.pos + 1;
+          r
       in
         {pos_in =
            (fun () -> s.pos - !offset);
@@ -254,7 +264,7 @@ let input_of_stream ?(source = "bytes") s =
          in_channel_length =
            ssize;
          set_offset =
-           (fun o -> offset := o);
+           (fun o -> if !offset = 0 then offset := o);
          caml_channel = None;
          source = source}
 
@@ -276,7 +286,7 @@ let input_of_string ?(source = "string") s =
        else
          begin
            pos := !pos + 1;
-           Some (s.[!pos - 1])
+           Some (String.unsafe_get s (!pos - 1))
          end
    in
      {pos_in =
@@ -302,9 +312,11 @@ let input_of_string ?(source = "string") s =
       in_channel_length =
         String.length s;
       set_offset =
-        (fun _ -> raise (Failure "input_of_string: no set_offset"));
-      caml_channel = None;
-      source = source}
+        (fun _ -> ());
+      caml_channel =
+        None;
+      source =
+        source}
 
 (* Output functions over channels *)
 let output_of_channel ch =
@@ -326,7 +338,7 @@ let output_of_bytes s =
     let output_int i =
       if s.pos > bytes_size !(s.data) - 1
         then
-          let newstream = mkbytes (s.pos * 2) in
+          let newstream = mkbytes (max 1 (s.pos * 2)) in
             for x = 0 to bytes_size !(s.data) - 1 do
               bset_unsafe newstream x (bget_unsafe !(s.data) x)
             done;
@@ -410,7 +422,7 @@ let bytes_to_output_channel ch data =
     output_byte ch (bget_unsafe data (x - 1))
   done
 
-(* Like Pervasives.read_line *) 
+(* Like Stdlib.read_line *) 
 let b = Buffer.create 256
 
 let read_line i =
@@ -442,6 +454,7 @@ let read_lines i =
       End_of_file -> rev !ls
 
 let setinit i s o l =
+  if l = 0 then () else
   let max = bytes_size s - 1
   and last = o + 1 - 1 in
     if o > max || o < 0 || last < 0 || last > max then raise (Failure "setinit") else
@@ -449,30 +462,41 @@ let setinit i s o l =
       | Short s ->
           begin match i.caml_channel with
           | None ->
-              for x = o to o + l - 1 do String.unsafe_set s x (Char.unsafe_chr (i.input_byte ())) done
+              for x = o to o + l - 1 do Bytes.unsafe_set s x (Char.unsafe_chr (i.input_byte ())) done
           | Some ch -> really_input ch s o l
           end
       | Long s ->
           for x = o to o + l - 1 do bigarray_unsafe_set s x (i.input_byte ()) done
 
 let setinit_string i s o l =
-  let max = String.length s - 1
+  if l = 0 then () else
+  let max = Bytes.length s - 1
   and last = o + 1 - 1 in
-    if o > max || o < 0 || last < 0 || last > max then raise (Failure "setinit") else
+    if o > max || o < 0 || last < 0 || last > max then raise (Failure "setinit_string") else
       match i.caml_channel with
       | Some ch ->
           really_input ch s o l
       | None ->
-          for x = o to o + l - 1 do String.unsafe_set s x (Char.unsafe_chr (i.input_byte ())) done
+          for x = o to o + l - 1 do Bytes.unsafe_set s x (Char.unsafe_chr (i.input_byte ())) done
+
+let bytes_of_input i o l =
+  i.seek_in o;
+  let s = Bytes.create l in
+    setinit_string i s 0 l;
+    if l <= Sys.max_string_length then
+      Short s
+    else
+      bytes_of_caml_bytes s
 
 let getinit i s o l =
+  if l = 0 then () else
   let max = bytes_size s - 1
   and last = o + 1 - 1 in
     if o > max || o < 0 || last < 0 || last > max then raise (Failure "getinit") else
       match s with
       | Short s ->
           begin match i.out_caml_channel with
-          | None -> for x = o to o + l - 1 do i.output_byte (int_of_char (String.unsafe_get s x)) done
+          | None -> for x = o to o + l - 1 do i.output_byte (int_of_char (Bytes.unsafe_get s x)) done
           | Some ch -> output ch s o l
           end
       | Long s ->
@@ -650,13 +674,11 @@ let write_bitstream_append_aligned a b =
 let debug_next_char i =
   try
     let a = unopt (i.input_char ()) in
-      Printf.printf "%C = %i\n" a (int_of_char a)
+      Printf.eprintf "%C = %i\n%!" a (int_of_char a)
   with
     _ -> ()
 
 let debug_next_n_chars n i =
   for x = 1 to n do debug_next_char i done;
-  flprint "\n";
+  prerr_string "\n";
   for x = 1 to n do rewind i done
-
-

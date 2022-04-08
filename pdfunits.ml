@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 open Pdfutil
 
 (* Units. To add a new unit, extend here and in the graph following. *)
@@ -98,4 +97,3 @@ let convert dpi u u' =
                 i := i'
             done;
             fun x -> x *. !m
-

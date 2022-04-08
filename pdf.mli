@@ -2,11 +2,13 @@
 
 (** {2 PDF Objects} *)
 
+type toget
+
 (** A stream is either in memory, or at a position and of a length in an
 [Pdfio.input]. *)
 type stream =
   | Got of Pdfio.bytes
-  | ToGet of Pdfio.input * int * int
+  | ToGet of toget
 
 (** PDF objects. An object is a tree-like structure containing various things.
 A PDF file is basically a directed graph of objects. *)
@@ -35,7 +37,7 @@ type objectdata =
   (* Not parsed yet. Needs to be read from an object, which may still be encrypted *)
   | ToParse
   (* (stream object number, index in stream) Not parsed yet. Will come from an object stream. *)
-  | ToParseFromObjectStream of int * int * (int -> int list -> (int * (objectdata ref * int)) list)
+  | ToParseFromObjectStream of (int, int list) Hashtbl.t * int * int * (int -> int list -> (int * (objectdata ref * int)) list)
 
 type pdfobjmap_key = int
 
@@ -63,6 +65,21 @@ type pdfobjects =
 
 (** {2 The PDF document} *)
 
+type saved_encryption =
+  {from_get_encryption_values :
+     Pdfcryptprimitives.encryption * string * string * int32 * string * string option * string option;
+   encrypt_metadata : bool;
+   perms : string}
+
+type deferred_encryption =
+  {crypt_type : Pdfcryptprimitives.encryption;
+   file_encryption_key : string option;
+   obj : int;
+   gen : int;
+   key : int array;
+   keylength : int;
+   r : int}
+
 (** A Pdf document. Major and minor version numbers, object number of root, the
 objects objects and the trailer dictionary as a [Dictionary] [pdfobject]. *)
 type t =
@@ -70,7 +87,9 @@ type t =
    mutable minor : int;
    mutable root : int;
    mutable objects : pdfobjects;
-   mutable trailerdict : pdfobject}
+   mutable trailerdict : pdfobject;
+   mutable was_linearized : bool;
+   mutable saved_encryption : saved_encryption option}
 
 (** The empty document (PDF 1.0, no objects, no root, empty trailer dictionary).
 Note this is not a well-formed PDF. *)
@@ -121,10 +140,10 @@ val lookup_direct_orelse :
 (** Remove a dictionary entry, if it exists. *)
 val remove_dict_entry : pdfobject -> string -> pdfobject
 
-(** Replace a dictionary entry, raising [Not_found] if it's not there. *)
+(** [replace_dict_entry dict key value] replaces a dictionary entry, raising [Not_found] if it's not there. *)
 val replace_dict_entry : pdfobject -> string -> pdfobject -> pdfobject
 
-(** Add a dictionary entry, replacing if already there. *)
+(** [add_dict_entry dict key value] adds a dictionary entry, replacing if already there. *)
 val add_dict_entry : pdfobject -> string -> pdfobject -> pdfobject
 
 (** Make a PDF object direct -- that is, follow any indirect links. *)
@@ -187,54 +206,94 @@ val iter_stream : (pdfobject -> unit) -> t -> unit
 (** Garbage-collect a pdf document. *)
 val remove_unreferenced : t -> unit
 
-(**/**)
+(** {2 Miscellaneous} *)
 
+(** These functions were previsouly undocumented. They are documented here for
+    now, and in the future will be categorised more sensibly. *)
 
-(* Which of these need to be exposed? *)
-
-
-
-val changes : t -> (int, int) Hashtbl.t
-
-val renumber : (int, int) Hashtbl.t -> t -> t
-
+(** True if a character is PDF whitespace. *)
 val is_whitespace : char -> bool
 
+(** True if a character is not PDF whitespace. *)
 val is_not_whitespace : char -> bool
 
+(** True if a character is a PDF delimiter. *)
+val is_delimiter : char -> bool
+
+(** List, in order, the page reference numbers of a PDF's page tree. *)
+val page_reference_numbers : t -> int list
+
+(** List the object numbers in a PDF. *)
+val objnumbers : t -> int list
+
+(** Use the given function on each element of a PDF dictionary. *)
 val recurse_dict :
   (pdfobject -> pdfobject) -> (string * pdfobject) list -> pdfobject 
 
+(** Similarly for an [Array]. The function is applied to each element. *)
 val recurse_array :
   (pdfobject -> pdfobject) -> pdfobject list -> pdfobject 
 
+(** Calculate the changes required to renumber a PDF's objects 1..n. *)
+val changes : t -> (int, int) Hashtbl.t
+
+(** Perform the given renumberings on a PDF. *)
+val renumber : (int, int) Hashtbl.t -> t -> t
+
+(** Renumber an object given a change table. *)
+val renumber_object_parsed : t -> (int, int) Hashtbl.t -> pdfobject -> pdfobject
+
+(** Fetch a stream, if necessary, and return its contents (with no processing). *)
 val bigarray_of_stream : pdfobject -> Pdfio.bytes
 
-val objnumbers : t -> int list
-
+(** Make a objects entry from a parser and a list of (number, object) pairs. *)
 val objects_of_list :
   (int -> pdfobject) option -> (int * (objectdata ref * int)) list -> pdfobjects
 
+(** Calling [objects_referenced no_follow_entries no_follow_contains pdf
+    pdfobject] find the objects reachable from the given object. Dictionary
+    keys in [no_follow_entries] are not explored. Dictionaries containing
+    entries in [no_follow_contains] are not explored. *)
 val objects_referenced : string list -> (string * pdfobject) list -> t -> pdfobject -> int list
 
-(** Generate and ID for a PDF document given its prospective file name (and using
-the current date and time). If the file name is blank, the ID is still likely to
-be unique, being based on date and time only. *)
+(** Generate and ID for a PDF document given its prospective file name (and
+    using the current date and time). If the file name is blank, the ID is
+    still likely to be unique, being based on date and time only. If
+    environment variable CAMLPDF_REPRODUCIBLE_IDS=true is set, the ID will instead
+    be set to a standard value. *)
 val generate_id : t -> string -> (unit -> float) -> pdfobject
 
-val is_delimiter : char -> bool
-
-val page_reference_numbers : t -> int list
-
+(** Return the document catalog. *)
 val catalog_of_pdf : t -> pdfobject
 
+(** Find the indirect reference given by the value associated with a key in a
+dictionary. *)
 val find_indirect : string -> pdfobject -> int option
 
-val renumber_object_parsed : t -> (int, int) Hashtbl.t -> pdfobject -> pdfobject
-
+(** Calling [nametree_lookup pdf k dict] looks up the name in the document's
+    name tree *)
 val nametree_lookup : t -> pdfobject -> pdfobject -> pdfobject option
 
+(** Return an ordered list of the key-value pairs in a given name tree. *)
 val contents_of_nametree : t -> pdfobject -> (pdfobject * pdfobject) list
 
+(** Copy a PDF data structure so that nothing is shared with the original. *)
 val deep_copy : t -> t
 
+(** Change the /ID string in a PDF's trailer dicfionary *)
+val change_id : t -> string -> unit
+
+(**/**)
+
+(* This is only for the use of Pdfread for when the /Length is incorrect. *)
+type toget_crypt =
+  | NoChange
+  | ToDecrypt of deferred_encryption
+
+val length_of_toget : toget -> int
+val input_of_toget : toget -> Pdfio.input
+val position_of_toget : toget -> int
+val toget : ?crypt:toget_crypt -> Pdfio.input -> int -> int -> toget
+
+(* For inter-module recursion within CamlPDF, hence undocumented. *)
+val string_of_pdf : (pdfobject -> string) ref

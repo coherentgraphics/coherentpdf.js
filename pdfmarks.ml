@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 (* PDF Bookmarks *)
 open Pdfutil
 
@@ -9,7 +8,11 @@ type t =
    isopen : bool}
 
 let string_of_bookmark m =
-   Printf.sprintf "%i %s %s %b\n" m.level m.text (Pdfdest.string_of_destination m.target) m.isopen
+   Printf.sprintf "%i %s %s %b\n"
+     m.level
+     m.text
+     (Pdfwrite.string_of_pdf (Pdfdest.pdfobject_of_destination m.target))
+     m.isopen
 
 let remove_bookmarks pdf =
   match Pdf.lookup_direct pdf "/Root" pdf.Pdf.trailerdict with
@@ -165,13 +168,15 @@ let node_of_line pdf title target =
   Pdf.Dictionary
     (("/Title", Pdf.String title)::
      let dest = Pdfdest.pdfobject_of_destination target in
-       if dest = Pdf.Null then [] else [("/Dest", dest)])
+       if dest = Pdf.Null then [] else
+         (match target with Pdfdest.Action a -> [("/A", a)] | _ -> [("/Dest", dest)]))
 
 (* Make an ntree list from a list of parsed bookmark lines. *)
 let rec make_outline_ntree source pdf = function
   | [] -> []
   | h::t ->
       let lower, rest = cleavewhile (fun {level = n'} -> n' > h.level) t in
+        (*Printf.printf "make_outline_ntree: %s\n" h.text;*)
         let node = node_of_line pdf h.text h.target in
           Br (fresh source pdf, node, make_outline_ntree source pdf lower, h.isopen)
             ::make_outline_ntree source pdf rest
@@ -214,25 +219,29 @@ let rec traverse_outlines_lb indent_lb pdf outlines output =
   | Some first -> do_until_no_next_lb indent_lb pdf first output
 
 and do_until_no_next_lb indent_lb pdf outline output =
-  begin match Pdf.lookup_direct pdf "/Title" outline with
-  | Some (Pdf.String s) ->
-      let page =
-        match Pdf.lookup_direct pdf "/Dest" outline with
-        | Some dest -> Pdfdest.read_destination pdf dest
-        | None ->
-            match Pdf.lookup_direct pdf "/A" outline with
-            | None -> Pdfdest.NullDestination
-            | Some action ->
-                match Pdf.lookup_direct pdf "/D" action with
-                | None -> Pdfdest.NullDestination
-                | Some dest -> Pdfdest.read_destination pdf dest
-      in let opn =
-        match Pdf.lookup_direct pdf "/Count" outline with
-        | Some (Pdf.Integer i) when i > 0 -> true
-        | _ -> false
-      in
-        output {level = !indent_lb; text = s; target = page; isopen = opn}
-    | _ -> ()
+  let title =
+    match Pdf.lookup_direct pdf "/Title" outline with
+    | Some (Pdf.String s) -> s
+    | _ ->
+      Printf.eprintf "/Title not a string or not present in document outline entry. Using the empty string.\n";
+      ""
+  in
+    begin let page =
+      match Pdf.lookup_direct pdf "/Dest" outline with
+      | Some dest -> Pdfdest.read_destination pdf dest
+      | None ->
+          match Pdf.lookup_direct pdf "/A" outline with
+          | None -> Pdfdest.NullDestination
+          | Some action ->
+              match Pdf.lookup_direct pdf "/D" action with
+              | None -> Pdfdest.Action (Pdf.direct pdf action)
+              | Some dest -> Pdfdest.read_destination pdf dest
+    in let opn =
+      match Pdf.lookup_direct pdf "/Count" outline with
+      | Some (Pdf.Integer i) when i > 0 -> true
+      | _ -> false
+    in
+      output {level = !indent_lb; text = title; target = page; isopen = opn}
     end;
     incr indent_lb;
     traverse_outlines_lb indent_lb pdf outline output;
@@ -254,3 +263,5 @@ let read_bookmarks pdf =
               traverse_outlines_lb (ref 0) pdf outlines output;
               rev !out
 
+let transform_bookmark tr m =
+  {m with target = Pdfdest.transform_destination tr m.target}

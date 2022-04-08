@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 (* Pdf Optional Content Groups *)
 open Pdfutil
 
@@ -179,5 +178,3 @@ let print_document_ocg pdf =
       iter print_ocg ocgs.ocgs;
       flprint "OCG Configs\n------------\n";
       iter print_ocg_config ocgs.ocg_configs
-
-

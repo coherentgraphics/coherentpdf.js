@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 open Pdfutil
 
 (* The type of the four rotations of pages. This defines how a viewing
@@ -14,7 +13,7 @@ containing the graphical content stream (see the Pdfops module), mediabox
 the page size, resources the page's resource dictionary, rotate its rotation
 and rest any other entries to reside in the page dictionary. *)
 type t =
-  {content : Pdf.pdfobject list;
+  {content : Pdf.pdfobject list; (*FIXME Change this to int list, to ensure sharing? *)
    mediabox : Pdf.pdfobject;
    resources : Pdf.pdfobject;
    rotate : rotation;
@@ -70,6 +69,13 @@ let rec remove_dict_entries e = function
 (* Given a page tree, find the first page resources, contents and
 mediabox.  The resources and mediabox may be inherited from any node above in
 the page tree. *)
+
+(* Some files erroneously miss out a mediabox, expecting the reader to inherit
+it not from the page tree node above, but from the previous page. Most PDF
+readers can do this, and GhostScript can too. So we adopt this behaviour in
+the case of a missing mediabox. *)
+let last_mediabox_seen = ref None
+
 let rec find_pages pages pdf resources mediabox rotate =
   match Pdf.lookup_direct pdf "/Type" pages with
   | Some (Pdf.Name "/Pages") | None ->
@@ -115,7 +121,25 @@ let rec find_pages pages pdf resources mediabox rotate =
         | Some x -> Some x
         | None -> mediabox
       in let contents =
-        Pdf.lookup_direct pdf "/Contents" pages
+        (* 28th March 2016. We modify this to always create an array of one
+        indirect if just a single contents stream, rather than following
+        through to the actual object. Other code can then preserve the
+        sharing. *)
+        begin match pages with
+          Pdf.Dictionary d ->
+            begin match lookup "/Contents" d with
+              Some (Pdf.Indirect i) ->
+                (* A single content stream, or indirect to array *)
+                begin match Pdf.lookup_obj pdf i with
+                | Pdf.Array a -> Some (Pdf.Array a)
+                | _ -> Some (Pdf.Array [Pdf.Indirect i])
+                end
+            | _ ->
+                (* An array of indirects. Just return it *)
+                Pdf.lookup_direct pdf "/Contents" pages
+            end
+        | _ -> assert false
+        end
       in let rotate =
         match Pdf.lookup_direct pdf "/Rotate" pages with
         | Some (Pdf.Integer r) -> rotation_of_int r
@@ -136,17 +160,22 @@ let rec find_pages pages pdf resources mediabox rotate =
                   (function x ->
                      match Pdf.direct pdf x with
                      | Pdf.Stream _ -> x
-                     | _ -> raise (Pdf.PDFError "Bad /Contents"))
+                     | x ->
+                         raise (Pdf.PDFError ("Bad /Contents 1")))
                   cs;
             | Some pdfobject ->
                 begin match Pdf.direct pdf pdfobject with
                 | Pdf.Stream _ -> [pdfobject]
-                | _ -> raise (Pdf.PDFError "Bad /Contents")
+                | _ -> raise (Pdf.PDFError "Bad /Contents 2")
                 end);
           mediabox =
             (match mediabox with
-            | Some m -> m
-            | None -> raise (Pdf.PDFError "Bad /MediaBox"));
+            | Some m -> last_mediabox_seen := Some m; m
+            | None ->
+                begin match !last_mediabox_seen with
+                | Some m -> Printf.eprintf "Warning: missing mediabox. Using most recently seen.\n%!"; m
+                | None -> raise (Pdf.PDFError "Bad /MediaBox")
+                end);
           rotate = rotate;
           rest =
             (match pages with
@@ -261,7 +290,13 @@ let change_operator pdf lookup lookup_option seqnum = function
   | Pdfops.Op_DP (n, Pdf.Name p) ->
       Pdfops.Op_DP (n, Pdf.Name (lookup "/Properties" seqnum p))
   | Pdfops.Op_BDC (n, Pdf.Name p) ->
-      Pdfops.Op_BDC (n, Pdf.Name (lookup "/Properties" seqnum p))
+      begin match lookup_option "/Properties" seqnum p with
+        | Some x ->
+            Pdfops.Op_BDC (n, Pdf.Name x)
+        | None ->
+            Printf.eprintf "Warning: Missing Op_BDC /Properties entry\n%!";
+            Pdfops.Op_BDC (n, Pdf.Name p)
+      end
   | Pdfops.InlineImage (dict, bytes) ->
       (* Replace any indirect "/CS" or "/ColorSpace" with a new "/CS" *)
       let dict' =
@@ -284,6 +319,8 @@ let change_operator pdf lookup lookup_option seqnum = function
         Pdfops.InlineImage (dict', bytes)
   | x -> x
 
+(* Only for use with twoup now. FIXME: Can blow up shared content streams. Needs
+a cunning new method to preserve sharing. *)
 let renumber_pages pdf pages =
   match pages with
   | [] -> []
@@ -526,6 +563,11 @@ let add_pagetree pages pdf =
         let ptree = pagetree getobjnum pages 0 in
           let objects = objects_of_ptree getobjnum extras ptree in
             let topnode = match hd objects with (n, _) -> n in
+              (*Printf.printf "There were %i objects_of_ptree\n" (List.length objects);
+              List.iter (fun (i, x) -> Printf.printf "%i: %s\n" i (Pdfwrite.string_of_pdf x)) objects;
+              Printf.printf "There were %i extras\n" (List.length !extras);
+              List.iter (fun (i, x) -> Printf.printf "%i: %s\n" i
+              (Pdfwrite.string_of_pdf x)) !extras;*)
               iter (fun x -> ignore (Pdf.addobj_given_num pdf x)) (objects @ !extras);
               pdf, topnode
 
@@ -557,21 +599,174 @@ let add_root pageroot extras pdf =
              Pdf.root = rootnum;
              Pdf.trailerdict = trailerdict'}
 
+(* Make sure to supply refnums to speed it up, if you already have them from a
+ * previous call to Pdf.page_reference_numbers *)
+let pagenumber_of_target ?fastrefnums pdf = function
+ | Pdfdest.NullDestination -> 0
+ | Pdfdest.NamedDestinationElsewhere _ -> 0
+ | Pdfdest.Action _ -> 0
+ | Pdfdest.XYZ (t, _, _, _) | Pdfdest.Fit t | Pdfdest.FitH (t, _) | Pdfdest.FitV (t, _)
+ | Pdfdest.FitR (t, _, _, _, _) | Pdfdest.FitB t | Pdfdest.FitBH (t, _) | Pdfdest.FitBV (t, _) ->
+     match t with
+     | Pdfdest.OtherDocPageNumber i -> i + 1 (* If it's really a Pdfdest.OtherDocPageNumber, you must process this yourself before. *)
+     | Pdfdest.PageObject i ->
+         match fastrefnums with
+         | Some table ->
+             begin try Hashtbl.find table i with Not_found -> 0 end 
+         | None ->
+             match position_1 i (Pdf.page_reference_numbers pdf) with
+             | Some n -> n
+             | None -> 0
+
 (* Return a new PDF containing everything the old one does, but with new pages.
 
 Other objects (e.g destinations in the document outline) may point to the
 individual page objects, so we must renumber these. We can only do this if the
-number of pages are the same. We do this [if replace_numbers is true]. *)
-let change_pages change_references basepdf pages' =
+number of pages are the same. We do this [if change_references is true]. If the
+new and old page lists are of different lengths, change_references must be
+false, or you must supply the changes (expressed as (from, to) 1-based serial
+number pairs).
+
+The matrices optional argument, only relevant when change_references is true
+and the number of pages has not changed, gives a list of (page number, matrix)
+pairs which indicate that the page has been transformed. We can then rewrite
+bookmark destinations to reflect the transformed destination positions. We also
+rewrite annotation destinations after the same fashion. *)
+let change_pages_find_matrix dest mattable refnumstable =
+  match dest with
+  | Pdfdest.XYZ (tp, _, _, _) | Pdfdest.FitH (tp, _) | Pdfdest.FitV (tp, _)
+  | Pdfdest.FitR (tp, _, _, _, _) | Pdfdest.FitBH (tp, _) | Pdfdest.FitBV (tp, _) ->
+      begin match tp with
+        Pdfdest.PageObject i ->
+          begin try
+            let pagenumber = Hashtbl.find refnumstable i in
+              Hashtbl.find mattable pagenumber
+          with
+            _ ->
+              Printf.eprintf
+                "page not found for bookmark or annotation dest:%s\n%!"
+                (Pdfwrite.string_of_pdf (Pdfdest.pdfobject_of_destination dest));
+              Pdftransform.i_matrix
+          end
+      | _ -> Pdftransform.i_matrix
+      end
+  | _ -> Pdftransform.i_matrix
+
+(* For each bookmark, find the page its target is on, look up the appropriate matrix, and transform it. Works only for destinations. /GoTo actions are rewritten globally, separately. *)
+let change_pages_process_bookmarks mattable refnumstable pdf =
+  (*List.iter (fun (p, m) -> Printf.printf "chppb: %i = %s\n" p (Pdftransform.string_of_matrix m)) matpairs;*)
+  let bookmarks =
+    map
+      (fun m ->
+         let tr = change_pages_find_matrix m.Pdfmarks.target mattable refnumstable in
+           if tr <> Pdftransform.i_matrix then Pdfmarks.transform_bookmark tr m else m)
+      (Pdfmarks.read_bookmarks pdf)
+  in
+    Pdfmarks.add_bookmarks bookmarks pdf 
+
+let rewrite_dest pdf mattable refnumstable dest =
+  let parsed_dest = Pdfdest.read_destination pdf dest in
+  let tr = change_pages_find_matrix parsed_dest mattable refnumstable in
+    (*Printf.printf "tr is %s\n" (Pdftransform.string_of_matrix tr);*)
+    if tr <> Pdftransform.i_matrix then
+      let transformed = Pdfdest.transform_destination tr parsed_dest in
+      let new_dest = Pdfdest.pdfobject_of_destination transformed in
+        Some (Pdf.addobj pdf new_dest)
+    else
+      None
+
+let rewrite_action pdf mattable refnumstable action =
+  begin match Pdf.lookup_direct pdf "/S" action with
+  | Some (Pdf.Name "/GoTo") ->
+    begin match Pdf.lookup_direct pdf "/D" action with
+    | Some dest ->
+        begin match rewrite_dest pdf mattable refnumstable dest with
+        | Some objnum ->
+            Some (Pdf.add_dict_entry action "/D" (Pdf.Indirect objnum))
+        | None -> None
+        end
+    | _ -> None
+    end
+  | _ -> None
+  end
+
+(* For each page, find its annotations. For each, transform its annotations *)
+let change_pages_process_annotations mattable refnumstable pdf =
+   iter2
+     (fun page pnum ->
+        (*Printf.eprintf "Page %i...\n" pnum;*)
+        match Pdf.lookup_direct pdf "/Annots" page.rest with
+        | Some (Pdf.Array annots) ->
+            iter
+              (fun annotobj ->
+                match annotobj with Pdf.Indirect i ->
+                  let annot = Pdf.lookup_obj pdf i in
+                  (* Find its destination, if it has one. Either in /Dest or /A *)
+                  begin match Pdf.lookup_direct pdf "/Subtype" annot with
+                  | Some (Pdf.Name "/Link") ->
+                      begin match Pdf.lookup_direct pdf "/Dest" annot with
+                      | Some dest ->
+                          begin match rewrite_dest pdf mattable refnumstable dest with
+                          | Some objnum ->
+                              let new_annot = Pdf.add_dict_entry annot "/Dest" (Pdf.Indirect objnum) in
+                                Pdf.addobj_given_num pdf (i, new_annot)
+                          | None -> ()
+                          end
+                      | _ ->
+                          begin match Pdf.lookup_direct pdf "/A" annot with
+                          | Some (Pdf.Dictionary _ as action) ->
+                              begin match rewrite_action pdf mattable refnumstable action with
+                              | Some action ->
+                                  let new_annot = Pdf.add_dict_entry annot "/A" action in
+                                    Pdf.addobj_given_num pdf (i, new_annot)
+                              | _ -> ()
+                              end
+                          | _ -> () 
+                          end
+                      end
+                  | _ -> ()
+                  end
+                | _ -> Printf.eprintf "change_pages_process_annotations: annotation direct\n%!")
+                annots
+        | None -> ()
+        | _ ->
+            Printf.eprintf "change_pages_process_annotations: /Annots not an array\n%!")
+     (pages_of_pagetree pdf)
+     (indx (pages_of_pagetree pdf))
+
+(* Process the /OpenAction if its destination or action points to a page which has been scaled. *)
+(* Trailer --/Root--> Catalog dict --/OpenAction--> (array = dest || dict == action). No name option. *)
+let rewrite_openaction pdf action =
+  let catalog = Pdf.catalog_of_pdf pdf in
+  let catalog = Pdf.add_dict_entry catalog "/OpenAction" action in
+    Pdf.addobj_given_num pdf (pdf.Pdf.root, catalog)
+
+let change_pages_process_openaction mattable refnumstable pdf =
+  match Pdf.lookup_direct pdf "/OpenAction" (Pdf.catalog_of_pdf pdf) with
+  | Some (Pdf.Array dest) ->
+      begin match rewrite_dest pdf mattable refnumstable (Pdf.Array dest) with
+      | Some new_dest_objnum -> rewrite_openaction pdf (Pdf.Indirect new_dest_objnum)
+      | None -> ()
+      end
+  | Some (Pdf.Dictionary action) ->
+      begin match rewrite_action pdf mattable refnumstable (Pdf.Dictionary action) with
+      | Some action -> rewrite_openaction pdf action
+      | _ -> ()
+      end
+  | _ -> ()
+
+let change_pages ?matrices ?changes change_references basepdf pages' =
   let pdf = Pdf.empty () in
     Pdf.objiter (fun k v -> ignore (Pdf.addobj_given_num pdf (k, v))) basepdf;
+    pdf.Pdf.objects.Pdf.object_stream_ids <- Hashtbl.copy basepdf.Pdf.objects.Pdf.object_stream_ids; (* Preserve objstms 11/12/2021 *)
     let old_page_numbers = Pdf.page_reference_numbers basepdf in
     let pdf, pagetree_num = add_pagetree pages' pdf in
       let pdf =
         {pdf with
            Pdf.major = basepdf.Pdf.major;
            Pdf.minor = basepdf.Pdf.minor;
-           Pdf.trailerdict = basepdf.Pdf.trailerdict}
+           Pdf.trailerdict = basepdf.Pdf.trailerdict;
+           Pdf.saved_encryption = basepdf.Pdf.saved_encryption}
       in
         let existing_root_entries =
           try
@@ -583,42 +778,66 @@ let change_pages change_references basepdf pages' =
         in
           let pdf = add_root pagetree_num existing_root_entries pdf in
             let new_page_numbers = Pdf.page_reference_numbers pdf in
-              if change_references && length old_page_numbers = length new_page_numbers
-                then
-                  let changes = combine old_page_numbers new_page_numbers in
-                    Pdf.objselfmap
-                      (Pdf.renumber_object_parsed pdf (hashtable_of_dictionary changes))
-                      pdf;
-                    pdf
-                else
-                  pdf
+              if not change_references then pdf else
+                let changes =
+                   match changes with
+                     None ->
+                       if length old_page_numbers = length new_page_numbers then
+                         combine old_page_numbers new_page_numbers
+                       else
+                         begin
+                           Printf.eprintf "change_pages: No change supplied, and lengths differ\n%!";
+                           []
+                         end
+                   | Some cs ->
+                       (* Turn the 1-based serial numbers into page reference numbers *)
+                       try
+                         map
+                           (fun (x, y) ->
+                            List.nth old_page_numbers (x - 1), List.nth new_page_numbers (y - 1))
+                         cs
+                       with
+                         _ -> raise (Pdf.PDFError "change_pages: bad serial number")
+                in
+                  Pdf.objselfmap
+                    (Pdf.renumber_object_parsed pdf (hashtable_of_dictionary changes))
+                    pdf;
+                  match matrices with
+                    None -> pdf
+                  | Some matpairs ->
+                      let refnums = Pdf.page_reference_numbers pdf in
+                      let mattable = hashtable_of_dictionary matpairs in
+                      let refnumstable = hashtable_of_dictionary (combine refnums (indx refnums)) in
+                      let pdf =
+                        if length old_page_numbers = length new_page_numbers then
+                          change_pages_process_bookmarks mattable refnumstable pdf
+                        else
+                          begin
+                            Printf.eprintf "Pdfpage.change_pages: non-null matrices when lengths differ\n%!";
+                            pdf
+                          end
+                      in
+                        begin try change_pages_process_annotations mattable refnumstable pdf with
+                          e -> Printf.eprintf "failure in change_pages_process_annotations: %s\n%!" (Printexc.to_string e)
+                        end;
+                        begin try change_pages_process_openaction mattable refnumstable pdf with
+                          e -> Printf.eprintf "failure in change_pages_process_openaction: %s\n%!" (Printexc.to_string e)
+                        end;
+                        pdf
 
 (* Return a pdf with a subset of pages, but nothing else changed - exactly the
 same page object numbers, so bookmarks etc still work. Also sorts out bookmarks
-so only those in the range are kept.  *)
-let pagenumber_of_target ?refnums pdf = function
- | Pdfdest.NullDestination -> 0
- | Pdfdest.XYZ (t, _, _, _) | Pdfdest.Fit t | Pdfdest.FitH (t, _) | Pdfdest.FitV (t, _)
- | Pdfdest.FitR (t, _, _, _, _) | Pdfdest.FitB t | Pdfdest.FitBH (t, _) | Pdfdest.FitBV (t, _) ->
-     match t with
-     | Pdfdest.OtherDocPageNumber _ -> 0
-     | Pdfdest.PageObject i ->
-         let pageindirects =
-           match refnums with
-           | Some nums -> nums
-           | None -> Pdf.page_reference_numbers pdf
-         in
-           match lookup i (combine pageindirects (indx pageindirects)) with
-           | Some n -> n
-           | None -> 0
+so only those in the range are kept. *)
+
 
 (* Find a page indirect from the page tree of a document, given a page number. *)
+(* FIXME speed up by caching *)
 let page_object_number pdf destpage =
   try
     Some (select destpage (Pdf.page_reference_numbers pdf))
   with
     (* The page might not exist in the output *)
-    Invalid_argument "select" -> None
+    Invalid_argument _ (*"select"*) -> None
 
 let target_of_pagenumber pdf i =
   match page_object_number pdf i with
@@ -664,15 +883,113 @@ let pdf_of_pages_build_pagetree thetree objnumbers pdf =
       objects_of_ptree_objnumbers pdf right;
       buildnode ([objnumfrom left] @ objnumbers @ [objnumfrom right]) parent (countof node)
 
+(* pdf_of_pages, if it has duplicates in the range, will produce duplicate
+items in the page tree, pointing to the same page object. This is bad for
+two reasons:
+
+   a) Adobe Reader is broken and crashes in this case
+
+   b) In any event, duplicate references make further document changes
+   confusing for most programs.  So, we duplicate the actual page objects, and
+   do the minimal renumbering.
+
+*)
+
+(* Given a number n, of a page node, copy it to a new object, and rewrite all
+but the first instance in the page tree to that new number. *)
+exception RewriteDone
+
+(* Rewrite first instance of an indirect in an array of such. *)
+let rec rewrite_first_kid m n = function
+    [] -> []
+  | Pdf.Indirect x::t when x = m -> Pdf.Indirect n :: t
+  | h::t -> h :: rewrite_first_kid m n t
+
+(* Rewrite first instance of m if any, in obj to n at objnum. Raise Rewrite if
+we did it. *)
+let rewrite_first_indirect pdf objnum obj m n =
+  match Pdf.lookup_direct pdf "/Kids" obj with
+    Some (Pdf.Array kids) ->
+      if mem (Pdf.Indirect m) kids then
+        let newobj =
+          Pdf.add_dict_entry obj "/Kids" (Pdf.Array (rewrite_first_kid m n kids))
+        in
+          Pdf.addobj_given_num pdf (objnum, newobj);
+          raise RewriteDone
+  | _ -> failwith "rewrite_first_indirect"
+
+(* Those page tree nodes which are not pages *)
+let page_tree_nodes_not_pages pdf =
+  let objs = ref [] in
+    Pdf.objiter
+      (fun objnum o ->
+        match o with
+          Pdf.Dictionary d when lookup "/Type" d = Some (Pdf.Name "/Pages") ->
+            objs := (objnum, o) :: !objs
+        | _ -> ())
+      pdf;
+    !objs
+
+let rewrite_page_tree_first pdf m =
+  let n = Pdf.addobj pdf (Pdf.lookup_obj pdf m)
+  and nodes = page_tree_nodes_not_pages pdf in
+    try
+      iter
+        (fun (objnum, obj) -> rewrite_first_indirect pdf objnum obj m n)
+        nodes
+    with
+      RewriteDone -> () 
+    | _ -> raise (Pdf.PDFError "rewrite_page_tree_first: malformed page tree")
+
+(* Run this strategy repeatedly, until there are no duplicate page objects *)
+let rec fixup_duplicate_pages pdf =
+  let pagerefs = Pdf.page_reference_numbers pdf in
+    let groups =
+      keep
+        (fun x -> length x > 1)
+        (collate compare (sort compare pagerefs))
+    in
+      match groups with
+        (h::_)::_ ->
+          rewrite_page_tree_first pdf h;
+          fixup_duplicate_pages pdf
+      | _ -> ()
+
+(* When there are duplicate pages, even once de-duplicated by
+ * fixup_duplicate_pages, we can end up with incorrect /Parent links. This
+ * procedure rewrites them. *)
+let rec fixup_parents_inner pdf parent_objnum objnum =
+  (*Printf.printf "fixup_parents_inner %i %i\n" parent_objnum objnum;*)
+  let obj = Pdf.lookup_obj pdf objnum in
+    begin match Pdf.indirect_number pdf "/Parent" obj with
+      Some _ ->
+        Pdf.addobj_given_num pdf (objnum, (Pdf.add_dict_entry obj "/Parent" (Pdf.Indirect parent_objnum)))
+    | _ -> ()
+    end;
+    begin match Pdf.lookup_direct pdf "/Kids" obj with
+      Some (Pdf.Array kids) ->
+        iter (function Pdf.Indirect x -> fixup_parents_inner pdf objnum x | _ -> ()) kids
+    | _ -> ()
+    end
+
+let fixup_parents pdf =
+  let root = Pdf.lookup_obj pdf pdf.Pdf.root in
+    match Pdf.indirect_number pdf "/Pages" root with
+      Some pagetreeroot -> fixup_parents_inner pdf 0 pagetreeroot
+    | _ -> raise (Pdf.PDFError "fixup_parents: no page tree root")
+
 let pdf_of_pages ?(retain_numbering = false) basepdf range =
   let page_labels =
-    if retain_numbering
-      then Pdfpagelabels.merge_pagelabels [basepdf] [range]
-      else []
+    if length (Pdfpagelabels.read basepdf) = 0 then [] else
+      if retain_numbering
+        then Pdfpagelabels.merge_pagelabels [basepdf] [range]
+        else []
   and marks =
     let refnums = Pdf.page_reference_numbers basepdf in
+    let fastrefnums = hashtable_of_dictionary (combine refnums (indx refnums)) in
+    let table = hashset_of_list range in
       option_map
-        (function m -> if mem (pagenumber_of_target ~refnums basepdf m.Pdfmarks.target) range then Some m else None)
+        (function m -> if Hashtbl.mem table (pagenumber_of_target ~fastrefnums basepdf m.Pdfmarks.target) then Some m else None)
         (Pdfmarks.read_bookmarks basepdf)
   in
     let pdf = Pdf.empty () in
@@ -682,7 +999,8 @@ let pdf_of_pages ?(retain_numbering = false) basepdf range =
           {pdf with
              Pdf.major = basepdf.Pdf.major;
              Pdf.minor = basepdf.Pdf.minor;
-             Pdf.trailerdict = basepdf.Pdf.trailerdict}
+             Pdf.trailerdict = basepdf.Pdf.trailerdict;
+             Pdf.saved_encryption = basepdf.Pdf.saved_encryption}
         in
           let existing_root_entries =
             try
@@ -700,9 +1018,6 @@ let pdf_of_pages ?(retain_numbering = false) basepdf range =
                     end
                 | _ -> raise (Pdf.PDFError "pdf_of_pages")
               in
-            (*flprint "input object numbers of chosen pages:";
-            iter (Printf.printf "%i ") objnumbers;
-            flprint "\n"; *)
               (* 1. Look through all the page objects to be included, and
               replicate inheritable entries from their parent nodes, since they
               may fail to exist, leaving pages without Media boxes or
@@ -714,7 +1029,7 @@ let pdf_of_pages ?(retain_numbering = false) basepdf range =
                      let obj = Pdf.lookup_obj pdf objnum in
                        (* Find the first parent entry we can which has the correct attribute. *)
                        let rec find_attribute obj =
-                         (* 2nd September 2012. Only replace if not there! *)
+                         (* Only replace if not there! *)
                          match Pdf.lookup_direct pdf entry obj with
                          | Some _ -> None
                          | _ ->
@@ -733,9 +1048,7 @@ let pdf_of_pages ?(retain_numbering = false) basepdf range =
                          match find_attribute obj with
                          | None -> ()
                          | Some replacement_attr ->
-                            (*i Printf.printf "Replacing an instance of %s\n" entry; i*)
                             (* Replace the attribute with replacement_attr, updating the page object in place. *)
-
                             Pdf.addobj_given_num pdf (objnum, Pdf.add_dict_entry obj entry replacement_attr)
                    in
                      replace_inherit objnum "/MediaBox";
@@ -744,19 +1057,10 @@ let pdf_of_pages ?(retain_numbering = false) basepdf range =
                      replace_inherit objnum "/Resources")
                 objnumbers;
               let thetree = pagetree_with_objnumbers true old_pagetree_root_num (source pdf.Pdf.objects.Pdf.maxobjnum) objnumbers 0 in
-              let rec findparent objnum = function
-              | OLf (objnumbers, parent, this) -> if mem objnum objnumbers then Some this else None
-              | OBr (objnumbers, left, right, _, this) ->
-                  if mem objnum objnumbers then Some this else
-                    match findparent objnum left with
-                    | Some parent -> Some parent
-                    | None -> findparent objnum right
-              in
               (* 2. Kill the old page tree, excepting pages which will appear in the new
               PDF. It will link, via /Parent entries etc, to the new page tree. To do
               this, we remove all objects with /Type /Page or /Type /Pages. The other
-              places that null can appear, in destinations and so on, are ok, we think.
-              Also, rewrite /Parent entries to point directly to the page root.  *)
+              places that null can appear, in destinations and so on, are ok, we think. *)
               Pdf.objiter
                 (fun i o ->
                   match o with
@@ -764,16 +1068,7 @@ let pdf_of_pages ?(retain_numbering = false) basepdf range =
                       begin match lookup "/Type" d with
                       | Some (Pdf.Name ("/Pages")) -> Pdf.removeobj pdf i
                       | Some (Pdf.Name ("/Page")) ->
-                          if mem i objnumbers
-                            then
-                              begin match findparent i thetree with
-                              | Some p ->
-                                  (*Printf.printf "findparent on %i got %i \n" i p;*)
-                                  Pdf.addobj_given_num pdf (i, (Pdf.Dictionary (add "/Parent" (Pdf.Indirect p) d)))
-                              | None -> raise (Pdf.PDFError "pdf_of_pages internal inconsistency")
-                              end
-                            else
-                              Pdf.removeobj pdf i
+                          if not (mem i objnumbers) then Pdf.removeobj pdf i
                       | _ -> ()
                       end
                   | _ -> ())
@@ -784,15 +1079,21 @@ let pdf_of_pages ?(retain_numbering = false) basepdf range =
                   Pdf.addobj_given_num pdf (old_pagetree_root_num, new_pagetree);
                     let pdf = add_root old_pagetree_root_num existing_root_entries pdf in
                     Pdfpagelabels.write pdf page_labels;
-                    Pdfmarks.add_bookmarks marks pdf
+                    let pdf = Pdfmarks.add_bookmarks marks pdf in
+                      fixup_duplicate_pages pdf;
+                      fixup_parents pdf;
+                      pdf
 
 let prepend_operators pdf ops ?(fast=false) page =
   if fast then
     {page with content =
-       Pdfops.stream_of_ops ops::page.content}
+       Pdfops.stream_of_ops ops :: page.content}
   else
-    {page with content =
-       [Pdfops.stream_of_ops (ops @ Pdfops.parse_operators pdf page.resources page.content)]}
+    let old_ops =
+      Pdfops.parse_operators pdf page.resources page.content
+    in
+      {page with content =
+        [Pdfops.stream_of_ops (ops @ old_ops)]}
 
 (* Add stack operators to a content stream to ensure it is composeable. *)
 let protect pdf resources content =
@@ -800,14 +1101,14 @@ let protect pdf resources content =
     let qs = length (keep (eq Pdfops.Op_q) ops)
     and bigqs = length (keep (eq Pdfops.Op_Q) ops) in
     let deficit = if qs > bigqs then qs - bigqs else 0 in
-      if deficit <> 0 then Printf.eprintf "Q Deficit was nonzero. Fixing. %i\n" deficit;
+      if deficit <> 0 then Printf.eprintf "Q Deficit was nonzero. Fixing. %i\n%!" deficit;
       many Pdfops.Op_Q deficit
 
 (* We check for q/Q mismatches in existing section. *)
 let postpend_operators pdf ops ?(fast=false) page =
   if fast then
     {page with content =
-       [Pdfops.stream_of_ops ([Pdfops.Op_q] @ ops @ [Pdfops.Op_Q])] @ page.content}
+       page.content @ [Pdfops.stream_of_ops ([Pdfops.Op_q] @ ops @ [Pdfops.Op_Q])]}
   else
     let beforeops =
       [Pdfops.Op_q]
@@ -817,14 +1118,183 @@ let postpend_operators pdf ops ?(fast=false) page =
       {page with content =
          [Pdfops.stream_of_ops (beforeops @ Pdfops.parse_operators pdf page.resources page.content @ afterops)]}
 
-(* Ensure that there are no inherited attributes in the page tree --- in other
-words they are all explicit. This is required before writing a file with
-linearization *)
-let pagetree_make_explicit pdf =
-  let pages = pages_of_pagetree pdf in
-    change_pages true pdf pages
+(* Source of possible prefix strings. String is always copied. *)
+let next_string s =
+  if s = "" then "a" else
+    if s.[0] = 'z' then "a" ^ s else
+      String.mapi
+        (fun i c ->
+           if i = 0 then char_of_int (int_of_char c + 1)
+           else c)
+        s
 
-(* Set the reference in Pdfwrite for inter-module recursion. *)
-let _ =
-  Pdfwrite.pagetree_make_explicit := pagetree_make_explicit
+(* True if one string [p] is a prefix of another [n] *)
+let is_prefix p n =
+  String.length p <= String.length n &&
+  String.sub n 0 (String.length p) = p
 
+(* a) List every name used in a /Resources in a /Type /Page or
+ /Type /Pages (without the leading "/"
+   b) Find the shortest lower-case alphabetic string which is not a prefix of any of these
+   strings. This prefix can be added to the other PDF's names, and will never
+   clash with any of these. *)
+let names_used pdf =
+  let names = ref [] in
+  let unslash x =
+    if x = "" then "" else String.sub x 1 (String.length x - 1)
+  in
+    Pdf.objiter
+      (fun n obj ->
+        match obj with
+          Pdf.Dictionary d | Pdf.Stream {contents = (Pdf.Dictionary d, _)} ->
+            begin match lookup "/Type" d with
+              Some (Pdf.Name ("/Page" | "/Pages")) ->
+                begin match Pdf.lookup_direct pdf "/Resources" obj with
+                  Some resources ->
+                    iter
+                      (fun key ->
+                         match Pdf.lookup_direct pdf key resources with
+                           Some (Pdf.Dictionary d) ->
+                             iter
+                               (fun (k, _) -> names := unslash k::!names)
+                               d
+                         | _ -> ())
+                      resource_keys
+                | _ -> ()
+                end
+            | _ -> ()
+            end
+        | _ -> ()
+      )
+      pdf;
+    setify !names
+
+let shortest names =
+  let rec loop prefix =
+    if List.exists (is_prefix prefix) names
+      then loop (next_string prefix)
+      else prefix
+  in
+    loop "a"
+
+let shortest_unused_prefix pdf =
+  shortest (names_used pdf)
+
+let addp p n =
+  if n = "" then raise (Pdf.PDFError "addp: blank name") else
+    "/" ^ p ^ String.sub n 1 (String.length n - 1)
+
+let direct_cs_names =
+  ["/DeviceGray"; "/DeviceRGB"; "/DeviceCMYK"; "/Pattern"]
+
+let direct_cs_names_inline =
+  ["/DeviceGray"; "/DeviceRGB"; "/DeviceCMYK"; "/G"; "/RGB"; "/CMYK"]
+
+let prefix_operator pdf p = function
+  | Pdfops.Op_Tf (f, s) -> Pdfops.Op_Tf (addp p f, s)
+  | Pdfops.Op_gs n -> Pdfops.Op_gs (addp p n)
+  | Pdfops.Op_CS n -> Pdfops.Op_CS (if mem n direct_cs_names then n else addp p n)
+  | Pdfops.Op_cs n -> Pdfops.Op_cs (if mem n direct_cs_names then n else addp p n)
+  | Pdfops.Op_SCNName (s, ns) -> Pdfops.Op_SCNName (addp p s, ns)
+  | Pdfops.Op_scnName (s, ns) -> Pdfops.Op_scnName (addp p s, ns)
+  | Pdfops.Op_sh s -> Pdfops.Op_sh (addp p s)
+  | Pdfops.Op_Do x -> Pdfops.Op_Do (addp p x)
+  | Pdfops.Op_DP (n, Pdf.Name x) -> Pdfops.Op_DP (n, Pdf.Name (addp p x))
+  | Pdfops.Op_BDC (n, Pdf.Name x) -> Pdfops.Op_BDC (n, Pdf.Name (addp p x))
+  | Pdfops.InlineImage (dict, bytes) ->
+      (* Replace any indirect "/CS" or "/ColorSpace" with a new "/CS" *)
+      let dict' =
+        match Pdf.lookup_direct_orelse pdf "/CS" "/ColorSpace" dict with
+        | Some (Pdf.Name n) when mem n direct_cs_names_inline -> dict
+        | Some (Pdf.Name n) ->
+            Pdf.add_dict_entry
+              (Pdf.remove_dict_entry
+                (Pdf.remove_dict_entry dict "/ColorSpace")
+                "/CS")
+              "/CS"
+              (Pdf.Name (addp p n))
+        | _ -> dict
+      in
+        Pdfops.InlineImage (dict', bytes)
+  | x -> x
+
+let change_resources pdf prefix resources =
+  let newdict name =
+    match Pdf.lookup_direct pdf name resources with
+    | Some (Pdf.Dictionary dict) ->
+        Pdf.Dictionary (map (fun (k, v) -> addp prefix k, v) dict)
+    | _ -> Pdf.Dictionary []
+  in
+    let newdicts = map newdict resource_keys in
+      let resources = ref resources in
+        iter2
+          (fun k v ->
+            resources := Pdf.add_dict_entry !resources k v)
+          resource_keys
+          newdicts;
+        !resources
+
+(* For each object in the PDF with /Type /Page or /Type /Pages:
+  a) Add the prefix to any name in /Resources
+  b) Add the prefix to any name used in any content streams, keeping track of
+  the streams we have processed to preserve sharing
+  
+FIXME: If a non-ISO PDF with content streams which don't end on lexical boundaries
+is provided, the parse will fail, and this function will raise an exception.
+
+The long-term solution to this is to explode the PDF with an
+-unshare-content-streams option, and then fix squeeze to re-share subcontent
+streams *)
+let add_prefix pdf prefix =
+  let fixed_streams = Hashtbl.create 100 in
+  let fix_stream resources i =
+    match i with Pdf.Indirect i ->
+      (*Printf.eprintf "fixing stream %i\n%!" i;*)
+      if not (Hashtbl.mem fixed_streams i) then
+        let operators = Pdfops.parse_operators pdf resources [Pdf.Indirect i] in
+          (*Printf.eprintf "calling prefix_operator on stream %i\n%!" i;*)
+          let operators' = map (prefix_operator pdf prefix) operators in
+            begin match Pdf.lookup_obj pdf i with
+              Pdf.Stream ({contents = (dict, stream)} as s) ->
+                begin match Pdfops.stream_of_ops operators' with
+                  Pdf.Stream {contents = ncontents} -> s := ncontents
+                | _ -> failwith "add_prefix: bad stream"
+                end
+            | _ -> failwith "add_prefix: bad stream 2"
+            end;
+            Hashtbl.add fixed_streams i ()
+    | _ -> failwith "add_prefix: not indirect"
+  in
+  Pdf.objselfmap
+    (fun obj ->
+       match obj with
+         Pdf.Dictionary dict as d ->
+           begin match Pdf.lookup_direct pdf "/Type" d with
+             Some (Pdf.Name ("/Page" | "/Pages")) ->
+               let resources, resources' =
+                 begin match Pdf.lookup_direct pdf "/Resources" obj with
+                   Some resources -> Some resources, Some (change_resources pdf prefix resources)
+                 | _ -> None, None
+                 end
+               in
+                 begin match lookup "/Contents" dict with
+                   Some (Pdf.Indirect i) ->
+                     fix_stream
+                       (if resources = None then Pdf.Dictionary [] else unopt resources)
+                       (Pdf.Indirect i)
+                 | Some (Pdf.Array a) ->
+                     iter
+                       (fix_stream
+                         (if resources = None then Pdf.Dictionary [] else unopt resources))
+                       a
+                 | _ -> ()
+                 end;
+                 begin match resources' with
+                   Some x -> Pdf.add_dict_entry d "/Resources" x
+                 | None -> d
+                 end
+           | _ -> obj
+           end
+       | _ -> obj)
+    pdf(*;
+    Printf.eprintf "***add_prefix has concluded\n%!";*)

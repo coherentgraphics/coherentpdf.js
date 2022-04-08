@@ -1,4 +1,3 @@
-(*pp camlp4o *)
 (* PDF Colour space parsing *)
 open Pdfutil
 open Pdfio
@@ -276,5 +275,4 @@ let write_colourspace (pdf : Pdf.t) = function
   | DeviceGray -> Pdf.Name "/DeviceGray"
   | DeviceRGB -> Pdf.Name "/DeviceRGB"
   | DeviceCMYK -> Pdf.Name "/DeviceCMYK"
-  | _ -> Printf.eprintf "write_colourspace space not suppported\n"; Pdf.Null
-
+  | _ -> Printf.eprintf "write_colourspace space not suppported\n%!"; Pdf.Null
