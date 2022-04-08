@@ -12,7 +12,15 @@ type flush_command =
   | Z_FULL_FLUSH
   | Z_FINISH
 
-external deflate_init: int -> bool -> stream = "camlpdf_camlzip_deflateInit"
+(*js_of_ocaml*)
+let deflate_init s b = Obj.magic 0
+let deflate a b c d e f g h = (false, 0, 0)
+let deflate_end x = ()
+let inflate_init b = Obj.magic 0
+let inflate a b c d e f g h = (false, 0, 0)
+let inflate_end s = ()
+
+(*external deflate_init: int -> bool -> stream = "camlpdf_camlzip_deflateInit"
 external deflate:
   stream -> bytes -> int -> int -> bytes -> int -> int -> flush_command
          -> bool * int * int
@@ -24,7 +32,7 @@ external inflate:
   stream -> bytes -> int -> int -> bytes -> int -> int -> flush_command
          -> bool * int * int
   = "camlpdf_camlzip_inflate_bytecode" "camlpdf_camlzip_inflate"
-external inflate_end: stream -> unit = "camlpdf_camlzip_inflateEnd"
+external inflate_end: stream -> unit = "camlpdf_camlzip_inflateEnd"*)
 
 let buffer_size = 1024
 

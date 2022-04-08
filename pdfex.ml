@@ -1,3 +1,2 @@
 let () =
-  Pdfutil.flprint "Hello, World!"
-
+  Pdfutil.flprint "Hello, World!\n"

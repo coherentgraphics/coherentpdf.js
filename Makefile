@@ -7,16 +7,18 @@ PDFMODS = pdfutil pdfio pdftransform pdfunits pdfpaper pdfcryptprimitives \
 
 SOURCES = $(foreach x,$(PDFMODS),$(x).ml $(x).mli) pdfex.ml
 
-PACKS = js_of_ocaml
-
-RESULT = pdfex
+RESULT = pdfex.byte
 
 OCAMLBCFLAGS = -g
 OCAMLLDFLAGS = -g
 
-all : byte-code-library byte-code
+all : byte-code
 
 -include OCamlMakefile
 
-js : pdfex
-	js_of_ocaml pdfex
+js :
+	js_of_ocaml pdfex.byte
+
+clean ::
+	rm -rf doc foo foo2 out.pdf out2.pdf foo.pdf decomp.pdf *.cmt *.cmti \
+	*.json test/*.pdf debug/*.pdf *.ps *.aux *.idx *.log *.out *.toc *.cut *.js
