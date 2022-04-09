@@ -1,23 +1,30 @@
-# Build the camlpdf library as byte code and native code
+# Build cpdf.js
 PDFMODS = pdfutil pdfio pdftransform pdfunits pdfpaper pdfcryptprimitives \
-  pdf pdfcrypt pdfflate pdfcodec pdfwrite pdfgenlex pdfread pdfjpeg pdfops \
+  pdf pdfcrypt pdfcodec pdfwrite pdfgenlex pdfread pdfjpeg pdfops \
   pdfdest pdfmarks pdfpagelabels pdfpage pdfannot pdffun pdfspace pdfimage \
   pdfafm pdfafmdata pdfglyphlist pdftext pdfstandard14 pdfgraphics pdfshapes \
-  pdfdate pdfocg pdfcff pdftype1 pdftruetype pdftype0 pdfmerge
+  pdfdate pdfocg pdfcff pdftype1 pdftruetype pdftype0 pdfmerge \
+  cpdfyojson cpdfxmlm cpdfutil \
+  cpdfunicodedata cpdferror cpdfdebug cpdfjson cpdfstrftime cpdfcoord \
+  cpdfattach cpdfpagespec cpdfposition cpdfpresent cpdfmetadata \
+  cpdfbookmarks cpdfpage cpdfaddtext cpdfimage cpdffont cpdftype \
+  cpdftexttopdf cpdftoc cpdfpad cpdfocg cpdfsqueeze cpdfdraft cpdfspot \
+  cpdfpagelabels cpdfcreate cpdfannot cpdfxobject cpdfimpose cpdftweak \
+  cpdfcommand
 
-SOURCES = $(foreach x,$(PDFMODS),$(x).ml $(x).mli) pdfex.ml
+SOURCES = $(foreach x,$(PDFMODS),$(x).ml $(x).mli) cpdfcommandrun.ml
 
-RESULT = pdfex.byte
+RESULT = cpdf.byte
 
 OCAMLBCFLAGS = -g
 OCAMLLDFLAGS = -g
 
-all : byte-code
+all : byte-code js
 
 -include OCamlMakefile
 
 js :
-	js_of_ocaml pdfex.byte
+	js_of_ocaml cpdf.byte
 
 clean ::
 	rm -rf doc foo foo2 out.pdf out2.pdf foo.pdf decomp.pdf *.cmt *.cmti \

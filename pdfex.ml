@@ -1,2 +1,3 @@
 let () =
-  Pdfutil.flprint "Hello, World!\n"
+  Pdfutil.flprint "Hello, World!\n";
+  Cpdfcommand.go ()
