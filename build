@@ -1,0 +1,7 @@
+cp ../camlpdf/*.ml .
+cp ../camlpdf/*.mli .
+cp ../cpdf-source/*.ml .
+cp ../cpdf-source/*.mli .
+cp ../camlpdf/*.c .
+cp ../camlpdf/*.h .
+make

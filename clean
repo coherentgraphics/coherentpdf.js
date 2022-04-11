@@ -1,0 +1,2 @@
+rm *.h *.c pdf*.ml pdf*.mli cpdf*.ml cpdf*.mli
+make clean
