@@ -14,6 +14,8 @@ PDFMODS = pdfutil pdfio pdftransform pdfunits pdfpaper pdfcryptprimitives \
 
 SOURCES = $(foreach x,$(PDFMODS),$(x).ml $(x).mli) cpdfcommandrun.ml
 
+PACKS = js_of_ocaml js_of_ocaml-ppx
+
 RESULT = cpdf.byte
 
 OCAMLBCFLAGS = -g
@@ -24,8 +26,8 @@ all : byte-code js
 -include OCamlMakefile
 
 js :
-	js_of_ocaml cpdf.byte
+	js_of_ocaml foo.js cpdf.byte
 
 clean ::
 	rm -rf doc foo foo2 out.pdf out2.pdf foo.pdf decomp.pdf *.cmt *.cmti \
-	*.json test/*.pdf debug/*.pdf *.ps *.aux *.idx *.log *.out *.toc *.cut *.js
+	*.json test/*.pdf debug/*.pdf *.ps *.aux *.idx *.log *.out *.toc *.cut cpdf.js
