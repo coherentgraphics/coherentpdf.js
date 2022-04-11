@@ -1,12 +1,10 @@
 open Js_of_ocaml
 
-let document = Js.Unsafe.global##.document
-let foomod = document##.foo
-let foovar = foomod##.foo
+let foo = Js.Unsafe.global##.foo
 
 let _ =
   match Filename.basename Sys.argv.(0) with
     "cpdf.top" -> ()
   | _ ->
-     Printf.printf "foo from foo.foo = %i\n" foovar;
+     Printf.printf "foo = %i\n" foo;
      Cpdfcommand.go ()
