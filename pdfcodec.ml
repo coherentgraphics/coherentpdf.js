@@ -278,14 +278,11 @@ let decode_flate_input i =
       (fun buf length ->
          if length > 0 then strings =| Bytes.sub_string buf 0 length)
     in
-      Printf.eprintf "decode_flate_input: producing empty dummy output\n%!";
-      (*Pdfflate.uncompress input output;*)
+      Pdfflate.uncompress input output;
       bytes_of_strings_rev !strings
 
 let encode_flate stream =
-  Printf.eprintf "encode_flate: producing same dummy output\n%!";
-  stream
-  (*flate_process (Pdfflate.compress ~level:!flate_level) stream*)
+  flate_process (Pdfflate.compress ~level:!flate_level) stream
 
 let debug_stream_serial = ref 0
 
@@ -305,13 +302,11 @@ let debug_stream s =
       close_out fh
 
 let decode_flate stream =
-  Printf.eprintf "encode_flate: producing same dummy output\n%!";
-  stream
-  (*if bytes_size stream = 0 then mkbytes 0 else (* Accept the empty stream. *)
+  if bytes_size stream = 0 then mkbytes 0 else (* Accept the empty stream. *)
     try flate_process Pdfflate.uncompress stream with
       Pdfflate.Error (a, b) ->
         if !debug then debug_stream stream;
-        raise (Couldn'tDecodeStream ("Flate" ^ " " ^ a ^ " " ^ b ^ " length " ^ string_of_int (bytes_size stream)))*)
+        raise (Couldn'tDecodeStream ("Flate" ^ " " ^ a ^ " " ^ b ^ " length " ^ string_of_int (bytes_size stream)))
 
 (* LZW *)
 

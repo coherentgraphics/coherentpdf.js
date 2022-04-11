@@ -7,7 +7,7 @@ type encryption =
   | AESV2
   | AESV3 of bool (* true = iso, false = old algorithm *)
 
-(*external aes_cook_encrypt_key : string -> string = "camlpdf_caml_aes_cook_encrypt_key"
+external aes_cook_encrypt_key : string -> string = "camlpdf_caml_aes_cook_encrypt_key"
 
 external aes_cook_decrypt_key : string -> string = "camlpdf_caml_aes_cook_decrypt_key"
 
@@ -21,16 +21,7 @@ external sha_256 : string -> string = "camlpdf_caml_sha256"
 
 external sha_384 : string -> string = "camlpdf_caml_sha384"
 
-external sha_512 : string -> string = "camlpdf_caml_sha512"*)
-
-(* blank for now *)
-let aes_cook_encrypt_key s = s
-let aes_cook_decrypt_key s = s
-let aes_encrypt a b c d e = ()
-let aes_decrypt a b c d e = ()
-let sha_256 s = s
-let sha_384 s = s
-let sha_512 s = s
+external sha_512 : string -> string = "camlpdf_caml_sha512"
 
 let key_expansion nk key =
   aes_cook_encrypt_key (string_of_int_array key)
