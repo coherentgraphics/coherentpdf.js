@@ -27,7 +27,7 @@ all : byte-code js
 -include OCamlMakefile
 
 js :
-	js_of_ocaml cpdfzlib.js sjcl.js cpdfcrypt.js cpdf.byte
+	js_of_ocaml pako.js cpdfzlib.js sjcl.js cpdfcrypt.js cpdf.byte
 
 clean ::
 	rm -rf doc foo foo2 out.pdf out2.pdf foo.pdf decomp.pdf *.cmt *.cmti \
