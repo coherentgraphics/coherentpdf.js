@@ -10,11 +10,11 @@ function camlpdf_caml_aes_cook_encrypt_key(s)
 //Provides: camlpdf_caml_aes_cook_decrypt_key 
 function camlpdf_caml_aes_cook_decrypt_key(s)
 {
-  console.log(s);
+  console.log(s.c);
   var key = sjcl.codec.base64.toBits('foo');
   console.log(globalThis);
   console.log('camlpdf_caml_aes_cook_decrypt_key');
-  return s;
+  return 'bar';
 }
 
 //Provides: camlpdf_caml_aes_encrypt
