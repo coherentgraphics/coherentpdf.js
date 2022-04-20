@@ -5,10 +5,14 @@ function camlpdf_caml_aes_cook_encrypt_key(s)
   return s;
 }
 
-//IMPL
+//This has to do rijndaelKeySetupDec(cooked_key, key, 8 * length(key))
+
 //Provides: camlpdf_caml_aes_cook_decrypt_key 
 function camlpdf_caml_aes_cook_decrypt_key(s)
 {
+  console.log(s);
+  var key = sjcl.codec.base64.toBits('foo');
+  console.log(globalThis);
   console.log('camlpdf_caml_aes_cook_decrypt_key');
   return s;
 }
@@ -19,9 +23,10 @@ function camlpdf_caml_aes_encrypt(s, bs, i, bs2, i2)
   console.log('camlpdf_caml_aes_encrypt');
 }
 
-//IMPL
+//This has to do rijndaelDecrypt(ckey, ???, src, dst)
+
 //Provides: camlpdf_caml_aes_decrypt
-function camlpdf_caml_aes_decrypt(s, bs, i, bs2, i2)
+function camlpdf_caml_aes_decrypt(ckey, src, src_ofs, dst, dst_ofs)
 {
   console.log('camlpdf_caml_aes_decrypt');
 }
