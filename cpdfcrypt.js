@@ -7,14 +7,18 @@ function camlpdf_caml_aes_cook_encrypt_key(s)
 
 //This has to do rijndaelKeySetupDec(cooked_key, key, 8 * length(key))
 
-//Provides: camlpdf_caml_aes_cook_decrypt_key 
+//Provides: camlpdf_caml_aes_cook_decrypt_key
+//Requires: caml_ml_string_length
 function camlpdf_caml_aes_cook_decrypt_key(s)
 {
   console.log(s.c);
+  console.log(caml_ml_string_length(s));
   var key = sjcl.codec.base64.toBits('foo');
   console.log(globalThis);
   console.log('camlpdf_caml_aes_cook_decrypt_key');
-  return 'bar';
+  var sout = new String('bar');
+  console.log(sout);
+  return s;
 }
 
 //Provides: camlpdf_caml_aes_encrypt
