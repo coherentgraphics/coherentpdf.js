@@ -27,11 +27,18 @@ function camlpdf_caml_aes_encrypt(s, bs, i, bs2, i2)
 }
 
 //Provides: camlpdf_caml_aes_decrypt
+//ckey is irrelevant here, since stored in global cpdf_aes above
 function camlpdf_caml_aes_decrypt(ckey, src, src_ofs, dst, dst_ofs)
 {
-  console.log(cpdf_aes);
-  console.log(src, src_ofs, dst, dst_ofs);
   console.log('camlpdf_caml_aes_decrypt');
+  var srcbytes = caml_array_of_bytes(src);
+  var srcbits = sjcl.codec.bytes.toBits(srcbytes);
+  var plaintext = cpdf_aes.decrypt(srcbits);
+  console.log(src);
+  console.log(src_ofs);
+  console.log(dst);
+  console.log(dst_ofs);
+  console.log('returning from camlpdf_caml_aes_decrypt');
 }
 
 //Provides: camlpdf_caml_sha256
