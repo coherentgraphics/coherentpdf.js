@@ -1,8 +1,8 @@
 //Provides: camlpdf_caml_aes_cook_encrypt_key 
 function camlpdf_caml_aes_cook_encrypt_key(s)
 {
-  console.log('camlpdf_caml_aes_cook_decrypt_key');
-  return s;
+  console.log('camlpdf_caml_aes_cook_encrypt_key');
+  return camlpdf_caml_aes_cook_decrypt_key(s);
 }
 
 //The aes cipher. We set it up in camlpdf_caml_aes_cook_decrypt_key, but store
@@ -13,6 +13,7 @@ var cpdf_aes;
 //Provides: camlpdf_caml_aes_cook_decrypt_key
 function camlpdf_caml_aes_cook_decrypt_key(s)
 {
+  console.log('camlpdf_caml_aes_cook_decrypt_key');
   var s2 = caml_array_of_bytes(s);
   var key = sjcl.codec.bytes.toBits(s2);
   cpdf_aes = new sjcl.cipher.aes(key);
@@ -21,9 +22,15 @@ function camlpdf_caml_aes_cook_decrypt_key(s)
 }
 
 //Provides: camlpdf_caml_aes_encrypt
-function camlpdf_caml_aes_encrypt(s, bs, i, bs2, i2)
+function camlpdf_caml_aes_encrypt(ckey, src, src_ofs, dst, dst_ofs)
 {
   console.log('camlpdf_caml_aes_encrypt');
+  var srcbytes = caml_array_of_bytes(src);
+  var srcbits = sjcl.codec.bytes.toBits(srcbytes);
+  var encrypted = cpdf_aes.encrypt(srcbits);
+  dst.t = 4;
+  dst.c = sjcl.codec.bytes.fromBits(encrypted);
+  dst.l = src.l;
 }
 
 //Provides: camlpdf_caml_aes_decrypt
