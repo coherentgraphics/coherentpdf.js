@@ -15,8 +15,6 @@ PDFMODS = pdfutil pdfio pdftransform pdfunits pdfpaper pdfcryptprimitives \
 SOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
 	  $(foreach x,$(PDFMODS),$(x).ml $(x).mli) cpdfcommandrun.ml
 
-PACKS = js_of_ocaml js_of_ocaml-ppx
-
 RESULT = cpdf.byte
 
 all : byte-code js
