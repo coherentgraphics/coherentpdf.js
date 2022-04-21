@@ -34,11 +34,9 @@ function camlpdf_caml_aes_decrypt(ckey, src, src_ofs, dst, dst_ofs)
   var srcbytes = caml_array_of_bytes(src);
   var srcbits = sjcl.codec.bytes.toBits(srcbytes);
   var plaintext = cpdf_aes.decrypt(srcbits);
-  console.log(src);
-  console.log(src_ofs);
-  console.log(dst);
-  console.log(dst_ofs);
-  console.log('returning from camlpdf_caml_aes_decrypt');
+  dst.t = 4;
+  dst.c = sjcl.codec.bytes.fromBits(plaintext);
+  dst.l = src.l;
 }
 
 //Provides: camlpdf_caml_sha256
