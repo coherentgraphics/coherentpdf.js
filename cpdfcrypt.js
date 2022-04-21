@@ -47,22 +47,37 @@ function camlpdf_caml_aes_decrypt(ckey, src, src_ofs, dst, dst_ofs)
 }
 
 //Provides: camlpdf_caml_sha256
-function camlpdf_caml_sha256(s)
+function camlpdf_caml_sha256(src)
 { 
   console.log('camlpdf_caml_sha256');
-  return s;
+  var srcbytes = caml_array_of_bytes(src);
+  var srcbits = sjcl.codec.bytes.toBits(srcbytes);
+  var hashed = sjcl.hash.sha256.hash(srcbits);
+  var hashedbytes = sjcl.codec.bytes.fromBits(hashed);
+  console.log(hashedbytes);
+  return caml_bytes_of_array(hashedbytes);
 }
 
 //Provides: camlpdf_caml_sha384
-function camlpdf_caml_sha384(s)
+function camlpdf_caml_sha384(src)
 {
   console.log('camlpdf_caml_sha384');
-  return s;
+  var srcbytes = caml_array_of_bytes(src);
+  var srcbits = sjcl.codec.bytes.toBits(srcbytes);
+  var hashed = sjcl.hash.sha384.hash(srcbits);
+  var hashedbytes = sjcl.codec.bytes.fromBits(hashed);
+  console.log(hashedbytes);
+  return caml_bytes_of_array(hashedbytes);
 }
 
 //Provides: camlpdf_caml_sha512
-function camlpdf_caml_sha512(s)
+function camlpdf_caml_sha512(src)
 {
   console.log('camlpdf_caml_sha512');
-  return s;
+  var srcbytes = caml_array_of_bytes(src);
+  var srcbits = sjcl.codec.bytes.toBits(srcbytes);
+  var hashed = sjcl.hash.sha512.hash(srcbits);
+  var hashedbytes = sjcl.codec.bytes.fromBits(hashed);
+  console.log(hashedbytes);
+  return caml_bytes_of_array(hashedbytes);
 }
