@@ -19,9 +19,6 @@ PACKS = js_of_ocaml js_of_ocaml-ppx
 
 RESULT = cpdf.byte
 
-OCAMLBCFLAGS = -g
-OCAMLLDFLAGS = -g
-
 all : byte-code js
 
 -include OCamlMakefile
