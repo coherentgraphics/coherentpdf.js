@@ -6,4 +6,5 @@ cp ../cpdf-source/*.ml .
 cp ../cpdf-source/*.mli .
 cp ../cpdflib-source/*.ml .
 cp ../cpdflib-source/*.mli .
+cp js-pdfcodec.ml pdfcodec.ml 
 make
