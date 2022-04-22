@@ -67,20 +67,65 @@ let _ =
        (* CHAPTER 8. Logos, Watermarks and Stamps *)
 
        (* CHAPTER 9. Multipage facilities *)
+       method twoUp = Cpdflib.twoUp
+       method twoUpStack = Cpdflib.twoUpStack
+       method impose = Cpdflib.impose
+       method padBefore = Cpdflib.padBefore
+       method padAfter = Cpdflib.padAfter
+       method padEvery = Cpdflib.padEvery
+       method padMultiple = Cpdflib.padMultiple
+       method padMultipleBefore = Cpdflib.padMultipleBefore
 
        (* CHAPTER 10. Annotations *)
+       method annotationsJSON = Cpdflib.annotationsJSON
 
        (* CHAPTER 11. Document Information and Metadata *)
 
        (* CHAPTER 12. File Attachments *)
+       method attachFile = Cpdflib.attachFile
+       method attachFileToPage = Cpdflib.attachFileToPage
+       method removeAttachedFiles = Cpdflib.removeAttachedFiles
+       method startGetAttachments = Cpdflib.startGetAttachments
+       method endGetAttachments = Cpdflib.endGetAttachments
+       method numberGetAttachments = Cpdflib.numberGetAttachments
+       method getAttachmentName = Cpdflib.getAttachmentName
+       method getAttachmentPage = Cpdflib.getAttachmentPage
+       method getAttachmentData = Cpdflib.getAttachmentData
 
        (* CHAPTER 13. Images *)
+       method startGetImageResolution = Cpdflib.startGetImageResolution
+       method getImageResolutionPageNumber = Cpdflib.getImageResolutionPageNumber
+       method getImageResolutionImageName = Cpdflib.getImageResolutionImageName
+       method getImageResolutionXPixels = Cpdflib.getImageResolutionXPixels
+       method getImageResolutionYPixels = Cpdflib.getImageResolutionYPixels
+       method getImageResolutionXRes = Cpdflib.getImageResolutionXRes
+       method getImageResolutionYRes = Cpdflib.getImageResolutionYRes
+       method endGetImageResolution = Cpdflib.endGetImageResolution
 
        (* CHAPTER 14. Fonts *)
+       method numberFonts = Cpdflib.numberFonts
+       method getFontPage = Cpdflib.getFontPage
+       method getFontName = Cpdflib.getFontName
+       method getFontType = Cpdflib.getFontType
+       method getFontEncoding = Cpdflib.getFontEncoding
+       method startGetFontInfo = Cpdflib.startGetFontInfo
+       method endGetFontInfo = Cpdflib.endGetFontInfo
+       method copyFont = Cpdflib.copyFont
+       method removeFonts = Cpdflib.removeFonts
 
        (* CHAPTER 15. PDF and JSON *)
+       method outputJSON = Cpdflib.outputJSON
+       method outputJSONMemory = Cpdflib.outputJSONMemory
+       method fromJSON = Cpdflib.fromJSON
+       method fromJSONMemory = Cpdflib.fromJSONMemory
 
        (* CHAPTER 16. Optional Content Groups *)
+       method startGetOCGList = Cpdflib.startGetOCGList
+       method ocgListEntry = Cpdflib.ocgListEntry
+       method endGetOCGList = Cpdflib.endGetOCGList
+       method ocgCoalesce = Cpdflib.ocgCoalesce
+       method ocgRename = Cpdflib.ocgRename
+       method ocgOrderAll = Cpdflib.ocgOrderAll
 
        (* CHAPTER 17. Creating New PDFs *)
        method blankDocument = Cpdflib.blankDocument
