@@ -53,6 +53,34 @@ let _ =
        method selectPages = Cpdflib.selectPages
 
        (* CHAPTER 3. Pages *)
+       method scalePages = Cpdflib.scalePages
+       method scaleToFit = Cpdflib.scaleToFit
+       method scaleToFitPaper = Cpdflib.scaleToFit
+       method scaleContents = Cpdflib.scaleContents
+       method rotate = Cpdflib.rotate
+       method rotateBy = Cpdflib.rotateBy
+       method rotateContents = Cpdflib.rotateContents
+       method upright = Cpdflib.upright
+       method hFlip = Cpdflib.hFlip
+       method vFlip = Cpdflib.vFlip
+       method crop = Cpdflib.crop
+       method setMediabox = Cpdflib.setMediabox
+       method setCropBox = Cpdflib.setCropBox
+       method setTrimBox = Cpdflib.setTrimBox
+       method setArtBox = Cpdflib.setArtBox
+       method getMediaBox = Cpdflib.getMediaBox
+       method getCropBox = Cpdflib.getCropBox
+       method getArtBox = Cpdflib.getArtBox
+       method getBleedBox = Cpdflib.getBleedBox
+       method getTrimBox = Cpdflib.getTrimBox
+       method removeCrop = Cpdflib.removeCrop
+       method removeArt = Cpdflib.removeArt
+       method removeTrim = Cpdflib.removeTrim
+       method removeBleed = Cpdflib.removeBleed
+       method hardBox = Cpdflib.hardBox
+       method trimMarks = Cpdflib.trimMarks
+       method showBoxes = Cpdflib.showBoxes
+
 
        (* CHAPTER 4. Encryption and Decryption *)
 
@@ -61,10 +89,33 @@ let _ =
        method decompress = Cpdflib.decompress
 
        (* CHAPTER 6. Bookmarks *)
+       method startGetBookmarkInfo = Cpdflib.startGetBookmarkInfo
+       method endGetBookmarkInfo = Cpdflib.endGetBookmarkInfo
+       method numberBookmarks = Cpdflib.numberBookmarks
+       method getBookmarkPage = Cpdflib.getBookmarkPage
+       method getBookmarkLevel = Cpdflib.getBookmarkLevel
+       method getBookmarkText = Cpdflib.getBookmarkText
+       method getBookmarkOpenStatus = Cpdflib.getBookmarkOpenStatus
+       method startSetBookmarkInfo = Cpdflib.startSetBookmarkInfo
+       method endSetBookmarkInfo = Cpdflib.endSetBookmarkInfo
+       method setBookmarkPage = Cpdflib.setBookmarkPage
+       method setBookmarkLevel = Cpdflib.setBookmarkLevel
+       method setBookmarkOpenStatus = Cpdflib.setBookmarkOpenStatus
+       method getBookmarksJSON = Cpdflib.getBookmarksJSON
+       method setBookmarksJSON = Cpdflib.setBookmarksJSON
+       method tableOfContents = Cpdflib.tableOfContents
 
        (* CHAPTER 7. Presentations *)
 
        (* CHAPTER 8. Logos, Watermarks and Stamps *)
+       method stampOn = Cpdflib.stampOn
+       method stampUnder = Cpdflib.stampUnder
+       method stampExtended = Cpdflib.stampExtended
+       method combinePages = Cpdflib.combinePages
+       method addText = Cpdflib.addText
+       method removeText = Cpdflib.removeText
+       method addContent = Cpdflib.addContent
+       method stampAsXObject = Cpdflib.stampAsXObject
 
        (* CHAPTER 9. Multipage facilities *)
        method twoUp = Cpdflib.twoUp
