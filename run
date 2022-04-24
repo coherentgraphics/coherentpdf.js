@@ -1,1 +1,1 @@
-node cpdf.js -info ~/Desktop/helloenc.pdf
+node cpdflibtest.js
