@@ -1,1 +1,1 @@
-node cpdflibtest.js
+CAMLPDF_REPRODUCIBLE_IDS=true CPDF_REPRODUCIBLE_DATES=true node cpdflibtest.js
