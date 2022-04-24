@@ -281,9 +281,12 @@ let decode_flate_input i =
       Pdfflate.uncompress input output;
       bytes_of_strings_rev !strings
 
+(* JS *)
+external camlpdf_caml_zlib_compress : string -> string = "camlpdf_caml_zlib_compress"
 
 let encode_flate stream =
-  flate_process (Pdfflate.compress ~level:!flate_level) stream
+  Pdfio.bytes_of_string (camlpdf_caml_zlib_compress (Pdfio.string_of_bytes stream))
+  (*flate_process (Pdfflate.compress ~level:!flate_level) stream*)
 
 let debug_stream_serial = ref 0
 
@@ -304,6 +307,7 @@ let debug_stream s =
 
 (* JS *)
 external camlpdf_caml_zlib_decompress : string -> string = "camlpdf_caml_zlib_decompress"
+
 
 let decode_flate stream =
   if bytes_size stream = 0 then mkbytes 0 else (* Accept the empty stream. *)
