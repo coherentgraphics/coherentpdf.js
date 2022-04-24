@@ -12,10 +12,10 @@ PDFMODS = pdfutil pdfio pdftransform pdfunits pdfpaper pdfcryptprimitives \
   cpdfpagelabels cpdfcreate cpdfannot cpdfxobject cpdfimpose cpdftweak \
   cpdflib
 
-SOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
+XSOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
 	  $(foreach x,$(PDFMODS),$(x).ml $(x).mli) exports.ml
 
-RUNSOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
+SOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
 	  $(foreach x,$(PDFMODS),$(x).ml $(x).mli) cpdfcommand.ml cpdfcommandrun.ml
 
 PACKS = js_of_ocaml,js_of_ocaml-ppx
@@ -27,7 +27,7 @@ all : byte-code js
 -include OCamlMakefile
 
 js :
-	js_of_ocaml cpdfzlib.js pako.js sjcl.js cpdfcrypt.js cpdf.byte
+	js_of_ocaml pakostub.js cpdfzlib.js pako.js sjcl.js cpdfcrypt.js cpdf.byte
 
 clean ::
 	rm -rf doc foo foo2 out.pdf out2.pdf foo.pdf decomp.pdf *.cmt *.cmti \
