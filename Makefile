@@ -20,6 +20,9 @@ SOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
 
 PACKS = js_of_ocaml,js_of_ocaml-ppx
 
+OCAMLBCFLAGS = -g
+OCAMLLDFLAGS = -g
+
 RESULT = cpdf.byte
 
 all : byte-code js
@@ -27,7 +30,7 @@ all : byte-code js
 -include OCamlMakefile
 
 js :
-	js_of_ocaml pakostub.js cpdfzlib.js pako.js sjcl.js cpdfcrypt.js cpdf.byte
+	js_of_ocaml --pretty pakostub.js cpdfzlib.js pako.js sjcl.js cpdfcrypt.js cpdf.byte
 
 clean ::
 	rm -rf doc foo foo2 out.pdf out2.pdf foo.pdf decomp.pdf *.cmt *.cmti \
