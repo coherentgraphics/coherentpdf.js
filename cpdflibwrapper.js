@@ -1,5 +1,7 @@
 //This wraps the things exported from exports.ml into a JavaScript library.
 //We wrap and re-export.
+
+//CHAPTER 1. Basics
 function setFast()
 {
   return sjcl.cpdflib.setFast();
@@ -20,7 +22,32 @@ function ptOfCm(x)
   return sjcl.cpdflib.ptOfCm(x);
 }
 
-joo_global_object.cpdfjs =
+function ptOfMm(x)
+{
+  return sjcl.cpdflib.ptOfMm(x);
+}
+
+function ptOfIn(x)
+{
+  return sjcl.cpdflib.ptOfIn(x);
+}
+
+function cmOfPt(x)
+{
+  return sjcl.cpdflib.cmOfPt(x);
+}
+
+function mmOfPt(x)
+{
+  return sjcl.cpdflib.mmOfPt(x);
+}
+
+function inOfPt(x)
+{
+  return sjcl.cpdflib.inOfPt(x);
+}
+
+module.exports =
   {
   //CHAPTER 1. Basics
   setFast : setFast,
@@ -32,14 +59,13 @@ joo_global_object.cpdfjs =
   deletePdf : deletePdf,
   parsePagespec : parsePagespec,
   stringOfPagespec : stringOfPagespec,*/
-  ptOfCm : ptOfCm
-  /*,
+  ptOfCm : ptOfCm,
   ptOfMm : ptOfMm,
   ptOfIn : ptOfIn,
   cmOfPt : cmOfPt,
   mmOfPt : mmOfPt,
   inOfPt : inOfPt,
-  range : range,
+  /*range : range,
   blankRange : blankrange,
   makerange : makerange,
   writerange : writerange,
