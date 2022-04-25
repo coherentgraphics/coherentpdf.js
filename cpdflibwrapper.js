@@ -4,17 +4,17 @@
 /* CHAPTER 0. Preliminaries */
 function setFast()
 {
-  return sjcl.cpdflib.setFast();
+  return cpdf.cpdflib.setFast();
 }
 
 function setSlow()
 {
-  return sjcl.cpdflib.setSlow();
+  return cpdf.cpdflib.setSlow();
 }
 
 function version()
 {
-  return sjcl.cpdflib.version;
+  return cpdf.cpdflib.version;
 }
 
 //CHAPTER 1. Basics
@@ -22,38 +22,38 @@ function fromFile(filename, userpw)
 {
   return
     caml_jsstring_of_string
-      (sjcl.cpdflib.fromFile
+      (cpdf.cpdflib.fromFile
         (caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw)));
 }
 
 function ptOfCm(x)
 {
-  return sjcl.cpdflib.ptOfCm(x);
+  return cpdf.cpdflib.ptOfCm(x);
 }
 
 function ptOfMm(x)
 {
-  return sjcl.cpdflib.ptOfMm(x);
+  return cpdf.cpdflib.ptOfMm(x);
 }
 
 function ptOfIn(x)
 {
-  return sjcl.cpdflib.ptOfIn(x);
+  return cpdf.cpdflib.ptOfIn(x);
 }
 
 function cmOfPt(x)
 {
-  return sjcl.cpdflib.cmOfPt(x);
+  return cpdf.cpdflib.cmOfPt(x);
 }
 
 function mmOfPt(x)
 {
-  return sjcl.cpdflib.mmOfPt(x);
+  return cpdf.cpdflib.mmOfPt(x);
 }
 
 function inOfPt(x)
 {
-  return sjcl.cpdflib.inOfPt(x);
+  return cpdf.cpdflib.inOfPt(x);
 }
 
 module.exports =
@@ -85,8 +85,9 @@ module.exports =
   union : union,
   different : difference,
   removeDuplicates : removeDuplicates,
-  isInRange : isInRange,
+  isInRange : isInRange*/
   fromFile : fromFile,
+  /*
   fromFileLazy : fromFileLazy,
   fromMemory : fromMemory,
   fromMemoryLazy : fromMemoryLazy,

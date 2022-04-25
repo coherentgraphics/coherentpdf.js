@@ -14,8 +14,8 @@ cpdfjs.setSlow();
 console.log("---cpdf_clearError()");
 
 /* CHAPTER 1. Basics */
-System.out.println("***** CHAPTER 1. Basics");
-System.out.println("---cpdf_fromFile()");
+console.log("***** CHAPTER 1. Basics");
+console.log("---cpdf_fromFile()");
 pdf = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
 /*System.out.println("---cpdf_fromFileLazy()");
 Jcpdf.Pdf pdf2 = jcpdf.fromFileLazy("testinputs/cpdflibmanual.pdf", "");
