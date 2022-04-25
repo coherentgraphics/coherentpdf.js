@@ -26,6 +26,14 @@ function fromFile(filename, userpw)
         (caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw)));
 }
 
+function fromFileLazy(filename, userpw)
+{
+  return
+    caml_jsstring_of_string
+      (cpdf.cpdflib.fromFileLazy
+        (caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw)));
+}
+
 function ptOfCm(x)
 {
   return cpdf.cpdflib.ptOfCm(x);
@@ -54,6 +62,11 @@ function mmOfPt(x)
 function inOfPt(x)
 {
   return cpdf.cpdflib.inOfPt(x);
+}
+
+function toMemory(pdf, linearize, make_id)
+{
+  return caml_array_of_bytes(cpdf.cpdflib.toMemory(pdf, linearize, make_id));
 }
 
 module.exports =
@@ -86,10 +99,10 @@ module.exports =
   different : difference,
   removeDuplicates : removeDuplicates,
   isInRange : isInRange*/
-  fromFile : fromFile,
-  /*
-  fromFileLazy : fromFileLazy,
-  fromMemory : fromMemory,
+  fromFile,
+  fromFileLazy,
+  toMemory,
+  /*fromMemory : fromMemory,
   fromMemoryLazy : fromMemoryLazy,
   toFile : toFile,
   toFileMemory : toFileMemory,
