@@ -1026,20 +1026,20 @@ const aes256bittrue = 5;
 const aes256bitisofalse = 6;
 const aes256bitisotrue = 7;
 
-function toFileEncrypted(pdf, encryption_method, perms, user, owner, linearize, makeid, filename)
+function toFileEncrypted(pdf, encryption_method, perms, owner, user, linearize, makeid, filename)
 {
-  console.log(perms);
-  var perms_array = caml_array_of_bytes(perms);
-  console.log(perms_array);
-  cpdf.cpdflib.toFileEncrypted(pdf, encryption_method, perms_array, user, owner, linearize, makeid,
+  var ps = [0].concat(perms);
+  cpdf.cpdflib.toFileEncrypted(pdf, encryption_method, ps,
+                               caml_string_of_jsstring(owner), caml_string_of_jsstring(user), linearize, makeid,
                                caml_string_of_jsstring(filename));
 }
 
-function toFileEncryptedExt(pdf, encryption_method, perms, user, owner, linearize, makeid, preserve_objstm, generate_objstm, compress_objstm, filename)
+function toFileEncryptedExt(pdf, encryption_method, perms, owner, user, linearize, makeid, preserve_objstm, generate_objstm, compress_objstm, filename)
 {
-  var perms_array = caml_array_of_bytes(perms); 
-  cpdf.cpdflib.toFileEncrypted(pdf, encryption_method, perms_array, user, owner, linearize, makeid,
-                               preserve_objstm, generate_objstm, compress_objstm,
+  var ps = [0].concat(perms);
+  cpdf.cpdflib.toFileEncrypted(pdf, encryption_method, ps,
+                               caml_string_of_jsstring(owner), caml_string_of_jsstring(user),
+                               linearize, makeid, preserve_objstm, generate_objstm, compress_objstm,
                                caml_string_of_jsstring(filename));
 }
 
