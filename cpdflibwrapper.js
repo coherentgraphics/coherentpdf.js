@@ -1,7 +1,7 @@
 //This wraps the things exported from exports.ml into a JavaScript library.
 //We wrap and re-export.
 
-//CHAPTER 1. Basics
+/* CHAPTER 0. Preliminaries */
 function setFast()
 {
   return sjcl.cpdflib.setFast();
@@ -15,6 +15,15 @@ function setSlow()
 function version()
 {
   return sjcl.cpdflib.version;
+}
+
+//CHAPTER 1. Basics
+function fromFile(filename, userpw)
+{
+  return
+    caml_jsstring_of_string
+      (sjcl.cpdflib.fromFile
+        (caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw)));
 }
 
 function ptOfCm(x)
