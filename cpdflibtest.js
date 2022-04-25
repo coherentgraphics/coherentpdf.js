@@ -83,44 +83,40 @@ console.log("---cpdf_stringOfPagespec()");
 String ps = cpdfjs.stringOfPagespec(pdf3, r);
 System.out.format("String of pagespec is %s\n", ps);
 console.log("---cpdf_blankRange()");
-cpdfjs.Range b = cpdfjs.blankRange();
-cpdfjs.Pdf pdf10 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
-console.log("---cpdf_pages()");
+cpdfjs.Range b = cpdfjs.blankRange();*/
+pdf10 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+/*console.log("---cpdf_pages()");
 int pages = cpdfjs.pages(pdf10);
 System.out.format("Pages = %d\n", pages);
 console.log("---cpdf_pagesFast()");
 int pagesfast = cpdfjs.pagesFast("", "testinputs/cpdflibmanual.pdf");
-System.out.format("Pages = %d\n", pagesfast);
+System.out.format("Pages = %d\n", pagesfast);*/
 console.log("---cpdf_toFile()");
 cpdfjs.toFile(pdf10, "testoutputs/01tofile.pdf", false, false);
 console.log("---cpdf_toFileExt()");
 cpdfjs.toFileExt(pdf10, "testoutputs/01tofileext.pdf", false, true, true, true, true);
 console.log("---cpdf_isEncrypted()");
-boolean isenc = cpdfjs.isEncrypted(pdf10);
-System.out.format("isencrypted:%d\n", isenc ? 1 : 0);
+var isenc = cpdfjs.isEncrypted(pdf10);
+console.log("isencrypted:%i", isenc ? 1 : 0);
 console.log("---cpdf_isLinearized()");
-boolean lin = cpdfjs.isLinearized("testinputs/cpdfmanual.pdf");
-System.out.format("islinearized:%d\n", lin ? 1 : 0);
-try
-   (cpdfjs.Pdf pdf400 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
-    cpdfjs.Pdf pdf401 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", ""))
-{
-    int[] permissions = new int[] {cpdfjs.noEdit};
-    console.log("---cpdf_toFileEncrypted()");
-    cpdfjs.toFileEncrypted(pdf400, cpdfjs.pdf40bit, permissions, "owner", "user", false, false, "testoutputs/01encrypted.pdf");
-    console.log("---cpdf_toFileEncryptedExt()");
-    cpdfjs.toFileEncryptedExt(pdf401, cpdfjs.pdf40bit, permissions, "owner", "user", false, false, true, true, true, "testoutputs/01encryptedext.pdf");
-    console.log("---cpdf_hasPermission()");
-}
-try (cpdfjs.Pdf pdfenc = cpdfjs.fromFile("testoutputs/01encrypted.pdf", "user"))
-{
-    boolean hasnoedit = cpdfjs.hasPermission(pdfenc, cpdfjs.noEdit);
-    boolean hasnocopy = cpdfjs.hasPermission(pdfenc, cpdfjs.noCopy);
-    System.out.format("Haspermission %d, %d\n", hasnoedit ? 1 : 0, hasnocopy ? 1 : 0);
-    console.log("---cpdf_encryptionKind()");
-    int enckind = cpdfjs.encryptionKind(pdfenc);
-    System.out.format("encryption kind is %d\n", enckind);
-}
+var lin = cpdfjs.isLinearized("testinputs/cpdfmanual.pdf");
+console.log("islinearized:%i", lin ? 1 : 0);
+var pdf400 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var pdf401 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var permissions = [cpdfjs.noEdit];
+console.log(permissions.length);
+console.log("---cpdf_toFileEncrypted()");
+cpdfjs.toFileEncrypted(pdf400, cpdfjs.pdf40bit, permissions, "owner", "user", false, false, "testoutputs/01encrypted.pdf");
+console.log("---cpdf_toFileEncryptedExt()");
+cpdfjs.toFileEncryptedExt(pdf401, cpdfjs.pdf40bit, permissions, "owner", "user", false, false, true, true, true, "testoutputs/01encryptedext.pdf");
+console.log("---cpdf_hasPermission()");
+var pdfenc = cpdfjs.fromFile("testoutputs/01encrypted.pdf", "user");
+/*boolean hasnoedit = cpdfjs.hasPermission(pdfenc, cpdfjs.noEdit);
+boolean hasnocopy = cpdfjs.hasPermission(pdfenc, cpdfjs.noCopy);
+System.out.format("Haspermission %d, %d\n", hasnoedit ? 1 : 0, hasnocopy ? 1 : 0);
+console.log("---cpdf_encryptionKind()");
+int enckind = cpdfjs.encryptionKind(pdfenc);
+System.out.format("encryption kind is %d\n", enckind);
 console.log("---cpdf_decryptPdf()");
 cpdfjs.decryptPdf(pdf10, "");
 console.log("---cpdf_decryptPdfOwner()");

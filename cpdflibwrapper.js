@@ -913,6 +913,16 @@ function fromFile(filename, userpw)
   return r
 }
 
+function toFile(pdf, filename, linearize, make_id)
+{
+  cpdf.cpdflib.toFile(pdf, caml_string_of_jsstring(filename), linearize, make_id);
+}
+
+function toFileExt(pdf, filename, linearize, make_id, preserve_objstm, create_objstm, compress_objstm)
+{
+  cpdf.cpdflib.toFileExt(pdf, caml_string_of_jsstring(filename), linearize, make_id, preserve_objstm, create_objstm, compress_objstm);
+}
+
 function fromFileLazy(filename, userpw)
 {
   var r =
@@ -986,6 +996,53 @@ function blankDocumentPaper(papersize, pages)
   return r;
 }
 
+function isLinearized(filename)
+{
+  var r = cpdf.cpdflib.isLinearized(caml_string_of_jsstring(filename));
+  return r;
+}
+
+function isEncrypted(pdf)
+{
+  var r = cpdf.cpdflib.isEncrypted(pdf);
+  return r;
+}
+
+const noEdit = 0;
+const noPrint = 1;
+const noCopy = 2;
+const noAnnot = 3;
+const noForms = 4;
+const noExtract = 5;
+const noAssemble = 6;
+const noHqPrint = 7;
+
+const pdf40bit = 0;
+const pdf128bit = 1;
+const aes128bitfalse = 2;
+const aes128bittrue = 3;
+const aes256bitfalse = 4;
+const aes256bittrue = 5;
+const aes256bitisofalse = 6;
+const aes256bitisotrue = 7;
+
+function toFileEncrypted(pdf, encryption_method, perms, user, owner, linearize, makeid, filename)
+{
+  console.log(perms);
+  var perms_array = caml_array_of_bytes(perms);
+  console.log(perms_array);
+  cpdf.cpdflib.toFileEncrypted(pdf, encryption_method, perms_array, user, owner, linearize, makeid,
+                               caml_string_of_jsstring(filename));
+}
+
+function toFileEncryptedExt(pdf, encryption_method, perms, user, owner, linearize, makeid, preserve_objstm, generate_objstm, compress_objstm, filename)
+{
+  var perms_array = caml_array_of_bytes(perms); 
+  cpdf.cpdflib.toFileEncrypted(pdf, encryption_method, perms_array, user, owner, linearize, makeid,
+                               preserve_objstm, generate_objstm, compress_objstm,
+                               caml_string_of_jsstring(filename));
+}
+
 module.exports =
   {
   a0portrait,
@@ -1004,6 +1061,22 @@ module.exports =
   usletterlandscape,
   uslegalportrait,
   uslegallandscape,
+  noEdit,
+  noPrint,
+  noCopy,
+  noAnnot,
+  noForms,
+  noExtract,
+  noAssemble,
+  noHqPrint,
+  pdf40bit,
+  pdf128bit,
+  aes128bitfalse,
+  aes128bittrue,
+  aes256bitfalse,
+  aes256bittrue,
+  aes256bitisofalse,
+  aes256bitisotrue,
   //CHAPTER 1. Basics
   setFast,
   setSlow,
@@ -1037,13 +1110,16 @@ module.exports =
   toMemory,
   /* fromMemory, */
   /*fromMemoryLazy : fromMemoryLazy,*/
-  /* toFile, */
+  toFile,
+  toFileExt,
+  toFileEncrypted,
+  toFileEncryptedExt,
   /*toFileMemory : toFileMemory,
   pages : pages,
   pagesFast : pagesFast,
-  all : all,
-  isEncrypted : isEncrypted,
-  decryptPdf : decryptPdf,
+  all : all, */
+  isEncrypted,
+  /*decryptPdf : decryptPdf,
   decryptPdfOwner : decryptPdfOwner,
   hasPermission : hasPermission,
   encryptionKind : encryptionKind,
@@ -1132,9 +1208,9 @@ module.exports =
   annotationsJSON : annotationsJSON,
 
   //CHAPTER 11. Document Information and Metadata
-  getVersion : getVersion,
-  isLinearized : isLinearized,
-  getTitle : getTitle,
+  getVersion : getVersion,*/
+  isLinearized,
+  /*getTitle : getTitle,
   getAuthor : getAuthor,
   getSubject : getSubject,
   getKeywords : getKeywords,
