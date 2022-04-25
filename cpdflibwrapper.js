@@ -907,21 +907,17 @@ function version()
 //CHAPTER 1. Basics
 function fromFile(filename, userpw)
 {
-  console.log("*** beginning of cpdflibwrapper.fromFile");
   var r = 
     cpdf.cpdflib.fromFile
       (caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw));
-  console.log("*** end of cpdflibwrapper.fromFile");
   return r
 }
 
 function fromFileLazy(filename, userpw)
 {
-  console.log("*** beginning of cpdflibwrapper.fromFileLazy");
   var r =
     cpdf.cpdflib.fromFileLazy
       (caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw));
-  console.log("*** end of cpdflibwrapper.fromFileLazy");
   return r;
 }
 
@@ -957,14 +953,57 @@ function inOfPt(x)
 
 function toMemory(pdf, linearize, make_id)
 {
-  console.log("***beginning of toMemory");
   var r = cpdf.cpdflib.toMemory(pdf, linearize, make_id);
-  console.log("***after toMemory");
   return r.data;
+}
+
+function blankDocument(w, h, pages)
+{
+  var r = cpdf.cpdflib.blankDocument(w, h, pages);
+  return r;
+}
+
+const a0portrait = 0;
+const a1portrait = 1;
+const a2portrait = 2;
+const a3portrait = 3;
+const a4portrait = 4;
+const a5portrait = 5;
+const a0landscape = 6;
+const a1landscape = 7;
+const a2landscape = 8;
+const a3landscape = 9;
+const a4landscape = 10;
+const a5landscape = 11;
+const usletterportrait = 12;
+const usletterlandscape = 13;
+const uslegalportrait = 14;
+const uslegallandscape = 15;
+
+function blankDocumentPaper(papersize, pages)
+{
+  var r = cpdf.cpdflib.blankDocumentPaper(papersize, pages);
+  return r;
 }
 
 module.exports =
   {
+  a0portrait,
+  a1portrait,
+  a2portrait,
+  a3portrait,
+  a4portrait,
+  a5portrait,
+  a0landscape,
+  a1landscape,
+  a2landscape,
+  a3landscape,
+  a4landscape,
+  a5landscape,
+  usletterportrait,
+  usletterlandscape,
+  uslegalportrait,
+  uslegallandscape,
   //CHAPTER 1. Basics
   setFast,
   setSlow,
@@ -996,10 +1035,10 @@ module.exports =
   fromFile,
   fromFileLazy,
   toMemory,
-  /*fromMemory : fromMemory,
-  fromMemoryLazy : fromMemoryLazy,
-  toFile : toFile,
-  toFileMemory : toFileMemory,
+  /* fromMemory, */
+  /*fromMemoryLazy : fromMemoryLazy,*/
+  /* toFile, */
+  /*toFileMemory : toFileMemory,
   pages : pages,
   pagesFast : pagesFast,
   all : all,
@@ -1202,10 +1241,11 @@ module.exports =
   ocgCoalesce : ocgCoalesce,
   ocgRename : ocgRename,
   ocgOrderAll : ocgOrderAll,
-
+ */
   //CHAPTER 17. Creating New PDFs
-  blankDocument : blankDocument,
-  blankDocumentPaper : blankDocumentPaper,
+  blankDocument,
+  blankDocumentPaper,
+  /*
   textToPDF : textToPDF,
   textToPDFPaper : textToPDFPaper,
 

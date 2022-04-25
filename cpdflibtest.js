@@ -17,43 +17,42 @@ console.log("---cpdf_clearError()");
 console.log("***** CHAPTER 1. Basics");
 console.log("---cpdf_fromFile()");
 var pdf = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
-console.log(pdf);
 console.log("---cpdf_fromFileLazy()");
 var pdf2 = cpdfjs.fromFileLazy("testinputs/cpdflibmanual.pdf", "");
-console.log(pdf2);
 console.log("---cpdf_toMemory()");
 var mempdf = cpdfjs.toMemory(pdf, false, false);
 console.log("---END OF CHAPTER 1");
 /*console.log("---cpdf_fromMemory()");
-cpdfjs.Pdf frommem = cpdfjs.fromMemory(mempdf, "");
-cpdfjs.toFile(frommem, "testoutputs/01fromMemory.pdf", false, false);
-console.log("---cpdf_fromMemoryLazy()");
+var frommem = cpdfjs.fromMemory(mempdf, "");
+cpdfjs.toFile(frommem, "testoutputs/01fromMemory.pdf", false, false);*/
+/*console.log("---cpdf_fromMemoryLazy()");
 cpdfjs.Pdf frommemlazy = cpdfjs.fromMemoryLazy(mempdf, "");
 cpdfjs.toFile(frommemlazy, "testoutputs/01fromMemoryLazy.pdf", false, false);
-cpdfjs.fromMemoryLazyRelease(mempdf);
-cpdfjs.Pdf pdf3 = cpdfjs.blankDocument(153.5, 234.2, 50);
-cpdfjs.Pdf pdf4 = cpdfjs.blankDocumentPaper(cpdfjs.a4landscape, 50);
+cpdfjs.fromMemoryLazyRelease(mempdf);*/
+var pdf3 = cpdfjs.blankDocument(153.5, 234.2, 50);
+var pdf4 = cpdfjs.blankDocumentPaper(cpdfjs.a4landscape, 50);
 console.log("---cpdf: enumerate PDFs");
-int n = cpdfjs.startEnumeratePDFs();
+/*int n = cpdfjs.startEnumeratePDFs();
 for (int x = 0; x < n; x++)
 {
     int key = cpdfjs.enumeratePDFsKey(x);
     String info = cpdfjs.enumeratePDFsInfo(x);
 }
-cpdfjs.endEnumeratePDFs();
+cpdfjs.endEnumeratePDFs(); */
 console.log("---cpdf_ptOfIn()");
-System.out.format("One inch is %f points\n", cpdfjs.ptOfIn(1.0));
+console.log("One inch is %f points", cpdfjs.ptOfIn(1.0));
 console.log("---cpdf_ptOfCm()");
-System.out.format("One centimetre is %f points\n", cpdfjs.ptOfCm(1.0));
+console.log("One centimetre is %f points", cpdfjs.ptOfCm(1.0));
 console.log("---cpdf_ptOfMm()");
-System.out.format("One millimetre is %f points\n", cpdfjs.ptOfMm(1.0));
+console.log("One millimetre is %f points", cpdfjs.ptOfMm(1.0));
 console.log("---cpdf_inOfPt()");
-System.out.format("One point is %f inches\n", cpdfjs.inOfPt(1.0));
+console.log("One point is %f inches", cpdfjs.inOfPt(1.0));
 console.log("---cpdf_cmOfPt()");
-System.out.format("One point is %f centimetres\n", cpdfjs.cmOfPt(1.0));
+console.log("One point is %f centimetres", cpdfjs.cmOfPt(1.0));
 console.log("---cpdf_mmOfPt()");
-System.out.format("One point is %f millimetres\n", cpdfjs.mmOfPt(1.0));
+console.log("One point is %f millimetres", cpdfjs.mmOfPt(1.0));
 console.log("---cpdf_range()");
+/*
 cpdfjs.Range range = cpdfjs.range(1, 10);
 console.log("---cpdf_all()");
 cpdfjs.Range all = cpdfjs.all(pdf3);
