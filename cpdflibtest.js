@@ -16,11 +16,14 @@ console.log("---cpdf_clearError()");
 /* CHAPTER 1. Basics */
 console.log("***** CHAPTER 1. Basics");
 console.log("---cpdf_fromFile()");
-pdf = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var pdf = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+console.log(pdf);
 console.log("---cpdf_fromFileLazy()");
-pdf2 = cpdfjs.fromFileLazy("testinputs/cpdflibmanual.pdf", "");
+var pdf2 = cpdfjs.fromFileLazy("testinputs/cpdflibmanual.pdf", "");
+console.log(pdf2);
 console.log("---cpdf_toMemory()");
-mempdf = cpdfjs.toMemory(pdf, false, false);
+var mempdf = cpdfjs.toMemory(pdf, false, false);
+console.log("---END OF CHAPTER 1");
 /*console.log("---cpdf_fromMemory()");
 cpdfjs.Pdf frommem = cpdfjs.fromMemory(mempdf, "");
 cpdfjs.toFile(frommem, "testoutputs/01fromMemory.pdf", false, false);
