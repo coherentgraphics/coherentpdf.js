@@ -63,6 +63,7 @@ let _ =
        method scaleToFit = Cpdflib.scaleToFit
        method scaleToFitPaper = Cpdflib.scaleToFit
        method scaleContents = Cpdflib.scaleContents
+       method shiftContents = Cpdflib.shiftContents
        method rotate = Cpdflib.rotate
        method rotateBy = Cpdflib.rotateBy
        method rotateContents = Cpdflib.rotateContents

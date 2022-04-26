@@ -1218,6 +1218,101 @@ function selectPages(pdf, range)
   return r;
 }
 
+function scalePages(pdf, range, sx, sy)
+{
+  cpdf.cpdflib.scalePages(pdf, range, sx, sy);
+}
+
+function scaleToFit(pdf, range, sx, sy, s)
+{
+  cpdf.cpdflib.scaleToFit(pdf, range, sx, sy, s);
+}
+
+function scaleToFitPaper(pdf, range, papersize, s)
+{
+  cpdf.cpdflib.scaleToFitPaper(pdf, range, papersize, s);
+}
+
+function scaleContents(pdf, range, anchor, p1, p2, s)
+{
+  cpdf.cpdflib.scaleContents(pdf, range, anchor, p1, p2, s);
+}
+
+function shiftContents(pdf, range, dx, dy)
+{
+  cpdf.cpdflib.shiftContents(pdf, range, dx, dy);
+}
+
+function rotate(pdf, range, angle)
+{
+  cpdf.cpdflib.rotate(pdf, range, angle);
+}
+
+function rotateBy(pdf, range, angle)
+{
+  cpdf.cpdflib.rotateBy(pdf, range, angle);
+}
+
+function rotateContents(pdf, range, angle)
+{
+  cpdf.cpdflib.rotateContents(pdf, range, angle);
+}
+
+function upright(pdf, range)
+{
+  cpdf.cpdflib.upright(pdf, range);
+}
+
+function hFlip(pdf, range)
+{
+  cpdf.cpdflib.hFlip(pdf, range);
+}
+
+function vFlip(pdf, range)
+{
+  cpdf.cpdflib.vFlip(pdf, range);
+}
+
+function crop(pdf, range, a, b, c, d)
+{
+  cpdf.cpdflib.crop(pdf, range, a, b, c, d);
+}
+
+function trimMarks(pdf, range)
+{
+  cpdf.cpdflib.trimMarks(pdf, range);
+}
+
+function hardBox(pdf, range, boxname)
+{
+  cpdf.cpdflib.hardBox(pdf, range, caml_string_of_jsstring(boxname));
+}
+
+function removeCrop(pdf, range)
+{
+  cpdf.cpdflib.removeCrop(pdf, range);
+}
+
+function removeArt(pdf, range)
+{
+  cpdf.cpdflib.removeArt(pdf, range);
+}
+
+function removeBleed(pdf, range)
+{
+  cpdf.cpdflib.removeBleed(pdf, range);
+}
+
+function removeTrim(pdf, range)
+{
+  cpdf.cpdflib.removeTrim(pdf, range);
+}
+
+function showBoxes(pdf, range)
+{
+  cpdf.cpdflib.showBoxes(pdf, range);
+}
+
 module.exports =
   {
   a0portrait,
@@ -1304,39 +1399,39 @@ module.exports =
   mergeSame,
   selectPages,
 
-  /*
   //CHAPTER 3. Pages
-  scalePages : scalePages,
-  scaleToFit : scaleToFit,
-  scaleToFitPaper : scaleToFit,
-  scaleContents : scaleContents,
-  rotate : rotate,
-  rotateBy : rotateBy,
-  rotateContents : rotateContents,
-  upright : upright,
-  hFlip : hFlip,
-  vFlip : vFlip,
-  crop : crop,
-  setMediabox : setMediabox,
-  setCropBox : setCropBox,
-  setTrimBox : setTrimBox,
-  setArtBox : setArtBox,
-  getMediaBox : getMediaBox,
-  getCropBox : getCropBox,
-  getArtBox : getArtBox,
-  getBleedBox : getBleedBox,
-  getTrimBox : getTrimBox,
-  removeCrop : removeCrop,
-  removeArt : removeArt,
-  removeTrim : removeTrim,
-  removeBleed : removeBleed,
-  hardBox : hardBox,
-  trimMarks : trimMarks,
-  showBoxes : showBoxes,
+  scalePages,
+  scaleToFit,
+  scaleToFitPaper,
+  scaleContents,
+  shiftContents,
+  rotate,
+  rotateBy,
+  rotateContents,
+  upright,
+  hFlip,
+  vFlip,
+  crop,
+  /*setMediabox,
+  setCropBox,
+  setTrimBox,
+  setArtBox,
+  getMediaBox,
+  getCropBox,
+  getArtBox,
+  getBleedBox,
+  getTrimBox, */
+  removeCrop,
+  removeArt,
+  removeTrim,
+  removeBleed,
+  hardBox,
+  trimMarks,
+  showBoxes,
 
   //CHAPTER 4. Encryption and Decryption
 
-  //CHAPTER 5. Compression
+  /*//CHAPTER 5. Compression
   compress : compress,
   decompress : decompress,
 
