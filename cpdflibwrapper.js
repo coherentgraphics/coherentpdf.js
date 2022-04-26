@@ -1190,6 +1190,34 @@ function enumeratePDFsInfo(n)
   return caml_jsstring_of_string(r);
 }
 
+function mergeSimple(arr)
+{
+  arr2 = [0].concat(arr);
+  var r = cpdf.cpdflib.mergeSimple(arr2);
+  return r;
+}
+
+function merge(arr, retain_numbering, remove_duplicate_fonts)
+{
+  arr2 = [0].concat(arr);
+  var r = cpdf.cpdflib.merge(arr, retain_numbering, remove_duplicate_fonts);
+  return r;
+}
+
+function mergeSame(arr, retain_numbering, remove_duplicate_fonts, ranges)
+{
+  arr2 = [0].concat(arr);
+  ranges2 = [0].concat(ranges);
+  var r = cpdf.cpdflib.mergeSame(arr2, retain_numbering, remove_duplicate_fonts, ranges2);
+  return r;
+}
+
+function selectPages(pdf, range)
+{
+  var r = cpdf.cpdflib.selectPages(pdf, range);
+  return r;
+}
+
 module.exports =
   {
   a0portrait,
@@ -1256,8 +1284,8 @@ module.exports =
   fromFile,
   fromFileLazy,
   toMemory,
-  fromMemory,
-  fromMemoryLazy,
+  /*fromMemory,
+  fromMemoryLazy,*/
   toFile,
   toFileExt,
   toFileEncrypted,
@@ -1271,11 +1299,12 @@ module.exports =
   encryptionKind,
 
   //CHAPTER 2. Merging and Splitting
-  /*mergeSimple : mergeSimple,
-  merge : merge,
-  mergeSame : mergeSame,
-  selectPages : selectPages,
+  mergeSimple,
+  merge,
+  mergeSame,
+  selectPages,
 
+  /*
   //CHAPTER 3. Pages
   scalePages : scalePages,
   scaleToFit : scaleToFit,
