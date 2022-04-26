@@ -1037,10 +1037,82 @@ function toFileEncrypted(pdf, encryption_method, perms, owner, user, linearize, 
 function toFileEncryptedExt(pdf, encryption_method, perms, owner, user, linearize, makeid, preserve_objstm, generate_objstm, compress_objstm, filename)
 {
   var ps = [0].concat(perms);
-  cpdf.cpdflib.toFileEncrypted(pdf, encryption_method, ps,
-                               caml_string_of_jsstring(owner), caml_string_of_jsstring(user),
-                               linearize, makeid, preserve_objstm, generate_objstm, compress_objstm,
-                               caml_string_of_jsstring(filename));
+  cpdf.cpdflib.toFileEncryptedExt(pdf, encryption_method, ps,
+                                  caml_string_of_jsstring(owner), caml_string_of_jsstring(user),
+                                  linearize, makeid, preserve_objstm, generate_objstm, compress_objstm,
+                                  caml_string_of_jsstring(filename));
+}
+
+function range(a, b)
+{
+  var r = cpdf.cpdflib.range(a, b);
+  return r;
+}
+
+function all(x)
+{
+  var r = cpdf.cpdflib.all(x);
+  return r;
+}
+
+function even(x)
+{
+  var r = cpdf.cpdflib.even(x);
+  return r;
+}
+
+function odd(x)
+{
+  var r = cpdf.cpdflib.odd(x);
+  return r;
+}
+
+function rangeUnion(a, b)
+{
+  var r = cpdf.cpdflib.rangeUnion(a, b);
+  return r;
+}
+
+function difference(a, b)
+{
+  var r = cpdf.cpdflib.difference(a, b);
+  return r;
+}
+
+function removeDuplicates(x)
+{
+  var r = cpdf.cpdflib.removeDuplicates(x);
+  return r;
+}
+
+function rangeLength(x)
+{
+  var r = cpdf.cpdflib.rangeLength(x);
+  return r;
+}
+
+function rangeGet(a, b)
+{
+  var r = cpdf.cpdflib.rangeGet(a, b);
+  return r;
+}
+
+function rangeAdd(a, b)
+{
+  var r = cpdf.cpdflib.rangeAdd(a, b);
+  return r;
+}
+
+function isInRange(a, b)
+{
+  var r = cpdf.cpdflib.isInRange(a, b);
+  return r;
+}
+
+function blankRange()
+{
+  var r = cpdf.cpdflib.blankRange();
+  return r;
 }
 
 module.exports =
@@ -1093,18 +1165,18 @@ module.exports =
   cmOfPt,
   mmOfPt,
   inOfPt,
-  /*range : range,
-  blankRange : blankrange,
-  makerange : makerange,
-  writerange : writerange,
-  readrange : readrange,
-  addtorange : addtorange,
-  even : even,
-  odd : odd,
-  union : union,
-  different : difference,
-  removeDuplicates : removeDuplicates,
-  isInRange : isInRange*/
+  range,
+  blankRange,
+  all,
+  even,
+  odd,
+  rangeUnion,
+  rangeAdd,
+  difference,
+  removeDuplicates,
+  rangeLength,
+  isInRange,
+  rangeGet,
   fromFile,
   fromFileLazy,
   toMemory,
