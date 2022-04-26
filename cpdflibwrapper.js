@@ -1167,6 +1167,29 @@ function validatePagespec(spec)
   return r;
 }
 
+function startEnumeratePDFs()
+{
+  var r = cpdf.cpdflib.startEnumeratePDFs();
+  return r;
+}
+
+function endEnumeratePDFs()
+{
+  cpdf.cpdflib.endEnumeratePDFs();
+}
+
+function enumeratePDFsKey(n)
+{
+  var r = cpdf.cpdflib.enumeratePDFsKey(n);
+  return r;
+}
+
+function enumeratePDFsInfo(n)
+{
+  var r = cpdf.cpdflib.enumeratePDFsInfo(n);
+  return caml_jsstring_of_string(r);
+}
+
 module.exports =
   {
   a0portrait,

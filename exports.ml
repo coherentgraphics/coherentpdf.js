@@ -9,6 +9,7 @@ let _ =
        val version = Cpdflib.version
        method startEnumeratePDFs = Cpdflib.startEnumeratePDFs ()
        method enumeratePDFsKey = Cpdflib.enumeratePDFsKey
+       method enumeratePDFsInfo = Cpdflib.enumeratePDFsInfo
        method endEnumeratePDFs = Cpdflib.endEnumeratePDFs ()
        method deletePdf = Cpdflib.deletePdf
        method parsePagespec = Cpdflib.parsePagespec

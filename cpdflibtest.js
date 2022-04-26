@@ -32,7 +32,7 @@ var pdf3 = cpdfjs.blankDocument(153.5, 234.2, 50);
 var pdf4 = cpdfjs.blankDocumentPaper(cpdfjs.a4landscape, 50);
 console.log("---cpdf: enumerate PDFs");
 var n = cpdfjs.startEnumeratePDFs();
-for (int x = 0; x < n; x++)
+for (x = 0; x < n; x++)
 {
     var key = cpdfjs.enumeratePDFsKey(x);
     var info = cpdfjs.enumeratePDFsInfo(x);
