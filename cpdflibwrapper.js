@@ -1256,13 +1256,12 @@ module.exports =
   fromFile,
   fromFileLazy,
   toMemory,
-  /* fromMemory, */
-  /*fromMemoryLazy : fromMemoryLazy,*/
+  fromMemory,
+  fromMemoryLazy,
   toFile,
   toFileExt,
   toFileEncrypted,
   toFileEncryptedExt,
-  /*toFileMemory : toFileMemory,*/
   pages,
   pagesFast,
   isEncrypted,

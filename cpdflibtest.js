@@ -21,13 +21,12 @@ var pdf2 = cpdfjs.fromFileLazy("testinputs/cpdflibmanual.pdf", "");
 console.log("---cpdf_toMemory()");
 var mempdf = cpdfjs.toMemory(pdf, false, false);
 console.log("---END OF CHAPTER 1");
-/*console.log("---cpdf_fromMemory()");
+console.log("---cpdf_fromMemory()");
 var frommem = cpdfjs.fromMemory(mempdf, "");
-cpdfjs.toFile(frommem, "testoutputs/01fromMemory.pdf", false, false);*/
-/*console.log("---cpdf_fromMemoryLazy()");
-cpdfjs.Pdf frommemlazy = cpdfjs.fromMemoryLazy(mempdf, "");
+cpdfjs.toFile(frommem, "testoutputs/01fromMemory.pdf", false, false);
+console.log("---cpdf_fromMemoryLazy()");
+var frommemlazy = cpdfjs.fromMemoryLazy(mempdf, "");
 cpdfjs.toFile(frommemlazy, "testoutputs/01fromMemoryLazy.pdf", false, false);
-cpdfjs.fromMemoryLazyRelease(mempdf);*/
 var pdf3 = cpdfjs.blankDocument(153.5, 234.2, 50);
 var pdf4 = cpdfjs.blankDocumentPaper(cpdfjs.a4landscape, 50);
 console.log("---cpdf: enumerate PDFs");
