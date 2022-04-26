@@ -1115,6 +1115,18 @@ function blankRange()
   return r;
 }
 
+function pages(pdf)
+{
+  var r = cpdf.cpdflib.pages(pdf);
+  return r;
+}
+
+function pagesFast(filename)
+{
+  var r = cpdf.cpdflib.pagesFast(caml_string_of_jsstring(filename));
+  return r;
+}
+
 module.exports =
   {
   a0portrait,
@@ -1186,10 +1198,9 @@ module.exports =
   toFileExt,
   toFileEncrypted,
   toFileEncryptedExt,
-  /*toFileMemory : toFileMemory,
-  pages : pages,
-  pagesFast : pagesFast,
-  all : all, */
+  /*toFileMemory : toFileMemory,*/
+  pages,
+  pagesFast,
   isEncrypted,
   /*decryptPdf : decryptPdf,
   decryptPdfOwner : decryptPdfOwner,

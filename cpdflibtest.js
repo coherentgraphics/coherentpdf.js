@@ -84,12 +84,12 @@ System.out.format("String of pagespec is %s\n", ps); */
 console.log("---cpdf_blankRange()");
 var b = cpdfjs.blankRange();
 pdf10 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
-/*console.log("---cpdf_pages()");
-int pages = cpdfjs.pages(pdf10);
-System.out.format("Pages = %d\n", pages);
+console.log("---cpdf_pages()");
+var pages = cpdfjs.pages(pdf10);
+console.log("Pages = %i", pages);
 console.log("---cpdf_pagesFast()");
-int pagesfast = cpdfjs.pagesFast("", "testinputs/cpdflibmanual.pdf");
-System.out.format("Pages = %d\n", pagesfast);*/
+var pagesfast = cpdfjs.pagesFast("", "testinputs/cpdflibmanual.pdf");
+console.log("Pages = %i", pagesfast);
 console.log("---cpdf_toFile()");
 cpdfjs.toFile(pdf10, "testoutputs/01tofile.pdf", false, false);
 console.log("---cpdf_toFileExt()");
