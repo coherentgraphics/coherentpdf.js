@@ -1127,6 +1127,28 @@ function pagesFast(filename)
   return r;
 }
 
+function hasPermission(pdf, perm)
+{
+  var r = cpdf.cpdflib.hasPermission(pdf, perm);
+  return r;
+}
+
+function encryptionKind(pdf)
+{
+  var r = cpdf.cpdflib.encryptionKind(pdf);
+  return r;
+}
+
+function decryptPdf(pdf, userpw)
+{
+  cpdf.cpdflib.decryptPdf(pdf, caml_string_of_jsstring(userpw));
+}
+
+function decryptPdfOwner(pdf, ownerpw)
+{
+  cpdf.cpdflib.decryptPdfOwner(pdf, caml_string_of_jsstring(ownerpw));
+}
+
 module.exports =
   {
   a0portrait,
@@ -1202,13 +1224,13 @@ module.exports =
   pages,
   pagesFast,
   isEncrypted,
-  /*decryptPdf : decryptPdf,
-  decryptPdfOwner : decryptPdfOwner,
-  hasPermission : hasPermission,
-  encryptionKind : encryptionKind,
+  decryptPdf,
+  decryptPdfOwner,
+  hasPermission,
+  encryptionKind,
 
   //CHAPTER 2. Merging and Splitting
-  mergeSimple : mergeSimple,
+  /*mergeSimple : mergeSimple,
   merge : merge,
   mergeSame : mergeSame,
   selectPages : selectPages,
