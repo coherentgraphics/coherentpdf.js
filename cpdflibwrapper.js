@@ -1149,6 +1149,24 @@ function decryptPdfOwner(pdf, ownerpw)
   cpdf.cpdflib.decryptPdfOwner(pdf, caml_string_of_jsstring(ownerpw));
 }
 
+function parsePagespec(pdf, spec)
+{
+  var r = cpdf.cpdflib.parsePagespec(pdf, caml_string_of_jsstring(spec));
+  return r;
+}
+
+function stringOfPagespec(pdf, r)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.stringOfPagespec(pdf, r));
+  return r;
+}
+
+function validatePagespec(spec)
+{
+  var r = cpdf.cpdflib.validatePagespec(caml_string_of_jsstring(spec));
+  return r;
+}
+
 module.exports =
   {
   a0portrait,
@@ -1187,12 +1205,13 @@ module.exports =
   setFast,
   setSlow,
   version,
-  /*startEnumeratePDFs : startEnumeratePDFs,
-  enumeratePDFsKey : enumeratePDFsKey,
-  endEnumeratePDFs : endEnumeratePDFs,
-  deletePdf : deletePdf,
-  parsePagespec : parsePagespec,
-  stringOfPagespec : stringOfPagespec,*/
+  startEnumeratePDFs,
+  enumeratePDFsKey,
+  enumeratePDFsInfo,
+  endEnumeratePDFs,
+  parsePagespec,
+  stringOfPagespec,
+  validatePagespec,
   ptOfCm,
   ptOfMm,
   ptOfIn,

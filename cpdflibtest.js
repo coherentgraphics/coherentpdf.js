@@ -4,7 +4,6 @@ cpdfjs = require('./cpdflibwrapper');
 /* CHAPTER 0. Preliminaries */
 console.log("***** CHAPTER 0. Preliminaries");
 console.log("---cpdf_startup()");
-//cpdfjs.startup();
 console.log("---cpdf_version()");
 console.log("version = %s", cpdfjs.version());
 console.log("---cpdf_setFast()");
@@ -32,13 +31,13 @@ cpdfjs.fromMemoryLazyRelease(mempdf);*/
 var pdf3 = cpdfjs.blankDocument(153.5, 234.2, 50);
 var pdf4 = cpdfjs.blankDocumentPaper(cpdfjs.a4landscape, 50);
 console.log("---cpdf: enumerate PDFs");
-/*int n = cpdfjs.startEnumeratePDFs();
+var n = cpdfjs.startEnumeratePDFs();
 for (int x = 0; x < n; x++)
 {
-    int key = cpdfjs.enumeratePDFsKey(x);
-    String info = cpdfjs.enumeratePDFsInfo(x);
+    var key = cpdfjs.enumeratePDFsKey(x);
+    var info = cpdfjs.enumeratePDFsInfo(x);
 }
-cpdfjs.endEnumeratePDFs(); */
+cpdfjs.endEnumeratePDFs();
 console.log("---cpdf_ptOfIn()");
 console.log("One inch is %f points", cpdfjs.ptOfIn(1.0));
 console.log("---cpdf_ptOfCm()");
@@ -74,13 +73,13 @@ var rangeadd = cpdfjs.rangeAdd(even, 20);
 console.log("---cpdf_isInRange()");
 var isin = cpdfjs.isInRange(even, 2);
 console.log("---cpdf_parsePagespec()");
-/*cpdfjs.Range r = cpdfjs.parsePagespec(pdf3, "1-5");
+var r = cpdfjs.parsePagespec(pdf3, "1-5");
 console.log("---cpdf_validatePagespec()");
-boolean valid = cpdfjs.validatePagespec("1-4,5,6");
-System.out.format("Validating pagespec gives %d\n", valid ? 1 : 0);
+var valid = cpdfjs.validatePagespec("1-4,5,6");
+console.log("Validating pagespec gives %d", valid ? 1 : 0);
 console.log("---cpdf_stringOfPagespec()");
-String ps = cpdfjs.stringOfPagespec(pdf3, r);
-System.out.format("String of pagespec is %s\n", ps); */
+var ps = cpdfjs.stringOfPagespec(pdf3, r);
+console.log("String of pagespec is %s", ps);
 console.log("---cpdf_blankRange()");
 var b = cpdfjs.blankRange();
 pdf10 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");

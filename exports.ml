@@ -13,6 +13,7 @@ let _ =
        method deletePdf = Cpdflib.deletePdf
        method parsePagespec = Cpdflib.parsePagespec
        method stringOfPagespec = Cpdflib.stringOfPagespec
+       method validatePagespec = Cpdflib.validatePagespec
        method ptOfCm = Cpdflib.ptOfCm
        method ptOfMm = Cpdflib.ptOfMm
        method ptOfIn = Cpdflib.ptOfIn
