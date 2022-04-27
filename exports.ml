@@ -98,8 +98,8 @@ let _ =
 
        (* CHAPTER 6. Bookmarks *)
        method startGetBookmarkInfo = Cpdflib.startGetBookmarkInfo
-       method endGetBookmarkInfo = Cpdflib.endGetBookmarkInfo
-       method numberBookmarks = Cpdflib.numberBookmarks
+       method endGetBookmarkInfo = Cpdflib.endGetBookmarkInfo ()
+       method numberBookmarks = Cpdflib.numberBookmarks ()
        method getBookmarkPage = Cpdflib.getBookmarkPage
        method getBookmarkLevel = Cpdflib.getBookmarkLevel
        method getBookmarkText = Cpdflib.getBookmarkText

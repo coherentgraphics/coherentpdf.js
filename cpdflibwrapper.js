@@ -1121,9 +1121,9 @@ function pages(pdf)
   return r;
 }
 
-function pagesFast(filename)
+function pagesFast(filename, pw)
 {
-  var r = cpdf.cpdflib.pagesFast(caml_string_of_jsstring(filename));
+  var r = cpdf.cpdflib.pagesFast(caml_string_of_jsstring(filename), caml_string_of_jsstring(pw));
   return r;
 }
 
@@ -1328,6 +1328,55 @@ function squeezeInMemory(pdf)
   cpdf.cpdflib.squeezeInMemory(pdf);
 }
 
+function startGetBookmarkInfo(pdf)
+{
+  cpdf.cpdflib.startGetBookmarkInfo(pdf);
+}
+
+function endGetBookmarkInfo()
+{
+  cpdf.cpdflib.endGetBookmarkInfo();
+}
+
+function numberBookmarks()
+{
+  var r = cpdf.cpdflib.numberBookmarks();
+  return r;
+}
+
+function getBookmarkPage(pdf, n)
+{
+  var r = cpdf.cpdflib.getBookmarkPage(pdf, n);
+  return r;
+}
+
+function getBookmarkLevel(n)
+{
+  var r = cpdf.cpdflib.getBookmarkLevel(n);
+  return r;
+}
+
+function getBookmarkText(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getBookmarkText(n));
+  return r;
+}
+
+function getBookmarkOpenStatus(n)
+{
+  var r = cpdf.cpdflib.getBookmarkOpenStatus(n);
+  return r;
+}
+
+/*startSetBookmarkInfo
+endSetBookmarkInfo
+setBookmarkPage
+setBookmarkLevel
+setBookmarkOpenStatus
+getBookmarksJSON
+setBookmarksJSON
+tableOfContents*/
+
 module.exports =
   {
   a0portrait,
@@ -1451,24 +1500,24 @@ module.exports =
   decompress,
   squeezeInMemory,
 
-  /*//CHAPTER 6. Bookmarks
-  startGetBookmarkInfo : startGetBookmarkInfo,
-  endGetBookmarkInfo : endGetBookmarkInfo,
-  numberBookmarks : numberBookmarks,
-  getBookmarkPage : getBookmarkPage,
-  getBookmarkLevel : getBookmarkLevel,
-  getBookmarkText : getBookmarkText,
-  getBookmarkOpenStatus : getBookmarkOpenStatus,
-  startSetBookmarkInfo : startSetBookmarkInfo,
-  endSetBookmarkInfo : endSetBookmarkInfo,
-  setBookmarkPage : setBookmarkPage,
-  setBookmarkLevel : setBookmarkLevel,
-  setBookmarkOpenStatus : setBookmarkOpenStatus,
-  getBookmarksJSON : getBookmarksJSON,
-  setBookmarksJSON : setBookmarksJSON,
-  tableOfContents : tableOfContents,
+  //CHAPTER 6. Bookmarks
+  startGetBookmarkInfo,
+  endGetBookmarkInfo,
+  numberBookmarks,
+  getBookmarkPage,
+  getBookmarkLevel,
+  getBookmarkText,
+  getBookmarkOpenStatus,
+  /*startSetBookmarkInfo,
+  endSetBookmarkInfo,
+  setBookmarkPage,
+  setBookmarkLevel,
+  setBookmarkOpenStatus,
+  getBookmarksJSON,
+  setBookmarksJSON,
+  tableOfContents,*/
 
-  //CHAPTER 7. Presentations
+  /* //CHAPTER 7. Presentations
 
   //CHAPTER 8. Logos, Watermarks and Stamps
   stampOn : stampOn,

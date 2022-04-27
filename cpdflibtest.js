@@ -252,49 +252,44 @@ console.log("---cpdf_squeezeInMemory()");
 cpdfjs.squeezeInMemory(pdf16);
 cpdfjs.toFile(pdf16, "testoutputs/05squeezedinmemory.pdf", false, false);
  
-/*    static void chapter6(Jcpdf jcpdf) throws Jcpdf.CpdfError
-    {
-        CHAPTER 6. Bookmarks
-        System.out.println("***** CHAPTER 6. Bookmarks");
-        Jcpdf.Pdf pdf17 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-        System.out.println("---cpdf: get bookmarks");
-        jcpdf.startGetBookmarkInfo(pdf17);
-        int nb = jcpdf.numberBookmarks();
-        System.out.format("There are %d bookmarks\n", nb);
-        for (int b2 = 0; b2 < nb; b2++)
-        {
-            int level = jcpdf.getBookmarkLevel(b2);
-            int page = jcpdf.getBookmarkPage(pdf17, b2);
-            String text = jcpdf.getBookmarkText(b2);
-            boolean open = jcpdf.getBookmarkOpenStatus(b2);
-            System.out.format("Bookmark at level %d points to page %d and has text \"%s\" and open %d\n", level, page, text, open ? 1 : 0);
-        }
-        jcpdf.endGetBookmarkInfo();
-        System.out.println("---cpdf: set bookmarks");
-        jcpdf.startSetBookmarkInfo(1);
-        jcpdf.setBookmarkLevel(0, 0);
-        jcpdf.setBookmarkPage(pdf17, 0, 20);
-        jcpdf.setBookmarkOpenStatus(0, true);
-        jcpdf.setBookmarkText(0, "New bookmark!");
-        jcpdf.endSetBookmarkInfo(pdf17);
-        jcpdf.toFile(pdf17, "testoutputs/06newmarks.pdf", false, false);
-        System.out.println("---cpdf_getBookmarksJSON()");
-        Jcpdf.Pdf marksjson = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-        byte[] marksdata = jcpdf.getBookmarksJSON(marksjson);
-        System.out.format("Contains %d bytes of data\n", marksdata.length);
-        System.out.println("---cpdf_setBookmarksJSON()");
-        jcpdf.setBookmarksJSON(marksjson, marksdata);
-        jcpdf.toFile(marksjson, "testoutputs/06jsonmarks.pdf", false, false);
-        System.out.println("---cpdf_tableOfContents()");
-        Jcpdf.Pdf toc = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-        jcpdf.tableOfContents(toc, jcpdf.timesRoman, 12.0, "Table of Contents", false);
-        jcpdf.toFile(toc, "testoutputs/06toc.pdf", false, false);
-        pdf17.close();
-        marksjson.close();
-        toc.close();
-    }
-   
-    static void chapter7(Jcpdf jcpdf) throws Jcpdf.CpdfError
+/* CHAPTER 6. Bookmarks */
+console.log("***** CHAPTER 6. Bookmarks");
+var pdf17 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+console.log("---cpdf: get bookmarks");
+cpdfjs.startGetBookmarkInfo(pdf17);
+var nb = cpdfjs.numberBookmarks();
+console.log("There are %d bookmarks", nb);
+for (b2 = 0; b2 < nb; b2++)
+{
+  var level = cpdfjs.getBookmarkLevel(b2);
+  var page = cpdfjs.getBookmarkPage(pdf17, b2);
+  var text = cpdfjs.getBookmarkText(b2);
+  var open = cpdfjs.getBookmarkOpenStatus(b2);
+  console.log("Bookmark at level %d points to page %d and has text \"%s\" and open %d", level, page, text, open ? 1 : 0);
+}
+cpdfjs.endGetBookmarkInfo();
+console.log("---cpdf: set bookmarks");
+/*cpdfjs.startSetBookmarkInfo(1);
+cpdfjs.setBookmarkLevel(0, 0);
+cpdfjs.setBookmarkPage(pdf17, 0, 20);
+cpdfjs.setBookmarkOpenStatus(0, true);
+cpdfjs.setBookmarkText(0, "New bookmark!");
+cpdfjs.endSetBookmarkInfo(pdf17);
+cpdfjs.toFile(pdf17, "testoutputs/06newmarks.pdf", false, false);
+console.log("---cpdf_getBookmarksJSON()");
+var marksjson = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var marksdata = cpdfjs.getBookmarksJSON(marksjson);
+console.log("Contains %d bytes of data", marksdata.length);
+console.log("---cpdf_setBookmarksJSON()");
+cpdfjs.setBookmarksJSON(marksjson, marksdata);
+cpdfjs.toFile(marksjson, "testoutputs/06jsonmarks.pdf", false, false);
+console.log("---cpdf_tableOfContents()");
+var toc = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+cpdfjs.tableOfContents(toc, cpdfjs.timesRoman, 12.0, "Table of Contents", false);
+cpdfjs.toFile(toc, "testoutputs/06toc.pdf", false, false);
+*/
+
+/*    static void chapter7(Jcpdf jcpdf) throws Jcpdf.CpdfError
     {
         CHAPTER 7. Presentations
         Not included in the library version.
