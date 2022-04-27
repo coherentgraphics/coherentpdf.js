@@ -1377,6 +1377,76 @@ getBookmarksJSON
 setBookmarksJSON
 tableOfContents*/
 
+function numberFonts()
+{
+  var r = cpdf.cpdflib.numberFonts();
+  return r;
+}
+
+function getFontPage(n)
+{
+  var r = cpdf.cpdflib.getFontPage(n);
+  return r;
+}
+
+function getFontName(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontName(n));
+  return r;
+}
+
+function getFontType(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontType(n));
+  return r;
+}
+
+function getFontEncoding(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontEncoding(n));
+  return r;
+}
+
+function startGetFontInfo(pdf)
+{
+  cpdf.cpdflib.startGetFontInfo(pdf);
+}
+
+function endGetFontInfo()
+{
+  cpdf.cpdflib.endGetFontInfo();
+}
+
+function startSetBookmarkInfo(n)
+{
+  cpdf.cpdflib.startSetBookmarkInfo(n);
+}
+
+function setBookmarkLevel(a, b)
+{
+  cpdf.cpdflib.setBookmarkLevel(a, b);
+}
+
+function setBookmarkPage(pdf, a, b)
+{
+  cpdf.cpdflib.setBookmarkPage(pdf, a, b);
+}
+
+function setBookmarkOpenStatus(a, b)
+{
+  cpdf.cpdflib.setBookmarkOpenStatus(a, b);
+}
+
+function setBookmarkText(n, t)
+{
+  cpdf.cpdflib.setBookmarkText(n, caml_string_of_jsstring(t));
+}
+
+function endSetBookmarkInfo(pdf)
+{
+  cpdf.cpdflib.endSetBookmarkInfo(pdf);
+}
+
 module.exports =
   {
   a0portrait,
@@ -1508,12 +1578,13 @@ module.exports =
   getBookmarkLevel,
   getBookmarkText,
   getBookmarkOpenStatus,
-  /*startSetBookmarkInfo,
+  startSetBookmarkInfo,
   endSetBookmarkInfo,
   setBookmarkPage,
   setBookmarkLevel,
+  setBookmarkText,
   setBookmarkOpenStatus,
-  getBookmarksJSON,
+  /*getBookmarksJSON,
   setBookmarksJSON,
   tableOfContents,*/
 
@@ -1627,18 +1698,18 @@ module.exports =
   getImageResolutionXRes : getImageResolutionXRes,
   getImageResolutionYRes : getImageResolutionYRes,
   endGetImageResolution : endGetImageResolution,
-
+*/
   //CHAPTER 14. Fonts
-  numberFonts : numberFonts,
-  getFontPage : getFontPage,
-  getFontName : getFontName,
-  getFontType : getFontType,
-  getFontEncoding : getFontEncoding,
-  startGetFontInfo : startGetFontInfo,
-  endGetFontInfo : endGetFontInfo,
-  copyFont : copyFont,
-  removeFonts : removeFonts,
-
+  numberFonts,
+  getFontPage,
+  getFontName,
+  getFontType,
+  getFontEncoding,
+  startGetFontInfo,
+  endGetFontInfo,
+  /*copyFont,
+  removeFonts,*/
+/*
   //CHAPTER 15. PDF and JSON
   outputJSON : outputJSON,
   outputJSONMemory : outputJSONMemory,

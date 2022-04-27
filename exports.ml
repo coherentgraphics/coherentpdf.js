@@ -108,6 +108,7 @@ let _ =
        method endSetBookmarkInfo = Cpdflib.endSetBookmarkInfo
        method setBookmarkPage = Cpdflib.setBookmarkPage
        method setBookmarkLevel = Cpdflib.setBookmarkLevel
+       method setBookmarkText = Cpdflib.setBookmarkText
        method setBookmarkOpenStatus = Cpdflib.setBookmarkOpenStatus
        method getBookmarksJSON = Cpdflib.getBookmarksJSON
        method setBookmarksJSON = Cpdflib.setBookmarksJSON
@@ -225,13 +226,13 @@ let _ =
        method endGetImageResolution = Cpdflib.endGetImageResolution
 
        (* CHAPTER 14. Fonts *)
-       method numberFonts = Cpdflib.numberFonts
+       method numberFonts = Cpdflib.numberFonts ()
        method getFontPage = Cpdflib.getFontPage
        method getFontName = Cpdflib.getFontName
        method getFontType = Cpdflib.getFontType
        method getFontEncoding = Cpdflib.getFontEncoding
        method startGetFontInfo = Cpdflib.startGetFontInfo
-       method endGetFontInfo = Cpdflib.endGetFontInfo
+       method endGetFontInfo = Cpdflib.endGetFontInfo ()
        method copyFont = Cpdflib.copyFont
        method removeFonts = Cpdflib.removeFonts
 

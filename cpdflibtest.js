@@ -37,17 +37,17 @@ for (x = 0; x < n; x++)
 }
 cpdfjs.endEnumeratePDFs();
 console.log("---cpdf_ptOfIn()");
-console.log("One inch is %f points", cpdfjs.ptOfIn(1.0));
+console.log("One inch is %s points", cpdfjs.ptOfIn(1.0).toFixed(6));
 console.log("---cpdf_ptOfCm()");
-console.log("One centimetre is %f points", cpdfjs.ptOfCm(1.0));
+console.log("One centimetre is %s points", cpdfjs.ptOfCm(1.0).toFixed(6));
 console.log("---cpdf_ptOfMm()");
-console.log("One millimetre is %f points", cpdfjs.ptOfMm(1.0));
+console.log("One millimetre is %s points", cpdfjs.ptOfMm(1.0).toFixed(6));
 console.log("---cpdf_inOfPt()");
-console.log("One point is %f inches", cpdfjs.inOfPt(1.0));
+console.log("One point is %s inches", cpdfjs.inOfPt(1.0).toFixed(6));
 console.log("---cpdf_cmOfPt()");
-console.log("One point is %f centimetres", cpdfjs.cmOfPt(1.0));
+console.log("One point is %s centimetres", cpdfjs.cmOfPt(1.0).toFixed(6));
 console.log("---cpdf_mmOfPt()");
-console.log("One point is %f millimetres", cpdfjs.mmOfPt(1.0));
+console.log("One point is %s millimetres", cpdfjs.mmOfPt(1.0).toFixed(6));
 console.log("---cpdf_range()");
 var range = cpdfjs.range(1, 10);
 console.log("---cpdf_all()");
@@ -100,7 +100,6 @@ console.log("islinearized:%i", lin ? 1 : 0);
 var pdf400 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
 var pdf401 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
 var permissions = [cpdfjs.noEdit];
-console.log(permissions.length);
 console.log("---cpdf_toFileEncrypted()");
 cpdfjs.toFileEncrypted(pdf400, cpdfjs.pdf40bit, permissions, "owner", "user", false, false, "testoutputs/01encrypted.pdf");
 console.log("---cpdf_toFileEncryptedExt()");
@@ -268,8 +267,9 @@ for (b2 = 0; b2 < nb; b2++)
   console.log("Bookmark at level %d points to page %d and has text \"%s\" and open %d", level, page, text, open ? 1 : 0);
 }
 cpdfjs.endGetBookmarkInfo();
+
 console.log("---cpdf: set bookmarks");
-/*cpdfjs.startSetBookmarkInfo(1);
+cpdfjs.startSetBookmarkInfo(1);
 cpdfjs.setBookmarkLevel(0, 0);
 cpdfjs.setBookmarkPage(pdf17, 0, 20);
 cpdfjs.setBookmarkOpenStatus(0, true);
@@ -277,7 +277,8 @@ cpdfjs.setBookmarkText(0, "New bookmark!");
 cpdfjs.endSetBookmarkInfo(pdf17);
 cpdfjs.toFile(pdf17, "testoutputs/06newmarks.pdf", false, false);
 console.log("---cpdf_getBookmarksJSON()");
-var marksjson = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+
+/*var marksjson = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
 var marksdata = cpdfjs.getBookmarksJSON(marksjson);
 console.log("Contains %d bytes of data", marksdata.length);
 console.log("---cpdf_setBookmarksJSON()");
@@ -688,22 +689,25 @@ cpdfjs.toFile(toc, "testoutputs/06toc.pdf", false, false);
    
     static void chapter14(Jcpdf jcpdf) throws Jcpdf.CpdfError
     {
-        CHAPTER 14. Fonts.
-        System.out.println("***** CHAPTER 14. Fonts");
-        System.out.println("---cpdf: Get Fonts");
-        Jcpdf.Pdf fonts = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-        Jcpdf.Pdf fonts2 = jcpdf.fromFile("testinputs/frontmatter.pdf", "");
-        jcpdf.startGetFontInfo(fonts);
-        int n_fonts = jcpdf.numberFonts();
-        for (int ff = 0; ff < n_fonts; ff++)
-        {
-            int page = jcpdf.getFontPage(ff);
-            String f_name = jcpdf.getFontName(ff);
-            String type = jcpdf.getFontType(ff);
-            String encoding = jcpdf.getFontEncoding(ff);
-            System.out.format("Page %d, font %s has type %s and encoding %s\n", page, f_name, type, encoding);
-        }
-        jcpdf.endGetFontInfo();
+*/
+/* CHAPTER 14. Fonts. */
+console.log("***** CHAPTER 14. Fonts");
+console.log("---cpdf: Get Fonts");
+var fonts = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var fonts2 = cpdfjs.fromFile("testinputs/frontmatter.pdf", "");
+cpdfjs.startGetFontInfo(fonts);
+var n_fonts = cpdfjs.numberFonts();
+for (ff = 0; ff < n_fonts; ff++)
+{
+  var page = cpdfjs.getFontPage(ff);
+  var f_name = cpdfjs.getFontName(ff);
+  var type = cpdfjs.getFontType(ff);
+  var encoding = cpdfjs.getFontEncoding(ff);
+  console.log("Page %d, font %s has type %s and encoding %s", page, f_name, type, encoding);
+}
+cpdfjs.endGetFontInfo();
+
+/*
         System.out.println("---cpdf_removeFonts()");
         jcpdf.removeFonts(fonts);
         jcpdf.toFile(fonts, "testoutputs/14remove_fonts.pdf", false, false);
