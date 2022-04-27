@@ -1546,13 +1546,74 @@ function replaceDictEntrySearch(pdf, key, searchterm, newval)
 
 function getDictEntries(pdf, key)
 {
-  //FIXME
-  return [0];
+  var r = cpdf.cpdflib.getDictEntries(pdf, caml_string_of_jsstring(key));
+  return r.data;
 }
 
 function removeClipping(pdf, range)
 {
   cpdf.cpdflib.removeClipping(pdf, range);
+}
+
+function textToPDF(w, h, font, fontsize, filename)
+{
+  var r = cpdf.cpdflib.textToPDF(w, h, font, fontsize, caml_string_of_jsstring(filename));
+  return r;
+}
+
+function textToPDFPaper(papersize, font, fontsize, filename)
+{
+  var r = cpdf.cpdflib.textToPDFPaper(papersize, font, fontsize, caml_string_of_jsstring(filename));
+  return r;
+}
+
+function annotationsJSON(pdf)
+{
+  var r = cpdf.cpdflib.annotationsJSON(pdf);
+  return r.data;
+}
+
+function twoUp(pdf)
+{
+  var r = cpdf.cpdflib.twoUp(pdf);
+  return r;
+}
+
+function twoUpStack(pdf)
+{
+  var r = cpdf.cpdflib.twoUpStack(pdf);
+  return r;
+}
+
+function impose(pdf, a, b, c, d, e, f, g, h, i, j)
+{
+  var r = cpdf.cpdflib.impose(pdf, a, b, c, d, e, f, g, h, i, j);
+  return r;
+}
+
+function padBefore(pdf, range)
+{
+  var r = cpdf.cpdflib.padBefore(pdf, range);
+}
+
+function padAfter(pdf, range)
+{
+  var r = cpdf.cpdflib.padAfter(pdf, range);
+}
+
+function padEvery(pdf, range)
+{
+  var r = cpdf.cpdflib.padEvery(pdf, range);
+}
+
+function padMultiple(pdf, range)
+{
+  var r = cpdf.cpdflib.padMultiple(pdf, range);
+}
+
+function padMultipleBefore(pdf, range)
+{
+  var r = cpdf.cpdflib.padMultipleBefore(pdf, range);
 }
 
 module.exports =
@@ -1708,19 +1769,22 @@ module.exports =
   addContent : addContent,
   stampAsXObject : stampAsXObject,
 
+*/
+
   //CHAPTER 9. Multipage facilities
-  twoUp : twoUp,
-  twoUpStack : twoUpStack,
-  impose : impose,
-  padBefore : padBefore,
-  padAfter : padAfter,
-  padEvery : padEvery,
-  padMultiple : padMultiple,
-  padMultipleBefore : padMultipleBefore,
+  twoUp,
+  twoUpStack,
+  impose,
+  padBefore,
+  padAfter,
+  padEvery,
+  padMultiple,
+  padMultipleBefore,
 
   //CHAPTER 10. Annotations
-  annotationsJSON : annotationsJSON,
+  annotationsJSON,
 
+/*
   //CHAPTER 11. Document Information and Metadata
   getVersion : getVersion,*/
   isLinearized,
@@ -1835,10 +1899,9 @@ module.exports =
   //CHAPTER 17. Creating New PDFs
   blankDocument,
   blankDocumentPaper,
-  /*
-  textToPDF : textToPDF,
-  textToPDFPaper : textToPDFPaper,
-*/
+  textToPDF,
+  textToPDFPaper,
+
   //CHAPTER 18. Miscellaneous
   draft,
   removeAllText,

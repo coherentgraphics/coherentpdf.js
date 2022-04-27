@@ -363,64 +363,54 @@ cpdfjs.toFile(toc, "testoutputs/06toc.pdf", false, false);
         stamp_range.close();
         undoc_all.close();
     }
-   
-    static void chapter9(Jcpdf jcpdf) throws Jcpdf.CpdfError
-    {
-        CHAPTER 9. Multipage facilities
-        System.out.println("***** CHAPTER 9. Multipage facilities");
-        try
-            (Jcpdf.Pdf mp = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf mp2 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf mp25 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf mp26 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf mp3 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf mp4 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf mp5 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf mp6 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf mp7 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", ""))
-        {
-            System.out.println("---cpdf_twoUp()");
-            jcpdf.twoUp(mp);
-            jcpdf.toFile(mp, "testoutputs/09mp.pdf", false, false);
-            System.out.println("---cpdf_twoUpStack()");
-            jcpdf.twoUpStack(mp2);
-            jcpdf.toFile(mp2, "testoutputs/09mp2.pdf", false, false);
-            System.out.println("---cpdf_impose()");
-            jcpdf.impose(mp25, 5.0, 4.0, false, false, false, false, false, 40.0, 20.0, 2.0);
-            jcpdf.toFile(mp25, "testoutputs/09mp25.pdf", false, false);
-            jcpdf.impose(mp26, 2000.0, 1000.0, true, false, false, false, false, 40.0, 20.0, 2.0);
-            jcpdf.toFile(mp26, "testoutputs/09mp26.pdf", false, false);
-            System.out.println("---cpdf_padBefore()");
-            Jcpdf.Range r = jcpdf.range(1, 10);
-            jcpdf.padBefore(mp3, r);
-            jcpdf.toFile(mp3, "testoutputs/09mp3.pdf", false, false);
-            System.out.println("---cpdf_padAfter()");
-            jcpdf.padAfter(mp4, r);
-            jcpdf.toFile(mp4, "testoutputs/09mp4.pdf", false, false);
-            System.out.println("---cpdf_padEvery()");
-            jcpdf.padEvery(mp5, 5);
-            jcpdf.toFile(mp5, "testoutputs/09mp5.pdf", false, false);
-            System.out.println("---cpdf_padMultiple()");
-            jcpdf.padMultiple(mp6, 10);
-            jcpdf.toFile(mp6, "testoutputs/09mp6.pdf", false, false);
-            System.out.println("---cpdf_padMultipleBefore()");
-            jcpdf.padMultipleBefore(mp7, 23);
-            jcpdf.toFile(mp7, "testoutputs/09mp7.pdf", false, false);
-            r.close();
-        }
-    }
-   
-    static void chapter10(Jcpdf jcpdf) throws Jcpdf.CpdfError
-    {
-        CHAPTER 10. Annotations
-        System.out.println("***** CHAPTER 10. Annotations");
-        System.out.println("---cpdf_annotationsJSON()");
-        Jcpdf.Pdf annot = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-        byte[] annotjson = jcpdf.annotationsJSON(annot);
-        System.out.format("Contains %d bytes of data\n", annotjson.length);
-        annot.close();
-    }
-   
+*/ 
+/* CHAPTER 9. Multipage facilities */
+console.log("***** CHAPTER 9. Multipage facilities");
+var mp = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var mp2 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var mp25 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var mp26 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var mp3 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var mp4 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var mp5 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var mp6 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var mp7 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+console.log("---cpdf_twoUp()");
+cpdfjs.twoUp(mp);
+cpdfjs.toFile(mp, "testoutputs/09mp.pdf", false, false);
+console.log("---cpdf_twoUpStack()");
+cpdfjs.twoUpStack(mp2);
+cpdfjs.toFile(mp2, "testoutputs/09mp2.pdf", false, false);
+console.log("---cpdf_impose()");
+cpdfjs.impose(mp25, 5.0, 4.0, false, false, false, false, false, 40.0, 20.0, 2.0);
+cpdfjs.toFile(mp25, "testoutputs/09mp25.pdf", false, false);
+cpdfjs.impose(mp26, 2000.0, 1000.0, true, false, false, false, false, 40.0, 20.0, 2.0);
+cpdfjs.toFile(mp26, "testoutputs/09mp26.pdf", false, false);
+console.log("---cpdf_padBefore()");
+var r = cpdfjs.range(1, 10);
+cpdfjs.padBefore(mp3, r);
+cpdfjs.toFile(mp3, "testoutputs/09mp3.pdf", false, false);
+console.log("---cpdf_padAfter()");
+cpdfjs.padAfter(mp4, r);
+cpdfjs.toFile(mp4, "testoutputs/09mp4.pdf", false, false);
+console.log("---cpdf_padEvery()");
+cpdfjs.padEvery(mp5, 5);
+cpdfjs.toFile(mp5, "testoutputs/09mp5.pdf", false, false);
+console.log("---cpdf_padMultiple()");
+cpdfjs.padMultiple(mp6, 10);
+cpdfjs.toFile(mp6, "testoutputs/09mp6.pdf", false, false);
+console.log("---cpdf_padMultipleBefore()");
+cpdfjs.padMultipleBefore(mp7, 23);
+cpdfjs.toFile(mp7, "testoutputs/09mp7.pdf", false, false);
+
+/* CHAPTER 10. Annotations */
+console.log("***** CHAPTER 10. Annotations");
+console.log("---cpdf_annotationsJSON()");
+var annot = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var annotjson = cpdfjs.annotationsJSON(annot);
+console.log("Contains %d bytes of data", annotjson.length);
+
+/*
     static void chapter11(Jcpdf jcpdf) throws Jcpdf.CpdfError
     {
         CHAPTER 11. Document Information and Metadata
@@ -750,31 +740,22 @@ cpdfjs.copyFont(fonts, fonts2, all, 1, "/Font");
         jcpdf.OCGOrderAll(ocg);
         ocg.close();
     }
-    
-    static void chapter17(Jcpdf jcpdf) throws Jcpdf.CpdfError
-    {
-        CHAPTER 17. Creating New PDFs
-        System.out.println("***** CHAPTER 17. Creating New PDFs");
-        System.out.println("---cpdf_blankDocument()");
-        System.out.println("---cpdf_blankDocumentPaper()");
-        try
-            (Jcpdf.Pdf new1 = jcpdf.blankDocument(100.0, 200.0, 20);
-             Jcpdf.Pdf new2 = jcpdf.blankDocumentPaper(jcpdf.a4portrait, 10))
-        {
-            jcpdf.toFile(new1, "testoutputs/01blank.pdf", false, false);
-            jcpdf.toFile(new2, "testoutputs/01blanka4.pdf", false, false);
-            System.out.println("---cpdf_textToPDF()");
-            System.out.println("---cpdf_textToPDFPaper()");
-        }
-        try
-            (Jcpdf.Pdf ttpdf = jcpdf.textToPDF(500.0, 600.0, jcpdf.timesItalic, 8.0, "../cpdflib-source/cpdflibtest.c");
-             Jcpdf.Pdf ttpdfpaper = jcpdf.textToPDFPaper(jcpdf.a4portrait, jcpdf.timesBoldItalic, 10.0, "../cpdflib-source/cpdflibtest.c"))
-        {
-            jcpdf.toFile(ttpdf, "testoutputs/01ttpdf.pdf", false, false);
-            jcpdf.toFile(ttpdfpaper, "testoutputs/01ttpdfpaper.pdf", false, false);
-        }
-    }
-*/
+*/    
+
+/* CHAPTER 17. Creating New PDFs */
+console.log("***** CHAPTER 17. Creating New PDFs");
+console.log("---cpdf_blankDocument()");
+console.log("---cpdf_blankDocumentPaper()");
+var new1 = cpdfjs.blankDocument(100.0, 200.0, 20);
+var new2 = cpdfjs.blankDocumentPaper(cpdfjs.a4portrait, 10);
+cpdfjs.toFile(new1, "testoutputs/01blank.pdf", false, false);
+cpdfjs.toFile(new2, "testoutputs/01blanka4.pdf", false, false);
+console.log("---cpdf_textToPDF()");
+var ttpdf = cpdfjs.textToPDF(500.0, 600.0, cpdfjs.timesItalic, 8.0, "../cpdflib-source/cpdflibtest.c");
+console.log("---cpdf_textToPDFPaper()");
+var ttpdfpaper = cpdfjs.textToPDFPaper(cpdfjs.a4portrait, cpdfjs.timesBoldItalic, 10.0, "../cpdflib-source/cpdflibtest.c");
+cpdfjs.toFile(ttpdf, "testoutputs/01ttpdf.pdf", false, false);
+cpdfjs.toFile(ttpdfpaper, "testoutputs/01ttpdfpaper.pdf", false, false);
 
 /* CHAPTER 18. Miscellaneous */
 console.log("***** CHAPTER 18. Miscellaneous");
