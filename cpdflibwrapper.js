@@ -1473,6 +1473,88 @@ function copyFont(pdf, pdf2, range, pagenumber, fontname)
   cpdf.cpdflib.copyFont(pdf, pdf2, range, pagenumber, caml_string_of_jsstring(fontname));
 }
 
+function draft(pdf, range, boxes)
+{
+  cpdf.cpdflib.draft(pdf, range, boxes);
+}
+
+function removeAllText(pdf, range)
+{
+  cpdf.cpdflib.removeAllText(pdf, range);
+}
+
+function blackText(pdf, range)
+{
+  cpdf.cpdflib.blackText(pdf, range);
+}
+
+function blackLines(pdf, range)
+{
+  cpdf.cpdflib.blackLines(pdf, range);
+}
+
+function blackFills(pdf, range)
+{
+  cpdf.cpdflib.blackFills(pdf, range);
+}
+
+function thinLines(pdf, range, thickness)
+{
+  cpdf.cpdflib.thinLines(pdf, range, thickness);
+}
+
+function copyId(from_pdf, to_pdf)
+{
+  cpdf.cpdflib.copyId(from_pdf, to_pdf);
+}
+
+function removeId(pdf)
+{
+  cpdf.cpdflib.removeId(pdf);
+}
+
+function setVersion(pdf, a)
+{
+  cpdf.cpdflib.setVersion(pdf, a);
+}
+
+function setFullVersion(pdf, a, b)
+{
+  cpdf.cpdflib.setFullVersion(pdf, a, b);
+}
+
+function removeDictEntry(pdf, key)
+{
+  cpdf.cpdflib.removeDictEntry(pdf, caml_string_of_jsstring(key));
+}
+
+function removeDictEntrySearch(pdf, key, searchterm)
+{
+  cpdf.cpdflib.removeDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(searchterm));
+}
+
+function replaceDictEntry(pdf, key, newval)
+{
+  cpdf.cpdflib.replaceDictEntry(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval));
+}
+
+function replaceDictEntrySearch(pdf, key, searchterm, newval)
+{
+  cpdf.cpdflib.replaceDictEntrySearch
+    (pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(searchterm), caml_string_of_jsstring(newval));
+}
+
+function getDictEntries(pdf, key)
+{
+  //FIXME
+  return [0];
+}
+
+function removeClipping(pdf, range)
+{
+  cpdf.cpdflib.removeClipping(pdf, range);
+}
+
 module.exports =
   {
   a0portrait,
@@ -1756,21 +1838,22 @@ module.exports =
   /*
   textToPDF : textToPDF,
   textToPDFPaper : textToPDFPaper,
-
+*/
   //CHAPTER 18. Miscellaneous
-  draft : draft,
-  removeAllText : removeAllText,
-  blackText : blackText,
-  blackLines : blackLines,
-  blackFills : blackFills,
-  thinLines : thinLines,
-  copyId : copyId,
-  removeId : removeId,
-  setVersion : setVersion,
-  setFullVersion : setFullVersion,
-  removeDictEntry : removeDictEntry,
-  removeDictEntrySearch : removeDictEntrySearch,
-  replaceDictEntry : replaceDictEntry,
-  replaceDictEntrySearch : replaceDictEntrySearch,
-  getDictEntries : getDictEntries,
-  removeClipping : removeClipping*/};
+  draft,
+  removeAllText,
+  blackText,
+  blackLines,
+  blackFills,
+  thinLines,
+  copyId,
+  removeId,
+  setVersion,
+  setFullVersion,
+  removeDictEntry,
+  removeDictEntrySearch,
+  replaceDictEntry,
+  replaceDictEntrySearch,
+  getDictEntries,
+  removeClipping
+};

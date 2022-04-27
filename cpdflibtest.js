@@ -774,78 +774,73 @@ cpdfjs.copyFont(fonts, fonts2, all, 1, "/Font");
             jcpdf.toFile(ttpdfpaper, "testoutputs/01ttpdfpaper.pdf", false, false);
         }
     }
+*/
 
-    static void chapter18(Jcpdf jcpdf) throws Jcpdf.CpdfError
-    {
-        CHAPTER 18. Miscellaneous
-        System.out.println("***** CHAPTER 18. Miscellaneous");
-        try
-            (Jcpdf.Pdf misc = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc2 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc3 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc4 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc5 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc6 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc7 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc8 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc9 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc10 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc11 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc12 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc13 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc14 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc15 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Pdf misc16 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-             Jcpdf.Range all = jcpdf.all(misc);
-             Jcpdf.Pdf misclogo = jcpdf.fromFile("testinputs/logo.pdf", ""))
-        {
-            System.out.println("---cpdf_draft()");
-            jcpdf.draft(misc, all, true);
-            jcpdf.toFile(misc, "testoutputs/17draft.pdf", false, false);
-            System.out.println("---cpdf_removeAllText()");
-            jcpdf.removeAllText(misc2, all);
-            jcpdf.toFile(misc2, "testoutputs/17removealltext.pdf", false, false);
-            System.out.println("---cpdf_blackText()");
-            jcpdf.blackText(misc3, all);
-            jcpdf.toFile(misc3, "testoutputs/17blacktext.pdf", false, false);
-            System.out.println("---cpdf_blackLines()");
-            jcpdf.blackLines(misc4, all);
-            jcpdf.toFile(misc4, "testoutputs/17blacklines.pdf", false, false);
-            System.out.println("---cpdf_blackFills()");
-            jcpdf.blackFills(misc5, all);
-            jcpdf.toFile(misc5, "testoutputs/17blackfills.pdf", false, false);
-            System.out.println("---cpdf_thinLines()");
-            jcpdf.thinLines(misc6, all, 2.0);
-            jcpdf.toFile(misc6, "testoutputs/17thinlines.pdf", false, false);
-            System.out.println("---cpdf_copyId()");
-            jcpdf.copyId(misclogo, misc7);
-            jcpdf.toFile(misc7, "testoutputs/17copyid.pdf", false, false);
-            System.out.println("---cpdf_removeId()");
-            jcpdf.removeId(misc8);
-            jcpdf.toFile(misc8, "testoutputs/17removeid.pdf", false, false);
-            System.out.println("---cpdf_setVersion()");
-            jcpdf.setVersion(misc9, 1);
-            jcpdf.toFile(misc9, "testoutputs/17setversion.pdf", false, false);
-            System.out.println("---cpdf_setFullVersion()");
-            jcpdf.setFullVersion(misc10, 2, 0);
-            jcpdf.toFile(misc10, "testoutputs/17setfullversion.pdf", false, false);
-            System.out.println("---cpdf_removeDictEntry()");
-            jcpdf.removeDictEntry(misc11, "/Producer");
-            jcpdf.toFile(misc11, "testoutputs/17removedictentry.pdf", false, false);
-            System.out.println("---cpdf_removeDictEntrySearch()");
-            jcpdf.removeDictEntrySearch(misc13, "/Producer", "1");
-            jcpdf.toFile(misc13, "testoutputs/17removedictentrysearch.pdf", false, false);
-            System.out.println("---cpdf_replaceDictEntry()");
-            jcpdf.replaceDictEntry(misc14, "/Producer", "{\"I\" : 1}");
-            jcpdf.toFile(misc14, "testoutputs/17replacedictentry.pdf", false, false);
-            System.out.println("---cpdf_replaceDictEntrySearch()");
-            jcpdf.replaceDictEntrySearch(misc15, "/Producer", "1", "2");
-            jcpdf.toFile(misc15, "testoutputs/17replacedictentrysearch.pdf", false, false);
-            System.out.println("---cpdf_getDictEntries()");
-            byte[] entries = jcpdf.getDictEntries(misc16, "/Producer");
-            System.out.format("length of entries data = %d\n", entries.length);
-            System.out.println("---cpdf_removeClipping()");
-            jcpdf.removeClipping(misc12, all);
-            jcpdf.toFile(misc12, "testoutputs/17removeclipping.pdf", false, false);
-        }
-    }*/
+/* CHAPTER 18. Miscellaneous */
+console.log("***** CHAPTER 18. Miscellaneous");
+var misc = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc2 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc3 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc4 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc5 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc6 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc7 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc8 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc9 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc10 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc11 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc12 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc13 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc14 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc15 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var misc16 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var all = cpdfjs.all(misc);
+var misclogo = cpdfjs.fromFile("testinputs/logo.pdf", "")
+console.log("---cpdf_draft()");
+cpdfjs.draft(misc, all, true);
+cpdfjs.toFile(misc, "testoutputs/17draft.pdf", false, false);
+console.log("---cpdf_removeAllText()");
+cpdfjs.removeAllText(misc2, all);
+cpdfjs.toFile(misc2, "testoutputs/17removealltext.pdf", false, false);
+console.log("---cpdf_blackText()");
+cpdfjs.blackText(misc3, all);
+cpdfjs.toFile(misc3, "testoutputs/17blacktext.pdf", false, false);
+console.log("---cpdf_blackLines()");
+cpdfjs.blackLines(misc4, all);
+cpdfjs.toFile(misc4, "testoutputs/17blacklines.pdf", false, false);
+console.log("---cpdf_blackFills()");
+cpdfjs.blackFills(misc5, all);
+cpdfjs.toFile(misc5, "testoutputs/17blackfills.pdf", false, false);
+console.log("---cpdf_thinLines()");
+cpdfjs.thinLines(misc6, all, 2.0);
+cpdfjs.toFile(misc6, "testoutputs/17thinlines.pdf", false, false);
+console.log("---cpdf_copyId()");
+cpdfjs.copyId(misclogo, misc7);
+cpdfjs.toFile(misc7, "testoutputs/17copyid.pdf", false, false);
+console.log("---cpdf_removeId()");
+cpdfjs.removeId(misc8);
+cpdfjs.toFile(misc8, "testoutputs/17removeid.pdf", false, false);
+console.log("---cpdf_setVersion()");
+cpdfjs.setVersion(misc9, 1);
+cpdfjs.toFile(misc9, "testoutputs/17setversion.pdf", false, false);
+console.log("---cpdf_setFullVersion()");
+cpdfjs.setFullVersion(misc10, 2, 0);
+cpdfjs.toFile(misc10, "testoutputs/17setfullversion.pdf", false, false);
+console.log("---cpdf_removeDictEntry()");
+cpdfjs.removeDictEntry(misc11, "/Producer");
+cpdfjs.toFile(misc11, "testoutputs/17removedictentry.pdf", false, false);
+console.log("---cpdf_removeDictEntrySearch()");
+cpdfjs.removeDictEntrySearch(misc13, "/Producer", "1");
+cpdfjs.toFile(misc13, "testoutputs/17removedictentrysearch.pdf", false, false);
+console.log("---cpdf_replaceDictEntry()");
+cpdfjs.replaceDictEntry(misc14, "/Producer", "{\"I\" : 1}");
+cpdfjs.toFile(misc14, "testoutputs/17replacedictentry.pdf", false, false);
+console.log("---cpdf_replaceDictEntrySearch()");
+cpdfjs.replaceDictEntrySearch(misc15, "/Producer", "1", "2");
+cpdfjs.toFile(misc15, "testoutputs/17replacedictentrysearch.pdf", false, false);
+console.log("---cpdf_getDictEntries()");
+var entries = cpdfjs.getDictEntries(misc16, "/Producer");
+console.log("length of entries data = %d", entries.length);
+console.log("---cpdf_removeClipping()");
+cpdfjs.removeClipping(misc12, all);
+cpdfjs.toFile(misc12, "testoutputs/17removeclipping.pdf", false, false);
