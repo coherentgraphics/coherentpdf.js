@@ -1447,6 +1447,32 @@ function endSetBookmarkInfo(pdf)
   cpdf.cpdflib.endSetBookmarkInfo(pdf);
 }
 
+function getBookmarksJSON(pdf)
+{
+  var r = cpdf.cpdflib.getBookmarksJSON(pdf).data;
+  return r;
+}
+
+function setBookmarksJSON(pdf)
+{
+  //FIXME do something here
+}
+
+function tableOfContents(pdf, font, fontsize, title, bookmarks)
+{
+  cpdf.cpdflib.tableOfContents(pdf, font, fontsize, caml_string_of_jsstring(title), bookmarks);
+}
+
+function removeFonts(pdf)
+{
+  cpdf.cpdflib.removeFonts(pdf);
+}
+
+function copyFont(pdf, pdf2, range, pagenumber, fontname)
+{
+  cpdf.cpdflib.copyFont(pdf, pdf2, range, pagenumber, caml_string_of_jsstring(fontname));
+}
+
 module.exports =
   {
   a0portrait,
@@ -1584,9 +1610,9 @@ module.exports =
   setBookmarkLevel,
   setBookmarkText,
   setBookmarkOpenStatus,
-  /*getBookmarksJSON,
+  getBookmarksJSON,
   setBookmarksJSON,
-  tableOfContents,*/
+  tableOfContents,
 
   /* //CHAPTER 7. Presentations
 
@@ -1707,8 +1733,8 @@ module.exports =
   getFontEncoding,
   startGetFontInfo,
   endGetFontInfo,
-  /*copyFont,
-  removeFonts,*/
+  copyFont,
+  removeFonts,
 /*
   //CHAPTER 15. PDF and JSON
   outputJSON : outputJSON,

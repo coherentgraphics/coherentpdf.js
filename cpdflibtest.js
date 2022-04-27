@@ -267,7 +267,6 @@ for (b2 = 0; b2 < nb; b2++)
   console.log("Bookmark at level %d points to page %d and has text \"%s\" and open %d", level, page, text, open ? 1 : 0);
 }
 cpdfjs.endGetBookmarkInfo();
-
 console.log("---cpdf: set bookmarks");
 cpdfjs.startSetBookmarkInfo(1);
 cpdfjs.setBookmarkLevel(0, 0);
@@ -277,8 +276,7 @@ cpdfjs.setBookmarkText(0, "New bookmark!");
 cpdfjs.endSetBookmarkInfo(pdf17);
 cpdfjs.toFile(pdf17, "testoutputs/06newmarks.pdf", false, false);
 console.log("---cpdf_getBookmarksJSON()");
-
-/*var marksjson = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var marksjson = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
 var marksdata = cpdfjs.getBookmarksJSON(marksjson);
 console.log("Contains %d bytes of data", marksdata.length);
 console.log("---cpdf_setBookmarksJSON()");
@@ -288,16 +286,11 @@ console.log("---cpdf_tableOfContents()");
 var toc = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
 cpdfjs.tableOfContents(toc, cpdfjs.timesRoman, 12.0, "Table of Contents", false);
 cpdfjs.toFile(toc, "testoutputs/06toc.pdf", false, false);
-*/
 
-/*    static void chapter7(Jcpdf jcpdf) throws Jcpdf.CpdfError
-    {
-        CHAPTER 7. Presentations
-        Not included in the library version.
-    }
+/* CHAPTER 7. Presentations */
+/* Not included in the library version. */
    
-    static void chapter8(Jcpdf jcpdf) throws Jcpdf.CpdfError
-    {
+/*
         CHAPTER 8. Logos, Watermarks and Stamps
         System.out.println("***** CHAPTER 8. Logos, Watermarks and Stamps");
         Jcpdf.Pdf textfile = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
@@ -706,19 +699,14 @@ for (ff = 0; ff < n_fonts; ff++)
   console.log("Page %d, font %s has type %s and encoding %s", page, f_name, type, encoding);
 }
 cpdfjs.endGetFontInfo();
+console.log("---cpdf_removeFonts()");
+cpdfjs.removeFonts(fonts);
+cpdfjs.toFile(fonts, "testoutputs/14remove_fonts.pdf", false, false);
+console.log("---cpdf_copyFont()");
+var all = cpdfjs.all(fonts);
+cpdfjs.copyFont(fonts, fonts2, all, 1, "/Font");
 
 /*
-        System.out.println("---cpdf_removeFonts()");
-        jcpdf.removeFonts(fonts);
-        jcpdf.toFile(fonts, "testoutputs/14remove_fonts.pdf", false, false);
-        System.out.println("---cpdf_copyFont()");
-        Jcpdf.Range all = jcpdf.all(fonts);
-        jcpdf.copyFont(fonts, fonts2, all, 1, "/Font");
-        fonts.close();
-        fonts2.close();
-        all.close();
-    }
-   
     static void chapter15(Jcpdf jcpdf) throws Jcpdf.CpdfError
     {
         CHAPTER 15. PDF and JSON
