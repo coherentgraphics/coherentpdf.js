@@ -94,6 +94,7 @@ let _ =
        (* CHAPTER 5. Compression *)
        method compress = Cpdflib.compress
        method decompress = Cpdflib.decompress
+       method squeezeInMemory = Cpdflib.squeezeInMemory
 
        (* CHAPTER 6. Bookmarks *)
        method startGetBookmarkInfo = Cpdflib.startGetBookmarkInfo

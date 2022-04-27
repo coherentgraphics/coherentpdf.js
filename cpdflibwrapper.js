@@ -1313,6 +1313,21 @@ function showBoxes(pdf, range)
   cpdf.cpdflib.showBoxes(pdf, range);
 }
 
+function compress(pdf)
+{
+  cpdf.cpdflib.compress(pdf);
+}
+
+function decompress(pdf)
+{
+  cpdf.cpdflib.decompress(pdf);
+}
+
+function squeezeInMemory(pdf)
+{
+  cpdf.cpdflib.squeezeInMemory(pdf);
+}
+
 module.exports =
   {
   a0portrait,
@@ -1431,11 +1446,12 @@ module.exports =
 
   //CHAPTER 4. Encryption and Decryption
 
-  /*//CHAPTER 5. Compression
-  compress : compress,
-  decompress : decompress,
+  //CHAPTER 5. Compression
+  compress,
+  decompress,
+  squeezeInMemory,
 
-  //CHAPTER 6. Bookmarks
+  /*//CHAPTER 6. Bookmarks
   startGetBookmarkInfo : startGetBookmarkInfo,
   endGetBookmarkInfo : endGetBookmarkInfo,
   numberBookmarks : numberBookmarks,
