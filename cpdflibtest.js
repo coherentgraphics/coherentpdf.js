@@ -290,80 +290,67 @@ cpdfjs.toFile(toc, "testoutputs/06toc.pdf", false, false);
 /* CHAPTER 7. Presentations */
 /* Not included in the library version. */
    
-/*
-        CHAPTER 8. Logos, Watermarks and Stamps
-        System.out.println("***** CHAPTER 8. Logos, Watermarks and Stamps");
-        Jcpdf.Pdf textfile = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-        System.out.println("---cpdf_addText()");
-        Jcpdf.Range all = jcpdf.all(textfile);
-        jcpdf.addText(false,
-                     textfile,
-                     all,
-                     "Some Text~~~~~~~~~~!",
-                     jcpdf.topLeft, 20.0, 20.0,
-                     1.0,
-                     1,
-                     jcpdf.timesRoman,
-                     20.0,
-                     0.5,
-                     0.5,
-                     0.5,
-                     false,
-                     false,
-                     true,
-                     0.5,
-                     jcpdf.leftJustify,
-                     false,
-                     false,
-                     "",
-                     1.0,
-                     false);
-        System.out.println("---cpdf_addTextSimple()");
-        jcpdf.addTextSimple(textfile, all, "The text!", jcpdf.topLeft, 20.0, 20.0, jcpdf.timesRoman, 50.0);
-        jcpdf.toFile(textfile, "testoutputs/08added_text.pdf", false, false);
-        System.out.println("---cpdf_removeText()");
-        jcpdf.removeText(textfile, all);
-        jcpdf.toFile(textfile, "testoutputs/08removed_text.pdf", false, false);
-        System.out.println("---cpdf_textWidth()");
-        int w = jcpdf.textWidth(jcpdf.timesRoman, "What is the width of this?");
-        Jcpdf.Pdf stamp = jcpdf.fromFile("testinputs/logo.pdf", "");
-        Jcpdf.Pdf stampee = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-        Jcpdf.Range stamp_range = jcpdf.all(stamp);
-        System.out.println("---cpdf_stampOn()");
-        jcpdf.stampOn(stamp, stampee, stamp_range);
-        System.out.println("---cpdf_stampUnder()");
-        jcpdf.stampUnder(stamp, stampee, stamp_range);
-        System.out.println("---cpdf_stampExtended()");
-        jcpdf.stampExtended(stamp, stampee, stamp_range, true, true, jcpdf.topLeft, 20.0, 20.0, true);
-        jcpdf.toFile(stamp, "testoutputs/08stamp_after.pdf", false, false);
-        jcpdf.toFile(stampee, "testoutputs/08stampee_after.pdf", false, false);
-        Jcpdf.Pdf c1 = jcpdf.fromFile("testinputs/logo.pdf", "");
-        Jcpdf.Pdf c2 = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-        System.out.println("---cpdf_combinePages()");
-        Jcpdf.Pdf c3 = jcpdf.combinePages(c1, c2);
-        jcpdf.toFile(c3, "testoutputs/08c3after.pdf", false, false);
-        System.out.println("---cpdf_stampAsXObject()");
-        Jcpdf.Pdf undoc = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-        Jcpdf.Pdf ulogo = jcpdf.fromFile("testinputs/logo.pdf", "");
-        Jcpdf.Range undoc_all = jcpdf.all(undoc);
-        String name = jcpdf.stampAsXObject(undoc, undoc_all, ulogo);
-        String content = String.format("q 1 0 0 1 100 100 cm %s Do Q q 1 0 0 1 300 300 cm %s Do Q q 1 0 0 1 500 500 cm %s Do Q", name, name, name);
-        System.out.println("---cpdf_addContent()");
-        jcpdf.addContent(content, true, undoc, undoc_all);
-        jcpdf.toFile(undoc, "testoutputs/08demo.pdf", false, false);
-        textfile.close();
-        stamp.close();
-        stampee.close();
-        c1.close();
-        c2.close();
-        c3.close();
-        undoc.close();
-        ulogo.close();
-        all.close();
-        stamp_range.close();
-        undoc_all.close();
-    }
-*/ 
+/* CHAPTER 8. Logos, Watermarks and Stamps */
+console.log("***** CHAPTER 8. Logos, Watermarks and Stamps");
+var textfile = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+console.log("---cpdf_addText()");
+var all = cpdfjs.all(textfile);
+cpdfjs.addText(false,
+     textfile,
+     all,
+     "Some Text~~~~~~~~~~!",
+     cpdfjs.topLeft, 20.0, 20.0,
+     1.0,
+     1,
+     cpdfjs.timesRoman,
+     20.0,
+     0.5,
+     0.5,
+     0.5,
+     false,
+     false,
+     true,
+     0.5,
+     cpdfjs.leftJustify,
+     false,
+     false,
+     "",
+     1.0,
+     false);
+console.log("---cpdf_addTextSimple()");
+cpdfjs.addTextSimple(textfile, all, "The text!", cpdfjs.topLeft, 20.0, 20.0, cpdfjs.timesRoman, 50.0);
+cpdfjs.toFile(textfile, "testoutputs/08added_text.pdf", false, false);
+console.log("---cpdf_removeText()");
+cpdfjs.removeText(textfile, all);
+cpdfjs.toFile(textfile, "testoutputs/08removed_text.pdf", false, false);
+console.log("---cpdf_textWidth()");
+var w = cpdfjs.textWidth(cpdfjs.timesRoman, "What is the width of this?");
+var stamp = cpdfjs.fromFile("testinputs/logo.pdf", "");
+var stampee = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var stamp_range = cpdfjs.all(stamp);
+console.log("---cpdf_stampOn()");
+cpdfjs.stampOn(stamp, stampee, stamp_range);
+console.log("---cpdf_stampUnder()");
+cpdfjs.stampUnder(stamp, stampee, stamp_range);
+console.log("---cpdf_stampExtended()");
+cpdfjs.stampExtended(stamp, stampee, stamp_range, true, true, cpdfjs.topLeft, 20.0, 20.0, true);
+cpdfjs.toFile(stamp, "testoutputs/08stamp_after.pdf", false, false);
+cpdfjs.toFile(stampee, "testoutputs/08stampee_after.pdf", false, false);
+var c1 = cpdfjs.fromFile("testinputs/logo.pdf", "");
+var c2 = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+console.log("---cpdf_combinePages()");
+var c3 = cpdfjs.combinePages(c1, c2);
+cpdfjs.toFile(c3, "testoutputs/08c3after.pdf", false, false);
+console.log("---cpdf_stampAsXObject()");
+var undoc = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+var ulogo = cpdfjs.fromFile("testinputs/logo.pdf", "");
+var undoc_all = cpdfjs.all(undoc);
+var name = cpdfjs.stampAsXObject(undoc, undoc_all, ulogo);
+var content = "q 1 0 0 1 100 100 cm %s Do Q q 1 0 0 1 300 300 cm %s Do Q q 1 0 0 1 500 500 cm %s Do Q" //FIXME
+console.log("---cpdf_addContent()");
+cpdfjs.addContent(content, true, undoc, undoc_all);
+cpdfjs.toFile(undoc, "testoutputs/08demo.pdf", false, false);
+
 /* CHAPTER 9. Multipage facilities */
 console.log("***** CHAPTER 9. Multipage facilities");
 var mp = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");

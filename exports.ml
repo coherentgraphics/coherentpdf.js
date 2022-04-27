@@ -125,6 +125,7 @@ let _ =
        method removeText = Cpdflib.removeText
        method addContent = Cpdflib.addContent
        method stampAsXObject = Cpdflib.stampAsXObject
+       method textWidth = Cpdflib.textWidth
 
        (* CHAPTER 9. Multipage facilities *)
        method twoUp = Cpdflib.twoUp

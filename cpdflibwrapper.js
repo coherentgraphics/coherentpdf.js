@@ -1616,8 +1616,73 @@ function padMultipleBefore(pdf, range)
   var r = cpdf.cpdflib.padMultipleBefore(pdf, range);
 }
 
+function stampOn(stamp, stampee, stamp_range)
+{
+  cpdf.cpdflib.stampOn(stamp, stampee, stamp_range);
+}
+
+function stampUnder(stamp, stampee, stamp_range)
+{
+  cpdf.cpdflib.stampUnder(stamp, stampee, stamp_range);
+}
+
+function stampExtended(stamp, stampee, stamp_range, a, b, c, d, e, f)
+{
+  cpdf.cpdflib.stampExtended(stamp, stampee, stamp_range, a, b, c, d, e, f);
+}
+
+function combinePages(a, b)
+{
+  var r = cpdf.cpdflib.combinePages(a, b);
+  return r;
+}
+
+function addText(metrics, pdf, range, text, anchor, p1, p2, linespacing,
+                 bates, font, fontsize, color, underneath, cropbox, outline,
+                 opacity, justification, midline, topline, filename, linewidth, embed_fonts)
+{
+  cpdf.cpdflib.addText(metrics, pdf, range, caml_string_of_jsstring(text), anchor, p1, p2,
+                       linespacing, bates, font, fontsize, color, underneath, cropbox, outline,
+                       opacity, justification, midline, topline, caml_string_of_jsstring(filename),
+                       linewidth, embed_fonts);
+}
+
+function addTextSimple(pdf, range, text, anchor, p1, p2, font, fontsize)
+{
+  cpdf.cpdflib.addText(0, pdf, range, caml_string_of_jsstring(text), anchor, p1, p2, 1.0, 0, font, fontsize, 0, 0, 0, 0, 1, 1, 1.0, leftJustify, 1, 1, "", 1);
+}
+
+function removeText(pdf, range)
+{
+  cpdf.cpdflib.removeText(pdf, range);
+}
+
+function addContent(content, underneath, pdf, range)
+{
+  cpdf.cpdflib.addContent(caml_string_of_jsstring(content), underneath, pdf, range);
+}
+
+function stampAsXObject(pdf, range, pdf2)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.stampAsXObject(pdf, range, pdf2));
+  return r;
+}
+
+function textWidth(font, text)
+{
+  var r = cpdf.cpdflib.textWidth(font, caml_string_of_jsstring(text));
+  return r;
+}
+
+var leftJustify = 0;
+var centreJustify = 0;
+var rightJustify = 0;
+
 module.exports =
   {
+  leftJustify,
+  centreJustify,
+  rightJustify,
   a0portrait,
   a1portrait,
   a2portrait,
@@ -1757,19 +1822,19 @@ module.exports =
   setBookmarksJSON,
   tableOfContents,
 
-  /* //CHAPTER 7. Presentations
+  //CHAPTER 7. Presentations
 
   //CHAPTER 8. Logos, Watermarks and Stamps
-  stampOn : stampOn,
-  stampUnder : stampUnder,
-  stampExtended : stampExtended,
-  combinePages : combinePages,
-  addText : addText,
-  removeText : removeText,
-  addContent : addContent,
-  stampAsXObject : stampAsXObject,
-
-*/
+  stampOn,
+  stampUnder,
+  stampExtended,
+  combinePages,
+  addText,
+  addTextSimple,
+  textWidth,
+  removeText,
+  addContent,
+  stampAsXObject,
 
   //CHAPTER 9. Multipage facilities
   twoUp,
