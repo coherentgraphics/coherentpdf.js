@@ -1838,6 +1838,194 @@ function fromJSONMemory(buf)
   //FIXME
 }
 
+function getVersion(pdf)
+{
+  var r = cpdf.cpdflib.getVersion(pdf);
+  return r;
+}
+
+function getMajorVersion(pdf)
+{
+  var r = cpdf.cpdflib.getMajorVersion(pdf);
+  return r;
+}
+
+function getTitle(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getTitle(pdf));
+  return r;
+}
+
+function getAuthor(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getAuthor(pdf));
+  return r;
+}
+
+function getSubject(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getSubject(pdf));
+  return r;
+}
+
+function getKeywords(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getKeywords(pdf));
+  return r;
+}
+
+function getCreator(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getCreator(pdf));
+  return r;
+}
+
+function getProducer(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getProducer(pdf));
+  return r;
+}
+
+function getCreationDate(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getCreationDate(pdf));
+  return r;
+}
+
+function getModificationDate(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getModificationDate(pdf));
+  return r;
+}
+
+function getTitleXMP(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getTitleXMP(pdf));
+  return r;
+}
+
+function getAuthorXMP(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getAuthorXMP(pdf));
+  return r;
+}
+
+function getSubjectXMP(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getSubjectXMP(pdf));
+  return r;
+}
+
+function getKeywordsXMP(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getKeywordsXMP(pdf));
+  return r;
+}
+
+function getCreatorXMP(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getCreatorXMP(pdf));
+  return r;
+}
+
+function getProducerXMP(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getProducerXMP(pdf));
+  return r;
+}
+
+function getCreationDateXMP(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getCreationDateXMP(pdf));
+  return r;
+}
+
+function getModificationDateXMP(pdf)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getModificationDateXMP(pdf));
+  return r;
+}
+
+function setTitle(pdf, s)
+{
+  cpdf.cpdflib.setTitle(pdf, caml_string_of_jsstring(s));
+}
+
+function setAuthor(pdf, s)
+{
+  cpdf.cpdflib.setAuthor(pdf, caml_string_of_jsstring(s));
+}
+
+function setSubject(pdf, s)
+{
+  cpdf.cpdflib.setSubject(pdf, caml_string_of_jsstring(s));
+}
+
+function setKeywords(pdf, s)
+{
+  cpdf.cpdflib.setKeywords(pdf, caml_string_of_jsstring(s));
+}
+
+function setCreator(pdf, s)
+{
+  cpdf.cpdflib.setCreator(pdf, caml_string_of_jsstring(s));
+}
+
+function setProducer(pdf, s)
+{
+  cpdf.cpdflib.setProducer(pdf, caml_string_of_jsstring(s));
+}
+
+function setCreationDate(pdf, s)
+{
+  cpdf.cpdflib.setCreationDate(pdf, caml_string_of_jsstring(s));
+}
+
+function setModificationDate(pdf, s)
+{
+  cpdf.cpdflib.setModificationDate(pdf, caml_string_of_jsstring(s));
+}
+
+function setTitleXMP(pdf, s)
+{
+  cpdf.cpdflib.setTitleXMP(pdf, caml_string_of_jsstring(s));
+}
+
+function setAuthorXMP(pdf, s)
+{
+  cpdf.cpdflib.setAuthorXMP(pdf, caml_string_of_jsstring(s));
+}
+
+function setSubjectXMP(pdf, s)
+{
+  cpdf.cpdflib.setSubjectXMP(pdf, caml_string_of_jsstring(s));
+}
+
+function setKeywordsXMP(pdf, s)
+{
+  cpdf.cpdflib.setKeywordsXMP(pdf, caml_string_of_jsstring(s));
+}
+
+function setCreatorXMP(pdf, s)
+{
+  cpdf.cpdflib.setCreatorXMP(pdf, caml_string_of_jsstring(s));
+}
+
+function setProducerXMP(pdf, s)
+{
+  cpdf.cpdflib.setProducerXMP(pdf, caml_string_of_jsstring(s));
+}
+
+function setCreationDateXMP(pdf, s)
+{
+  cpdf.cpdflib.setCreationDateXMP(pdf, caml_string_of_jsstring(s));
+}
+
+function setModificationDateXMP(pdf, s)
+{
+  cpdf.cpdflib.setModificationDateXMP(pdf, caml_string_of_jsstring(s));
+}
+
 module.exports =
   {
   leftJustify,
@@ -2009,46 +2197,47 @@ module.exports =
   //CHAPTER 10. Annotations
   annotationsJSON,
 
-/*
   //CHAPTER 11. Document Information and Metadata
-  getVersion : getVersion,*/
+  getVersion,
+  getMajorVersion,
   isLinearized,
-  /*getTitle : getTitle,
-  getAuthor : getAuthor,
-  getSubject : getSubject,
-  getKeywords : getKeywords,
-  getCreator : getCreator,
-  getProducer : getProducer,
-  getCreationDate : getCreationDate,
-  getModificationDate : getModificationDate,
-  getTitleXMP : getTitleXMP,
-  getAuthorXMP : getAuthorXMP,
-  getSubjectXMP : getSubjectXMP,
-  getKeywordsXMP : getKeywordsXMP,
-  getCreatorXMP : getCreatorXMP,
-  getProducerXMP : getProducerXMP,
-  getCreationDateXMP : getCreationDateXMP,
-  getModificationDateXMP : getModificationDateXMP,
-  getDateComponents : getDateComponents,
+  getTitle,
+  getAuthor,
+  getSubject,
+  getKeywords,
+  getCreator,
+  getProducer,
+  getCreationDate,
+  getModificationDate,
+  getTitleXMP,
+  getAuthorXMP,
+  getSubjectXMP,
+  getKeywordsXMP,
+  getCreatorXMP,
+  getProducerXMP,
+  getCreationDateXMP,
+  getModificationDateXMP,
+  setTitle,
+  setAuthor,
+  setSubject,
+  setKeywords,
+  setCreator,
+  setProducer,
+  setCreationDate,
+  setModificationDate,
+  setTitleXMP,
+  setAuthorXMP,
+  setSubjectXMP,
+  setKeywordsXMP,
+  setCreatorXMP,
+  setProducerXMP,
+  setCreationDateXMP,
+  setModificationDateXMP,
+  
+  /*getDateComponents : getDateComponents,
   dateStringOfComponents : dateStringOfComponents,
-  setTitle : setTitle,
-  setAuthor : setAuthor,
-  setSubject : setSubject,
-  setKeywords : setKeywords,
-  setCreator : setCreator,
-  setProducer : setProducer,
-  setCreationDate : setCreationDate,
-  setModificationDate : setModificationDate,
   markTrapped : markTrapped,
   markUntrapped : markUntrapped,
-  setTitleXMP : setTitleXMP,
-  setAuthorXMP : setAuthorXMP,
-  setSubjectXMP : setSubjectXMP,
-  setKeywordsXMP : setKeywordsXMP,
-  setCreatorXMP : setCreatorXMP,
-  setProducerXMP : setProducerXMP,
-  setCreationDateXMP : setCreationDateXMP,
-  setModificationDateXMP : setModificationDateXMP,
   hasBox : hasBox,
   getPageRotation : getPageRotation,
   setPageLayout : setPageLayout,

@@ -144,6 +144,7 @@ let _ =
 
        (* CHAPTER 11. Document Information and Metadata *)
        method getVersion = Cpdflib.getVersion
+       method getMajorVersion = Cpdflib.getMajorVersion
        method isLinearized = Cpdflib.isLinearized
        method getTitle = Cpdflib.getTitle
        method getAuthor = Cpdflib.getAuthor
