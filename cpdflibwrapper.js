@@ -1710,6 +1710,52 @@ function ocgOrderAll(pdf)
   cpdf.cpdflib.ocgOrderAll(pdf);
 }
 
+function startGetImageResolution(pdf, res)
+{
+  var r = cpdf.cpdflib.startGetImageResolution(pdf, res);
+  return r;
+}
+
+function getImageResolutionPageNumber(n)
+{
+  var r = cpdf.cpdflib.getImageResolutionPageNumber(n);
+  return r;
+}
+
+function getImageResolutionImageName(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getImageResolutionImageName(n));
+  return r;
+}
+
+function getImageResolutionXPixels(n)
+{
+  var r = cpdf.cpdflib.getImageResolutionXPixels(n);
+  return r;
+}
+
+function getImageResolutionYPixels(n)
+{
+  var r = cpdf.cpdflib.getImageResolutionYPixels(n);
+  return r;
+}
+
+function getImageResolutionXRes(n)
+{
+  var r = cpdf.cpdflib.getImageResolutionXRes(n);
+  return r;
+}
+
+function getImageResolutionYRes(n)
+{
+  var r = cpdf.cpdflib.getImageResolutionYRes(n);
+  return r;
+}
+
+function endGetImageResolution()
+{
+  cpdf.cpdflib.endGetImageResolution();
+}
 
 module.exports =
   {
@@ -1958,17 +2004,17 @@ module.exports =
   getAttachmentName : getAttachmentName,
   getAttachmentPage : getAttachmentPage,
   getAttachmentData : getAttachmentData,
-
-  //CHAPTER 13. Images
-  startGetImageResolution : startGetImageResolution,
-  getImageResolutionPageNumber : getImageResolutionPageNumber,
-  getImageResolutionImageName : getImageResolutionImageName,
-  getImageResolutionXPixels : getImageResolutionXPixels,
-  getImageResolutionYPixels : getImageResolutionYPixels,
-  getImageResolutionXRes : getImageResolutionXRes,
-  getImageResolutionYRes : getImageResolutionYRes,
-  endGetImageResolution : endGetImageResolution,
 */
+  //CHAPTER 13. Images
+  startGetImageResolution,
+  getImageResolutionPageNumber,
+  getImageResolutionImageName,
+  getImageResolutionXPixels,
+  getImageResolutionYPixels,
+  getImageResolutionXRes,
+  getImageResolutionYRes,
+  endGetImageResolution,
+
   //CHAPTER 14. Fonts
   numberFonts,
   getFontPage,

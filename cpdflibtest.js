@@ -635,31 +635,25 @@ console.log("Contains %d bytes of data", annotjson.length);
         jcpdf.toFile(attachments, "testoutputs/12removed_attachments.pdf", false, false);
         attachments.close();
     }
-   
-    static void chapter13(Jcpdf jcpdf) throws Jcpdf.CpdfError
-    {
-        CHAPTER 13. Images.
-        System.out.println("***** CHAPTER 13. Images");
-        System.out.println("---cpdf: get image resolution");
-        Jcpdf.Pdf image_pdf = jcpdf.fromFile("testinputs/image.pdf", "");
-        int im_n = jcpdf.startGetImageResolution(image_pdf, 2.0);
-        for (int im = 0; im < im_n; im++)
-        {
-            int im_p = jcpdf.getImageResolutionPageNumber(im);
-            String im_name = jcpdf.getImageResolutionImageName(im);
-            int im_xp = jcpdf.getImageResolutionXPixels(im);
-            int im_yp = jcpdf.getImageResolutionYPixels(im);
-            double im_xres = jcpdf.getImageResolutionXRes(im);
-            double im_yres = jcpdf.getImageResolutionYRes(im);
-            System.out.format("IMAGE: %d, %s, %d, %d, %f, %f\n", im_p, im_name, im_xp, im_yp, im_xres, im_yres);
-        }
-        jcpdf.endGetImageResolution();
-        image_pdf.close();
-    }
-   
-    static void chapter14(Jcpdf jcpdf) throws Jcpdf.CpdfError
-    {
 */
+
+/* CHAPTER 13. Images. */
+console.log("***** CHAPTER 13. Images");
+console.log("---cpdf: get image resolution");
+var image_pdf = cpdfjs.fromFile("testinputs/image.pdf", "");
+var im_n = cpdfjs.startGetImageResolution(image_pdf, 2.0);
+for (im = 0; im < im_n; im++)
+{
+  var im_p = cpdfjs.getImageResolutionPageNumber(im);
+  var im_name = cpdfjs.getImageResolutionImageName(im);
+  var im_xp = cpdfjs.getImageResolutionXPixels(im);
+  var im_yp = cpdfjs.getImageResolutionYPixels(im);
+  var im_xres = cpdfjs.getImageResolutionXRes(im);
+  var im_yres = cpdfjs.getImageResolutionYRes(im);
+  console.log("IMAGE: %d, %s, %d, %d, %s, %s", im_p, im_name, im_xp, im_yp, im_xres.toFixed(6), im_yres.toFixed(6));
+}
+cpdfjs.endGetImageResolution();
+
 /* CHAPTER 14. Fonts. */
 console.log("***** CHAPTER 14. Fonts");
 console.log("---cpdf: Get Fonts");
