@@ -1757,6 +1757,65 @@ function endGetImageResolution()
   cpdf.cpdflib.endGetImageResolution();
 }
 
+function attachFile(file, pdf)
+{
+  cpdf.cpdflib.attachFile(caml_string_of_jsstring(file), pdf);
+}
+
+function attachFileFromMemory(data, filename, file)
+{
+  //FIXME
+}
+
+function attachFileToPageFromMemory(data, filename, file, pagenumber)
+{
+  //FIXME
+}
+
+function attachFileToPage(file, pdf, pagenumber)
+{
+  cpdf.cpdflib.attachFileToPage(file, pdf, pagenumber);
+}
+
+function removeAttachedFiles(pdf)
+{
+  cpdf.cpdflib.removeAttachedFiles(pdf);
+}
+
+function startGetAttachments(pdf)
+{
+  cpdf.cpdflib.startGetAttachments(pdf);
+}
+
+function endGetAttachments()
+{
+  cpdf.cpdflib.endGetAttachments();
+}
+
+function numberGetAttachments()
+{
+  var r = cpdf.cpdflib.numberGetAttachments();
+  return r;
+}
+
+function getAttachmentName(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getAttachmentName(n));
+  return r;
+}
+
+function getAttachmentPage(n)
+{
+  var r = cpdf.cpdflib.getAttachmentPage(n);
+  return n;
+}
+
+function getAttachmentData(n)
+{
+  var r = cpdf.cpdflib.getAttachmentData(n);
+  return r.data;
+}
+
 module.exports =
   {
   leftJustify,
@@ -1993,18 +2052,20 @@ module.exports =
   getPageLabelRange : getPageLabelRange,
   endGetPageLabels : endGetPageLabels,
   getPageLabelStringForPage : getPageLabelStringForPage,
-
-  //CHAPTER 12. File Attachments
-  attachFile : attachFile,
-  attachFileToPage : attachFileToPage,
-  removeAttachedFiles : removeAttachedFiles,
-  startGetAttachments : startGetAttachments,
-  endGetAttachments : endGetAttachments,
-  numberGetAttachments : numberGetAttachments,
-  getAttachmentName : getAttachmentName,
-  getAttachmentPage : getAttachmentPage,
-  getAttachmentData : getAttachmentData,
 */
+  //CHAPTER 12. File Attachments
+  attachFile,
+  attachFileToPage,
+  attachFileFromMemory,
+  attachFileToPageFromMemory,
+  removeAttachedFiles,
+  startGetAttachments,
+  endGetAttachments,
+  numberGetAttachments,
+  getAttachmentName,
+  getAttachmentPage,
+  getAttachmentData,
+
   //CHAPTER 13. Images
   startGetImageResolution,
   getImageResolutionPageNumber,

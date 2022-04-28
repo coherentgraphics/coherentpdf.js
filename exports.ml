@@ -210,10 +210,12 @@ let _ =
        (* CHAPTER 12. File Attachments *)
        method attachFile = Cpdflib.attachFile
        method attachFileToPage = Cpdflib.attachFileToPage
+       method attachFileFromMemory = Cpdflib.attachFileFromMemory
+       method attachFileToPageFromMemory = Cpdflib.attachFileToPageFromMemory
        method removeAttachedFiles = Cpdflib.removeAttachedFiles
        method startGetAttachments = Cpdflib.startGetAttachments
        method endGetAttachments = Cpdflib.endGetAttachments
-       method numberGetAttachments = Cpdflib.numberGetAttachments
+       method numberGetAttachments = Cpdflib.numberGetAttachments ()
        method getAttachmentName = Cpdflib.getAttachmentName
        method getAttachmentPage = Cpdflib.getAttachmentPage
        method getAttachmentData = Cpdflib.getAttachmentData

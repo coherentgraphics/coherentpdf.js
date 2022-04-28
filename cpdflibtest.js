@@ -600,42 +600,38 @@ console.log("Contains %d bytes of data", annotjson.length);
         pdf30.close();
         pdf30all.close();
     }
-   
-    static void chapter12(Jcpdf jcpdf) throws Jcpdf.CpdfError
-    {
-        CHAPTER 12. File Attachments
-        System.out.println("***** CHAPTER 12. File Attachments");
-        Jcpdf.Pdf attachments = jcpdf.fromFile("testinputs/has_attachments.pdf", "");
-        System.out.println("---cpdf_attachFile()");
-        jcpdf.attachFile("testinputs/image.pdf", attachments);
-        System.out.println("---cpdf_attachFileToPage()");
-        jcpdf.attachFileToPage("testinputs/image.pdf", attachments, 1);
-        System.out.println("---cpdf_attachFileFromMemory()");
-        byte[] empty = {};
-        jcpdf.attachFileFromMemory(empty, "metadata.txt", attachments);
-        System.out.println("---cpdf_attachFileToPageFromMemory()");
-        jcpdf.attachFileToPageFromMemory(empty, "metadata.txt", attachments, 1);
-        jcpdf.toFile(attachments, "testoutputs/12with_attachments.pdf", false, false);
-        System.out.println("---cpdf: get attachments");
-        jcpdf.startGetAttachments(attachments);
-        int n_a = jcpdf.numberGetAttachments();
-        System.out.format("There are %d attachments to get\n", n_a);
-        for (int aa = 0; aa < n_a; aa++)
-        {
-            String a_n = jcpdf.getAttachmentName(aa);
-            System.out.format("Attachment %d is named %s\n", aa, a_n);
-            int a_page = jcpdf.getAttachmentPage(aa);
-            System.out.format("It is on page %d\n", a_page);
-            byte[] a_data = jcpdf.getAttachmentData(aa);
-            System.out.format("Contains %d bytes of data\n", a_data.length);
-        }
-        jcpdf.endGetAttachments();
-        System.out.println("---cpdf_removeAttachedFiles()");
-        jcpdf.removeAttachedFiles(attachments);
-        jcpdf.toFile(attachments, "testoutputs/12removed_attachments.pdf", false, false);
-        attachments.close();
-    }
 */
+
+/* CHAPTER 12. File Attachments */
+console.log("***** CHAPTER 12. File Attachments");
+var attachments = cpdfjs.fromFile("testinputs/has_attachments.pdf", "");
+console.log("---cpdf_attachFile()");
+cpdfjs.attachFile("testinputs/image.pdf", attachments);
+console.log("---cpdf_attachFileToPage()");
+cpdfjs.attachFileToPage("testinputs/image.pdf", attachments, 1);
+console.log("---cpdf_attachFileFromMemory()");
+var empty = [];
+cpdfjs.attachFileFromMemory(empty, "metadata.txt", attachments);
+console.log("---cpdf_attachFileToPageFromMemory()");
+cpdfjs.attachFileToPageFromMemory(empty, "metadata.txt", attachments, 1);
+cpdfjs.toFile(attachments, "testoutputs/12with_attachments.pdf", false, false);
+console.log("---cpdf: get attachments");
+cpdfjs.startGetAttachments(attachments);
+var n_a = cpdfjs.numberGetAttachments();
+console.log("There are %d attachments to get", n_a);
+for (aa = 0; aa < n_a; aa++)
+{
+  var a_n = cpdfjs.getAttachmentName(aa);
+  console.log("Attachment %d is named %s", aa, a_n);
+  var a_page = cpdfjs.getAttachmentPage(aa);
+  console.log("It is on page %d", a_page);
+  var a_data = cpdfjs.getAttachmentData(aa);
+  console.log("Contains %d bytes of data", a_data.length);
+}
+cpdfjs.endGetAttachments();
+console.log("---cpdf_removeAttachedFiles()");
+cpdfjs.removeAttachedFiles(attachments);
+cpdfjs.toFile(attachments, "testoutputs/12removed_attachments.pdf", false, false);
 
 /* CHAPTER 13. Images. */
 console.log("***** CHAPTER 13. Images");
