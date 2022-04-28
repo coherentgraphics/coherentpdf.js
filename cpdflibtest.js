@@ -706,28 +706,24 @@ cpdfjs.copyFont(fonts, fonts2, all, 1, "/Font");
         fromjsonpdf.close();
         jfrommem.close();
     }
-   
-    static void chapter16(Jcpdf jcpdf) throws Jcpdf.CpdfError
-    {
-        CHAPTER 16. Optional Content Groups
-        System.out.println("***** CHAPTER 16. Optional Content Groups");
-        Jcpdf.Pdf ocg = jcpdf.fromFile("testinputs/has_ocgs.pdf", "");
-        System.out.println("---cpdf: Get OCG List");
-        int n2 = jcpdf.startGetOCGList(ocg);
-        for(int x = 0; x < n2; x++)
-        {
-            System.out.println(jcpdf.OCGListEntry(x));
-        }
-        jcpdf.endGetOCGList();
-        System.out.println("---cpdf_OCGCoalesce()");
-        jcpdf.OCGCoalesce(ocg);
-        System.out.println("---cpdf_OCGRename()");
-        jcpdf.OCGRename(ocg, "From", "To");
-        System.out.println("---cpdf_OCGOrderAll()");
-        jcpdf.OCGOrderAll(ocg);
-        ocg.close();
-    }
-*/    
+*/
+
+/* CHAPTER 16. Optional Content Groups */
+console.log("***** CHAPTER 16. Optional Content Groups");
+var ocg = cpdfjs.fromFile("testinputs/has_ocgs.pdf", "");
+console.log("---cpdf: Get OCG List");
+var n2 = cpdfjs.startGetOCGList(ocg);
+for(x = 0; x < n2; x++)
+{
+  console.log(cpdfjs.ocgListEntry(x));
+}
+cpdfjs.endGetOCGList();
+console.log("---cpdf_OCGCoalesce()");
+cpdfjs.ocgCoalesce(ocg);
+console.log("---cpdf_OCGRename()");
+cpdfjs.ocgRename(ocg, "From", "To");
+console.log("---cpdf_OCGOrderAll()");
+cpdfjs.ocgOrderAll(ocg);
 
 /* CHAPTER 17. Creating New PDFs */
 console.log("***** CHAPTER 17. Creating New PDFs");

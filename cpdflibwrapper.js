@@ -1675,8 +1675,41 @@ function textWidth(font, text)
 }
 
 var leftJustify = 0;
-var centreJustify = 0;
-var rightJustify = 0;
+var centreJustify = 1;
+var rightJustify = 2;
+
+function startGetOCGList(pdf)
+{
+  var r = cpdf.cpdflib.startGetOCGList(pdf);
+  return r;
+}
+
+function ocgListEntry(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.ocgListEntry(n));
+  return r;
+}
+
+function endGetOCGList()
+{
+  cpdf.cpdflib.endGetOCGList();
+}
+
+function ocgCoalesce(pdf)
+{
+  cpdf.cpdflib.ocgCoalesce(pdf);
+}
+
+function ocgRename(pdf, f, t)
+{
+  cpdf.cpdflib.ocgRename(pdf, caml_string_of_jsstring(f), caml_string_of_jsstring(t));
+}
+
+function ocgOrderAll(pdf)
+{
+  cpdf.cpdflib.ocgOrderAll(pdf);
+}
+
 
 module.exports =
   {
@@ -1952,15 +1985,16 @@ module.exports =
   outputJSONMemory : outputJSONMemory,
   fromJSON : fromJSON,
   fromJSONMemory : fromJSONMemory,
-
+*/
+  
   //CHAPTER 16. Optional Content Groups
-  startGetOCGList : startGetOCGList,
-  ocgListEntry : ocgListEntry,
-  endGetOCGList : endGetOCGList,
-  ocgCoalesce : ocgCoalesce,
-  ocgRename : ocgRename,
-  ocgOrderAll : ocgOrderAll,
- */
+  startGetOCGList,
+  ocgListEntry,
+  endGetOCGList,
+  ocgCoalesce,
+  ocgRename,
+  ocgOrderAll,
+
   //CHAPTER 17. Creating New PDFs
   blankDocument,
   blankDocumentPaper,
