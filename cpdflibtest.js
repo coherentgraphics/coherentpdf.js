@@ -577,30 +577,28 @@ cpdfjs.toFile(pdf30, "testoutputs/11setinfo.pdf", false, false);
         System.out.println("---cpdf_setMetadataDate()");
         jcpdf.setMetadataDate(pdf30, "now");
         jcpdf.toFile(pdf30, "testoutputs/11metadata4.pdf", false, false);
-        System.out.println("---cpdf_addPageLabels()");
-        jcpdf.addPageLabels(pdf30, jcpdf.uppercaseRoman, "PREFIX-", 1, pdf30all, false);
-        System.out.println("---cpdf: get page labels");
-        int pls = jcpdf.startGetPageLabels(pdf30);
-        System.out.format("There are %d labels\n", pls);
-        for (int plsc = 0; plsc < pls; plsc++)
-        {
-            int style = jcpdf.getPageLabelStyle(plsc);
-            String prefix = jcpdf.getPageLabelPrefix(plsc);
-            int offset = jcpdf.getPageLabelOffset(plsc);
-            int lab_range = jcpdf.getPageLabelRange(plsc);
-            System.out.format("Page label: %d, %s, %d, %d\n", style, prefix, offset, lab_range);
-        }
-        jcpdf.endGetPageLabels();
-        System.out.println("---cpdf_removePageLabels()");
-        jcpdf.removePageLabels(pdf30);
-        jcpdf.toFile(pdf30, "testoutputs/11pagelabels.pdf", false, false);
-        System.out.println("---cpdf_getPageLabelStringForPage()");
-        String pl = jcpdf.getPageLabelStringForPage(pdf30, 1);
-        System.out.format("Label string is %s\n", pl);
-        pdf30.close();
-        pdf30all.close();
-    }
 */
+
+console.log("---cpdf_addPageLabels()");
+cpdfjs.addPageLabels(pdf30, cpdfjs.uppercaseRoman, "PREFIX-", 1, pdf30all, false);
+console.log("---cpdf: get page labels");
+var pls = cpdfjs.startGetPageLabels(pdf30);
+console.log("There are %d labels", pls);
+for (plsc = 0; plsc < pls; plsc++)
+{
+  var style = cpdfjs.getPageLabelStyle(plsc);
+  var prefix = cpdfjs.getPageLabelPrefix(plsc);
+  var offset = cpdfjs.getPageLabelOffset(plsc);
+  var lab_range = cpdfjs.getPageLabelRange(plsc);
+  console.log("Page label: %d, %s, %d, %d", style, prefix, offset, lab_range);
+}
+cpdfjs.endGetPageLabels();
+console.log("---cpdf_removePageLabels()");
+cpdfjs.removePageLabels(pdf30);
+cpdfjs.toFile(pdf30, "testoutputs/11pagelabels.pdf", false, false);
+console.log("---cpdf_getPageLabelStringForPage()");
+var pl = cpdfjs.getPageLabelStringForPage(pdf30, 1);
+console.log("Label string is %s", pl);
 
 /* CHAPTER 12. File Attachments */
 console.log("***** CHAPTER 12. File Attachments");

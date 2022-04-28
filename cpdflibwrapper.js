@@ -2026,6 +2026,63 @@ function setModificationDateXMP(pdf, s)
   cpdf.cpdflib.setModificationDateXMP(pdf, caml_string_of_jsstring(s));
 }
 
+var decimalArabic = 0;
+var uppercaseRoman = 1;
+var lowercaseRoman = 2;
+var uppercaseLetters = 3;
+var lowercaseLetters = 4;
+
+function addPageLabels(pdf, style, prefix, a, range, b)
+{
+  cpdf.cpdflib.addPageLabels(pdf, style, caml_string_of_jsstring(prefix), a, range, b);
+}
+
+function removePageLabels(pdf)
+{
+  cpdf.cpdflib.removePageLabels(pdf);
+}
+
+function startGetPageLabels(pdf)
+{
+  var r = cpdf.cpdflib.startGetPageLabels(pdf);
+  return r;
+}
+
+function getPageLabelStyle(n)
+{
+  var r = cpdf.cpdflib.getPageLabelStyle(n);
+  return r;
+}
+
+function getPageLabelPrefix(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getPageLabelPrefix(n));
+  return r;
+}
+
+function getPageLabelOffset(n)
+{
+  var r = cpdf.cpdflib.getPageLabelOffset(n);
+  return r;
+}
+
+function getPageLabelRange(n)
+{
+  var r = cpdf.cpdflib.getPageLabelRange(n);
+  return r;
+}
+
+function endGetPageLabels()
+{
+  cpdf.cpdflib.endGetPageLabels();
+}
+
+function getPageLabelStringForPage(pdf, pagenumber)
+{
+  var r = cpdf.cpdflib.getPageLabelStringForPage(pdf, pagenumber);
+  return r;
+}
+
 module.exports =
   {
   leftJustify,
@@ -2254,16 +2311,18 @@ module.exports =
   removeMetadata : removeMetadata,
   createMetadata : createMetadata,
   setMetadataDate : setMetadataDate,
-  addPageLabels : addPageLabels,
-  removePageLabels : removePageLabels,
-  startGetPageLabels : startGetPageLabels,
-  getPageLabelStyle : getPageLabelStyle,
-  getPageLabelPrefix : getPageLabelPrefix,
-  getPageLabelOffset : getPageLabelOffset,
-  getPageLabelRange : getPageLabelRange,
-  endGetPageLabels : endGetPageLabels,
-  getPageLabelStringForPage : getPageLabelStringForPage,
+
 */
+  addPageLabels,
+  removePageLabels,
+  startGetPageLabels,
+  getPageLabelStyle,
+  getPageLabelPrefix,
+  getPageLabelOffset,
+  getPageLabelRange,
+  endGetPageLabels,
+  getPageLabelStringForPage,
+
   //CHAPTER 12. File Attachments
   attachFile,
   attachFileToPage,
