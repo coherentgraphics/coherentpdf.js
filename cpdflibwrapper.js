@@ -1774,7 +1774,7 @@ function attachFileToPageFromMemory(data, filename, file, pagenumber)
 
 function attachFileToPage(file, pdf, pagenumber)
 {
-  cpdf.cpdflib.attachFileToPage(file, pdf, pagenumber);
+  cpdf.cpdflib.attachFileToPage(caml_string_of_jsstring(file), pdf, pagenumber);
 }
 
 function removeAttachedFiles(pdf)
@@ -1814,6 +1814,28 @@ function getAttachmentData(n)
 {
   var r = cpdf.cpdflib.getAttachmentData(n);
   return r.data;
+}
+
+function outputJSON(filename, a, b, c, pdf)
+{
+  cpdf.cpdflib.outputJSON(caml_string_of_jsstring(filename), a, b, c, pdf);
+}
+
+function outputJSONMemory(pdf, a, b, c)
+{
+  var r = cpdf.cpdflib.outputJSONMemory(pdf, a, b, c);
+  return r.data;
+}
+
+function fromJSON(filename)
+{
+  var r = cpdf.cpdflib.fromJSON(caml_string_of_jsstring(filename));
+  return r;
+}
+
+function fromJSONMemory(buf)
+{
+  //FIXME
 }
 
 module.exports =
@@ -2086,13 +2108,12 @@ module.exports =
   endGetFontInfo,
   copyFont,
   removeFonts,
-/*
+  
   //CHAPTER 15. PDF and JSON
-  outputJSON : outputJSON,
-  outputJSONMemory : outputJSONMemory,
-  fromJSON : fromJSON,
-  fromJSONMemory : fromJSONMemory,
-*/
+  outputJSON,
+  outputJSONMemory,
+  fromJSON,
+  fromJSONMemory,
   
   //CHAPTER 16. Optional Content Groups
   startGetOCGList,

@@ -673,30 +673,22 @@ console.log("---cpdf_copyFont()");
 var all = cpdfjs.all(fonts);
 cpdfjs.copyFont(fonts, fonts2, all, 1, "/Font");
 
-/*
-    static void chapter15(Jcpdf jcpdf) throws Jcpdf.CpdfError
-    {
-        CHAPTER 15. PDF and JSON
-        System.out.println("***** CHAPTER 15. PDF and JSON");
-        Jcpdf.Pdf jsonpdf = jcpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-        System.out.println("---cpdf_outputJSON()");
-        jcpdf.outputJSON("testoutputs/15json.json", false, false, false, jsonpdf);
-        jcpdf.outputJSON("testoutputs/15jsonnostream.json", false, true, false, jsonpdf);
-        jcpdf.outputJSON("testoutputs/15jsonparsed.json", true, false, false, jsonpdf);
-        jcpdf.outputJSON("testoutputs/15jsondecomp.json", false, false, true, jsonpdf);
-        System.out.println("---cpdf_fromJSON()");
-        Jcpdf.Pdf fromjsonpdf = jcpdf.fromJSON("testoutputs/15jsonparsed.json");
-        jcpdf.toFile(fromjsonpdf, "testoutputs/15fromjson.pdf", false, false);
-        System.out.println("---cpdf_outputJSONMemory()");
-        byte[] jbuf = jcpdf.outputJSONMemory(fromjsonpdf, false, false, false);
-        System.out.println("---cpdf_fromJSONMemory()");
-        Jcpdf.Pdf jfrommem = jcpdf.fromJSONMemory(jbuf);
-        jcpdf.toFile(jfrommem, "testoutputs/15fromJSONMemory.pdf", false, false);
-        jsonpdf.close();
-        fromjsonpdf.close();
-        jfrommem.close();
-    }
-*/
+/* CHAPTER 15. PDF and JSON */
+console.log("***** CHAPTER 15. PDF and JSON");
+var jsonpdf = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
+console.log("---cpdf_outputJSON()");
+cpdfjs.outputJSON("testoutputs/15json.json", false, false, false, jsonpdf);
+cpdfjs.outputJSON("testoutputs/15jsonnostream.json", false, true, false, jsonpdf);
+cpdfjs.outputJSON("testoutputs/15jsonparsed.json", true, false, false, jsonpdf);
+cpdfjs.outputJSON("testoutputs/15jsondecomp.json", false, false, true, jsonpdf);
+console.log("---cpdf_fromJSON()");
+var fromjsonpdf = cpdfjs.fromJSON("testoutputs/15jsonparsed.json");
+cpdfjs.toFile(fromjsonpdf, "testoutputs/15fromjson.pdf", false, false);
+console.log("---cpdf_outputJSONMemory()");
+var jbuf = cpdfjs.outputJSONMemory(fromjsonpdf, false, false, false);
+console.log("---cpdf_fromJSONMemory()");
+var jfrommem = cpdfjs.fromJSONMemory(jbuf);
+cpdfjs.toFile(jfrommem, "testoutputs/15fromJSONMemory.pdf", false, false);
 
 /* CHAPTER 16. Optional Content Groups */
 console.log("***** CHAPTER 16. Optional Content Groups");
