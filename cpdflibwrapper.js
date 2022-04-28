@@ -967,6 +967,18 @@ function toMemory(pdf, linearize, make_id)
   return r.data;
 }
 
+function fromMemory(data, pw)
+{
+  //FIXME
+  return 0;
+}
+
+function fromMemoryLazy(data, pw)
+{
+  //FIXME
+  return 0;
+}
+
 function blankDocument(w, h, pages)
 {
   var r = cpdf.cpdflib.blankDocument(w, h, pages);
@@ -2083,6 +2095,74 @@ function getPageLabelStringForPage(pdf, pagenumber)
   return r;
 }
 
+function getDateComponents(data, t)
+{
+  //FIXME
+}
+
+function dateStringOfComponents(a, b, c, d, e, f, g, h)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.dateStringOfComponents(a, b, c, d, e, f, g, h));
+  return r;
+}
+
+function hasBox(pdf, page, box)
+{
+  var r = cpdf.cpdflib.hasBox(pdf, page, caml_string_of_jsstring(box));
+  return r;
+}
+
+function getPageRotation(pdf, page)
+{
+  var r = cpdf.cpdflib.getPageRotation(pdf, page);
+  return r;
+}
+
+function setMediabox(pdf, range, a, b, c, d)
+{
+  cpdf.cpdflib.setMediabox(pdf, range, a, b, c, d);
+}
+
+function setCropBox(pdf, range, a, b, c, d)
+{
+  cpdf.cpdflib.setCropBox(pdf, range, a, b, c, d);
+}
+
+function setTrimBox(pdf, range, a, b, c, d)
+{
+  cpdf.cpdflib.setTrimBox(pdf, range, a, b, c, d);
+}
+
+function setBleedBox(pdf, range, a, b, c, d)
+{
+  cpdf.cpdflib.setBleedBox(pdf, range, a, b, c, d);
+}
+
+function setArtBox(pdf, range, a, b, c, d)
+{
+  cpdf.cpdflib.setArtBox(pdf, range, a, b, c, d);
+}
+
+function markTrapped(pdf)
+{
+  cpdf.cpdflib.markTrapped(pdf);
+}
+
+function markUntrapped(pdf)
+{
+  cpdf.cpdflib.markUntrapped(pdf);
+}
+
+function markTrappedXMP(pdf)
+{
+  cpdf.cpdflib.markTrappedXMP(pdf);
+}
+
+function markUntrappedXMP(pdf)
+{
+  cpdf.cpdflib.markUntrappedXMP(pdf);
+}
+
 module.exports =
   {
   leftJustify,
@@ -2152,8 +2232,8 @@ module.exports =
   fromFile,
   fromFileLazy,
   toMemory,
-  /*fromMemory,
-  fromMemoryLazy,*/
+  fromMemory,
+  fromMemoryLazy,
   toFile,
   toFileExt,
   toFileEncrypted,
@@ -2185,11 +2265,12 @@ module.exports =
   hFlip,
   vFlip,
   crop,
-  /*setMediabox,
+  setMediabox,
   setCropBox,
   setTrimBox,
   setArtBox,
-  getMediaBox,
+  setBleedBox,
+  /* getMediaBox,
   getCropBox,
   getArtBox,
   getBleedBox,
@@ -2290,14 +2371,15 @@ module.exports =
   setProducerXMP,
   setCreationDateXMP,
   setModificationDateXMP,
-  
-  /*getDateComponents : getDateComponents,
-  dateStringOfComponents : dateStringOfComponents,
-  markTrapped : markTrapped,
-  markUntrapped : markUntrapped,
-  hasBox : hasBox,
-  getPageRotation : getPageRotation,
-  setPageLayout : setPageLayout,
+  getDateComponents,
+  dateStringOfComponents,
+  markTrapped,
+  markUntrapped,
+  markTrappedXMP,
+  markUntrappedXMP,
+  hasBox,
+  getPageRotation,
+  /*setPageLayout : setPageLayout,
   setPageMode : setPageMode,
   hideToolbar : hideToolbar,
   hideMenubar : hideMenubar,
