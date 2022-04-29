@@ -197,6 +197,7 @@ let _ =
        method displayDocTitle = Cpdflib.displayDocTitle
        method openAtPage = Cpdflib.openAtPage
        method setMetadataFromFile = Cpdflib.setMetadataFromFile
+       method setMetadataFromByteArray = Cpdflib.setMetadataFromByteArray
        method getMetadata = Cpdflib.getMetadata
        method removeMetadata = Cpdflib.removeMetadata
        method createMetadata = Cpdflib.createMetadata

@@ -2250,8 +2250,41 @@ function getTrimBox(pdf, page, a)
   //FIXME
 }
 
+function setMetadataFromFile(pdf, filename)
+{
+  cpdf.cpdflib.setMetadataFromFile(pdf, caml_string_of_jsstring(filename));
+}
+
+function getMetadata(pdf)
+{
+  var r = cpdf.cpdflib.getMetadata(pdf);
+  return r.data;
+}
+
+function removeMetadata(pdf)
+{
+  cpdf.cpdflib.removeMetadata(pdf);
+}
+
+function createMetadata(pdf)
+{
+  cpdf.cpdflib.createMetadata(pdf);
+}
+
+function setMetadataDate(pdf, date)
+{
+  cpdf.cpdflib.setMetadataDate(pdf, caml_string_of_jsstring(date));
+}
+
+function setMetadataFromByteArray(pdf, arr)
+{
+  //cpdf.cpdflib.setMetadataFromByteArray
+  //FIXME
+}
+
 module.exports =
   {
+  //Enums
   singlePage,
   oneColumn,
   twoColumnLeft,
@@ -2298,6 +2331,7 @@ module.exports =
   aes256bittrue,
   aes256bitisofalse,
   aes256bitisotrue,
+
   //CHAPTER 1. Basics
   setFast,
   setSlow,
@@ -2477,7 +2511,6 @@ module.exports =
   markUntrappedXMP,
   hasBox,
   getPageRotation,
-
   setPageLayout,
   setPageMode,
   hideToolbar,
@@ -2487,13 +2520,12 @@ module.exports =
   centerWindow,
   displayDocTitle,
   openAtPage,
-
-/*setMetadataFromFile : setMetadataFromFile,
-  getMetadata : getMetadata,
-  removeMetadata : removeMetadata,
-  createMetadata : createMetadata,
-  setMetadataDate : setMetadataDate,
-*/
+  setMetadataFromFile,
+  setMetadataFromByteArray,
+  getMetadata,
+  removeMetadata,
+  createMetadata,
+  setMetadataDate,
   addPageLabels,
   removePageLabels,
   startGetPageLabels,

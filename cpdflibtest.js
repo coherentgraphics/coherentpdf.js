@@ -558,26 +558,23 @@ cpdfjs.displayDocTitle(pdf30, true);
 console.log("---cpdf_openAtPage()");
 cpdfjs.openAtPage(pdf30, true, 4);
 cpdfjs.toFile(pdf30, "testoutputs/11open.pdf", false, false);
-
-/*        System.out.println("---cpdf_setMetadataFromFile()");
-        jcpdf.setMetadataFromFile(pdf30, "testinputs/cpdflibmanual.pdf");
-        jcpdf.toFile(pdf30, "testoutputs/11metadata1.pdf", false, false);
-        System.out.println("---cpdf_setMetadataFromByteArray()");
-        byte[] md = "BYTEARRAY".getBytes();
-        jcpdf.setMetadataFromByteArray(pdf30, md);
-        jcpdf.toFile(pdf30, "testoutputs/11metadata2.pdf", false, false);
-        System.out.println("---cpdf_getMetadata()");
-        byte[] metadata = jcpdf.getMetadata(pdf30);
-        System.out.println("---cpdf_removeMetadata()");
-        jcpdf.removeMetadata(pdf30);
-        System.out.println("---cpdf_createMetadata()");
-        jcpdf.createMetadata(pdf30);
-        jcpdf.toFile(pdf30, "testoutputs/11metadata3.pdf", false, false);
-        System.out.println("---cpdf_setMetadataDate()");
-        jcpdf.setMetadataDate(pdf30, "now");
-        jcpdf.toFile(pdf30, "testoutputs/11metadata4.pdf", false, false);
-*/
-
+console.log("---cpdf_setMetadataFromFile()");
+cpdfjs.setMetadataFromFile(pdf30, "testinputs/cpdflibmanual.pdf");
+cpdfjs.toFile(pdf30, "testoutputs/11metadata1.pdf", false, false);
+console.log("---cpdf_setMetadataFromByteArray()");
+var md = [] //"BYTEARRAY"
+cpdfjs.setMetadataFromByteArray(pdf30, md);
+cpdfjs.toFile(pdf30, "testoutputs/11metadata2.pdf", false, false);
+console.log("---cpdf_getMetadata()");
+var metadata = cpdfjs.getMetadata(pdf30);
+console.log("---cpdf_removeMetadata()");
+cpdfjs.removeMetadata(pdf30);
+console.log("---cpdf_createMetadata()");
+cpdfjs.createMetadata(pdf30);
+cpdfjs.toFile(pdf30, "testoutputs/11metadata3.pdf", false, false);
+console.log("---cpdf_setMetadataDate()");
+cpdfjs.setMetadataDate(pdf30, "now");
+cpdfjs.toFile(pdf30, "testoutputs/11metadata4.pdf", false, false);
 console.log("---cpdf_addPageLabels()");
 cpdfjs.addPageLabels(pdf30, cpdfjs.uppercaseRoman, "PREFIX-", 1, pdf30all, false);
 console.log("---cpdf: get page labels");
