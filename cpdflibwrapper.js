@@ -2221,6 +2221,35 @@ function openAtPage(pdf, a, pagenumber)
   cpdf.cpdflib.openAtPage(pdf, a, pagenumber);
 }
 
+function getMediaBox(pdf, page, a)
+{
+  var r = cpdf.cpdflib.getMediaBox(pdf, page, a);
+  a[0] = r[1];
+  a[1] = r[2];
+  a[2] = r[3];
+  a[3] = r[4];
+}
+
+function getCropBox(pdf, page, a)
+{
+  //FIXME
+}
+
+function getArtBox(pdf, page, a)
+{
+  //FIXME
+}
+
+function getBleedBox(pdf, page, a)
+{
+  //FIXME
+}
+
+function getTrimBox(pdf, page, a)
+{
+  //FIXME
+}
+
 module.exports =
   {
   singlePage,
@@ -2339,11 +2368,11 @@ module.exports =
   setTrimBox,
   setArtBox,
   setBleedBox,
-  /* getMediaBox,
+  getMediaBox,
   getCropBox,
   getArtBox,
   getBleedBox,
-  getTrimBox, */
+  getTrimBox,
   removeCrop,
   removeArt,
   removeTrim,
