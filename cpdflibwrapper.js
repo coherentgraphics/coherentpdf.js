@@ -967,16 +967,27 @@ function toMemory(pdf, linearize, make_id)
   return r.data;
 }
 
-function fromMemory(data, pw)
+function fromMemory(arr, pw)
 {
-  //FIXME
-  return 0;
+  var bigarray =
+    {kind : 3,
+     layout : 0,
+     dims : [arr.length],
+     data : arr};
+  var r = cpdf.cpdflib.fromMemory(bigarray, pw);
+  return r;
 }
 
-function fromMemoryLazy(data, pw)
+//FIXME Need to prevent garbage collection until actually unused
+function fromMemoryLazy(arr, pw)
 {
-  //FIXME
-  return 0;
+  var bigarray =
+    {kind : 3,
+     layout : 0,
+     dims : [arr.length],
+     data : arr};
+  var r = cpdf.cpdflib.fromMemoryLazy(bigarray, pw);
+  return r;
 }
 
 function blankDocument(w, h, pages)
@@ -1379,15 +1390,6 @@ function getBookmarkOpenStatus(n)
   var r = cpdf.cpdflib.getBookmarkOpenStatus(n);
   return r;
 }
-
-/*startSetBookmarkInfo
-endSetBookmarkInfo
-setBookmarkPage
-setBookmarkLevel
-setBookmarkOpenStatus
-getBookmarksJSON
-setBookmarksJSON
-tableOfContents*/
 
 function numberFonts()
 {
@@ -2046,7 +2048,6 @@ var lowercaseLetters = 4;
 
 function addPageLabels(pdf, style, prefix, a, range, b)
 {
-  //console.log("**********************addPageLabels: style = %i", style);
   cpdf.cpdflib.addPageLabels(pdf, style, caml_string_of_jsstring(prefix), a, range, b);
 }
 
@@ -2291,9 +2292,61 @@ function setMetadataFromByteArray(pdf, arr)
   //FIXME
 }
 
+var timesRoman = 0;
+var timesBold = 1;
+var timesItalic = 2;
+var timesBoldItalic = 3;
+var helvetica = 4;
+var helveticaBold = 5;
+var helveticaOblique = 6;
+var helveticaBoldOblique = 7;
+var courier = 8;
+var courierBold = 9;
+var courierOblique = 10;
+var courierBoldOblique = 11;
+
+var posCentre = 0;
+var posLeft = 1;
+var posRight = 2;
+var top = 3;
+var topLeft = 4;
+var topRight = 5;
+var left = 6;
+var bottomLeft = 7;
+var bottom = 8;
+var bottomRight = 9;
+var right = 10;
+var diagonal = 11;
+var reversediagonal = 12;
+
 module.exports =
   {
   //Enums
+  posCentre,
+  posLeft,
+  posRight,
+  top,
+  topLeft,
+  topRight,
+  left,
+  bottomLeft,
+  bottom,
+  bottomRight,
+  right,
+  diagonal,
+  reversediagonal,
+  timesRoman,
+  timesBold,
+  timesItalic,
+  timesBoldItalic,
+  helvetica,
+  helveticaBold,
+  helveticaOblique,
+  helveticaBoldOblique,
+  courier,
+  courierBold,
+  courierOblique,
+  courierBoldOblique,
   decimalArabic,
   uppercaseRoman,
   lowercaseRoman,
