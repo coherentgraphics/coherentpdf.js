@@ -1223,7 +1223,7 @@ function mergeSimple(arr)
 function merge(arr, retain_numbering, remove_duplicate_fonts)
 {
   arr2 = [0].concat(arr);
-  var r = cpdf.cpdflib.merge(arr, retain_numbering, remove_duplicate_fonts);
+  var r = cpdf.cpdflib.merge(arr2, retain_numbering, remove_duplicate_fonts);
   return r;
 }
 
