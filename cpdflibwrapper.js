@@ -2046,6 +2046,7 @@ var lowercaseLetters = 4;
 
 function addPageLabels(pdf, style, prefix, a, range, b)
 {
+  //console.log("**********************addPageLabels: style = %i", style);
   cpdf.cpdflib.addPageLabels(pdf, style, caml_string_of_jsstring(prefix), a, range, b);
 }
 
@@ -2095,9 +2096,17 @@ function getPageLabelStringForPage(pdf, pagenumber)
   return r;
 }
 
-function getDateComponents(data, t)
+function getDateComponents(string, arr)
 {
-  //FIXME
+  var r = cpdf.cpdflib.getDateComponents(caml_string_of_jsstring(string));
+  arr[0] = r[1];
+  arr[1] = r[2];
+  arr[2] = r[3];
+  arr[3] = r[4];
+  arr[4] = r[5];
+  arr[5] = r[6];
+  arr[6] = r[7];
+  arr[7] = r[8];
 }
 
 function dateStringOfComponents(a, b, c, d, e, f, g, h)
@@ -2285,6 +2294,11 @@ function setMetadataFromByteArray(pdf, arr)
 module.exports =
   {
   //Enums
+  decimalArabic,
+  uppercaseRoman,
+  lowercaseRoman,
+  uppercaseLetters,
+  lowercaseLetters,
   singlePage,
   oneColumn,
   twoColumnLeft,
