@@ -1642,7 +1642,7 @@ function stampUnder(stamp, stampee, stamp_range)
 
 function stampExtended(stamp, stampee, stamp_range, a, b, c, d, e, f)
 {
-  cpdf.cpdflib.stampExtended(stamp, stampee, stamp_range, a, b, c, d, e, f);
+  cpdf.cpdflib.stampExtended(stamp, stampee, stamp_range, a, b, d, e, c, f);
 }
 
 function combinePages(a, b)
@@ -1652,18 +1652,21 @@ function combinePages(a, b)
 }
 
 function addText(metrics, pdf, range, text, anchor, p1, p2, linespacing,
-                 bates, font, fontsize, color, underneath, cropbox, outline,
+                 bates, font, fontsize, r, g, b, underneath, cropbox, outline,
                  opacity, justification, midline, topline, filename, linewidth, embed_fonts)
 {
+  /*console.log(metrics, pdf, range, text, anchor, p1, p2, linespacing,
+                 bates, font, fontsize, r, g, b, underneath, cropbox, outline,
+                 opacity, justification, midline, topline, filename, linewidth, embed_fonts);*/
   cpdf.cpdflib.addText(metrics, pdf, range, caml_string_of_jsstring(text), anchor, p1, p2,
-                       linespacing, bates, font, fontsize, color, underneath, cropbox, outline,
+                       linespacing, bates, font, fontsize, r, g, b, underneath, cropbox, outline,
                        opacity, justification, midline, topline, caml_string_of_jsstring(filename),
                        linewidth, embed_fonts);
 }
 
 function addTextSimple(pdf, range, text, anchor, p1, p2, font, fontsize)
 {
-  cpdf.cpdflib.addText(0, pdf, range, caml_string_of_jsstring(text), anchor, p1, p2, 1.0, 0, font, fontsize, 0, 0, 0, 0, 1, 1, 1.0, leftJustify, 1, 1, "", 1);
+  cpdf.cpdflib.addText(0, pdf, range, caml_string_of_jsstring(text), anchor, p1, p2, 1.0, 0, font, fontsize, 0, 0, 0, 1, 1, 1, 1.0, leftJustify, 1, 1, caml_string_of_jsstring(""), 0.0, 1);
 }
 
 function removeText(pdf, range)

@@ -346,7 +346,7 @@ var undoc = cpdfjs.fromFile("testinputs/cpdflibmanual.pdf", "");
 var ulogo = cpdfjs.fromFile("testinputs/logo.pdf", "");
 var undoc_all = cpdfjs.all(undoc);
 var name = cpdfjs.stampAsXObject(undoc, undoc_all, ulogo);
-var content = "q 1 0 0 1 100 100 cm %s Do Q q 1 0 0 1 300 300 cm %s Do Q q 1 0 0 1 500 500 cm %s Do Q" //FIXME
+var content = "q 1 0 0 1 100 100 cm " + name + " Do Q q 1 0 0 1 300 300 cm " + name + " Do Q q 1 0 0 1 500 500 cm " + name + " Do Q";
 console.log("---cpdf_addContent()");
 cpdfjs.addContent(content, true, undoc, undoc_all);
 cpdfjs.toFile(undoc, "testoutputs/08demo.pdf", false, false);
