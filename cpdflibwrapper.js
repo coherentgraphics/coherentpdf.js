@@ -2163,8 +2163,77 @@ function markUntrappedXMP(pdf)
   cpdf.cpdflib.markUntrappedXMP(pdf);
 }
 
+var singlePage = 0;
+var oneColumn = 1;
+var twoColumnLeft = 2;
+var twoColumnRight = 3;
+var twoPageLeft = 4;
+var twoPageRight = 5;
+  
+var useNone = 0;
+var useOutlines = 1;
+var useThumbs = 2;
+var useOC = 3;
+var useAttachments = 4;
+
+function setPageLayout(pdf, layout)
+{
+  cpdf.cpdflib.setPageLayout(pdf, layout);
+}
+
+function setPageMode(pdf, mode)
+{
+  cpdf.cpdflib.setPageMode(pdf, mode);
+}
+
+function hideToolbar(pdf, a)
+{
+  cpdf.cpdflib.hideToolbar(pdf, a);
+}
+
+function hideMenubar(pdf, a)
+{
+  cpdf.cpdflib.hideMenubar(pdf, a);
+}
+
+function hideWindowUi(pdf, a)
+{
+  cpdf.cpdflib.hideWindowUi(pdf, a);
+}
+
+function fitWindow(pdf, a)
+{
+  cpdf.cpdflib.fitWindow(pdf, a);
+}
+
+function centerWindow(pdf, a)
+{
+  cpdf.cpdflib.centerWindow(pdf, a);
+}
+
+function displayDocTitle(pdf, a)
+{
+  cpdf.cpdflib.displayDocTitle(pdf, a);
+}
+
+function openAtPage(pdf, a, pagenumber)
+{
+  cpdf.cpdflib.openAtPage(pdf, a, pagenumber);
+}
+
 module.exports =
   {
+  singlePage,
+  oneColumn,
+  twoColumnLeft,
+  twoColumnRight,
+  twoPageLeft,
+  twoPageRight,
+  useNone,
+  useOutlines,
+  useThumbs,
+  useOC,
+  useAttachments,
   leftJustify,
   centreJustify,
   rightJustify,
@@ -2379,21 +2448,22 @@ module.exports =
   markUntrappedXMP,
   hasBox,
   getPageRotation,
-  /*setPageLayout : setPageLayout,
-  setPageMode : setPageMode,
-  hideToolbar : hideToolbar,
-  hideMenubar : hideMenubar,
-  hideWindowUi : hideWindowUi,
-  fitWindow : fitWindow,
-  centerWindow : centerWindow,
-  displayDocTitle : displayDocTitle,
-  openAtPage : openAtPage,
-  setMetadataFromFile : setMetadataFromFile,
+
+  setPageLayout,
+  setPageMode,
+  hideToolbar,
+  hideMenubar,
+  hideWindowUi,
+  fitWindow,
+  centerWindow,
+  displayDocTitle,
+  openAtPage,
+
+/*setMetadataFromFile : setMetadataFromFile,
   getMetadata : getMetadata,
   removeMetadata : removeMetadata,
   createMetadata : createMetadata,
   setMetadataDate : setMetadataDate,
-
 */
   addPageLabels,
   removePageLabels,
