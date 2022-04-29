@@ -1489,6 +1489,7 @@ function copyFont(pdf, pdf2, range, pagenumber, fontname)
 
 function draft(pdf, range, boxes)
 {
+  console.log(pdf, range, boxes);
   cpdf.cpdflib.draft(pdf, range, boxes);
 }
 
@@ -1549,6 +1550,7 @@ function removeDictEntrySearch(pdf, key, searchterm)
 
 function replaceDictEntry(pdf, key, newval)
 {
+  console.log(pdf, key, newval);
   cpdf.cpdflib.replaceDictEntry(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval));
 }
 

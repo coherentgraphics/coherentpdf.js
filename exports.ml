@@ -63,7 +63,7 @@ let _ =
        (* CHAPTER 3. Pages *)
        method scalePages = Cpdflib.scalePages
        method scaleToFit = Cpdflib.scaleToFit
-       method scaleToFitPaper = Cpdflib.scaleToFit
+       method scaleToFitPaper = Cpdflib.scaleToFitPaper
        method scaleContents = Cpdflib.scaleContents
        method shiftContents = Cpdflib.shiftContents
        method rotate = Cpdflib.rotate
