@@ -2359,9 +2359,10 @@ function getBookmarksJSON(pdf)
   return r;
 }
 
-function setBookmarksJSON(pdf)
+function setBookmarksJSON(pdf, data)
 {
-  //FIXME do something here
+  var bigarray = caml_ba_from_typed_array(data);
+  cpdf.cpdflib.setBookmarksJSON(pdf, bigarray);
 }
 
 function tableOfContents(pdf, font, fontsize, title, bookmarks)
