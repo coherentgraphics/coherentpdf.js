@@ -3146,22 +3146,38 @@ function getMediaBox(pdf, page, a)
 
 function getCropBox(pdf, page, a)
 {
-  //FIXME
+  var r = cpdf.cpdflib.getCropBox(pdf, page, a);
+  a[0] = r[1];
+  a[1] = r[2];
+  a[2] = r[3];
+  a[3] = r[4];
 }
 
 function getArtBox(pdf, page, a)
 {
-  //FIXME
+  var r = cpdf.cpdflib.getArtBox(pdf, page, a);
+  a[0] = r[1];
+  a[1] = r[2];
+  a[2] = r[3];
+  a[3] = r[4];
 }
 
 function getBleedBox(pdf, page, a)
 {
-  //FIXME
+  var r = cpdf.cpdflib.getBleedBox(pdf, page, a);
+  a[0] = r[1];
+  a[1] = r[2];
+  a[2] = r[3];
+  a[3] = r[4];
 }
 
 function getTrimBox(pdf, page, a)
 {
-  //FIXME
+  var r = cpdf.cpdflib.getTrimBox(pdf, page, a);
+  a[0] = r[1];
+  a[1] = r[2];
+  a[2] = r[3];
+  a[3] = r[4];
 }
 
 function setMetadataFromFile(pdf, filename)
@@ -3192,8 +3208,8 @@ function setMetadataDate(pdf, date)
 
 function setMetadataFromByteArray(pdf, arr)
 {
-  //cpdf.cpdflib.setMetadataFromByteArray
-  //FIXME
+  var bigarray = caml_ba_from_typed_array(arr);
+  cpdf.cpdflib.setMetadataFromByteArray(pdf, bigarray);
 }
 
 var timesRoman = 0;

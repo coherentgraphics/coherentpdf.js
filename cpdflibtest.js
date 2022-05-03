@@ -562,7 +562,16 @@ console.log("---cpdf_setMetadataFromFile()");
 cpdfjs.setMetadataFromFile(pdf30, "testinputs/cpdflibmanual.pdf");
 cpdfjs.toFile(pdf30, "testoutputs/11metadata1.pdf", false, false);
 console.log("---cpdf_setMetadataFromByteArray()");
-var md = [] //"BYTEARRAY"
+var md = new Uint8Array(9)
+md[0] ='B'.charCodeAt();
+md[1] = 'Y'.charCodeAt();
+md[2] = 'T'.charCodeAt();
+md[3] = 'E'.charCodeAt();
+md[4] = 'A'.charCodeAt();
+md[5] = 'R'.charCodeAt();
+md[6] = 'R'.charCodeAt();
+md[7] = 'A'.charCodeAt();
+md[8] = 'Y'.charCodeAt();
 cpdfjs.setMetadataFromByteArray(pdf30, md);
 cpdfjs.toFile(pdf30, "testoutputs/11metadata2.pdf", false, false);
 console.log("---cpdf_getMetadata()");
