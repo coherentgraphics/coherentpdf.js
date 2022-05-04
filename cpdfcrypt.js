@@ -60,14 +60,11 @@ function camlpdf_caml_sha256(src)
 //Provides: camlpdf_caml_sha384
 function camlpdf_caml_sha384(src)
 {
-  console.log('camlpdf_caml_sha384 not implemented yet');
-  //var srcbytes = caml_array_of_bytes(src);
-  //var srcbits = sjcl.codec.bytes.toBits(srcbytes);
-  //var hashed = sjcl.hash.sha384.hash(srcbits);
-  //var hashedbytes = sjcl.codec.bytes.fromBits(hashed);
-  //console.log(hashedbytes);
-  //return caml_bytes_of_array(hashedbytes);
-  return src;
+  var hash = globalThis.crypto.createHash('sha384').update(caml_array_of_bytes(src));
+  var hashedbytes = hash.digest().buffer;
+  var arr = new Uint8Array(hashedbytes);
+  var r = caml_bytes_of_array(arr);
+  return r;
 }
 
 //Provides: camlpdf_caml_sha512
