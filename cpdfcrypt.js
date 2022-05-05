@@ -50,16 +50,17 @@ function camlpdf_caml_aes_decrypt(ckey, src, src_ofs, dst, dst_ofs)
 function camlpdf_caml_sha256(src)
 { 
   //console.log('camlpdf_caml_sha256');
-  var srcbytes = caml_array_of_bytes(src);
-  var srcbits = sjcl.codec.bytes.toBits(srcbytes);
-  var hashed = sjcl.hash.sha256.hash(srcbits);
-  var hashedbytes = sjcl.codec.bytes.fromBits(hashed);
-  return caml_bytes_of_array(hashedbytes);
+  var hash = globalThis.crypto.createHash('sha256').update(caml_array_of_bytes(src));
+  var hashedbytes = hash.digest().buffer;
+  var arr = new Uint8Array(hashedbytes);
+  var r = caml_bytes_of_array(arr);
+  return r;
 }
 
 //Provides: camlpdf_caml_sha384
 function camlpdf_caml_sha384(src)
 {
+  //console.log('camlpdf_caml_sha384');
   var hash = globalThis.crypto.createHash('sha384').update(caml_array_of_bytes(src));
   var hashedbytes = hash.digest().buffer;
   var arr = new Uint8Array(hashedbytes);
@@ -71,9 +72,9 @@ function camlpdf_caml_sha384(src)
 function camlpdf_caml_sha512(src)
 {
   //console.log('camlpdf_caml_sha512');
-  var srcbytes = caml_array_of_bytes(src);
-  var srcbits = sjcl.codec.bytes.toBits(srcbytes);
-  var hashed = sjcl.hash.sha512.hash(srcbits);
-  var hashedbytes = sjcl.codec.bytes.fromBits(hashed);
-  return caml_bytes_of_array(hashedbytes);
+  var hash = globalThis.crypto.createHash('sha512').update(caml_array_of_bytes(src));
+  var hashedbytes = hash.digest().buffer;
+  var arr = new Uint8Array(hashedbytes);
+  var r = caml_bytes_of_array(arr);
+  return r;
 }

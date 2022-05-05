@@ -1,2 +1,2 @@
-joo_global_object.zlib = require('node:zlib')
-joo_global_object.crypto = require('node:crypto')
+joo_global_object.zlib = require('zlib')
+joo_global_object.crypto = require('crypto')
