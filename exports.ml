@@ -1,6 +1,6 @@
 open Js_of_ocaml
 
-(* FIXME: Check all () are correct and actually being run with !dgb *)
+(* FIXME: Check all () are correct and actually being run with !dbg *)
 
 let _ =
   Js.export "cpdflib"
