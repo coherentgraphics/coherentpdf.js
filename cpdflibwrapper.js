@@ -1,6 +1,3 @@
-//This wraps the things exported from exports.ml into a JavaScript library.
-//We wrap and re-export.
-
 // Js_of_ocaml runtime support
 // http://www.ocsigen.org/js_of_ocaml/
 // Copyright (C) 2014 Jérôme Vouillon, Hugo Heuzard, Andy Ray
@@ -27,13 +24,10 @@
 // - sub/slice/reshape
 // - retain fast path for 1d array access
 
-//Provides: caml_ba_init const
 function caml_ba_init() {
   return 0;
 }
 
-//Provides: caml_ba_get_size
-//Requires: caml_invalid_argument
 function caml_ba_get_size(dims) {
   var n_dims = dims.length;
   var size = 1;
@@ -45,7 +39,6 @@ function caml_ba_get_size(dims) {
   return size;
 }
 
-//Provides: caml_ba_get_size_per_element
 function caml_ba_get_size_per_element(kind){
   switch(kind){
   case 7: case 10: case 11: return 2;
@@ -53,9 +46,6 @@ function caml_ba_get_size_per_element(kind){
   }
 }
 
-//Provides: caml_ba_create_buffer
-//Requires: caml_ba_get_size_per_element
-//Requires: caml_invalid_argument
 function caml_ba_create_buffer(kind, size){
   var g = globalThis;
   var view;
@@ -79,17 +69,10 @@ function caml_ba_create_buffer(kind, size){
   return data;
 }
 
-//Provides: caml_ba_custom_name
-//Version: < 4.11
 var caml_ba_custom_name = "_bigarray"
 
-//Provides: caml_ba_custom_name
-//Version: >= 4.11
 var caml_ba_custom_name = "_bigarr02"
 
-//Provides: Ml_Bigarray
-//Requires: caml_array_bound_error, caml_invalid_argument, caml_ba_custom_name
-//Requires: caml_int64_create_lo_hi, caml_int64_hi32, caml_int64_lo32
 function Ml_Bigarray (kind, layout, dims, buffer) {
 
   this.kind   = kind ;
@@ -261,8 +244,6 @@ Ml_Bigarray.prototype.compare = function (b, total) {
   return 0;
 }
 
-//Provides: Ml_Bigarray_c_1_1
-//Requires: Ml_Bigarray, caml_array_bound_error, caml_invalid_argument
 function Ml_Bigarray_c_1_1(kind, layout, dims, buffer) {
   this.kind   = kind ;
   this.layout = layout;
@@ -296,14 +277,10 @@ Ml_Bigarray_c_1_1.prototype.fill = function (v) {
   return 0
 }
 
-//Provides: caml_ba_compare
 function caml_ba_compare(a,b,total){
   return a.compare(b,total)
 }
 
-//Provides: caml_ba_create_unsafe
-//Requires: Ml_Bigarray, Ml_Bigarray_c_1_1, caml_ba_get_size, caml_ba_get_size_per_element
-//Requires: caml_invalid_argument
 function caml_ba_create_unsafe(kind, layout, dims, data){
   var size_per_element = caml_ba_get_size_per_element(kind);
   if(caml_ba_get_size(dims) * size_per_element != data.length) {
@@ -318,18 +295,12 @@ function caml_ba_create_unsafe(kind, layout, dims, data){
 }
 
 
-//Provides: caml_ba_create
-//Requires: caml_js_from_array
-//Requires: caml_ba_get_size, caml_ba_create_unsafe
-//Requires: caml_ba_create_buffer
 function caml_ba_create(kind, layout, dims_ml) {
   var dims = caml_js_from_array(dims_ml);
   var data = caml_ba_create_buffer(kind, caml_ba_get_size(dims));
   return caml_ba_create_unsafe(kind, layout, dims, data);
 }
 
-//Provides: caml_ba_change_layout
-//Requires: caml_ba_create_unsafe
 function caml_ba_change_layout(ba, layout) {
   if(ba.layout == layout) return ba;
   var new_dims = []
@@ -337,56 +308,41 @@ function caml_ba_change_layout(ba, layout) {
   return caml_ba_create_unsafe(ba.kind, layout, new_dims, ba.data);
 }
 
-//Provides: caml_ba_kind
 function caml_ba_kind(ba) {
   return ba.kind;
 }
 
-//Provides: caml_ba_layout
 function caml_ba_layout(ba) {
   return ba.layout;
 }
 
-//Provides: caml_ba_num_dims
 function caml_ba_num_dims(ba) {
   return ba.dims.length;
 }
 
-//Provides: caml_ba_dim
-//Requires: caml_invalid_argument
 function caml_ba_dim(ba, i) {
   if (i < 0 || i >= ba.dims.length)
     caml_invalid_argument("Bigarray.dim");
   return ba.dims[i];
 }
 
-//Provides: caml_ba_dim_1
-//Requires: caml_ba_dim
 function caml_ba_dim_1(ba) {
   return caml_ba_dim(ba, 0);
 }
 
-//Provides: caml_ba_dim_2
-//Requires: caml_ba_dim
 function caml_ba_dim_2(ba) {
   return caml_ba_dim(ba, 1);
 }
 
-//Provides: caml_ba_dim_3
-//Requires: caml_ba_dim
 function caml_ba_dim_3(ba) {
   return caml_ba_dim(ba, 2);
 }
 
-//Provides: caml_ba_get_generic
-//Requires: caml_js_from_array
 function caml_ba_get_generic(ba, i) {
   var ofs = ba.offset(caml_js_from_array(i));
   return ba.get(ofs);
 }
 
-//Provides: caml_ba_uint8_get16
-//Requires: caml_array_bound_error
 function caml_ba_uint8_get16(ba, i0) {
   var ofs = ba.offset(i0);
   if(ofs + 1 >= ba.data.length) caml_array_bound_error();
@@ -395,8 +351,6 @@ function caml_ba_uint8_get16(ba, i0) {
   return (b1 | (b2 << 8));
 }
 
-//Provides: caml_ba_uint8_get32
-//Requires: caml_array_bound_error
 function caml_ba_uint8_get32(ba, i0) {
   var ofs = ba.offset(i0);
   if(ofs + 3 >= ba.data.length) caml_array_bound_error();
@@ -410,8 +364,6 @@ function caml_ba_uint8_get32(ba, i0) {
            (b4 << 24) );
 }
 
-//Provides: caml_ba_uint8_get64
-//Requires: caml_array_bound_error, caml_int64_of_bytes
 function caml_ba_uint8_get64(ba, i0) {
   var ofs = ba.offset(i0);
   if(ofs + 7 >= ba.data.length) caml_array_bound_error();
@@ -426,30 +378,23 @@ function caml_ba_uint8_get64(ba, i0) {
   return caml_int64_of_bytes([b8,b7,b6,b5,b4,b3,b2,b1]);
 }
 
-//Provides: caml_ba_get_1
 function caml_ba_get_1(ba, i0) {
   return ba.get(ba.offset(i0));
 }
 
-//Provides: caml_ba_get_2
 function caml_ba_get_2(ba, i0, i1) {
   return ba.get(ba.offset([i0,i1]));
 }
 
-//Provides: caml_ba_get_3
 function caml_ba_get_3(ba, i0, i1, i2) {
   return ba.get(ba.offset([i0,i1,i2]));
 }
 
-//Provides: caml_ba_set_generic
-//Requires: caml_js_from_array
 function caml_ba_set_generic(ba, i, v) {
   ba.set(ba.offset(caml_js_from_array(i)), v);
   return 0
 }
 
-//Provides: caml_ba_uint8_set16
-//Requires: caml_array_bound_error
 function caml_ba_uint8_set16(ba, i0, v) {
   var ofs = ba.offset(i0);
   if(ofs + 1 >= ba.data.length) caml_array_bound_error();
@@ -458,8 +403,6 @@ function caml_ba_uint8_set16(ba, i0, v) {
   return 0;
 }
 
-//Provides: caml_ba_uint8_set32
-//Requires: caml_array_bound_error
 function caml_ba_uint8_set32(ba, i0, v) {
   var ofs = ba.offset(i0);
   if(ofs + 3 >= ba.data.length) caml_array_bound_error();
@@ -470,8 +413,6 @@ function caml_ba_uint8_set32(ba, i0, v) {
   return 0;
 }
 
-//Provides: caml_ba_uint8_set64
-//Requires: caml_array_bound_error, caml_int64_to_bytes
 function caml_ba_uint8_set64(ba, i0, v) {
   var ofs = ba.offset(i0);
   if(ofs + 7 >= ba.data.length) caml_array_bound_error();
@@ -480,32 +421,26 @@ function caml_ba_uint8_set64(ba, i0, v) {
   return 0;
 }
 
-//Provides: caml_ba_set_1
 function caml_ba_set_1(ba, i0, v) {
   ba.set(ba.offset(i0), v);
   return 0
 }
 
-//Provides: caml_ba_set_2
 function caml_ba_set_2(ba, i0, i1, v) {
   ba.set(ba.offset([i0,i1]), v);
   return 0;
 }
 
-//Provides: caml_ba_set_3
 function caml_ba_set_3(ba, i0, i1, i2, v) {
   ba.set(ba.offset([i0,i1,i2]), v);
   return 0;
 }
 
-//Provides: caml_ba_fill
 function caml_ba_fill(ba, v) {
   ba.fill(v);
   return 0;
 }
 
-//Provides: caml_ba_blit
-//Requires: caml_invalid_argument
 function caml_ba_blit(src, dst) {
   if (dst.dims.length != src.dims.length)
     caml_invalid_argument("Bigarray.blit: dimension mismatch");
@@ -516,9 +451,6 @@ function caml_ba_blit(src, dst) {
   return 0;
 }
 
-//Provides: caml_ba_sub
-//Requires: caml_invalid_argument, caml_ba_create_unsafe, caml_ba_get_size
-//Requires: caml_ba_get_size_per_element
 function caml_ba_sub(ba, ofs, len) {
   var changed_dim;
   var mul = 1;
@@ -544,9 +476,6 @@ function caml_ba_sub(ba, ofs, len) {
   return caml_ba_create_unsafe(ba.kind, ba.layout, new_dims, new_data);
 }
 
-//Provides: caml_ba_slice
-//Requires: caml_js_from_array, caml_ba_create_unsafe, caml_invalid_argument, caml_ba_get_size
-//Requires: caml_ba_get_size_per_element
 function caml_ba_slice(ba, vind) {
   vind = caml_js_from_array(vind);
   var num_inds = vind.length;
@@ -578,8 +507,6 @@ function caml_ba_slice(ba, vind) {
   return caml_ba_create_unsafe(ba.kind, ba.layout, sub_dims, new_data);
 }
 
-//Provides: caml_ba_reshape
-//Requires: caml_js_from_array, caml_invalid_argument, caml_ba_create_unsafe, caml_ba_get_size
 function caml_ba_reshape(ba, vind) {
   vind = caml_js_from_array(vind);
   var new_dim = [];
@@ -603,9 +530,6 @@ function caml_ba_reshape(ba, vind) {
   return caml_ba_create_unsafe(ba.kind, ba.layout, new_dim, ba.data);
 }
 
-//Provides: caml_ba_serialize
-//Requires: caml_int64_bits_of_float, caml_int64_to_bytes
-//Requires: caml_int32_bits_of_float
 function caml_ba_serialize(writer, ba, sz) {
   writer.write(32, ba.dims.length);
   writer.write(32, (ba.kind | (ba.layout << 8)));
@@ -686,12 +610,6 @@ function caml_ba_serialize(writer, ba, sz) {
   sz[1] = (4 + ba.dims.length) * 8;
 }
 
-//Provides: caml_ba_deserialize
-//Requires: caml_ba_create_unsafe, caml_failwith
-//Requires: caml_ba_get_size
-//Requires: caml_int64_of_bytes, caml_int64_float_of_bits
-//Requires: caml_int32_float_of_bits
-//Requires: caml_ba_create_buffer
 function caml_ba_deserialize(reader, sz, name){
   var num_dims = reader.read32s();
   if (num_dims < 0 || num_dims > 16)
@@ -796,9 +714,6 @@ function caml_ba_deserialize(reader, sz, name){
   return caml_ba_create_unsafe(kind, layout, dims, data);
 }
 
-//Deprecated
-//Provides: caml_ba_create_from
-//Requires: caml_ba_create_unsafe, caml_invalid_argument, caml_ba_get_size_per_element
 function caml_ba_create_from(data1, data2, jstyp, kind, layout, dims){
   if(data2 || caml_ba_get_size_per_element(kind) == 2){
     caml_invalid_argument("caml_ba_create_from: use return caml_ba_create_unsafe");
@@ -806,8 +721,6 @@ function caml_ba_create_from(data1, data2, jstyp, kind, layout, dims){
   return caml_ba_create_unsafe(kind, layout, dims, data1);
 }
 
-//Provides: caml_ba_hash const
-//Requires: caml_ba_get_size, caml_hash_mix_int, caml_hash_mix_float
 function caml_ba_hash(ba){
   var num_elts = caml_ba_get_size(ba.dims);
   var h = 0;
@@ -872,13 +785,10 @@ function caml_ba_hash(ba){
   return h;
 }
 
-//Provides: caml_ba_to_typed_array mutable
 function caml_ba_to_typed_array(ba){
   return ba.data;
 }
 
-//Provides: caml_ba_kind_of_typed_array mutable
-//Requires: caml_invalid_argument
 function caml_ba_kind_of_typed_array(ta){
   var g = globalThis;
   var kind;
@@ -894,9 +804,6 @@ function caml_ba_kind_of_typed_array(ta){
   return kind;
 }
 
-//Provides: caml_ba_from_typed_array mutable
-//Requires: caml_ba_kind_of_typed_array
-//Requires: caml_ba_create_unsafe
 function caml_ba_from_typed_array(ta){
   var kind = caml_ba_kind_of_typed_array(ta);
   return caml_ba_create_unsafe(kind, 0, [ta.length], ta);
@@ -949,7 +856,6 @@ function caml_ba_from_typed_array(ta){
 //   is_ascii(x) =       x&1
 //   kind(x) =           x&6
 
-//Provides: caml_str_repeat
 function caml_str_repeat(n, s) {
   if(n == 0) return "";
   if (s.repeat) {return s.repeat(n);} // ECMAscript 6 and Firefox 24+
@@ -968,8 +874,6 @@ function caml_str_repeat(n, s) {
   }
 }
 
-//Provides: caml_subarray_to_jsbytes
-//Weakdef
 // Pre ECMAScript 5, [apply] would not support array-like object.
 // In such setup, Typed_array would be implemented as polyfill, and [f.apply] would
 // fail here. Mark the primitive as Weakdef, so that people can override it easily.
@@ -982,7 +886,6 @@ function caml_subarray_to_jsbytes (a, i, len) {
   return s;
 }
 
-//Provides: caml_utf8_of_utf16
 function caml_utf8_of_utf16(s) {
   for (var b = "", t = b, c, d, i = 0, l = s.length; i < l; i++) {
     c = s.charCodeAt(i);
@@ -1017,7 +920,6 @@ function caml_utf8_of_utf16(s) {
   return b+t;
 }
 
-//Provides: caml_utf16_of_utf8
 function caml_utf16_of_utf8(s) {
   for (var b = "", t = "", c, c1, c2, v, i = 0, l = s.length; i < l; i++) {
     c1 = s.charCodeAt(i);
@@ -1064,7 +966,6 @@ function caml_utf16_of_utf8(s) {
   return b+t;
 }
 
-//Provides: jsoo_is_ascii
 function jsoo_is_ascii (s) {
   // The regular expression gets better at around this point for all browsers
   if (s.length < 24) {
@@ -1075,7 +976,6 @@ function jsoo_is_ascii (s) {
     return !/[^\x00-\x7f]/.test(s);
 }
 
-//Provides: caml_bytes_unsafe_get mutable
 function caml_bytes_unsafe_get (s, i) {
   switch (s.t & 6) {
   default: /* PARTIAL */
@@ -1087,8 +987,6 @@ function caml_bytes_unsafe_get (s, i) {
   }
 }
 
-//Provides: caml_bytes_unsafe_set
-//Requires: caml_convert_bytes_to_array
 function caml_bytes_unsafe_set (s, i, c) {
   // The OCaml compiler uses Char.unsafe_chr on integers larger than 255!
   c &= 0xff;
@@ -1104,29 +1002,19 @@ function caml_bytes_unsafe_set (s, i, c) {
   return 0;
 }
 
-//Provides: caml_string_bound_error
-//Requires: caml_invalid_argument
 function caml_string_bound_error () {
   caml_invalid_argument ("index out of bounds");
 }
 
-//Provides: caml_bytes_bound_error
-//Requires: caml_invalid_argument
 function caml_bytes_bound_error () {
   caml_invalid_argument ("index out of bounds");
 }
 
-//Provides: caml_string_get
-//Requires: caml_string_bound_error, caml_string_unsafe_get
-//Requires: caml_ml_string_length
 function caml_string_get (s, i) {
   if (i >>> 0 >= caml_ml_string_length(s)) caml_string_bound_error();
   return caml_string_unsafe_get (s, i);
 }
 
-//Provides: caml_string_get16
-//Requires: caml_string_unsafe_get, caml_string_bound_error
-//Requires: caml_ml_string_length
 function caml_string_get16(s,i) {
   if (i >>> 0 >= caml_ml_string_length(s) - 1) caml_string_bound_error();
   var b1 = caml_string_unsafe_get (s, i),
@@ -1134,8 +1022,6 @@ function caml_string_get16(s,i) {
   return (b2 << 8 | b1);
 }
 
-//Provides: caml_bytes_get16
-//Requires: caml_bytes_unsafe_get, caml_bytes_bound_error
 function caml_bytes_get16(s,i) {
   if (i >>> 0 >= s.l - 1) caml_bytes_bound_error();
   var b1 = caml_bytes_unsafe_get (s, i),
@@ -1143,9 +1029,6 @@ function caml_bytes_get16(s,i) {
   return (b2 << 8 | b1);
 }
 
-//Provides: caml_string_get32
-//Requires: caml_string_unsafe_get, caml_string_bound_error
-//Requires: caml_ml_string_length
 function caml_string_get32(s,i) {
   if (i >>> 0 >= caml_ml_string_length(s) - 3) caml_string_bound_error();
   var b1 = caml_string_unsafe_get (s, i),
@@ -1155,8 +1038,6 @@ function caml_string_get32(s,i) {
   return (b4 << 24 | b3 << 16 | b2 << 8 | b1);
 }
 
-//Provides: caml_bytes_get32
-//Requires: caml_bytes_unsafe_get, caml_bytes_bound_error
 function caml_bytes_get32(s,i) {
   if (i >>> 0 >= s.l - 3) caml_bytes_bound_error();
   var b1 = caml_bytes_unsafe_get (s, i),
@@ -1166,10 +1047,6 @@ function caml_bytes_get32(s,i) {
   return (b4 << 24 | b3 << 16 | b2 << 8 | b1);
 }
 
-//Provides: caml_string_get64
-//Requires: caml_string_unsafe_get, caml_string_bound_error
-//Requires: caml_int64_of_bytes
-//Requires: caml_ml_string_length
 function caml_string_get64(s,i) {
   if (i >>> 0 >= caml_ml_string_length(s) - 7) caml_string_bound_error();
   var a = new Array(8);
@@ -1179,9 +1056,6 @@ function caml_string_get64(s,i) {
   return caml_int64_of_bytes(a);
 }
 
-//Provides: caml_bytes_get64
-//Requires: caml_bytes_unsafe_get, caml_bytes_bound_error
-//Requires: caml_int64_of_bytes
 function caml_bytes_get64(s,i) {
   if (i >>> 0 >= s.l - 7) caml_bytes_bound_error();
   var a = new Array(8);
@@ -1191,30 +1065,20 @@ function caml_bytes_get64(s,i) {
   return caml_int64_of_bytes(a);
 }
 
-//Provides: caml_bytes_get
-//Requires: caml_bytes_bound_error, caml_bytes_unsafe_get
 function caml_bytes_get (s, i) {
   if (i >>> 0 >= s.l) caml_bytes_bound_error();
   return caml_bytes_unsafe_get (s, i);
 }
 
-//Provides: caml_string_set
-//Requires: caml_failwith
-//If: js-string
 function caml_string_set (s, i, c) {
   caml_failwith("caml_string_set");
 }
 
-//Provides: caml_string_set
-//Requires: caml_string_unsafe_set, caml_string_bound_error
-//If: !js-string
 function caml_string_set (s, i, c) {
   if (i >>> 0 >= s.l) caml_string_bound_error();
   return caml_string_unsafe_set (s, i, c);
 }
 
-//Provides: caml_bytes_set16
-//Requires: caml_bytes_bound_error, caml_bytes_unsafe_set
 function caml_bytes_set16(s,i,i16){
   if (i >>> 0 >= s.l - 1) caml_bytes_bound_error();
   var b2 = 0xFF & i16 >> 8,
@@ -1224,22 +1088,14 @@ function caml_bytes_set16(s,i,i16){
   return 0
 }
 
-//Provides: caml_string_set16
-//Requires: caml_failwith
-//If: js-string
 function caml_string_set16(s,i,i16){
   caml_failwith("caml_string_set16");
 }
 
-//Provides: caml_string_set16
-//Requires: caml_bytes_set16
-//If: !js-string
 function caml_string_set16(s,i,i16){
   return caml_bytes_set16(s,i,i16);
 }
 
-//Provides: caml_bytes_set32
-//Requires: caml_bytes_bound_error, caml_bytes_unsafe_set
 function caml_bytes_set32(s,i,i32){
   if (i >>> 0 >= s.l - 3) caml_bytes_bound_error();
   var b4 = 0xFF & i32 >> 24,
@@ -1253,23 +1109,14 @@ function caml_bytes_set32(s,i,i32){
   return 0
 }
 
-//Provides: caml_string_set32
-//Requires: caml_failwith
-//If: js-string
 function caml_string_set32(s,i,i32){
   caml_failwith("caml_string_set32");
 }
 
-//Provides: caml_string_set32
-//Requires: caml_bytes_set32
-//If: !js-string
 function caml_string_set32(s,i,i32){
   return caml_bytes_set32(s,i,i32);
 }
 
-//Provides: caml_bytes_set64
-//Requires: caml_bytes_bound_error, caml_bytes_unsafe_set
-//Requires: caml_int64_to_bytes
 function caml_bytes_set64(s,i,i64){
   if (i >>> 0 >= s.l - 7) caml_bytes_bound_error();
   var a = caml_int64_to_bytes(i64);
@@ -1279,29 +1126,19 @@ function caml_bytes_set64(s,i,i64){
   return 0
 }
 
-//Provides: caml_string_set64
-//Requires: caml_failwith
-//If: js-string
 function caml_string_set64(s,i,i64){
   caml_failwith("caml_string_set64");
 }
 
-//Provides: caml_string_set64
-//Requires: caml_bytes_set64
-//If: !js-string
 function caml_string_set64(s,i,i64){
   return caml_bytes_set64(s,i,i64);
 }
 
-//Provides: caml_bytes_set
-//Requires: caml_bytes_bound_error, caml_bytes_unsafe_set
 function caml_bytes_set (s, i, c) {
   if (i >>> 0 >= s.l) caml_bytes_bound_error();
   return caml_bytes_unsafe_set (s, i, c);
 }
 
-//Provides: caml_bytes_of_utf16_jsstring
-//Requires: jsoo_is_ascii, caml_utf8_of_utf16, MlBytes
 function caml_bytes_of_utf16_jsstring (s) {
   var tag = 9 /* BYTES | ASCII */;
   if (!jsoo_is_ascii(s))
@@ -1310,8 +1147,6 @@ function caml_bytes_of_utf16_jsstring (s) {
 }
 
 
-//Provides: MlBytes
-//Requires: caml_convert_string_to_bytes, jsoo_is_ascii, caml_utf16_of_utf8
 function MlBytes (tag, contents, length) {
   this.t=tag; this.c=contents; this.l=length;
 }
@@ -1341,8 +1176,6 @@ MlBytes.prototype.slice = function (){
   return new MlBytes(this.t,content,this.l);
 }
 
-//Provides: caml_convert_string_to_bytes
-//Requires: caml_str_repeat, caml_subarray_to_jsbytes
 function caml_convert_string_to_bytes (s) {
   /* Assumes not BYTES */
   if (s.t == 2 /* PARTIAL */)
@@ -1352,7 +1185,6 @@ function caml_convert_string_to_bytes (s) {
   s.t = 0; /*BYTES | UNKOWN*/
 }
 
-//Provides: caml_convert_bytes_to_array
 function caml_convert_bytes_to_array (s) {
   /* Assumes not ARRAY */
   if(globalThis.Uint8Array) {
@@ -1368,16 +1200,11 @@ function caml_convert_bytes_to_array (s) {
   return a;
 }
 
-//Provides: caml_array_of_bytes mutable
-//Requires: caml_convert_bytes_to_array
 function caml_array_of_bytes (s) {
   if (s.t != 4 /* ARRAY */) caml_convert_bytes_to_array(s);
   return s.c;
 }
 
-//Provides: caml_array_of_string mutable
-//Requires: caml_convert_bytes_to_array
-//Requires: caml_ml_string_length, caml_string_unsafe_get
 function caml_array_of_string (s) {
   var l = caml_ml_string_length(s);
   var a = new Array(l);
@@ -1386,42 +1213,28 @@ function caml_array_of_string (s) {
   return a;
 }
 
-//Provides: caml_create_string const
-//Requires: MlBytes, caml_invalid_argument
-//If: !js-string
 function caml_create_string(len) {
   if(len < 0) caml_invalid_argument("String.create");
   return new MlBytes(len?2:9,"",len);
 }
 
-//Provides: caml_create_string const
-//Requires: caml_invalid_argument
-//If: js-string
 function caml_create_string(len) {
   caml_invalid_argument("String.create");
 }
 
-//Provides: caml_create_bytes const
-//Requires: MlBytes,caml_invalid_argument
 function caml_create_bytes(len) {
   if (len < 0) caml_invalid_argument("Bytes.create");
   return new MlBytes(len?2:9,"",len);
 }
 
-//Provides: caml_string_of_array
-//Requires: caml_subarray_to_jsbytes, caml_string_of_jsbytes
 function caml_string_of_array (a) {
   return caml_string_of_jsbytes(caml_subarray_to_jsbytes(a,0,a.length));
 }
 
-//Provides: caml_bytes_of_array
-//Requires: MlBytes
 function caml_bytes_of_array (a) {
   return new MlBytes(4,a,a.length);
 }
 
-//Provides: caml_bytes_compare mutable
-//Requires: caml_convert_string_to_bytes
 function caml_bytes_compare(s1, s2) {
   (s1.t & 6) && caml_convert_string_to_bytes(s1);
   (s2.t & 6) && caml_convert_string_to_bytes(s2);
@@ -1429,8 +1242,6 @@ function caml_bytes_compare(s1, s2) {
 }
 
 
-//Provides: caml_bytes_equal mutable (const, const)
-//Requires: caml_convert_string_to_bytes
 function caml_bytes_equal(s1, s2) {
   if(s1 === s2) return 1;
   (s1.t & 6) && caml_convert_string_to_bytes(s1);
@@ -1438,55 +1249,37 @@ function caml_bytes_equal(s1, s2) {
   return (s1.c == s2.c)?1:0;
 }
 
-//Provides: caml_string_notequal mutable (const, const)
-//Requires: caml_string_equal
 function caml_string_notequal(s1, s2) { return 1-caml_string_equal(s1, s2); }
 
-//Provides: caml_bytes_notequal mutable (const, const)
-//Requires: caml_bytes_equal
 function caml_bytes_notequal(s1, s2) { return 1-caml_bytes_equal(s1, s2); }
 
-//Provides: caml_bytes_lessequal mutable
-//Requires: caml_convert_string_to_bytes
 function caml_bytes_lessequal(s1, s2) {
   (s1.t & 6) && caml_convert_string_to_bytes(s1);
   (s2.t & 6) && caml_convert_string_to_bytes(s2);
   return (s1.c <= s2.c)?1:0;
 }
 
-//Provides: caml_bytes_lessthan mutable
-//Requires: caml_convert_string_to_bytes
 function caml_bytes_lessthan(s1, s2) {
   (s1.t & 6) && caml_convert_string_to_bytes(s1);
   (s2.t & 6) && caml_convert_string_to_bytes(s2);
   return (s1.c < s2.c)?1:0;
 }
 
-//Provides: caml_string_greaterequal
-//Requires: caml_string_lessequal
 function caml_string_greaterequal(s1, s2) {
   return caml_string_lessequal(s2,s1);
 }
-//Provides: caml_bytes_greaterequal
-//Requires: caml_bytes_lessequal
 function caml_bytes_greaterequal(s1, s2) {
   return caml_bytes_lessequal(s2,s1);
 }
 
-//Provides: caml_string_greaterthan
-//Requires: caml_string_lessthan
 function caml_string_greaterthan(s1, s2) {
   return caml_string_lessthan(s2, s1);
 }
 
-//Provides: caml_bytes_greaterthan
-//Requires: caml_bytes_lessthan
 function caml_bytes_greaterthan(s1, s2) {
   return caml_bytes_lessthan(s2, s1);
 }
 
-//Provides: caml_fill_bytes
-//Requires: caml_str_repeat, caml_convert_bytes_to_array
 function caml_fill_bytes(s, i, l, c) {
   if (l > 0) {
     if (i == 0 && (l >= s.l || (s.t == 2 /* PARTIAL */ && l >= s.c.length))) {
@@ -1505,12 +1298,8 @@ function caml_fill_bytes(s, i, l, c) {
   return 0;
 }
 
-//Provides: caml_fill_string
-//Requires: caml_fill_bytes
 var caml_fill_string = caml_fill_bytes
 
-//Provides: caml_blit_bytes
-//Requires: caml_subarray_to_jsbytes, caml_convert_bytes_to_array
 function caml_blit_bytes(s1, i1, s2, i2, len) {
   if (len == 0) return 0;
   if ((i2 == 0) &&
@@ -1542,197 +1331,119 @@ function caml_blit_bytes(s1, i1, s2, i2, len) {
   return 0;
 }
 
-//Provides: caml_blit_string
-//Requires: caml_blit_bytes, caml_bytes_of_string
 function caml_blit_string(a,b,c,d,e) {
   caml_blit_bytes(caml_bytes_of_string(a),b,c,d,e);
   return 0
 }
 
-//Provides: caml_ml_bytes_length const
 function caml_ml_bytes_length(s) { return s.l }
 
-//Provides: caml_string_unsafe_get const
-//If: js-string
 function caml_string_unsafe_get (s, i) {
   return s.charCodeAt(i);
 }
 
-//Provides: caml_string_unsafe_set
-//Requires: caml_failwith
-//If: js-string
 function caml_string_unsafe_set (s, i, c) {
   caml_failwith("caml_string_unsafe_set");
 }
 
-//Provides: caml_ml_string_length const
-//If: js-string
 function caml_ml_string_length(s) {
   return s.length
 }
 
-//Provides: caml_string_compare const
-//If: js-string
 function caml_string_compare(s1, s2) {
   return (s1 < s2)?-1:(s1 > s2)?1:0;
 }
 
-//Provides: caml_string_equal const
-//If: js-string
 function caml_string_equal(s1, s2) {
   if(s1 === s2) return 1;
   return 0;
 }
 
-//Provides: caml_string_lessequal const
-//If: js-string
 function caml_string_lessequal(s1, s2) {
   return (s1 <= s2)?1:0;
 }
 
-//Provides: caml_string_lessthan const
-//If: js-string
 function caml_string_lessthan(s1, s2) {
   return (s1 < s2)?1:0;
 }
 
-//Provides: caml_string_of_bytes
-//Requires: caml_convert_string_to_bytes, caml_string_of_jsbytes
-//If: js-string
 function caml_string_of_bytes(s) {
   (s.t & 6) && caml_convert_string_to_bytes(s);
   return caml_string_of_jsbytes(s.c);
 }
 
-//Provides: caml_bytes_of_string const
-//Requires: caml_bytes_of_jsbytes, caml_jsbytes_of_string
-//If: js-string
 function caml_bytes_of_string(s) {
   return caml_bytes_of_jsbytes(caml_jsbytes_of_string(s));
 }
 
-//Provides: caml_string_of_jsbytes const
-//If: js-string
 function caml_string_of_jsbytes(x) { return x }
 
-//Provides: caml_jsbytes_of_string const
-//If: js-string
 function caml_jsbytes_of_string(x) { return x }
 
-//Provides: caml_jsstring_of_string const
-//Requires: jsoo_is_ascii, caml_utf16_of_utf8
-//If: js-string
 function caml_jsstring_of_string(s) {
   if(jsoo_is_ascii(s))
     return s;
   return caml_utf16_of_utf8(s); }
 
-//Provides: caml_string_of_jsstring const
-//Requires: jsoo_is_ascii, caml_utf8_of_utf16, caml_string_of_jsbytes
-//If: js-string
 function caml_string_of_jsstring (s) {
   if (jsoo_is_ascii(s))
     return caml_string_of_jsbytes(s)
   else return caml_string_of_jsbytes(caml_utf8_of_utf16(s));
 }
 
-//Provides: caml_bytes_of_jsbytes const
-//Requires: MlBytes
 function caml_bytes_of_jsbytes(s) { return new MlBytes(0,s,s.length); }
 
 
 // The section below should be used when use-js-string=false
 
-//Provides: caml_string_unsafe_get const
-//Requires: caml_bytes_unsafe_get
-//If: !js-string
 function caml_string_unsafe_get (s, i) {
   return caml_bytes_unsafe_get(s,i);
 }
 
-//Provides: caml_string_unsafe_set
-//Requires: caml_bytes_unsafe_set
-//If: !js-string
 function caml_string_unsafe_set (s, i, c) {
   return caml_bytes_unsafe_set(s,i,c);
 }
 
-//Provides: caml_ml_string_length const
-//Requires: caml_ml_bytes_length
-//If: !js-string
 function caml_ml_string_length(s) {
   return caml_ml_bytes_length(s)
 }
 
-//Provides: caml_string_compare
-//Requires: caml_bytes_compare
-//If: !js-string
 function caml_string_compare(s1, s2) {
   return caml_bytes_compare(s1,s2)
 }
 
-//Provides: caml_string_equal
-//Requires: caml_bytes_equal
-//If: !js-string
 function caml_string_equal(s1, s2) {
   return caml_bytes_equal(s1,s2)
 }
 
-//Provides: caml_string_lessequal
-//Requires: caml_bytes_lessequal
-//If: !js-string
 function caml_string_lessequal(s1, s2) {
   return caml_bytes_lessequal(s1,s2)
 }
 
-//Provides: caml_string_lessthan
-//Requires: caml_bytes_lessthan
-//If: !js-string
 function caml_string_lessthan(s1, s2) {
   return caml_bytes_lessthan(s1,s2)
 }
 
-//Provides: caml_string_of_bytes
-//If: !js-string
 function caml_string_of_bytes(s) { return s }
 
-//Provides: caml_bytes_of_string const
-//If: !js-string
-function caml_bytes_of_string(s) { return s }
-
-//Provides: caml_string_of_jsbytes const
-//Requires: caml_bytes_of_jsbytes
-//If: !js-string
 function caml_string_of_jsbytes(s) { return caml_bytes_of_jsbytes(s); }
 
-//Provides: caml_jsbytes_of_string const
-//Requires: caml_convert_string_to_bytes
-//If: !js-string
 function caml_jsbytes_of_string(s) {
   (s.t & 6) && caml_convert_string_to_bytes(s);
   return s.c }
 
-//Provides: caml_jsstring_of_string mutable (const)
-//If: !js-string
 function caml_jsstring_of_string(s){
   return s.toUtf16()
 }
 
-//Provides: caml_string_of_jsstring
-//Requires: caml_bytes_of_utf16_jsstring
-//If: !js-string
 function caml_string_of_jsstring (s) {
   return caml_bytes_of_utf16_jsstring(s);
 }
 
-//Provides: caml_is_ml_bytes
-//Requires: MlBytes
 function caml_is_ml_bytes(s) {
   return (s instanceof MlBytes);
 }
 
-//Provides: caml_ml_bytes_content
-//Requires: MlBytes, caml_convert_string_to_bytes
 function caml_ml_bytes_content(s) {
   switch (s.t & 6) {
   default: /* PARTIAL */
@@ -1744,49 +1455,31 @@ function caml_ml_bytes_content(s) {
   }
 }
 
-//Provides: caml_is_ml_string
-//Requires: jsoo_is_ascii
-//If: js-string
 function caml_is_ml_string(s) {
   return (typeof s === "string" && !/[^\x00-\xff]/.test(s));
 }
 
-//Provides: caml_is_ml_string
-//Requires: caml_is_ml_bytes
-//If: !js-string
 function caml_is_ml_string(s) {
   return caml_is_ml_bytes(s);
 }
 
 // The functions below are deprecated
 
-//Provides: caml_js_to_byte_string const
-//Requires: caml_string_of_jsbytes
 function caml_js_to_byte_string(s) { return caml_string_of_jsbytes(s) }
 
-//Provides: caml_new_string
-//Requires: caml_string_of_jsbytes
 function caml_new_string (s) { return caml_string_of_jsbytes(s) }
 
-//Provides: caml_js_from_string mutable (const)
-//Requires: caml_jsstring_of_string
 function caml_js_from_string(s) {
   return caml_jsstring_of_string(s)
 }
 
-//Provides: caml_to_js_string mutable (const)
-//Requires: caml_jsstring_of_string
 function caml_to_js_string(s) {
   return caml_jsstring_of_string(s)
 }
 
-//Provides: caml_js_to_string const
-//Requires: caml_string_of_jsstring
 function caml_js_to_string (s) {
   return caml_string_of_jsstring(s);
 }
-
-/* ------------------------------------------------------ */
 
 /* CHAPTER 0. Preliminaries */
 function setFast()
@@ -1888,22 +1581,22 @@ function blankDocument(w, h, pages)
   return r;
 }
 
-const a0portrait = 0;
-const a1portrait = 1;
-const a2portrait = 2;
-const a3portrait = 3;
-const a4portrait = 4;
-const a5portrait = 5;
-const a0landscape = 6;
-const a1landscape = 7;
-const a2landscape = 8;
-const a3landscape = 9;
-const a4landscape = 10;
-const a5landscape = 11;
-const usletterportrait = 12;
-const usletterlandscape = 13;
-const uslegalportrait = 14;
-const uslegallandscape = 15;
+var a0portrait = 0;
+var a1portrait = 1;
+var a2portrait = 2;
+var a3portrait = 3;
+var a4portrait = 4;
+var a5portrait = 5;
+var a0landscape = 6;
+var a1landscape = 7;
+var a2landscape = 8;
+var a3landscape = 9;
+var a4landscape = 10;
+var a5landscape = 11;
+var usletterportrait = 12;
+var usletterlandscape = 13;
+var uslegalportrait = 14;
+var uslegallandscape = 15;
 
 function blankDocumentPaper(papersize, pages)
 {
@@ -1923,23 +1616,23 @@ function isEncrypted(pdf)
   return r;
 }
 
-const noEdit = 0;
-const noPrint = 1;
-const noCopy = 2;
-const noAnnot = 3;
-const noForms = 4;
-const noExtract = 5;
-const noAssemble = 6;
-const noHqPrint = 7;
+var noEdit = 0;
+var noPrint = 1;
+var noCopy = 2;
+var noAnnot = 3;
+var noForms = 4;
+var noExtract = 5;
+var noAssemble = 6;
+var noHqPrint = 7;
 
-const pdf40bit = 0;
-const pdf128bit = 1;
-const aes128bitfalse = 2;
-const aes128bittrue = 3;
-const aes256bitfalse = 4;
-const aes256bittrue = 5;
-const aes256bitisofalse = 6;
-const aes256bitisotrue = 7;
+var pdf40bit = 0;
+var pdf128bit = 1;
+var aes128bitfalse = 2;
+var aes128bittrue = 3;
+var aes256bitfalse = 4;
+var aes256bittrue = 5;
+var aes256bitisofalse = 6;
+var aes256bitisotrue = 7;
 
 function toFileEncrypted(pdf, encryption_method, perms, owner, user, linearize, makeid, filename)
 {
@@ -3242,356 +2935,356 @@ var reversediagonal = 12;
 module.exports =
   {
   //Enums
-  posCentre,
-  posLeft,
-  posRight,
-  top,
-  topLeft,
-  topRight,
-  left,
-  bottomLeft,
-  bottom,
-  bottomRight,
-  right,
-  diagonal,
-  reversediagonal,
-  timesRoman,
-  timesBold,
-  timesItalic,
-  timesBoldItalic,
-  helvetica,
-  helveticaBold,
-  helveticaOblique,
-  helveticaBoldOblique,
-  courier,
-  courierBold,
-  courierOblique,
-  courierBoldOblique,
-  decimalArabic,
-  uppercaseRoman,
-  lowercaseRoman,
-  uppercaseLetters,
-  lowercaseLetters,
-  singlePage,
-  oneColumn,
-  twoColumnLeft,
-  twoColumnRight,
-  twoPageLeft,
-  twoPageRight,
-  useNone,
-  useOutlines,
-  useThumbs,
-  useOC,
-  useAttachments,
-  leftJustify,
-  centreJustify,
-  rightJustify,
-  a0portrait,
-  a1portrait,
-  a2portrait,
-  a3portrait,
-  a4portrait,
-  a5portrait,
-  a0landscape,
-  a1landscape,
-  a2landscape,
-  a3landscape,
-  a4landscape,
-  a5landscape,
-  usletterportrait,
-  usletterlandscape,
-  uslegalportrait,
-  uslegallandscape,
-  noEdit,
-  noPrint,
-  noCopy,
-  noAnnot,
-  noForms,
-  noExtract,
-  noAssemble,
-  noHqPrint,
-  pdf40bit,
-  pdf128bit,
-  aes128bitfalse,
-  aes128bittrue,
-  aes256bitfalse,
-  aes256bittrue,
-  aes256bitisofalse,
-  aes256bitisotrue,
+  posCentre : posCentre,
+  posLeft : posLeft,
+  posRight : posRight,
+  top : top,
+  topLeft : topLeft,
+  topRight : topRight,
+  left : left,
+  bottomLeft : bottomLeft,
+  bottom : bottom,
+  bottomRight : bottomRight,
+  right : right,
+  diagonal : diagonal,
+  reversediagonal : reversediagonal,
+  timesRoman : timesRoman,
+  timesBold : timesBold,
+  timesItalic : timesItalic,
+  timesBoldItalic : timesBoldItalic,
+  helvetica : helvetica,
+  helveticaBold : helveticaBold,
+  helveticaOblique : helveticaOblique,
+  helveticaBoldOblique : helveticaBoldOblique,
+  courier : courier,
+  courierBold : courierBold,
+  courierOblique : courierOblique,
+  courierBoldOblique : courierBoldOblique,
+  decimalArabic : decimalArabic,
+  uppercaseRoman : uppercaseRoman,
+  lowercaseRoman : lowercaseRoman,
+  uppercaseLetters : uppercaseLetters,
+  lowercaseLetters : lowercaseLetters,
+  singlePage : singlePage,
+  oneColumn : oneColumn,
+  twoColumnLeft : twoColumnLeft,
+  twoColumnRight : twoColumnRight,
+  twoPageLeft : twoPageLeft,
+  twoPageRight : twoPageRight,
+  useNone : useNone,
+  useOutlines : useOutlines,
+  useThumbs : useThumbs,
+  useOC : useOC,
+  useAttachments : useAttachments,
+  leftJustify : leftJustify,
+  centreJustify : centreJustify,
+  rightJustify : rightJustify,
+  a0portrait : a0portrait,
+  a1portrait : a1portrait,
+  a2portrait : a2portrait,
+  a3portrait : a3portrait,
+  a4portrait : a4portrait,
+  a5portrait : a5portrait,
+  a0landscape : a0landscape,
+  a1landscape : a1landscape,
+  a2landscape : a2landscape,
+  a3landscape : a3landscape,
+  a4landscape : a4landscape,
+  a5landscape : a5landscape,
+  usletterportrait : usletterportrait,
+  usletterlandscape : usletterlandscape,
+  uslegalportrait : uslegalportrait,
+  uslegallandscape : uslegallandscape,
+  noEdit : noEdit,
+  noPrint : noPrint,
+  noCopy : noCopy,
+  noAnnot : noAnnot,
+  noForms : noForms,
+  noExtract : noExtract,
+  noAssemble : noAssemble,
+  noHqPrint : noHqPrint,
+  pdf40bit : pdf40bit,
+  pdf128bit : pdf128bit,
+  aes128bitfalse : aes128bitfalse,
+  aes128bittrue : aes128bittrue,
+  aes256bitfalse : aes256bitfalse,
+  aes256bittrue : aes256bittrue,
+  aes256bitisofalse : aes256bitisofalse,
+  aes256bitisotrue : aes256bitisotrue,
 
   //CHAPTER 1. Basics
-  setFast,
-  setSlow,
-  version,
-  startEnumeratePDFs,
-  enumeratePDFsKey,
-  enumeratePDFsInfo,
-  endEnumeratePDFs,
-  parsePagespec,
-  stringOfPagespec,
-  validatePagespec,
-  ptOfCm,
-  ptOfMm,
-  ptOfIn,
-  cmOfPt,
-  mmOfPt,
-  inOfPt,
-  range,
-  blankRange,
-  all,
-  even,
-  odd,
-  rangeUnion,
-  rangeAdd,
-  difference,
-  removeDuplicates,
-  rangeLength,
-  isInRange,
-  rangeGet,
-  fromFile,
-  fromFileLazy,
-  toMemory,
-  fromMemory,
-  fromMemoryLazy,
-  toFile,
-  toFileExt,
-  toFileEncrypted,
-  toFileEncryptedExt,
-  pages,
-  pagesFast,
-  isEncrypted,
-  decryptPdf,
-  decryptPdfOwner,
-  hasPermission,
-  encryptionKind,
+  setFast : setFast,
+  setSlow : setSlow,
+  version : version,
+  startEnumeratePDFs : startEnumeratePDFs,
+  enumeratePDFsKey : enumeratePDFsKey,
+  enumeratePDFsInfo : enumeratePDFsInfo,
+  endEnumeratePDFs : endEnumeratePDFs,
+  parsePagespec : parsePagespec,
+  stringOfPagespec : stringOfPagespec,
+  validatePagespec : validatePagespec,
+  ptOfCm : ptOfCm,
+  ptOfMm : ptOfMm,
+  ptOfIn : ptOfIn,
+  cmOfPt : cmOfPt,
+  mmOfPt : mmOfPt,
+  inOfPt : inOfPt,
+  range : range,
+  blankRange : blankRange,
+  all : all,
+  even : even,
+  odd : odd,
+  rangeUnion : rangeUnion,
+  rangeAdd : rangeAdd,
+  difference : difference,
+  removeDuplicates : removeDuplicates,
+  rangeLength : rangeLength,
+  isInRange : isInRange,
+  rangeGet : rangeGet,
+  fromFile : fromFile,
+  fromFileLazy : fromFileLazy,
+  toMemory : toMemory,
+  fromMemory : fromMemory,
+  fromMemoryLazy : fromMemoryLazy,
+  toFile : toFile,
+  toFileExt : toFileExt,
+  toFileEncrypted : toFileEncrypted,
+  toFileEncryptedExt : toFileEncryptedExt,
+  pages : pages,
+  pagesFast : pagesFast,
+  isEncrypted : isEncrypted,
+  decryptPdf : decryptPdf,
+  decryptPdfOwner : decryptPdfOwner,
+  hasPermission : hasPermission,
+  encryptionKind : encryptionKind,
 
   //CHAPTER 2. Merging and Splitting
-  mergeSimple,
-  merge,
-  mergeSame,
-  selectPages,
+  mergeSimple : mergeSimple,
+  merge : merge,
+  mergeSame : mergeSame,
+  selectPages : selectPages,
 
   //CHAPTER 3. Pages
-  scalePages,
-  scaleToFit,
-  scaleToFitPaper,
-  scaleContents,
-  shiftContents,
-  rotate,
-  rotateBy,
-  rotateContents,
-  upright,
-  hFlip,
-  vFlip,
-  crop,
-  setMediabox,
-  setCropBox,
-  setTrimBox,
-  setArtBox,
-  setBleedBox,
-  getMediaBox,
-  getCropBox,
-  getArtBox,
-  getBleedBox,
-  getTrimBox,
-  removeCrop,
-  removeArt,
-  removeTrim,
-  removeBleed,
-  hardBox,
-  trimMarks,
-  showBoxes,
+  scalePages : scalePages,
+  scaleToFit : scaleToFit ,
+  scaleToFitPaper : scaleToFitPaper,
+  scaleContents : scaleContents,
+  shiftContents : shiftContents,
+  rotate : rotate,
+  rotateBy : rotateBy,
+  rotateContents : rotateContents,
+  upright : upright,
+  hFlip : hFlip,
+  vFlip : vFlip,
+  crop : crop,
+  setMediabox : setMediabox,
+  setCropBox : setCropBox,
+  setTrimBox : setTrimBox,
+  setArtBox : setArtBox,
+  setBleedBox : setBleedBox,
+  getMediaBox : getMediaBox,
+  getCropBox : getCropBox,
+  getArtBox : getArtBox,
+  getBleedBox : getBleedBox,
+  getTrimBox : getTrimBox,
+  removeCrop : removeCrop,
+  removeArt : removeArt,
+  removeTrim : removeTrim,
+  removeBleed : removeBleed,
+  hardBox : hardBox,
+  trimMarks : trimMarks,
+  showBoxes : showBoxes,
 
   //CHAPTER 4. Encryption and Decryption
 
   //CHAPTER 5. Compression
-  compress,
-  decompress,
-  squeezeInMemory,
+  compress : compress,
+  decompress : decompress,
+  squeezeInMemory : squeezeInMemory,
 
   //CHAPTER 6. Bookmarks
-  startGetBookmarkInfo,
-  endGetBookmarkInfo,
-  numberBookmarks,
-  getBookmarkPage,
-  getBookmarkLevel,
-  getBookmarkText,
-  getBookmarkOpenStatus,
-  startSetBookmarkInfo,
-  endSetBookmarkInfo,
-  setBookmarkPage,
-  setBookmarkLevel,
-  setBookmarkText,
-  setBookmarkOpenStatus,
-  getBookmarksJSON,
-  setBookmarksJSON,
-  tableOfContents,
+  startGetBookmarkInfo : startGetBookmarkInfo,
+  endGetBookmarkInfo : endGetBookmarkInfo,
+  numberBookmarks : numberBookmarks,
+  getBookmarkPage : getBookmarkPage,
+  getBookmarkLevel : getBookmarkLevel,
+  getBookmarkText : getBookmarkText,
+  getBookmarkOpenStatus : getBookmarkOpenStatus,
+  startSetBookmarkInfo : startSetBookmarkInfo,
+  endSetBookmarkInfo : endSetBookmarkInfo,
+  setBookmarkPage : setBookmarkPage,
+  setBookmarkLevel : setBookmarkLevel,
+  setBookmarkText : setBookmarkText,
+  setBookmarkOpenStatus : setBookmarkOpenStatus,
+  getBookmarksJSON : getBookmarksJSON,
+  setBookmarksJSON : setBookmarksJSON,
+  tableOfContents : tableOfContents,
 
   //CHAPTER 7. Presentations
 
   //CHAPTER 8. Logos, Watermarks and Stamps
-  stampOn,
-  stampUnder,
-  stampExtended,
-  combinePages,
-  addText,
-  addTextSimple,
-  textWidth,
-  removeText,
-  addContent,
-  stampAsXObject,
+  stampOn : stampOn,
+  stampUnder : stampUnder,
+  stampExtended : stampExtended,
+  combinePages : combinePages,
+  addText : addText,
+  addTextSimple : addTextSimple,
+  textWidth : textWidth,
+  removeText : removeText,
+  addContent : addContent,
+  stampAsXObject : stampAsXObject,
 
   //CHAPTER 9. Multipage facilities
-  twoUp,
-  twoUpStack,
-  impose,
-  padBefore,
-  padAfter,
-  padEvery,
-  padMultiple,
-  padMultipleBefore,
+  twoUp : twoUp,
+  twoUpStack : twoUpStack,
+  impose : impose,
+  padBefore : padBefore,
+  padAfter : padAfter,
+  padEvery : padEvery,
+  padMultiple : padMultiple,
+  padMultipleBefore : padMultipleBefore,
 
   //CHAPTER 10. Annotations
-  annotationsJSON,
+  annotationsJSON : annotationsJSON,
 
   //CHAPTER 11. Document Information and Metadata
-  getVersion,
-  getMajorVersion,
-  isLinearized,
-  getTitle,
-  getAuthor,
-  getSubject,
-  getKeywords,
-  getCreator,
-  getProducer,
-  getCreationDate,
-  getModificationDate,
-  getTitleXMP,
-  getAuthorXMP,
-  getSubjectXMP,
-  getKeywordsXMP,
-  getCreatorXMP,
-  getProducerXMP,
-  getCreationDateXMP,
-  getModificationDateXMP,
-  setTitle,
-  setAuthor,
-  setSubject,
-  setKeywords,
-  setCreator,
-  setProducer,
-  setCreationDate,
-  setModificationDate,
-  setTitleXMP,
-  setAuthorXMP,
-  setSubjectXMP,
-  setKeywordsXMP,
-  setCreatorXMP,
-  setProducerXMP,
-  setCreationDateXMP,
-  setModificationDateXMP,
-  getDateComponents,
-  dateStringOfComponents,
-  markTrapped,
-  markUntrapped,
-  markTrappedXMP,
-  markUntrappedXMP,
-  hasBox,
-  getPageRotation,
-  setPageLayout,
-  setPageMode,
-  hideToolbar,
-  hideMenubar,
-  hideWindowUi,
-  fitWindow,
-  centerWindow,
-  displayDocTitle,
-  openAtPage,
-  setMetadataFromFile,
-  setMetadataFromByteArray,
-  getMetadata,
-  removeMetadata,
-  createMetadata,
-  setMetadataDate,
-  addPageLabels,
-  removePageLabels,
-  startGetPageLabels,
-  getPageLabelStyle,
-  getPageLabelPrefix,
-  getPageLabelOffset,
-  getPageLabelRange,
-  endGetPageLabels,
-  getPageLabelStringForPage,
+  getVersion : getVersion,
+  getMajorVersion : getMajorVersion,
+  isLinearized : isLinearized,
+  getTitle : getTitle,
+  getAuthor : getAuthor,
+  getSubject : getSubject,
+  getKeywords : getKeywords,
+  getCreator : getCreator,
+  getProducer : getProducer,
+  getCreationDate : getCreationDate,
+  getModificationDate : getModificationDate,
+  getTitleXMP : getTitleXMP,
+  getAuthorXMP : getAuthorXMP,
+  getSubjectXMP : getSubjectXMP,
+  getKeywordsXMP : getKeywordsXMP,
+  getCreatorXMP : getCreatorXMP,
+  getProducerXMP : getProducerXMP,
+  getCreationDateXMP : getCreationDateXMP,
+  getModificationDateXMP : getModificationDateXMP,
+  setTitle : setTitle,
+  setAuthor : setAuthor,
+  setSubject : setSubject,
+  setKeywords : setKeywords,
+  setCreator : setCreator,
+  setProducer : setProducer,
+  setCreationDate : setCreationDate,
+  setModificationDate : setModificationDate,
+  setTitleXMP : setTitleXMP,
+  setAuthorXMP : setAuthorXMP,
+  setSubjectXMP : setSubjectXMP,
+  setKeywordsXMP : setKeywordsXMP,
+  setCreatorXMP : setCreatorXMP,
+  setProducerXMP : setProducerXMP,
+  setCreationDateXMP : setCreationDateXMP,
+  setModificationDateXMP : setModificationDateXMP,
+  getDateComponents : getDateComponents,
+  dateStringOfComponents : dateStringOfComponents,
+  markTrapped : markTrapped,
+  markUntrapped : markUntrapped,
+  markTrappedXMP : markTrappedXMP,
+  markUntrappedXM : markUntrappedXMP,
+  hasBox : hasBox,
+  getPageRotation : getPageRotation,
+  setPageLayout : setPageLayout,
+  setPageMode : setPageMode,
+  hideToolbar : hideToolbar,
+  hideMenubar : hideMenubar,
+  hideWindowUi : hideWindowUi,
+  fitWindow : fitWindow,
+  centerWindow : centerWindow,
+  displayDocTitle : displayDocTitle,
+  openAtPage : openAtPage,
+  setMetadataFromFile : setMetadataFromFile,
+  setMetadataFromByteArray : setMetadataFromByteArray,
+  getMetadata : getMetadata,
+  removeMetadata : removeMetadata,
+  createMetadata : createMetadata,
+  setMetadataDate : setMetadataDate,
+  addPageLabels : addPageLabels,
+  removePageLabels : removePageLabels,
+  startGetPageLabels : startGetPageLabels,
+  getPageLabelStyle : getPageLabelStyle,
+  getPageLabelPrefix : getPageLabelPrefix,
+  getPageLabelOffset : getPageLabelOffset,
+  getPageLabelRange : getPageLabelRange,
+  endGetPageLabels : endGetPageLabels,
+  getPageLabelStringForPage : getPageLabelStringForPage,
 
   //CHAPTER 12. File Attachments
-  attachFile,
-  attachFileToPage,
-  attachFileFromMemory,
-  attachFileToPageFromMemory,
-  removeAttachedFiles,
-  startGetAttachments,
-  endGetAttachments,
-  numberGetAttachments,
-  getAttachmentName,
-  getAttachmentPage,
-  getAttachmentData,
+  attachFile : attachFile,
+  attachFileToPage : attachFileToPage,
+  attachFileFromMemory : attachFileFromMemory,
+  attachFileToPageFromMemory : attachFileToPageFromMemory,
+  removeAttachedFiles : removeAttachedFiles,
+  startGetAttachments : startGetAttachments,
+  endGetAttachments : endGetAttachments,
+  numberGetAttachments : numberGetAttachments,
+  getAttachmentName : getAttachmentName,
+  getAttachmentPage : getAttachmentPage,
+  getAttachmentData : getAttachmentData,
 
   //CHAPTER 13. Images
-  startGetImageResolution,
-  getImageResolutionPageNumber,
-  getImageResolutionImageName,
-  getImageResolutionXPixels,
-  getImageResolutionYPixels,
-  getImageResolutionXRes,
-  getImageResolutionYRes,
-  endGetImageResolution,
+  startGetImageResolution : startGetImageResolution,
+  getImageResolutionPageNumber : getImageResolutionPageNumber,
+  getImageResolutionImageName : getImageResolutionImageName,
+  getImageResolutionXPixels : getImageResolutionXPixels,
+  getImageResolutionYPixels : getImageResolutionYPixels,
+  getImageResolutionXRes : getImageResolutionXRes,
+  getImageResolutionYRes : getImageResolutionYRes,
+  endGetImageResolution : endGetImageResolution,
 
   //CHAPTER 14. Fonts
-  numberFonts,
-  getFontPage,
-  getFontName,
-  getFontType,
-  getFontEncoding,
-  startGetFontInfo,
-  endGetFontInfo,
-  copyFont,
-  removeFonts,
+  numberFonts : numberFonts,
+  getFontPage : getFontPage,
+  getFontName : getFontName,
+  getFontType : getFontType,
+  getFontEncoding : getFontEncoding,
+  startGetFontInfo : startGetFontInfo,
+  endGetFontInfo : endGetFontInfo,
+  copyFont : copyFont,
+  removeFonts : removeFonts,
   
   //CHAPTER 15. PDF and JSON
-  outputJSON,
-  outputJSONMemory,
-  fromJSON,
-  fromJSONMemory,
+  outputJSON : outputJSON,
+  outputJSONMemory : outputJSONMemory,
+  fromJSON : fromJSON,
+  fromJSONMemory : fromJSONMemory,
   
   //CHAPTER 16. Optional Content Groups
-  startGetOCGList,
-  ocgListEntry,
-  endGetOCGList,
-  ocgCoalesce,
-  ocgRename,
-  ocgOrderAll,
+  startGetOCGList : startGetOCGList,
+  ocgListEntry : ocgListEntry,
+  endGetOCGList : endGetOCGList,
+  ocgCoalesce : ocgCoalesce,
+  ocgRename : ocgRename,
+  ocgOrderAll : ocgOrderAll,
 
   //CHAPTER 17. Creating New PDFs
-  blankDocument,
-  blankDocumentPaper,
-  textToPDF,
-  textToPDFPaper,
+  blankDocument : blankDocument,
+  blankDocumentPaper : blankDocumentPaper,
+  textToPDF : textToPDF,
+  textToPDFPaper : textToPDFPaper,
 
   //CHAPTER 18. Miscellaneous
-  draft,
-  removeAllText,
-  blackText,
-  blackLines,
-  blackFills,
-  thinLines,
-  copyId,
-  removeId,
-  setVersion,
-  setFullVersion,
-  removeDictEntry,
-  removeDictEntrySearch,
-  replaceDictEntry,
-  replaceDictEntrySearch,
-  getDictEntries,
-  removeClipping
+  draft : draft,
+  removeAllText : removeAllText,
+  blackText : blackText,
+  blackLines : blackLines,
+  blackFills : blackFills,
+  thinLines : thinLines,
+  copyId : copyId,
+  removeId : removeId,
+  setVersion : setVersion,
+  setFullVersion : setFullVersion,
+  removeDictEntry : removeDictEntry,
+  removeDictEntrySearch : removeDictEntrySearch,
+  replaceDictEntry : replaceDictEntry,
+  replaceDictEntrySearch : replaceDictEntrySearch,
+  getDictEntries : getDictEntries,
+  removeClipping : removeClipping
 };
