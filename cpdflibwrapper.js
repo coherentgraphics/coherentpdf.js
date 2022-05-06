@@ -3183,7 +3183,7 @@ module.exports =
   markTrapped : markTrapped,
   markUntrapped : markUntrapped,
   markTrappedXMP : markTrappedXMP,
-  markUntrappedXM : markUntrappedXMP,
+  markUntrappedXMP : markUntrappedXMP,
   hasBox : hasBox,
   getPageRotation : getPageRotation,
   setPageLayout : setPageLayout,
