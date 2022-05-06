@@ -12,10 +12,10 @@ PDFMODS = pdfutil pdfio pdftransform pdfunits pdfpaper pdfcryptprimitives \
   cpdfpagelabels cpdfcreate cpdfannot cpdfxobject cpdfimpose cpdftweak \
   cpdflib
 
-SOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
+XSOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
 	  $(foreach x,$(PDFMODS),$(x).ml $(x).mli) exports.ml
 
-XSOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
+SOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
 	  $(foreach x,$(PDFMODS),$(x).ml $(x).mli) cpdfcommand.ml cpdfcommandrun.ml
 
 PACKS = js_of_ocaml,js_of_ocaml-ppx
@@ -37,6 +37,8 @@ small:
 
 browser:
 	browserify cpdf.js -s cpdf -o cpdf-browser.js
+
+smallbrowser:
 	uglifyjs cpdf-browser.js --compress --mangle --output cpdf-browser.js
 
 clean ::
