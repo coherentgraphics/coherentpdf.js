@@ -2075,7 +2075,6 @@ function copyFont(pdf, pdf2, range, pagenumber, fontname)
 
 function draft(pdf, range, boxes)
 {
-  //console.log(pdf, range, boxes);
   cpdf.cpdflib.draft(pdf, range, boxes);
 }
 
@@ -2136,7 +2135,6 @@ function removeDictEntrySearch(pdf, key, searchterm)
 
 function replaceDictEntry(pdf, key, newval)
 {
-  //console.log(pdf, key, newval);
   cpdf.cpdflib.replaceDictEntry(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval));
 }
 
@@ -2243,9 +2241,6 @@ function addText(metrics, pdf, range, text, anchor, p1, p2, linespacing,
                  bates, font, fontsize, r, g, b, underneath, cropbox, outline,
                  opacity, justification, midline, topline, filename, linewidth, embed_fonts)
 {
-  /*console.log(metrics, pdf, range, text, anchor, p1, p2, linespacing,
-                 bates, font, fontsize, r, g, b, underneath, cropbox, outline,
-                 opacity, justification, midline, topline, filename, linewidth, embed_fonts);*/
   cpdf.cpdflib.addText(metrics, pdf, range, caml_string_of_jsstring(text), anchor, p1, p2,
                        linespacing, bates, font, fontsize, r, g, b, underneath, cropbox, outline,
                        opacity, justification, midline, topline, caml_string_of_jsstring(filename),
