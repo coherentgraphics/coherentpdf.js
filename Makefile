@@ -32,6 +32,9 @@ all : byte-code js
 js :
 	js_of_ocaml -q --pretty --debuginfo --source-map-inline nodestubs.js sjclstub.js cpdfzlib.js cpdfcrypt.js cpdflibwrapper.js cpdf.byte
 
+small:
+	uglifyjs cpdf.js --compress --mangle --output small.js
+
 clean ::
 	rm -rf doc foo foo2 out.pdf out2.pdf foo.pdf decomp.pdf *.cmt *.cmti \
-	*.json test/*.pdf debug/*.pdf *.ps *.aux *.idx *.log *.out *.toc *.cut cpdf.js
+	*.json test/*.pdf debug/*.pdf *.ps *.aux *.idx *.log *.out *.toc *.cut cpdf.js small.js

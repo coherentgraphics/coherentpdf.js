@@ -1494,7 +1494,7 @@ function setSlow()
 
 function version()
 {
-  return cpdf.cpdflib.version;
+  return caml_jsstring_of_string(cpdf.cpdflib.version);
 }
 
 //CHAPTER 1. Basics
