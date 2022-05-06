@@ -33,6 +33,7 @@ js :
 	js_of_ocaml -q --pretty --debuginfo --source-map-inline nodestubs.js sjclstub.js cpdfzlib.js cpdfcrypt.js cpdflibwrapper.js cpdf.byte
 
 small:
+	js_of_ocaml nodestubs.js sjclstub.js cpdfzlib.js cpdfcrypt.js cpdflibwrapper.js cpdf.byte
 	uglifyjs cpdf.js --compress --mangle --output cpdf.js
 
 browser:
