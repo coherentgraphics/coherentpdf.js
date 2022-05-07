@@ -1567,7 +1567,6 @@ function fromMemory(arr, pw)
   return r;
 }
 
-//FIXME Need to prevent garbage collection until actually unused
 function fromMemoryLazy(arr, pw)
 {
   var bigarray = caml_ba_from_typed_array(arr);
