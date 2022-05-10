@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <script src="cpdf-browser.js"></script>
+  <body>
+    <h1>cpdf.js example</h1>
+    <p id="demo"></p>    
+    <script>
+      document.getElementById("demo").innerHTML = cpdf.version();
+      var pdf = cpdf.blankDocumentPaper(cpdf.a4portrait, 20);
+      cpdf.scalePages(pdf, cpdf.all(pdf), 0.5, 0.2);
+      var mem = cpdf.toMemory(pdf, false, false);
+      //Now it's a Uint8array, send it to pdf.js to be rendered.
+    </script>
+  </body>
+</html>

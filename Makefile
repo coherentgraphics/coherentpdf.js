@@ -30,7 +30,7 @@ all : byte-code js
 -include OCamlMakefile
 
 js :
-	js_of_ocaml -q --pretty --debuginfo --source-map-inline nodestubs.js sjclstub.js cpdfzlib.js cpdfcrypt.js cpdflibwrapper.js cpdf.byte
+	js_of_ocaml --extern-fs -I . --file=hello.pdf -q --pretty --debuginfo --source-map-inline nodestubs.js sjclstub.js cpdfzlib.js cpdfcrypt.js cpdflibwrapper.js cpdf.byte
 
 small:
 	js_of_ocaml -q nodestubs.js sjclstub.js cpdfzlib.js cpdfcrypt.js cpdflibwrapper.js cpdf.byte
