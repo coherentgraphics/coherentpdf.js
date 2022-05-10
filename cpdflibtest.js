@@ -1,8 +1,9 @@
 cpdf = require('./cpdf');
 
-/* CHAPTER 0. Preliminaries */
+//CHAPTER 0. Preliminaries
 console.log("***** CHAPTER 0. Preliminaries");
 console.log("---cpdf_startup()");
+cpdf.startup();
 console.log("---cpdf_version()");
 console.log("version = %s", cpdf.version());
 console.log("---cpdf_setFast()");
@@ -11,7 +12,7 @@ console.log("---cpdf_setSlow()");
 cpdf.setSlow();
 console.log("---cpdf_clearError()");
 
-/* CHAPTER 1. Basics */
+// CHAPTER 1. Basics
 console.log("***** CHAPTER 1. Basics");
 console.log("---cpdf_fromFile()");
 var pdf = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
@@ -116,7 +117,7 @@ cpdf.decryptPdf(pdf10, "");
 console.log("---cpdf_decryptPdfOwner()");
 cpdf.decryptPdfOwner(pdf10, "");
 
-/* CHAPTER 2. Merging and Splitting */
+// CHAPTER 2. Merging and Splitting
 console.log("***** CHAPTER 2. Merging and Splitting");
 var pdf11 = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var selectrange = cpdf.range(1, 3);
@@ -136,7 +137,7 @@ console.log("---cpdf_selectPages()");
 var pdf12 = cpdf.selectPages(pdf11, selectrange);
 cpdf.toFile(pdf12, "testoutputs/02selected.pdf", false, false);
 
-/* CHAPTER 3. Pages */
+// CHAPTER 3. Pages
 console.log("***** CHAPTER 3. Pages");
 var pagespdf1 = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var r1 = cpdf.all(pagespdf1);
@@ -234,10 +235,10 @@ console.log("---cpdf_removeBleed()");
 cpdf.removeBleed(pagespdf19, r19);
 cpdf.toFile(pagespdf19, "testoutputs/03remove_bleed.pdf", false, false);
         
-/* CHAPTER 4. Encryption */
-/* Encryption covered under Chapter 1 in cpdflib. */
+// CHAPTER 4. Encryption
+// Encryption covered under Chapter 1 in cpdflib.
 
-/* CHAPTER 5. Compression */
+// CHAPTER 5. Compression
 console.log("***** CHAPTER 5. Compression");
 var pdf16 = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "")
 console.log("---cpdf_compress()");
@@ -250,7 +251,7 @@ console.log("---cpdf_squeezeInMemory()");
 cpdf.squeezeInMemory(pdf16);
 cpdf.toFile(pdf16, "testoutputs/05squeezedinmemory.pdf", false, false);
  
-/* CHAPTER 6. Bookmarks */
+// CHAPTER 6. Bookmarks
 console.log("***** CHAPTER 6. Bookmarks");
 var pdf17 = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 console.log("---cpdf: get bookmarks");
@@ -286,10 +287,10 @@ var toc = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 cpdf.tableOfContents(toc, cpdf.timesRoman, 12.0, "Table of Contents", false);
 cpdf.toFile(toc, "testoutputs/06toc.pdf", false, false);
 
-/* CHAPTER 7. Presentations */
-/* Not included in the library version. */
+// CHAPTER 7. Presentations
+// Not included in the library version.
    
-/* CHAPTER 8. Logos, Watermarks and Stamps */
+// CHAPTER 8. Logos, Watermarks and Stamps
 console.log("***** CHAPTER 8. Logos, Watermarks and Stamps");
 var textfile = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 console.log("---cpdf_addText()");
@@ -350,7 +351,7 @@ console.log("---cpdf_addContent()");
 cpdf.addContent(content, true, undoc, undoc_all);
 cpdf.toFile(undoc, "testoutputs/08demo.pdf", false, false);
 
-/* CHAPTER 9. Multipage facilities */
+// CHAPTER 9. Multipage facilities
 console.log("***** CHAPTER 9. Multipage facilities");
 var mp = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var mp2 = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
@@ -389,14 +390,14 @@ console.log("---cpdf_padMultipleBefore()");
 cpdf.padMultipleBefore(mp7, 23);
 cpdf.toFile(mp7, "testoutputs/09mp7.pdf", false, false);
 
-/* CHAPTER 10. Annotations */
+// CHAPTER 10. Annotations
 console.log("***** CHAPTER 10. Annotations");
 console.log("---cpdf_annotationsJSON()");
 var annot = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var annotjson = cpdf.annotationsJSON(annot);
 console.log("Contains %d bytes of data", annotjson.length);
 
-/* CHAPTER 11. Document Information and Metadata */
+// CHAPTER 11. Document Information and Metadata
 console.log("***** CHAPTER 11. Document Information and Metadata");
 var pdf30 = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var pdf30all = cpdf.all(pdf30);
@@ -604,7 +605,7 @@ console.log("---cpdf_getPageLabelStringForPage()");
 var pl = cpdf.getPageLabelStringForPage(pdf30, 1);
 console.log("Label string is %s", pl);
 
-/* CHAPTER 12. File Attachments */
+// CHAPTER 12. File Attachments
 console.log("***** CHAPTER 12. File Attachments");
 var attachments = cpdf.fromFile("testinputs/has_attachments.pdf", "");
 console.log("---cpdf_attachFile()");
@@ -635,7 +636,7 @@ console.log("---cpdf_removeAttachedFiles()");
 cpdf.removeAttachedFiles(attachments);
 cpdf.toFile(attachments, "testoutputs/12removed_attachments.pdf", false, false);
 
-/* CHAPTER 13. Images. */
+// CHAPTER 13. Images.
 console.log("***** CHAPTER 13. Images");
 console.log("---cpdf: get image resolution");
 var image_pdf = cpdf.fromFile("testinputs/image.pdf", "");
@@ -652,7 +653,7 @@ for (im = 0; im < im_n; im++)
 }
 cpdf.endGetImageResolution();
 
-/* CHAPTER 14. Fonts. */
+// CHAPTER 14. Fonts.
 console.log("***** CHAPTER 14. Fonts");
 console.log("---cpdf: Get Fonts");
 var fonts = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
@@ -675,7 +676,7 @@ console.log("---cpdf_copyFont()");
 var all = cpdf.all(fonts);
 cpdf.copyFont(fonts, fonts2, all, 1, "/Font");
 
-/* CHAPTER 15. PDF and JSON */
+// CHAPTER 15. PDF and JSON
 console.log("***** CHAPTER 15. PDF and JSON");
 var jsonpdf = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 console.log("---cpdf_outputJSON()");
@@ -692,7 +693,7 @@ console.log("---cpdf_fromJSONMemory()");
 var jfrommem = cpdf.fromJSONMemory(jbuf);
 cpdf.toFile(jfrommem, "testoutputs/15fromJSONMemory.pdf", false, false);
 
-/* CHAPTER 16. Optional Content Groups */
+// CHAPTER 16. Optional Content Groups
 console.log("***** CHAPTER 16. Optional Content Groups");
 var ocg = cpdf.fromFile("testinputs/has_ocgs.pdf", "");
 console.log("---cpdf: Get OCG List");
@@ -709,7 +710,7 @@ cpdf.ocgRename(ocg, "From", "To");
 console.log("---cpdf_OCGOrderAll()");
 cpdf.ocgOrderAll(ocg);
 
-/* CHAPTER 17. Creating New PDFs */
+// CHAPTER 17. Creating New PDFs
 console.log("***** CHAPTER 17. Creating New PDFs");
 console.log("---cpdf_blankDocument()");
 console.log("---cpdf_blankDocumentPaper()");
@@ -724,7 +725,7 @@ var ttpdfpaper = cpdf.textToPDFPaper(cpdf.a4portrait, cpdf.timesBoldItalic, 10.0
 cpdf.toFile(ttpdf, "testoutputs/01ttpdf.pdf", false, false);
 cpdf.toFile(ttpdfpaper, "testoutputs/01ttpdfpaper.pdf", false, false);
 
-/* CHAPTER 18. Miscellaneous */
+// CHAPTER 18. Miscellaneous
 console.log("***** CHAPTER 18. Miscellaneous");
 var misc = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var misc2 = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
@@ -779,12 +780,12 @@ cpdf.removeDictEntry(misc11, "/Producer");
 cpdf.toFile(misc11, "testoutputs/17removedictentry.pdf", false, false);
 console.log("---cpdf_removeDictEntrySearch()");
 cpdf.removeDictEntrySearch(misc13, "/Producer", "1");
-cpdf.toFile(misc13, "testoutputs/17removedictentrysearch.pdf", false, false);
+cpdf.toFile(misc13, "testoutputs/17removedictentrysearch.pdf", false, false);*/
 console.log("---cpdf_replaceDictEntry()");
-cpdf.replaceDictEntry(misc14, "/Producer", "{\"I\" : 1}");
+cpdf.replaceDictEntry(misc14, "/Producer", "\"NewProducer\"");
 cpdf.toFile(misc14, "testoutputs/17replacedictentry.pdf", false, false);
 console.log("---cpdf_replaceDictEntrySearch()");
-cpdf.replaceDictEntrySearch(misc15, "/Producer", "1", "2");
+cpdf.replaceDictEntrySearch(misc15, "/Producer", "\"NewProducer2\"", "\"pdfTeX-1.40.22\"");
 cpdf.toFile(misc15, "testoutputs/17replacedictentrysearch.pdf", false, false);
 console.log("---cpdf_getDictEntries()");
 var entries = cpdf.getDictEntries(misc16, "/Producer");
