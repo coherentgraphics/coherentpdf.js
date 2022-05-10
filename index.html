@@ -1,15 +1,94 @@
 <!DOCTYPE html>
 <html>
   <script src="cpdf-browser.js"></script>
+  <script>
+    function filedownload(data, filename, mime, bom) {
+    var blobData = (typeof bom !== 'undefined') ? [bom, data] : [data]
+    var blob = new Blob(blobData, {type: mime || 'application/octet-stream'});
+    if (typeof window.navigator.msSaveBlob !== 'undefined') {
+        // IE workaround for "HTML7007: One or more blob URLs were
+        // revoked by closing the blob for which they were created.
+        // These URLs will no longer resolve as the data backing
+        // the URL has been freed."
+        window.navigator.msSaveBlob(blob, filename);
+    }
+    else {
+        var blobURL = (window.URL && window.URL.createObjectURL) ? window.URL.createObjectURL(blob) : window.webkitURL.createObjectURL(blob);
+        var tempLink = document.createElement('a');
+        tempLink.style.display = 'none';
+        tempLink.href = blobURL;
+        tempLink.setAttribute('download', filename);
+
+        // Safari thinks _blank anchor are pop ups. We only want to set _blank
+        // target if the browser does not support the HTML5 download attribute.
+        // This allows you to download files in desktop safari if pop up blocking
+        // is enabled.
+        if (typeof tempLink.download === 'undefined') {
+            tempLink.setAttribute('target', '_blank');
+        }
+
+        document.body.appendChild(tempLink);
+        tempLink.click();
+
+        // Fixes "webkit blob resource error 1"
+        setTimeout(function() {
+            document.body.removeChild(tempLink);
+            window.URL.revokeObjectURL(blobURL);
+        }, 200)
+    }
+}
+  </script>
+  <script>
+    var lib = function() {};
+  </script>
+
   <body>
     <h1>cpdf.js example</h1>
-    <p id="demo"></p>    
+    <p id="demo"></p>
+    <input type="file" id="file-selector">
     <script>
+      const fileSelector = document.getElementById('file-selector');
+      fileSelector.addEventListener('change', (event) => {
+        const fileList = event.target.files;
+        const reader = new FileReader();
+        console.log(fileList);
+        reader.addEventListener('load', (event) => {
+          const result = event.target.result;
+          // Do something with result
+          lib.foo = result;
+          console.log(result);
+         });
+        reader.readAsArrayBuffer(fileList[0]);
+      });
+    </script>
+    <script>
+
+function ensureFooIsSet(timeout) {
+    var start = Date.now();
+    return new Promise(waitForFoo);
+ 
+    function waitForFoo(resolve, reject) {
+        if (window.lib && window.lib.foo)
+            resolve(window.lib.foo);
+        else if (timeout && (Date.now() - start) >= timeout)
+            reject(new Error("timeout"));
+        else
+            setTimeout(waitForFoo.bind(this, resolve, reject), 30);
+    }
+}
+
       document.getElementById("demo").innerHTML = cpdf.version();
-      var pdf = cpdf.blankDocumentPaper(cpdf.a4portrait, 20);
-      cpdf.scalePages(pdf, cpdf.all(pdf), 0.5, 0.2);
-      var mem = cpdf.toMemory(pdf, false, false);
-      //Now it's a Uint8array, send it to pdf.js to be rendered.
+
+ensureFooIsSet(100000).then(function(){
+    console.log('we have the file...');
+    var arr = new Uint8Array(lib.foo);
+    console.log(arr);
+    var pdf = cpdf.fromMemory(arr, "");
+    cpdf.scalePages(pdf, cpdf.all(pdf), 0.5, 0.2);
+    var mem = cpdf.toMemory(pdf, false, false);
+    filedownload(mem, "download.pdf");
+});
+
     </script>
   </body>
 </html>
