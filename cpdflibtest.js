@@ -3,7 +3,6 @@ cpdf = require('./cpdf');
 //CHAPTER 0. Preliminaries
 console.log("***** CHAPTER 0. Preliminaries");
 console.log("---cpdf_startup()");
-cpdf.startup();
 console.log("---cpdf_version()");
 console.log("version = %s", cpdf.version());
 console.log("---cpdf_setFast()");
@@ -780,7 +779,7 @@ cpdf.removeDictEntry(misc11, "/Producer");
 cpdf.toFile(misc11, "testoutputs/17removedictentry.pdf", false, false);
 console.log("---cpdf_removeDictEntrySearch()");
 cpdf.removeDictEntrySearch(misc13, "/Producer", "1");
-cpdf.toFile(misc13, "testoutputs/17removedictentrysearch.pdf", false, false);*/
+cpdf.toFile(misc13, "testoutputs/17removedictentrysearch.pdf", false, false);
 console.log("---cpdf_replaceDictEntry()");
 cpdf.replaceDictEntry(misc14, "/Producer", "\"NewProducer\"");
 cpdf.toFile(misc14, "testoutputs/17replacedictentry.pdf", false, false);

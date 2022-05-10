@@ -1482,11 +1482,6 @@ function caml_js_to_string (s) {
 }
 
 /* CHAPTER 0. Preliminaries */
-function startup()
-{
- if (globalThis.cpdf.cpdflib) {delete(globalThis.cpdf.cpdflib)};
-}
-
 function setFast()
 {
   return cpdf.cpdflib.setFast();
@@ -3012,7 +3007,6 @@ module.exports =
   aes256bitisotrue : aes256bitisotrue,
 
   //CHAPTER 1. Basics
-  startup : startup,
   setFast : setFast,
   setSlow : setSlow,
   version : version,
