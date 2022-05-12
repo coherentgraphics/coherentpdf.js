@@ -1073,6 +1073,10 @@ function caml_bytes_get (s, i) {
 }
 
 function caml_string_set (s, i, c) {
+  caml_failwith("caml_string_set");
+}
+
+function caml_string_set (s, i, c) {
   if (i >>> 0 >= s.l) caml_string_bound_error();
   return caml_string_unsafe_set (s, i, c);
 }
@@ -1084,6 +1088,10 @@ function caml_bytes_set16(s,i,i16){
   caml_bytes_unsafe_set (s, i + 0, b1);
   caml_bytes_unsafe_set (s, i + 1, b2);
   return 0
+}
+
+function caml_string_set16(s,i,i16){
+  caml_failwith("caml_string_set16");
 }
 
 function caml_string_set16(s,i,i16){
@@ -1104,6 +1112,10 @@ function caml_bytes_set32(s,i,i32){
 }
 
 function caml_string_set32(s,i,i32){
+  caml_failwith("caml_string_set32");
+}
+
+function caml_string_set32(s,i,i32){
   return caml_bytes_set32(s,i,i32);
 }
 
@@ -1114,6 +1126,10 @@ function caml_bytes_set64(s,i,i64){
     caml_bytes_unsafe_set (s, i + 7 - j, a[j]);
   }
   return 0
+}
+
+function caml_string_set64(s,i,i64){
+  caml_failwith("caml_string_set64");
 }
 
 function caml_string_set64(s,i,i64){
@@ -1202,6 +1218,10 @@ function caml_array_of_string (s) {
 function caml_create_string(len) {
   if(len < 0) caml_invalid_argument("String.create");
   return new MlBytes(len?2:9,"",len);
+}
+
+function caml_create_string(len) {
+  caml_invalid_argument("String.create");
 }
 
 function caml_create_bytes(len) {
@@ -1324,6 +1344,10 @@ function caml_string_unsafe_get (s, i) {
   return s.charCodeAt(i);
 }
 
+function caml_string_unsafe_set (s, i, c) {
+  caml_failwith("caml_string_unsafe_set");
+}
+
 function caml_ml_string_length(s) {
   return s.length
 }
@@ -1370,6 +1394,94 @@ function caml_string_of_jsstring (s) {
 }
 
 function caml_bytes_of_jsbytes(s) { return new MlBytes(0,s,s.length); }
+
+
+// The section below should be used when use-js-string=false
+
+function caml_string_unsafe_get (s, i) {
+  return caml_bytes_unsafe_get(s,i);
+}
+
+function caml_string_unsafe_set (s, i, c) {
+  return caml_bytes_unsafe_set(s,i,c);
+}
+
+function caml_ml_string_length(s) {
+  return caml_ml_bytes_length(s)
+}
+
+function caml_string_compare(s1, s2) {
+  return caml_bytes_compare(s1,s2)
+}
+
+function caml_string_equal(s1, s2) {
+  return caml_bytes_equal(s1,s2)
+}
+
+function caml_string_lessequal(s1, s2) {
+  return caml_bytes_lessequal(s1,s2)
+}
+
+function caml_string_lessthan(s1, s2) {
+  return caml_bytes_lessthan(s1,s2)
+}
+
+function caml_string_of_bytes(s) { return s }
+
+function caml_string_of_jsbytes(s) { return caml_bytes_of_jsbytes(s); }
+
+function caml_jsbytes_of_string(s) {
+  (s.t & 6) && caml_convert_string_to_bytes(s);
+  return s.c }
+
+function caml_jsstring_of_string(s){
+  return s.toUtf16()
+}
+
+function caml_string_of_jsstring (s) {
+  return caml_bytes_of_utf16_jsstring(s);
+}
+
+function caml_is_ml_bytes(s) {
+  return (s instanceof MlBytes);
+}
+
+function caml_ml_bytes_content(s) {
+  switch (s.t & 6) {
+  default: /* PARTIAL */
+    caml_convert_string_to_bytes(s);
+  case 0: /* BYTES */
+    return s.c;
+  case 4:
+    return s.c
+  }
+}
+
+function caml_is_ml_string(s) {
+  return (typeof s === "string" && !/[^\x00-\xff]/.test(s));
+}
+
+function caml_is_ml_string(s) {
+  return caml_is_ml_bytes(s);
+}
+
+// The functions below are deprecated
+
+function caml_js_to_byte_string(s) { return caml_string_of_jsbytes(s) }
+
+function caml_new_string (s) { return caml_string_of_jsbytes(s) }
+
+function caml_js_from_string(s) {
+  return caml_jsstring_of_string(s)
+}
+
+function caml_to_js_string(s) {
+  return caml_jsstring_of_string(s)
+}
+
+function caml_js_to_string (s) {
+  return caml_string_of_jsstring(s);
+}
 
 /* CHAPTER 0. Preliminaries */
 function setFast()
