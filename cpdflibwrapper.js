@@ -1,3 +1,5 @@
+"use strict";
+
 // Js_of_ocaml runtime support
 // http://www.ocsigen.org/js_of_ocaml/
 // Copyright (C) 2014 Jérôme Vouillon, Hugo Heuzard, Andy Ray
@@ -1501,8 +1503,7 @@ function version()
 function fromFile(filename, userpw)
 {
   var r = 
-    cpdf.cpdflib.fromFile
-      (caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw));
+    cpdf.cpdflib.fromFile(caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw));
   return r
 }
 
@@ -1519,8 +1520,7 @@ function toFileExt(pdf, filename, linearize, make_id, preserve_objstm, create_ob
 function fromFileLazy(filename, userpw)
 {
   var r =
-    cpdf.cpdflib.fromFileLazy
-      (caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw));
+    cpdf.cpdflib.fromFileLazy(caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw));
   return r;
 }
 
@@ -1762,9 +1762,9 @@ function parsePagespec(pdf, spec)
   return r;
 }
 
-function stringOfPagespec(pdf, r)
+function stringOfPagespec(pdf, range)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.stringOfPagespec(pdf, r));
+  var r = caml_jsstring_of_string(cpdf.cpdflib.stringOfPagespec(pdf, range));
   return r;
 }
 
@@ -1799,22 +1799,22 @@ function enumeratePDFsInfo(n)
 
 function mergeSimple(arr)
 {
-  arr2 = [0].concat(arr);
+  var arr2 = [0].concat(arr);
   var r = cpdf.cpdflib.mergeSimple(arr2);
   return r;
 }
 
 function merge(arr, retain_numbering, remove_duplicate_fonts)
 {
-  arr2 = [0].concat(arr);
+  var arr2 = [0].concat(arr);
   var r = cpdf.cpdflib.merge(arr2, retain_numbering, remove_duplicate_fonts);
   return r;
 }
 
 function mergeSame(arr, retain_numbering, remove_duplicate_fonts, ranges)
 {
-  arr2 = [0].concat(arr);
-  ranges2 = [0].concat(ranges);
+  var arr2 = [0].concat(arr);
+  var ranges2 = [0].concat(ranges);
   var r = cpdf.cpdflib.mergeSame(arr2, retain_numbering, remove_duplicate_fonts, ranges2);
   return r;
 }
@@ -2139,8 +2139,7 @@ function replaceDictEntry(pdf, key, newval)
 
 function replaceDictEntrySearch(pdf, key, searchterm, newval)
 {
-  cpdf.cpdflib.replaceDictEntrySearch
-    (pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(searchterm), caml_string_of_jsstring(newval));
+  cpdf.cpdflib.replaceDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(searchterm), caml_string_of_jsstring(newval));
 }
 
 function getDictEntries(pdf, key)
@@ -2192,27 +2191,27 @@ function impose(pdf, a, b, c, d, e, f, g, h, i, j)
 
 function padBefore(pdf, range)
 {
-  var r = cpdf.cpdflib.padBefore(pdf, range);
+  cpdf.cpdflib.padBefore(pdf, range);
 }
 
 function padAfter(pdf, range)
 {
-  var r = cpdf.cpdflib.padAfter(pdf, range);
+  cpdf.cpdflib.padAfter(pdf, range);
 }
 
 function padEvery(pdf, range)
 {
-  var r = cpdf.cpdflib.padEvery(pdf, range);
+  cpdf.cpdflib.padEvery(pdf, range);
 }
 
 function padMultiple(pdf, range)
 {
-  var r = cpdf.cpdflib.padMultiple(pdf, range);
+  cpdf.cpdflib.padMultiple(pdf, range);
 }
 
 function padMultipleBefore(pdf, range)
 {
-  var r = cpdf.cpdflib.padMultipleBefore(pdf, range);
+  cpdf.cpdflib.padMultipleBefore(pdf, range);
 }
 
 function stampOn(stamp, stampee, stamp_range)
