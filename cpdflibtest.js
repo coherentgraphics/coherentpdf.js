@@ -153,8 +153,6 @@ cpdf.deletePdf(merged);
 cpdf.deletePdf(merged2);
 cpdf.deletePdf(merged3);
 cpdf.deletePdf(pdf12);
-cpdf.onexit();
-process.exit();
 
 // CHAPTER 3. Pages
 console.log("***** CHAPTER 3. Pages");
@@ -402,6 +400,8 @@ cpdf.deletePdf(c2);
 cpdf.deletePdf(c3);
 cpdf.deletePdf(undoc);
 cpdf.deletePdf(ulogo);
+cpdf.onexit();
+process.exit();
 
 // CHAPTER 9. Multipage facilities
 console.log("***** CHAPTER 9. Multipage facilities");

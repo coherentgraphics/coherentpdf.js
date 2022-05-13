@@ -1920,97 +1920,135 @@ function selectPages(pdf, range)
 
 function scalePages(pdf, range, sx, sy)
 {
-  cpdf.cpdflib.scalePages(pdf, range, sx, sy);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.scalePages(pdf, rn, sx, sy);
+  deleterange(rn);
 }
 
 function scaleToFit(pdf, range, sx, sy, s)
 {
-  cpdf.cpdflib.scaleToFit(pdf, range, sx, sy, s);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.scaleToFit(pdf, rn, sx, sy, s);
+  deleterange(rn);
 }
 
 function scaleToFitPaper(pdf, range, papersize, s)
 {
-  cpdf.cpdflib.scaleToFitPaper(pdf, range, papersize, s);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.scaleToFitPaper(pdf, rn, papersize, s);
+  deleterange(rn);
 }
 
 function scaleContents(pdf, range, anchor, p1, p2, s)
 {
-  cpdf.cpdflib.scaleContents(pdf, range, anchor, p1, p2, s);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.scaleContents(pdf, rn, anchor, p1, p2, s);
+  deleterange(rn);
 }
 
 function shiftContents(pdf, range, dx, dy)
 {
-  cpdf.cpdflib.shiftContents(pdf, range, dx, dy);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.shiftContents(pdf, rn, dx, dy);
+  deleterange(rn);
 }
 
 function rotate(pdf, range, angle)
 {
-  cpdf.cpdflib.rotate(pdf, range, angle);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.rotate(pdf, rn, angle);
+  deleterange(rn);
 }
 
 function rotateBy(pdf, range, angle)
 {
-  cpdf.cpdflib.rotateBy(pdf, range, angle);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.rotateBy(pdf, rn, angle);
+  deleterange(rn);
 }
 
 function rotateContents(pdf, range, angle)
 {
-  cpdf.cpdflib.rotateContents(pdf, range, angle);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.rotateContents(pdf, rn, angle);
+  deleterange(rn);
 }
 
 function upright(pdf, range)
 {
-  cpdf.cpdflib.upright(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.upright(pdf, rn);
+  deleterange(rn);
 }
 
 function hFlip(pdf, range)
 {
-  cpdf.cpdflib.hFlip(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.hFlip(pdf, rn);
+  deleterange(rn);
 }
 
 function vFlip(pdf, range)
 {
-  cpdf.cpdflib.vFlip(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.vFlip(pdf, rn);
+  deleterange(rn);
 }
 
 function crop(pdf, range, a, b, c, d)
 {
-  cpdf.cpdflib.crop(pdf, range, a, b, c, d);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.crop(pdf, rn, a, b, c, d);
+  deleterange(rn);
 }
 
 function trimMarks(pdf, range)
 {
-  cpdf.cpdflib.trimMarks(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.trimMarks(pdf, rn);
+  deleterange(rn);
 }
 
 function hardBox(pdf, range, boxname)
 {
-  cpdf.cpdflib.hardBox(pdf, range, caml_string_of_jsstring(boxname));
+  var rn = range_of_array(range);
+  cpdf.cpdflib.hardBox(pdf, rn, caml_string_of_jsstring(boxname));
+  deleterange(rn);
 }
 
 function removeCrop(pdf, range)
 {
-  cpdf.cpdflib.removeCrop(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.removeCrop(pdf, rn);
+  deleterange(rn);
 }
 
 function removeArt(pdf, range)
 {
-  cpdf.cpdflib.removeArt(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.removeArt(pdf, rn);
+  deleterange(rn);
 }
 
 function removeBleed(pdf, range)
 {
-  cpdf.cpdflib.removeBleed(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.removeBleed(pdf, rn);
+  deleterange(rn);
 }
 
 function removeTrim(pdf, range)
 {
-  cpdf.cpdflib.removeTrim(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.removeTrim(pdf, rn);
+  deleterange(rn);
 }
 
 function showBoxes(pdf, range)
 {
-  cpdf.cpdflib.showBoxes(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.showBoxes(pdf, rn);
+  deleterange(rn);
 }
 
 function compress(pdf)
