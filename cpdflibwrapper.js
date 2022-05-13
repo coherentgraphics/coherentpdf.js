@@ -2200,37 +2200,51 @@ function removeFonts(pdf)
 
 function copyFont(pdf, pdf2, range, pagenumber, fontname)
 {
-  cpdf.cpdflib.copyFont(pdf, pdf2, range, pagenumber, caml_string_of_jsstring(fontname));
+  var rn = range_of_array(range);
+  cpdf.cpdflib.copyFont(pdf, pdf2, rn, pagenumber, caml_string_of_jsstring(fontname));
+  deleterange(rn);
 }
 
 function draft(pdf, range, boxes)
 {
-  cpdf.cpdflib.draft(pdf, range, boxes);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.draft(pdf, rn, boxes);
+  deleterange(rn);
 }
 
 function removeAllText(pdf, range)
 {
-  cpdf.cpdflib.removeAllText(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.removeAllText(pdf, rn);
+  deleterange(rn);
 }
 
 function blackText(pdf, range)
 {
-  cpdf.cpdflib.blackText(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.blackText(pdf, rn);
+  deleterange(rn);
 }
 
 function blackLines(pdf, range)
 {
-  cpdf.cpdflib.blackLines(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.blackLines(pdf, rn);
+  deleterange(rn);
 }
 
 function blackFills(pdf, range)
 {
-  cpdf.cpdflib.blackFills(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.blackFills(pdf, rn);
+  deleterange(rn);
 }
 
 function thinLines(pdf, range, thickness)
 {
-  cpdf.cpdflib.thinLines(pdf, range, thickness);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.thinLines(pdf, rn, thickness);
+  deleterange(rn);
 }
 
 function copyId(from_pdf, to_pdf)
@@ -2281,7 +2295,9 @@ function getDictEntries(pdf, key)
 
 function removeClipping(pdf, range)
 {
-  cpdf.cpdflib.removeClipping(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.removeClipping(pdf, rn);
+  deleterange(rn);
 }
 
 function textToPDF(w, h, font, fontsize, filename)
@@ -2322,27 +2338,37 @@ function impose(pdf, a, b, c, d, e, f, g, h, i, j)
 
 function padBefore(pdf, range)
 {
-  cpdf.cpdflib.padBefore(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.padBefore(pdf, rn);
+  deleterange(rn);
 }
 
 function padAfter(pdf, range)
 {
-  cpdf.cpdflib.padAfter(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.padAfter(pdf, rn);
+  deleterange(rn);
 }
 
 function padEvery(pdf, range)
 {
-  cpdf.cpdflib.padEvery(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.padEvery(pdf, rn);
+  deleterange(rn);
 }
 
 function padMultiple(pdf, range)
 {
-  cpdf.cpdflib.padMultiple(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.padMultiple(pdf, rn);
+  deleterange(rn);
 }
 
 function padMultipleBefore(pdf, range)
 {
-  cpdf.cpdflib.padMultipleBefore(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.padMultipleBefore(pdf, rn);
+  deleterange(rn);
 }
 
 function stampOn(stamp, stampee, stamp_range)
@@ -2785,7 +2811,9 @@ var lowercaseLetters = 4;
 
 function addPageLabels(pdf, style, prefix, a, range, b)
 {
-  cpdf.cpdflib.addPageLabels(pdf, style, caml_string_of_jsstring(prefix), a, range, b);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.addPageLabels(pdf, style, caml_string_of_jsstring(prefix), a, rn, b);
+  deleterange(rn);
 }
 
 function removePageLabels(pdf)
@@ -2867,27 +2895,37 @@ function getPageRotation(pdf, page)
 
 function setMediabox(pdf, range, a, b, c, d)
 {
-  cpdf.cpdflib.setMediabox(pdf, range, a, b, c, d);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.setMediabox(pdf, rn, a, b, c, d);
+  deleterange(rn);
 }
 
 function setCropBox(pdf, range, a, b, c, d)
 {
-  cpdf.cpdflib.setCropBox(pdf, range, a, b, c, d);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.setCropBox(pdf, rn, a, b, c, d);
+  deleterange(rn);
 }
 
 function setTrimBox(pdf, range, a, b, c, d)
 {
-  cpdf.cpdflib.setTrimBox(pdf, range, a, b, c, d);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.setTrimBox(pdf, rn, a, b, c, d);
+  deleterange(rn);
 }
 
 function setBleedBox(pdf, range, a, b, c, d)
 {
-  cpdf.cpdflib.setBleedBox(pdf, range, a, b, c, d);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.setBleedBox(pdf, rn, a, b, c, d);
+  deleterange(rn);
 }
 
 function setArtBox(pdf, range, a, b, c, d)
 {
-  cpdf.cpdflib.setArtBox(pdf, range, a, b, c, d);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.setArtBox(pdf, rn, a, b, c, d);
+  deleterange(rn);
 }
 
 function markTrapped(pdf)

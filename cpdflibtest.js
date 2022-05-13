@@ -400,8 +400,6 @@ cpdf.deletePdf(c2);
 cpdf.deletePdf(c3);
 cpdf.deletePdf(undoc);
 cpdf.deletePdf(ulogo);
-cpdf.onexit();
-process.exit();
 
 // CHAPTER 9. Multipage facilities
 console.log("***** CHAPTER 9. Multipage facilities");
@@ -884,3 +882,5 @@ cpdf.deletePdf(misc14);
 cpdf.deletePdf(misc15);
 cpdf.deletePdf(misc16);
 cpdf.deletePdf(misclogo);
+cpdf.onexit();
+process.exit();
