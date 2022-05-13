@@ -1,7 +1,5 @@
 open Js_of_ocaml
 
-(* FIXME: Check all () are correct and actually being run with !dbg *)
-
 let _ =
   Js.export "cpdflib"
     (object%js
@@ -209,7 +207,7 @@ let _ =
        method getPageLabelPrefix = Cpdflib.getPageLabelPrefix
        method getPageLabelOffset = Cpdflib.getPageLabelOffset
        method getPageLabelRange = Cpdflib.getPageLabelRange
-       method endGetPageLabels = Cpdflib.endGetPageLabels
+       method endGetPageLabels = Cpdflib.endGetPageLabels ()
        method getPageLabelStringForPage = Cpdflib.getPageLabelStringForPage
 
        (* CHAPTER 12. File Attachments *)
@@ -219,7 +217,7 @@ let _ =
        method attachFileToPageFromMemory = Cpdflib.attachFileToPageFromMemory
        method removeAttachedFiles = Cpdflib.removeAttachedFiles
        method startGetAttachments = Cpdflib.startGetAttachments
-       method endGetAttachments = Cpdflib.endGetAttachments
+       method endGetAttachments = Cpdflib.endGetAttachments ()
        method numberGetAttachments = Cpdflib.numberGetAttachments ()
        method getAttachmentName = Cpdflib.getAttachmentName
        method getAttachmentPage = Cpdflib.getAttachmentPage
@@ -233,7 +231,7 @@ let _ =
        method getImageResolutionYPixels = Cpdflib.getImageResolutionYPixels
        method getImageResolutionXRes = Cpdflib.getImageResolutionXRes
        method getImageResolutionYRes = Cpdflib.getImageResolutionYRes
-       method endGetImageResolution = Cpdflib.endGetImageResolution
+       method endGetImageResolution = Cpdflib.endGetImageResolution ()
 
        (* CHAPTER 14. Fonts *)
        method numberFonts = Cpdflib.numberFonts ()
@@ -255,7 +253,7 @@ let _ =
        (* CHAPTER 16. Optional Content Groups *)
        method startGetOCGList = Cpdflib.startGetOCGList
        method ocgListEntry = Cpdflib.ocgListEntry
-       method endGetOCGList = Cpdflib.endGetOCGList
+       method endGetOCGList = Cpdflib.endGetOCGList ()
        method ocgCoalesce = Cpdflib.ocgCoalesce
        method ocgRename = Cpdflib.ocgRename
        method ocgOrderAll = Cpdflib.ocgOrderAll
