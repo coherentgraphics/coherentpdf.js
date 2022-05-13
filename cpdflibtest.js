@@ -153,6 +153,8 @@ cpdf.deletePdf(merged);
 cpdf.deletePdf(merged2);
 cpdf.deletePdf(merged3);
 cpdf.deletePdf(pdf12);
+cpdf.onexit();
+process.exit();
 
 // CHAPTER 3. Pages
 console.log("***** CHAPTER 3. Pages");

@@ -1896,14 +1896,25 @@ function merge(arr, retain_numbering, remove_duplicate_fonts)
 function mergeSame(arr, retain_numbering, remove_duplicate_fonts, ranges)
 {
   var arr2 = [0].concat(arr);
-  var ranges2 = [0].concat(ranges);
+  var nativeranges = [];
+  for (var x = 0; x < ranges.length; x++)
+  {
+    nativeranges.push(range_of_array(ranges[x]));
+  }
+  var ranges2 = [0].concat(nativeranges);
   var r = cpdf.cpdflib.mergeSame(arr2, retain_numbering, remove_duplicate_fonts, ranges2);
+  for (var x = 0; x < nativeranges.length; x++)
+  {
+    deleterange(nativeranges[x]);
+  }
   return r;
 }
 
 function selectPages(pdf, range)
 {
-  var r = cpdf.cpdflib.selectPages(pdf, range);
+  var rn = range_of_array(range);
+  var r = cpdf.cpdflib.selectPages(pdf, rn);
+  deleterange(rn);
   return r;
 }
 
