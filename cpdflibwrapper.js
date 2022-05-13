@@ -1484,9 +1484,9 @@ function caml_js_to_string (s) {
 }
 
 /* Internal */
-function deleteRange(r)
+function deleterange(r)
 {
-  cpdf.cpdflib.deleteRange(r);
+  cpdf.cpdflib.deleterange(r);
 }
 
 function array_of_range(r)
@@ -1505,7 +1505,7 @@ function range_of_array(a)
   for (var x = 0; x < a.length; x++)
   {
     var rn = cpdf.cpdflib.rangeAdd(r, a[x]);
-    cpdf.cpdflib.deleterange(r);
+    deleterange(r);
     r = rn;
   }
   return r;
@@ -1690,73 +1690,113 @@ function toFileEncryptedExt(pdf, encryption_method, perms, owner, user, lineariz
 
 function range(a, b)
 {
-  var r = cpdf.cpdflib.range(a, b);
+  var rn = cpdf.cpdflib.range(a, b);
+  var r = array_of_range(rn);
+  deleterange(rn);
   return r;
 }
 
 function all(x)
 {
-  var r = cpdf.cpdflib.all(x);
+  var rn = cpdf.cpdflib.all(x);
+  var r = array_of_range(rn);
+  deleterange(rn);
   return r;
 }
 
 function even(x)
 {
-  var r = cpdf.cpdflib.even(x);
+  var ri = range_of_array(x);
+  var rn = cpdf.cpdflib.even(ri);
+  var r = array_of_range(rn);
+  deleterange(rn);
+  deleterange(ri);
   return r;
 }
 
 function odd(x)
 {
-  var r = cpdf.cpdflib.odd(x);
+  var ri = range_of_array(x);
+  var rn = cpdf.cpdflib.odd(ri);
+  var r = array_of_range(rn);
+  deleterange(rn);
+  deleterange(ri);
   return r;
 }
 
 function rangeUnion(a, b)
 {
-  var r = cpdf.cpdflib.rangeUnion(a, b);
+  var ra = range_of_array(a);
+  var rb = range_of_array(b);
+  var rn = cpdf.cpdflib.rangeUnion(ra, rb);
+  var r = array_of_range(rn);
+  deleterange(rn);
+  deleterange(ra);
+  deleterange(rb);
   return r;
 }
 
 function difference(a, b)
 {
-  var r = cpdf.cpdflib.difference(a, b);
+  var ra = range_of_array(a);
+  var rb = range_of_array(b);
+  var rn = cpdf.cpdflib.difference(ra, rb);
+  var r = array_of_range(rn);
+  deleterange(rn);
+  deleterange(ra);
+  deleterange(rb);
   return r;
 }
 
 function removeDuplicates(x)
 {
-  var r = cpdf.cpdflib.removeDuplicates(x);
+  var rn = range_of_array(x);
+  var rdup = cpdf.cpdflib.removeDuplicates(rn);
+  var r = array_of_range(rdup);
+  deleterange(rn);
+  deleterange(rdup);
   return r;
 }
 
 function rangeLength(x)
 {
-  var r = cpdf.cpdflib.rangeLength(x);
+  var rn = range_of_array(x);
+  var r = cpdf.cpdflib.rangeLength(rn);
+  deleterange(rn);
   return r;
 }
 
 function rangeGet(a, b)
 {
-  var r = cpdf.cpdflib.rangeGet(a, b);
+  var rn = range_of_array(a);
+  var r = cpdf.cpdflib.rangeGet(rn, b);
+  deleterange(rn);
   return r;
 }
 
-function rangeAdd(a, b)
+function rangeAdd(r, p)
 {
-  var r = cpdf.cpdflib.rangeAdd(a, b);
-  return r;
+  var rn = range_of_array(r)
+  var r2 = cpdf.cpdflib.rangeAdd(rn, p);
+  var rout = array_of_range(r2);
+  deleterange(rn);
+  deleterange(r2);
+  return rout;
 }
 
-function isInRange(a, b)
+function isInRange(r, p)
 {
-  var r = cpdf.cpdflib.isInRange(a, b);
+  var rn = range_of_array(r);
+  var r = cpdf.cpdflib.isInRange(rn, p);
+  deleterange(rn);
   return r;
 }
 
 function blankRange()
 {
-  var r = cpdf.cpdflib.blankRange();
+  var rn = cpdf.cpdflib.blankRange();
+  var r = array_of_range(rn);
+  deleterange(rn);
   return r;
 }
 
@@ -1797,12 +1837,16 @@ function decryptPdfOwner(pdf, ownerpw)
 function parsePagespec(pdf, spec)
 {
   var r = cpdf.cpdflib.parsePagespec(pdf, caml_string_of_jsstring(spec));
-  return r;
+  var arr = array_of_range(r);
+  deleterange(r);
+  return arr;
 }
 
 function stringOfPagespec(pdf, range)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.stringOfPagespec(pdf, range));
+  var rn = range_of_array(range);
+  var r = caml_jsstring_of_string(cpdf.cpdflib.stringOfPagespec(pdf, rn));
+  deleterange(rn);
   return r;
 }
 
