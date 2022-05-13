@@ -400,7 +400,6 @@ cpdf.deletePdf(c2);
 cpdf.deletePdf(c3);
 cpdf.deletePdf(undoc);
 cpdf.deletePdf(ulogo);
-cpdf.onexit();
 
 // CHAPTER 9. Multipage facilities
 console.log("***** CHAPTER 9. Multipage facilities");
@@ -440,6 +439,15 @@ cpdf.toFile(mp6, "testoutputs/09mp6.pdf", false, false);
 console.log("---cpdf_padMultipleBefore()");
 cpdf.padMultipleBefore(mp7, 23);
 cpdf.toFile(mp7, "testoutputs/09mp7.pdf", false, false);
+cpdf.deletePdf(mp);
+cpdf.deletePdf(mp2);
+cpdf.deletePdf(mp25);
+cpdf.deletePdf(mp26);
+cpdf.deletePdf(mp3);
+cpdf.deletePdf(mp4);
+cpdf.deletePdf(mp5);
+cpdf.deletePdf(mp6);
+cpdf.deletePdf(mp7);
 
 // CHAPTER 10. Annotations
 console.log("***** CHAPTER 10. Annotations");
@@ -447,6 +455,7 @@ console.log("---cpdf_annotationsJSON()");
 var annot = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var annotjson = cpdf.annotationsJSON(annot);
 console.log("Contains %d bytes of data", annotjson.length);
+cpdf.deletePdf(annot);
 
 // CHAPTER 11. Document Information and Metadata
 console.log("***** CHAPTER 11. Document Information and Metadata");
@@ -458,7 +467,6 @@ console.log("minor version:%d", v);
 console.log("---cpdf_getMajorVersion()");
 var v2 = cpdf.getMajorVersion(pdf30);
 console.log("major version:%d", v2);
-
 console.log("---cpdf_getTitle()");
 var title = cpdf.getTitle(pdf30);
 console.log("title: %s", title);
@@ -655,6 +663,7 @@ cpdf.toFile(pdf30, "testoutputs/11pagelabels.pdf", false, false);
 console.log("---cpdf_getPageLabelStringForPage()");
 var pl = cpdf.getPageLabelStringForPage(pdf30, 1);
 console.log("Label string is %s", pl);
+cpdf.deletePdf(pdf30);
 
 // CHAPTER 12. File Attachments
 console.log("***** CHAPTER 12. File Attachments");
@@ -686,6 +695,7 @@ cpdf.endGetAttachments();
 console.log("---cpdf_removeAttachedFiles()");
 cpdf.removeAttachedFiles(attachments);
 cpdf.toFile(attachments, "testoutputs/12removed_attachments.pdf", false, false);
+cpdf.deletePdf(attachments);
 
 // CHAPTER 13. Images.
 console.log("***** CHAPTER 13. Images");
@@ -703,6 +713,7 @@ for (im = 0; im < im_n; im++)
   console.log("IMAGE: %d, %s, %d, %d, %s, %s", im_p, im_name, im_xp, im_yp, im_xres.toFixed(6), im_yres.toFixed(6));
 }
 cpdf.endGetImageResolution();
+cpdf.deletePdf(image_pdf);
 
 // CHAPTER 14. Fonts.
 console.log("***** CHAPTER 14. Fonts");
@@ -726,6 +737,8 @@ cpdf.toFile(fonts, "testoutputs/14remove_fonts.pdf", false, false);
 console.log("---cpdf_copyFont()");
 var all = cpdf.all(fonts);
 cpdf.copyFont(fonts, fonts2, all, 1, "/Font");
+cpdf.deletePdf(fonts);
+cpdf.deletePdf(fonts2);
 
 // CHAPTER 15. PDF and JSON
 console.log("***** CHAPTER 15. PDF and JSON");
@@ -743,6 +756,9 @@ var jbuf = cpdf.outputJSONMemory(false, false, false, fromjsonpdf);
 console.log("---cpdf_fromJSONMemory()");
 var jfrommem = cpdf.fromJSONMemory(jbuf);
 cpdf.toFile(jfrommem, "testoutputs/15fromJSONMemory.pdf", false, false);
+cpdf.deletePdf(jsonpdf);
+cpdf.deletePdf(fromjsonpdf);
+cpdf.deletePdf(jfrommem);
 
 // CHAPTER 16. Optional Content Groups
 console.log("***** CHAPTER 16. Optional Content Groups");
@@ -760,6 +776,7 @@ console.log("---cpdf_OCGRename()");
 cpdf.ocgRename(ocg, "From", "To");
 console.log("---cpdf_OCGOrderAll()");
 cpdf.ocgOrderAll(ocg);
+cpdf.deletePdf(ocg);
 
 // CHAPTER 17. Creating New PDFs
 console.log("***** CHAPTER 17. Creating New PDFs");
@@ -775,6 +792,10 @@ console.log("---cpdf_textToPDFPaper()");
 var ttpdfpaper = cpdf.textToPDFPaper(cpdf.a4portrait, cpdf.timesBoldItalic, 10.0, "../cpdflib-source/cpdflibtest.c");
 cpdf.toFile(ttpdf, "testoutputs/01ttpdf.pdf", false, false);
 cpdf.toFile(ttpdfpaper, "testoutputs/01ttpdfpaper.pdf", false, false);
+cpdf.deletePdf(new1);
+cpdf.deletePdf(new2);
+cpdf.deletePdf(ttpdf);
+cpdf.deletePdf(ttpdfpaper);
 
 // CHAPTER 18. Miscellaneous
 console.log("***** CHAPTER 18. Miscellaneous");
@@ -861,4 +882,3 @@ cpdf.deletePdf(misc14);
 cpdf.deletePdf(misc15);
 cpdf.deletePdf(misc16);
 cpdf.deletePdf(misclogo);
-cpdf.onexit();
