@@ -2347,17 +2347,23 @@ function padMultipleBefore(pdf, range)
 
 function stampOn(stamp, stampee, stamp_range)
 {
-  cpdf.cpdflib.stampOn(stamp, stampee, stamp_range);
+  var rn = range_of_array(stamp_range);
+  cpdf.cpdflib.stampOn(stamp, stampee, rn);
+  deleterange(rn);
 }
 
 function stampUnder(stamp, stampee, stamp_range)
 {
-  cpdf.cpdflib.stampUnder(stamp, stampee, stamp_range);
+  var rn = range_of_array(stamp_range);
+  cpdf.cpdflib.stampUnder(stamp, stampee, rn);
+  deleterange(rn);
 }
 
 function stampExtended(stamp, stampee, stamp_range, a, b, c, d, e, f)
 {
-  cpdf.cpdflib.stampExtended(stamp, stampee, stamp_range, a, b, d, e, c, f);
+  var rn = range_of_array(stamp_range);
+  cpdf.cpdflib.stampExtended(stamp, stampee, rn, a, b, d, e, c, f);
+  deleterange(rn);
 }
 
 function combinePages(a, b)
@@ -2370,30 +2376,40 @@ function addText(metrics, pdf, range, text, anchor, p1, p2, linespacing,
                  bates, font, fontsize, r, g, b, underneath, cropbox, outline,
                  opacity, justification, midline, topline, filename, linewidth, embed_fonts)
 {
-  cpdf.cpdflib.addText(metrics, pdf, range, caml_string_of_jsstring(text), anchor, p1, p2,
+  var rn = range_of_array(range);
+  cpdf.cpdflib.addText(metrics, pdf, rn, caml_string_of_jsstring(text), anchor, p1, p2,
                        linespacing, bates, font, fontsize, r, g, b, underneath, cropbox, outline,
                        opacity, justification, midline, topline, caml_string_of_jsstring(filename),
                        linewidth, embed_fonts);
+  deleterange(rn);
 }
 
 function addTextSimple(pdf, range, text, anchor, p1, p2, font, fontsize)
 {
-  cpdf.cpdflib.addText(0, pdf, range, caml_string_of_jsstring(text), anchor, p1, p2, 1.0, 0, font, fontsize, 0, 0, 0, 1, 1, 1, 1.0, leftJustify, 1, 1, caml_string_of_jsstring(""), 0.0, 1);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.addText(0, pdf, rn, caml_string_of_jsstring(text), anchor, p1, p2, 1.0, 0, font, fontsize, 0, 0, 0, 1, 1, 1, 1.0, leftJustify, 1, 1, caml_string_of_jsstring(""), 0.0, 1);
+  deleterange(rn);
 }
 
 function removeText(pdf, range)
 {
-  cpdf.cpdflib.removeText(pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.removeText(pdf, rn);
+  deleterange(rn);
 }
 
 function addContent(content, underneath, pdf, range)
 {
-  cpdf.cpdflib.addContent(caml_string_of_jsstring(content), underneath, pdf, range);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.addContent(caml_string_of_jsstring(content), underneath, pdf, rn);
+  deleterange(rn);
 }
 
 function stampAsXObject(pdf, range, pdf2)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.stampAsXObject(pdf, range, pdf2));
+  var rn = range_of_array(range);
+  var r = caml_jsstring_of_string(cpdf.cpdflib.stampAsXObject(pdf, rn, pdf2));
+  deleterange(rn);
   return r;
 }
 
