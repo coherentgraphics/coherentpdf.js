@@ -13,6 +13,7 @@ let _ =
        method enumeratePDFsInfo = Cpdflib.enumeratePDFsInfo
        method endEnumeratePDFs = Cpdflib.endEnumeratePDFs ()
        method deletePdf = Cpdflib.deletePdf
+       method deleterange = Cpdflib.deleterange
        method parsePagespec = Cpdflib.parsePagespec
        method stringOfPagespec = Cpdflib.stringOfPagespec
        method validatePagespec = Cpdflib.validatePagespec

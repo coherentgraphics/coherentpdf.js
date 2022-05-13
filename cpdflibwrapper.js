@@ -1483,6 +1483,34 @@ function caml_js_to_string (s) {
   return caml_string_of_jsstring(s);
 }
 
+/* Internal */
+function deleteRange(r)
+{
+  cpdf.cpdflib.deleteRange(r);
+}
+
+function array_of_range(r)
+{
+ var l = [];
+ for (var x = 0; x < cpdf.cpdflib.rangeLength(r); x++)
+ {
+   l.push(cpdf.cpdflib.rangeGet(r, x));
+ }
+ return l;
+}
+
+function range_of_array(a)
+{
+  var r = cpdf.cpdflib.blankRange();
+  for (var x = 0; x < a.length; x++)
+  {
+    var rn = cpdf.cpdflib.rangeAdd(r, a[x]);
+    cpdf.cpdflib.deleterange(r);
+    r = rn;
+  }
+  return r;
+}
+
 /* CHAPTER 0. Preliminaries */
 function setFast()
 {
@@ -2937,6 +2965,9 @@ var reversediagonal = 12;
 
 module.exports =
   {
+  //Internal : remove
+  array_of_range : array_of_range,
+  range_of_array : range_of_array,
   //Enums
   posCentre : posCentre,
   posLeft : posLeft,
