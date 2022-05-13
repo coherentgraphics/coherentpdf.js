@@ -2965,9 +2965,6 @@ var reversediagonal = 12;
 
 module.exports =
   {
-  //Internal : remove
-  array_of_range : array_of_range,
-  range_of_array : range_of_array,
   //Enums
   posCentre : posCentre,
   posLeft : posLeft,
