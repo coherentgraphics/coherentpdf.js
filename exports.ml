@@ -7,6 +7,7 @@ let _ =
        method setFast = Cpdflib.setFast ()
        method setSlow = Cpdflib.setSlow ()
        val version = Cpdflib.version
+       method onexit = Cpdflib.onexit ()
        method startEnumeratePDFs = Cpdflib.startEnumeratePDFs ()
        method enumeratePDFsKey = Cpdflib.enumeratePDFsKey
        method enumeratePDFsInfo = Cpdflib.enumeratePDFsInfo

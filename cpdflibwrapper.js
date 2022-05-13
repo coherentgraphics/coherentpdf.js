@@ -1500,6 +1500,16 @@ function version()
 }
 
 //CHAPTER 1. Basics
+function deletePdf(pdf)
+{
+  cpdf.cpdflib.deletePdf(pdf);
+}
+
+function onexit()
+{
+  cpdf.cpdflib.onexit();
+}
+
 function fromFile(filename, userpw)
 {
   var r = 
@@ -3006,6 +3016,8 @@ module.exports =
   aes256bitisotrue : aes256bitisotrue,
 
   //CHAPTER 1. Basics
+  deletePdf : deletePdf,
+  onexit : onexit,
   setFast : setFast,
   setSlow : setSlow,
   version : version,

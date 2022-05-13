@@ -115,6 +115,18 @@ console.log("---cpdf_decryptPdf()");
 cpdf.decryptPdf(pdf10, "");
 console.log("---cpdf_decryptPdfOwner()");
 cpdf.decryptPdfOwner(pdf10, "");
+cpdf.deletePdf(pdf);
+cpdf.deletePdf(pdf2);
+cpdf.deletePdf(pdf3);
+cpdf.deletePdf(pdf4);
+cpdf.deletePdf(pdf10);
+cpdf.deletePdf(pdf400);
+cpdf.deletePdf(pdf401);
+cpdf.deletePdf(pdfenc);
+cpdf.deletePdf(pdf);
+cpdf.deletePdf(pdf);
+cpdf.deletePdf(frommem);
+cpdf.deletePdf(frommemlazy);
 
 // CHAPTER 2. Merging and Splitting
 console.log("***** CHAPTER 2. Merging and Splitting");
@@ -135,6 +147,12 @@ cpdf.toFile(merged3, "testoutputs/02merged3.pdf", false, false);
 console.log("---cpdf_selectPages()");
 var pdf12 = cpdf.selectPages(pdf11, selectrange);
 cpdf.toFile(pdf12, "testoutputs/02selected.pdf", false, false);
+cpdf.deletePdf(pdf11);
+cpdf.deletePdf(arr);
+cpdf.deletePdf(merged);
+cpdf.deletePdf(merged2);
+cpdf.deletePdf(merged3);
+cpdf.deletePdf(pdf12);
 
 // CHAPTER 3. Pages
 console.log("***** CHAPTER 3. Pages");
@@ -232,8 +250,27 @@ cpdf.removeArt(pagespdf18, r18);
 cpdf.toFile(pagespdf18, "testoutputs/03remove_art.pdf", false, false);
 console.log("---cpdf_removeBleed()");
 cpdf.removeBleed(pagespdf19, r19);
-cpdf.toFile(pagespdf19, "testoutputs/03remove_bleed.pdf", false, false);
-        
+cpdf.toFile(pagespdf19, "testoutputs/03remove_bleed.pdf", false, false);        
+cpdf.deletePdf(pagespdf1);
+cpdf.deletePdf(pagespdf2);
+cpdf.deletePdf(pagespdf3);
+cpdf.deletePdf(pagespdf4);
+cpdf.deletePdf(pagespdf5);
+cpdf.deletePdf(pagespdf6);
+cpdf.deletePdf(pagespdf7);
+cpdf.deletePdf(pagespdf8);
+cpdf.deletePdf(pagespdf9);
+cpdf.deletePdf(pagespdf10);
+cpdf.deletePdf(pagespdf11);
+cpdf.deletePdf(pagespdf12);
+cpdf.deletePdf(pagespdf13);
+cpdf.deletePdf(pagespdf14);
+cpdf.deletePdf(pagespdf15);
+cpdf.deletePdf(pagespdf16);
+cpdf.deletePdf(pagespdf17);
+cpdf.deletePdf(pagespdf18);
+cpdf.deletePdf(pagespdf19);
+
 // CHAPTER 4. Encryption
 // Encryption covered under Chapter 1 in cpdflib.
 
@@ -249,6 +286,8 @@ cpdf.toFile(pdf16, "testoutputs/05decompressed.pdf", false, false);
 console.log("---cpdf_squeezeInMemory()");
 cpdf.squeezeInMemory(pdf16);
 cpdf.toFile(pdf16, "testoutputs/05squeezedinmemory.pdf", false, false);
+cpdf.deletePdf(pdf16);
+
  
 // CHAPTER 6. Bookmarks
 console.log("***** CHAPTER 6. Bookmarks");
@@ -285,6 +324,9 @@ console.log("---cpdf_tableOfContents()");
 var toc = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 cpdf.tableOfContents(toc, cpdf.timesRoman, 12.0, "Table of Contents", false);
 cpdf.toFile(toc, "testoutputs/06toc.pdf", false, false);
+cpdf.deletePdf(pdf17);
+cpdf.deletePdf(marksjson);
+cpdf.deletePdf(toc);
 
 // CHAPTER 7. Presentations
 // Not included in the library version.
@@ -349,6 +391,16 @@ var content = "q 1 0 0 1 100 100 cm " + name + " Do Q q 1 0 0 1 300 300 cm " + n
 console.log("---cpdf_addContent()");
 cpdf.addContent(content, true, undoc, undoc_all);
 cpdf.toFile(undoc, "testoutputs/08demo.pdf", false, false);
+cpdf.deletePdf(textfile);
+cpdf.deletePdf(stamp);
+cpdf.deletePdf(stampee);
+cpdf.deletePdf(stamp_range);
+cpdf.deletePdf(c1);
+cpdf.deletePdf(c2);
+cpdf.deletePdf(c3);
+cpdf.deletePdf(undoc);
+cpdf.deletePdf(ulogo);
+cpdf.onexit();
 
 // CHAPTER 9. Multipage facilities
 console.log("***** CHAPTER 9. Multipage facilities");
@@ -792,3 +844,21 @@ console.log("length of entries data = %d", entries.length);
 console.log("---cpdf_removeClipping()");
 cpdf.removeClipping(misc12, all);
 cpdf.toFile(misc12, "testoutputs/17removeclipping.pdf", false, false);
+cpdf.deletePdf(misc);
+cpdf.deletePdf(misc2);
+cpdf.deletePdf(misc3);
+cpdf.deletePdf(misc4);
+cpdf.deletePdf(misc5);
+cpdf.deletePdf(misc6);
+cpdf.deletePdf(misc7);
+cpdf.deletePdf(misc8);
+cpdf.deletePdf(misc9);
+cpdf.deletePdf(misc10);
+cpdf.deletePdf(misc11);
+cpdf.deletePdf(misc12);
+cpdf.deletePdf(misc13);
+cpdf.deletePdf(misc14);
+cpdf.deletePdf(misc15);
+cpdf.deletePdf(misc16);
+cpdf.deletePdf(misclogo);
+cpdf.onexit();
