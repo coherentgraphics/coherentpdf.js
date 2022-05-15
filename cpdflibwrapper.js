@@ -2870,17 +2870,10 @@ function getPageLabelStringForPage(pdf, pagenumber)
   return r;
 }
 
-function getDateComponents(string, arr)
+function getDateComponents(string)
 {
   var r = cpdf.cpdflib.getDateComponents(caml_string_of_jsstring(string));
-  arr[0] = r[1];
-  arr[1] = r[2];
-  arr[2] = r[3];
-  arr[3] = r[4];
-  arr[4] = r[5];
-  arr[5] = r[6];
-  arr[6] = r[7];
-  arr[7] = r[8];
+  return r.slice(1);
 }
 
 function dateStringOfComponents(a, b, c, d, e, f, g, h)
@@ -3014,49 +3007,34 @@ function openAtPage(pdf, a, pagenumber)
   cpdf.cpdflib.openAtPage(pdf, a, pagenumber);
 }
 
-function getMediaBox(pdf, page, a)
+function getMediaBox(pdf, page)
 {
-  var r = cpdf.cpdflib.getMediaBox(pdf, page, a);
-  a[0] = r[1];
-  a[1] = r[2];
-  a[2] = r[3];
-  a[3] = r[4];
+  var r = cpdf.cpdflib.getMediaBox(pdf, page);
+  return r.slice(1);
 }
 
-function getCropBox(pdf, page, a)
+function getCropBox(pdf, page)
 {
-  var r = cpdf.cpdflib.getCropBox(pdf, page, a);
-  a[0] = r[1];
-  a[1] = r[2];
-  a[2] = r[3];
-  a[3] = r[4];
+  var r = cpdf.cpdflib.getCropBox(pdf, page);
+  return r.slice(1);
 }
 
-function getArtBox(pdf, page, a)
+function getArtBox(pdf, page)
 {
-  var r = cpdf.cpdflib.getArtBox(pdf, page, a);
-  a[0] = r[1];
-  a[1] = r[2];
-  a[2] = r[3];
-  a[3] = r[4];
+  var r = cpdf.cpdflib.getArtBox(pdf, page);
+  return r.slice(1);
 }
 
-function getBleedBox(pdf, page, a)
+function getBleedBox(pdf, page)
 {
-  var r = cpdf.cpdflib.getBleedBox(pdf, page, a);
-  a[0] = r[1];
-  a[1] = r[2];
-  a[2] = r[3];
-  a[3] = r[4];
+  var r = cpdf.cpdflib.getBleedBox(pdf, page);
+  return r.slice(1);
 }
 
-function getTrimBox(pdf, page, a)
+function getTrimBox(pdf, page)
 {
-  var r = cpdf.cpdflib.getTrimBox(pdf, page, a);
-  a[0] = r[1];
-  a[1] = r[2];
-  a[2] = r[3];
-  a[3] = r[4];
+  var r = cpdf.cpdflib.getTrimBox(pdf, page);
+  return r.slice(1);
 }
 
 function setMetadataFromFile(pdf, filename)
