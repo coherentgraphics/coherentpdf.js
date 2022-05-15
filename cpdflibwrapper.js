@@ -1511,6 +1511,14 @@ function range_of_array(a)
   return r;
 }
 
+/* Positions */
+function Position(anchor, p1, p2)
+{
+  this.anchor = anchor;
+  this.p1 = p1; //may be undefined
+  this.p2 = p2; //may be undefined
+}
+
 /* CHAPTER 0. Preliminaries */
 function setFast()
 {
@@ -1939,10 +1947,10 @@ function scaleToFitPaper(pdf, range, papersize, s)
   deleterange(rn);
 }
 
-function scaleContents(pdf, range, anchor, p1, p2, s)
+function scaleContents(pdf, range, p, s)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.scaleContents(pdf, rn, anchor, p1, p2, s);
+  cpdf.cpdflib.scaleContents(pdf, rn, p.anchor, p.p1, p.p2, s);
   deleterange(rn);
 }
 
@@ -2385,10 +2393,10 @@ function stampUnder(stamp, stampee, stamp_range)
   deleterange(rn);
 }
 
-function stampExtended(stamp, stampee, stamp_range, a, b, c, d, e, f)
+function stampExtended(stamp, stampee, stamp_range, is_over, scale_stamp_to_fit, p, relative_to_cropbox)
 {
   var rn = range_of_array(stamp_range);
-  cpdf.cpdflib.stampExtended(stamp, stampee, rn, a, b, d, e, c, f);
+  cpdf.cpdflib.stampExtended(stamp, stampee, rn, is_over, scale_stamp_to_fit, p.p1, p.p2, p.anchor, relative_to_cropbox);
   deleterange(rn);
 }
 
@@ -2398,22 +2406,22 @@ function combinePages(a, b)
   return r;
 }
 
-function addText(metrics, pdf, range, text, anchor, p1, p2, linespacing,
+function addText(metrics, pdf, range, text, p, linespacing,
                  bates, font, fontsize, r, g, b, underneath, cropbox, outline,
                  opacity, justification, midline, topline, filename, linewidth, embed_fonts)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.addText(metrics, pdf, rn, caml_string_of_jsstring(text), anchor, p1, p2,
+  cpdf.cpdflib.addText(metrics, pdf, rn, caml_string_of_jsstring(text), p.anchor, p.p1, p.p2,
                        linespacing, bates, font, fontsize, r, g, b, underneath, cropbox, outline,
                        opacity, justification, midline, topline, caml_string_of_jsstring(filename),
                        linewidth, embed_fonts);
   deleterange(rn);
 }
 
-function addTextSimple(pdf, range, text, anchor, p1, p2, font, fontsize)
+function addTextSimple(pdf, range, text, p, font, fontsize)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.addText(0, pdf, rn, caml_string_of_jsstring(text), anchor, p1, p2, 1.0, 0, font, fontsize, 0, 0, 0, 1, 1, 1, 1.0, leftJustify, 1, 1, caml_string_of_jsstring(""), 0.0, 1);
+  cpdf.cpdflib.addText(0, pdf, rn, caml_string_of_jsstring(text), p.anchor, p.p1, p.p2, 1.0, 0, font, fontsize, 0, 0, 0, 1, 1, 1, 1.0, leftJustify, 1, 1, caml_string_of_jsstring(""), 0.0, 1);
   deleterange(rn);
 }
 
