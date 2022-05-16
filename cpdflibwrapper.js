@@ -2057,9 +2057,9 @@ function hardBox(pdf, range, boxname)
   deleterange(rn);
 }
 
-//CHAPTER 4. Encryption
+// CHAPTER 4. Encryption
 
-//CHAPTER 5. Compression
+// CHAPTER 5. Compression
 
 function compress(pdf)
 {
@@ -2076,14 +2076,11 @@ function squeezeInMemory(pdf)
   cpdf.cpdflib.squeezeInMemory(pdf);
 }
 
+// CHAPTER 6. Bookmarks
+
 function startGetBookmarkInfo(pdf)
 {
   cpdf.cpdflib.startGetBookmarkInfo(pdf);
-}
-
-function endGetBookmarkInfo()
-{
-  cpdf.cpdflib.endGetBookmarkInfo();
 }
 
 function numberBookmarks()
@@ -2092,15 +2089,15 @@ function numberBookmarks()
   return r;
 }
 
-function getBookmarkPage(pdf, n)
-{
-  var r = cpdf.cpdflib.getBookmarkPage(pdf, n);
-  return r;
-}
-
 function getBookmarkLevel(n)
 {
   var r = cpdf.cpdflib.getBookmarkLevel(n);
+  return r;
+}
+
+function getBookmarkPage(pdf, n)
+{
+  var r = cpdf.cpdflib.getBookmarkPage(pdf, n);
   return r;
 }
 
@@ -2116,44 +2113,9 @@ function getBookmarkOpenStatus(n)
   return r;
 }
 
-function numberFonts()
+function endGetBookmarkInfo()
 {
-  var r = cpdf.cpdflib.numberFonts();
-  return r;
-}
-
-function getFontPage(n)
-{
-  var r = cpdf.cpdflib.getFontPage(n);
-  return r;
-}
-
-function getFontName(n)
-{
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontName(n));
-  return r;
-}
-
-function getFontType(n)
-{
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontType(n));
-  return r;
-}
-
-function getFontEncoding(n)
-{
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontEncoding(n));
-  return r;
-}
-
-function startGetFontInfo(pdf)
-{
-  cpdf.cpdflib.startGetFontInfo(pdf);
-}
-
-function endGetFontInfo()
-{
-  cpdf.cpdflib.endGetFontInfo();
+  cpdf.cpdflib.endGetBookmarkInfo();
 }
 
 function startSetBookmarkInfo(n)
@@ -2198,10 +2160,55 @@ function setBookmarksJSON(pdf, data)
   cpdf.cpdflib.setBookmarksJSON(pdf, bigarray);
 }
 
-function tableOfContents(pdf, font, fontsize, title, bookmarks)
+function tableOfContents(pdf, font, fontsize, title, bookmark)
 {
-  cpdf.cpdflib.tableOfContents(pdf, font, fontsize, caml_string_of_jsstring(title), bookmarks);
+  cpdf.cpdflib.tableOfContents(pdf, font, fontsize, caml_string_of_jsstring(title), bookmark);
 }
+
+// CHAPTER 7. Presentations
+
+// CHAPTER 8. Logos, Watermarks and Stamps
+
+function numberFonts()
+{
+  var r = cpdf.cpdflib.numberFonts();
+  return r;
+}
+
+function getFontPage(n)
+{
+  var r = cpdf.cpdflib.getFontPage(n);
+  return r;
+}
+
+function getFontName(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontName(n));
+  return r;
+}
+
+function getFontType(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontType(n));
+  return r;
+}
+
+function getFontEncoding(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontEncoding(n));
+  return r;
+}
+
+function startGetFontInfo(pdf)
+{
+  cpdf.cpdflib.startGetFontInfo(pdf);
+}
+
+function endGetFontInfo()
+{
+  cpdf.cpdflib.endGetFontInfo();
+}
+
 
 function removeFonts(pdf)
 {
