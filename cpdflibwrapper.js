@@ -1853,6 +1853,46 @@ function encryptionKind(pdf)
 }
 
 // CHAPTER 2. Merging and Splitting
+function mergeSimple(pdfs)
+{
+  var arr2 = [0].concat(pdfs);
+  var r = cpdf.cpdflib.mergeSimple(arr2);
+  return r;
+}
+
+function merge(pdfs, retain_numbering, remove_duplicate_fonts)
+{
+  var arr2 = [0].concat(pdfs);
+  var r = cpdf.cpdflib.merge(arr2, retain_numbering, remove_duplicate_fonts);
+  return r;
+}
+
+function mergeSame(pdfs, retain_numbering, remove_duplicate_fonts, ranges)
+{
+  var arr2 = [0].concat(pdfs);
+  var nativeranges = [];
+  for (var x = 0; x < ranges.length; x++)
+  {
+    nativeranges.push(range_of_array(ranges[x]));
+  }
+  var ranges2 = [0].concat(nativeranges);
+  var r = cpdf.cpdflib.mergeSame(arr2, retain_numbering, remove_duplicate_fonts, ranges2);
+  for (var x = 0; x < nativeranges.length; x++)
+  {
+    deleterange(nativeranges[x]);
+  }
+  return r;
+}
+
+function selectPages(pdf, r)
+{
+  var rn = range_of_array(r);
+  var r_out = cpdf.cpdflib.selectPages(pdf, rn);
+  deleterange(rn);
+  return r_out;
+}
+
+// CHAPTER 3. Pages
 
 
 function blankDocument(w, h, pages)
@@ -1899,44 +1939,6 @@ function isLinearized(filename)
 
 
 
-function mergeSimple(arr)
-{
-  var arr2 = [0].concat(arr);
-  var r = cpdf.cpdflib.mergeSimple(arr2);
-  return r;
-}
-
-function merge(arr, retain_numbering, remove_duplicate_fonts)
-{
-  var arr2 = [0].concat(arr);
-  var r = cpdf.cpdflib.merge(arr2, retain_numbering, remove_duplicate_fonts);
-  return r;
-}
-
-function mergeSame(arr, retain_numbering, remove_duplicate_fonts, ranges)
-{
-  var arr2 = [0].concat(arr);
-  var nativeranges = [];
-  for (var x = 0; x < ranges.length; x++)
-  {
-    nativeranges.push(range_of_array(ranges[x]));
-  }
-  var ranges2 = [0].concat(nativeranges);
-  var r = cpdf.cpdflib.mergeSame(arr2, retain_numbering, remove_duplicate_fonts, ranges2);
-  for (var x = 0; x < nativeranges.length; x++)
-  {
-    deleterange(nativeranges[x]);
-  }
-  return r;
-}
-
-function selectPages(pdf, range)
-{
-  var rn = range_of_array(range);
-  var r = cpdf.cpdflib.selectPages(pdf, rn);
-  deleterange(rn);
-  return r;
-}
 
 function scalePages(pdf, range, sx, sy)
 {
