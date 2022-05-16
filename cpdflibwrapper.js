@@ -2308,170 +2308,16 @@ function padMultipleBefore(pdf, n)
 }
 
 // CHAPTER 10. Annotations 
-
-function startGetOCGList(pdf)
+function annotationsJSON(pdf)
 {
-  var r = cpdf.cpdflib.startGetOCGList(pdf);
-  return r;
-}
-
-function ocgListEntry(n)
-{
-  var r = caml_jsstring_of_string(cpdf.cpdflib.ocgListEntry(n));
-  return r;
-}
-
-function endGetOCGList()
-{
-  cpdf.cpdflib.endGetOCGList();
-}
-
-function ocgCoalesce(pdf)
-{
-  cpdf.cpdflib.ocgCoalesce(pdf);
-}
-
-function ocgRename(pdf, f, t)
-{
-  cpdf.cpdflib.ocgRename(pdf, caml_string_of_jsstring(f), caml_string_of_jsstring(t));
-}
-
-function ocgOrderAll(pdf)
-{
-  cpdf.cpdflib.ocgOrderAll(pdf);
-}
-
-function startGetImageResolution(pdf, res)
-{
-  var r = cpdf.cpdflib.startGetImageResolution(pdf, res);
-  return r;
-}
-
-function getImageResolutionPageNumber(n)
-{
-  var r = cpdf.cpdflib.getImageResolutionPageNumber(n);
-  return r;
-}
-
-function getImageResolutionImageName(n)
-{
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getImageResolutionImageName(n));
-  return r;
-}
-
-function getImageResolutionXPixels(n)
-{
-  var r = cpdf.cpdflib.getImageResolutionXPixels(n);
-  return r;
-}
-
-function getImageResolutionYPixels(n)
-{
-  var r = cpdf.cpdflib.getImageResolutionYPixels(n);
-  return r;
-}
-
-function getImageResolutionXRes(n)
-{
-  var r = cpdf.cpdflib.getImageResolutionXRes(n);
-  return r;
-}
-
-function getImageResolutionYRes(n)
-{
-  var r = cpdf.cpdflib.getImageResolutionYRes(n);
-  return r;
-}
-
-function endGetImageResolution()
-{
-  cpdf.cpdflib.endGetImageResolution();
-}
-
-function attachFile(file, pdf)
-{
-  cpdf.cpdflib.attachFile(caml_string_of_jsstring(file), pdf);
-}
-
-function attachFileFromMemory(data, filename, pdf)
-{
-  var bigarray = caml_ba_from_typed_array(data);
-  var r = cpdf.cpdflib.attachFileFromMemory(bigarray, caml_string_of_jsstring(filename), pdf);
-  return r;
-}
-
-function attachFileToPageFromMemory(data, filename, pdf, pagenumber)
-{
-  var bigarray = caml_ba_from_typed_array(data);
-  var r = cpdf.cpdflib.attachFileToPageFromMemory(bigarray, caml_string_of_jsstring(filename), pdf, pagenumber);
-  return r;
-}
-
-function attachFileToPage(file, pdf, pagenumber)
-{
-  cpdf.cpdflib.attachFileToPage(caml_string_of_jsstring(file), pdf, pagenumber);
-}
-
-function removeAttachedFiles(pdf)
-{
-  cpdf.cpdflib.removeAttachedFiles(pdf);
-}
-
-function startGetAttachments(pdf)
-{
-  cpdf.cpdflib.startGetAttachments(pdf);
-}
-
-function endGetAttachments()
-{
-  cpdf.cpdflib.endGetAttachments();
-}
-
-function numberGetAttachments()
-{
-  var r = cpdf.cpdflib.numberGetAttachments();
-  return r;
-}
-
-function getAttachmentName(n)
-{
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getAttachmentName(n));
-  return r;
-}
-
-function getAttachmentPage(n)
-{
-  var r = cpdf.cpdflib.getAttachmentPage(n);
-  return r;
-}
-
-function getAttachmentData(n)
-{
-  var r = cpdf.cpdflib.getAttachmentData(n);
+  var r = cpdf.cpdflib.annotationsJSON(pdf);
   return r.data;
 }
 
-function outputJSON(filename, a, b, c, pdf)
+// CHAPTER 11. Document Information and Metadata
+function isLinearized(filename)
 {
-  cpdf.cpdflib.outputJSON(caml_string_of_jsstring(filename), a, b, c, pdf);
-}
-
-function outputJSONMemory(a, b, c, pdf)
-{
-  var r = cpdf.cpdflib.outputJSONMemory(a, b, c, pdf);
-  return r.data;
-}
-
-function fromJSON(filename)
-{
-  var r = cpdf.cpdflib.fromJSON(caml_string_of_jsstring(filename));
-  return r;
-}
-
-function fromJSONMemory(buf)
-{
-  var bigarray = caml_ba_from_typed_array(buf);
-  var r = cpdf.cpdflib.fromJSONMemory(bigarray);
+  var r = cpdf.cpdflib.isLinearized(caml_string_of_jsstring(filename));
   return r;
 }
 
@@ -2663,22 +2509,227 @@ function setModificationDateXMP(pdf, s)
   cpdf.cpdflib.setModificationDateXMP(pdf, caml_string_of_jsstring(s));
 }
 
+function getDateComponents(string)
+{
+  var r = cpdf.cpdflib.getDateComponents(caml_string_of_jsstring(string));
+  return r.slice(1);
+}
+
+function dateStringOfComponents(y, m, d, h, min, sec, hour_offset, minute_offset)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.dateStringOfComponents(y, m, d, h, min, sec, hour_offset, minute_offset));
+  return r;
+}
+
+function getPageRotation(pdf, page)
+{
+  var r = cpdf.cpdflib.getPageRotation(pdf, page);
+  return r;
+}
+
+function hasBox(pdf, page, box)
+{
+  var r = cpdf.cpdflib.hasBox(pdf, page, caml_string_of_jsstring(box));
+  return r;
+}
+
+function getMediaBox(pdf, pagenumber)
+{
+  var r = cpdf.cpdflib.getMediaBox(pdf, pagenumber);
+  return r.slice(1);
+}
+
+function getCropBox(pdf, pagenumber)
+{
+  var r = cpdf.cpdflib.getCropBox(pdf, pagenumber);
+  return r.slice(1);
+}
+
+function getArtBox(pdf, pagenumber)
+{
+  var r = cpdf.cpdflib.getArtBox(pdf, pagenumber);
+  return r.slice(1);
+}
+
+function getBleedBox(pdf, pagenumber)
+{
+  var r = cpdf.cpdflib.getBleedBox(pdf, pagenumber);
+  return r.slice(1);
+}
+
+function getTrimBox(pdf, pagenumber)
+{
+  var r = cpdf.cpdflib.getTrimBox(pdf, pagenumber);
+  return r.slice(1);
+}
+
+function setMediabox(pdf, range, minx, maxx, miny, maxy)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.setMediabox(pdf, rn, minx, maxx, miny, maxy);
+  deleterange(rn);
+}
+
+function setCropBox(pdf, range, minx, maxx, miny, maxy)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.setCropBox(pdf, rn, minx, maxx, miny, maxy);
+  deleterange(rn);
+}
+
+function setTrimBox(pdf, range, minx, maxx, miny, maxy)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.setTrimBox(pdf, rn, minx, maxx, miny, maxy);
+  deleterange(rn);
+}
+
+function setBleedBox(pdf, range, minx, maxx, miny, maxy)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.setBleedBox(pdf, rn, minx, maxx, miny, maxy);
+  deleterange(rn);
+}
+
+function setArtBox(pdf, range, minx, maxx, miny, maxy)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.setArtBox(pdf, rn, minx, maxx, miny, maxy);
+  deleterange(rn);
+}
+
+function markTrapped(pdf)
+{
+  cpdf.cpdflib.markTrapped(pdf);
+}
+
+function markUntrapped(pdf)
+{
+  cpdf.cpdflib.markUntrapped(pdf);
+}
+
+function markTrappedXMP(pdf)
+{
+  cpdf.cpdflib.markTrappedXMP(pdf);
+}
+
+function markUntrappedXMP(pdf)
+{
+  cpdf.cpdflib.markUntrappedXMP(pdf);
+}
+
+var singlePage = 0;
+var oneColumn = 1;
+var twoColumnLeft = 2;
+var twoColumnRight = 3;
+var twoPageLeft = 4;
+var twoPageRight = 5;
+  
+function setPageLayout(pdf, layout)
+{
+  cpdf.cpdflib.setPageLayout(pdf, layout);
+}
+
+var useNone = 0;
+var useOutlines = 1;
+var useThumbs = 2;
+var useOC = 3;
+var useAttachments = 4;
+
+function setPageMode(pdf, mode)
+{
+  cpdf.cpdflib.setPageMode(pdf, mode);
+}
+
+function hideToolbar(pdf, flag)
+{
+  cpdf.cpdflib.hideToolbar(pdf, flag);
+}
+
+function hideMenubar(pdf, flag)
+{
+  cpdf.cpdflib.hideMenubar(pdf, flag);
+}
+
+function hideWindowUi(pdf, flag)
+{
+  cpdf.cpdflib.hideWindowUi(pdf, flag);
+}
+
+function fitWindow(pdf, flag)
+{
+  cpdf.cpdflib.fitWindow(pdf, flag);
+}
+
+function centerWindow(pdf, flag)
+{
+  cpdf.cpdflib.centerWindow(pdf, flag);
+}
+
+function displayDocTitle(pdf, flag)
+{
+  cpdf.cpdflib.displayDocTitle(pdf, flag);
+}
+
+function openAtPage(pdf, fit, pagenumber)
+{
+  cpdf.cpdflib.openAtPage(pdf, fit, pagenumber);
+}
+
+function setMetadataFromFile(pdf, filename)
+{
+  cpdf.cpdflib.setMetadataFromFile(pdf, caml_string_of_jsstring(filename));
+}
+
+function setMetadataFromByteArray(pdf, data)
+{
+  var bigarray = caml_ba_from_typed_array(data);
+  cpdf.cpdflib.setMetadataFromByteArray(pdf, bigarray);
+}
+
+function removeMetadata(pdf)
+{
+  cpdf.cpdflib.removeMetadata(pdf);
+}
+
+function getMetadata(pdf)
+{
+  var r = cpdf.cpdflib.getMetadata(pdf);
+  return r.data;
+}
+
+function createMetadata(pdf)
+{
+  cpdf.cpdflib.createMetadata(pdf);
+}
+
+function setMetadataDate(pdf, date)
+{
+  cpdf.cpdflib.setMetadataDate(pdf, caml_string_of_jsstring(date));
+}
+
 var decimalArabic = 0;
 var uppercaseRoman = 1;
 var lowercaseRoman = 2;
 var uppercaseLetters = 3;
 var lowercaseLetters = 4;
 
-function addPageLabels(pdf, style, prefix, a, range, b)
+function addPageLabels(pdf, style, prefix, offset, range, progress)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.addPageLabels(pdf, style, caml_string_of_jsstring(prefix), a, rn, b);
+  cpdf.cpdflib.addPageLabels(pdf, style, caml_string_of_jsstring(prefix), offset, rn, progress);
   deleterange(rn);
 }
 
 function removePageLabels(pdf)
 {
   cpdf.cpdflib.removePageLabels(pdf);
+}
+
+function getPageLabelStringForPage(pdf, pagenumber)
+{
+  var r = cpdf.cpdflib.getPageLabelStringForPage(pdf, pagenumber);
+  return r;
 }
 
 function startGetPageLabels(pdf)
@@ -2716,211 +2767,7 @@ function endGetPageLabels()
   cpdf.cpdflib.endGetPageLabels();
 }
 
-function getPageLabelStringForPage(pdf, pagenumber)
-{
-  var r = cpdf.cpdflib.getPageLabelStringForPage(pdf, pagenumber);
-  return r;
-}
-
-function getDateComponents(string)
-{
-  var r = cpdf.cpdflib.getDateComponents(caml_string_of_jsstring(string));
-  return r.slice(1);
-}
-
-function dateStringOfComponents(a, b, c, d, e, f, g, h)
-{
-  var r = caml_jsstring_of_string(cpdf.cpdflib.dateStringOfComponents(a, b, c, d, e, f, g, h));
-  return r;
-}
-
-function hasBox(pdf, page, box)
-{
-  var r = cpdf.cpdflib.hasBox(pdf, page, caml_string_of_jsstring(box));
-  return r;
-}
-
-function getPageRotation(pdf, page)
-{
-  var r = cpdf.cpdflib.getPageRotation(pdf, page);
-  return r;
-}
-
-function setMediabox(pdf, range, a, b, c, d)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.setMediabox(pdf, rn, a, b, c, d);
-  deleterange(rn);
-}
-
-function setCropBox(pdf, range, a, b, c, d)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.setCropBox(pdf, rn, a, b, c, d);
-  deleterange(rn);
-}
-
-function setTrimBox(pdf, range, a, b, c, d)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.setTrimBox(pdf, rn, a, b, c, d);
-  deleterange(rn);
-}
-
-function setBleedBox(pdf, range, a, b, c, d)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.setBleedBox(pdf, rn, a, b, c, d);
-  deleterange(rn);
-}
-
-function setArtBox(pdf, range, a, b, c, d)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.setArtBox(pdf, rn, a, b, c, d);
-  deleterange(rn);
-}
-
-function markTrapped(pdf)
-{
-  cpdf.cpdflib.markTrapped(pdf);
-}
-
-function markUntrapped(pdf)
-{
-  cpdf.cpdflib.markUntrapped(pdf);
-}
-
-function markTrappedXMP(pdf)
-{
-  cpdf.cpdflib.markTrappedXMP(pdf);
-}
-
-function markUntrappedXMP(pdf)
-{
-  cpdf.cpdflib.markUntrappedXMP(pdf);
-}
-
-var singlePage = 0;
-var oneColumn = 1;
-var twoColumnLeft = 2;
-var twoColumnRight = 3;
-var twoPageLeft = 4;
-var twoPageRight = 5;
-  
-var useNone = 0;
-var useOutlines = 1;
-var useThumbs = 2;
-var useOC = 3;
-var useAttachments = 4;
-
-function setPageLayout(pdf, layout)
-{
-  cpdf.cpdflib.setPageLayout(pdf, layout);
-}
-
-function setPageMode(pdf, mode)
-{
-  cpdf.cpdflib.setPageMode(pdf, mode);
-}
-
-function hideToolbar(pdf, a)
-{
-  cpdf.cpdflib.hideToolbar(pdf, a);
-}
-
-function hideMenubar(pdf, a)
-{
-  cpdf.cpdflib.hideMenubar(pdf, a);
-}
-
-function hideWindowUi(pdf, a)
-{
-  cpdf.cpdflib.hideWindowUi(pdf, a);
-}
-
-function fitWindow(pdf, a)
-{
-  cpdf.cpdflib.fitWindow(pdf, a);
-}
-
-function centerWindow(pdf, a)
-{
-  cpdf.cpdflib.centerWindow(pdf, a);
-}
-
-function displayDocTitle(pdf, a)
-{
-  cpdf.cpdflib.displayDocTitle(pdf, a);
-}
-
-function openAtPage(pdf, a, pagenumber)
-{
-  cpdf.cpdflib.openAtPage(pdf, a, pagenumber);
-}
-
-function getMediaBox(pdf, page)
-{
-  var r = cpdf.cpdflib.getMediaBox(pdf, page);
-  return r.slice(1);
-}
-
-function getCropBox(pdf, page)
-{
-  var r = cpdf.cpdflib.getCropBox(pdf, page);
-  return r.slice(1);
-}
-
-function getArtBox(pdf, page)
-{
-  var r = cpdf.cpdflib.getArtBox(pdf, page);
-  return r.slice(1);
-}
-
-function getBleedBox(pdf, page)
-{
-  var r = cpdf.cpdflib.getBleedBox(pdf, page);
-  return r.slice(1);
-}
-
-function getTrimBox(pdf, page)
-{
-  var r = cpdf.cpdflib.getTrimBox(pdf, page);
-  return r.slice(1);
-}
-
-function setMetadataFromFile(pdf, filename)
-{
-  cpdf.cpdflib.setMetadataFromFile(pdf, caml_string_of_jsstring(filename));
-}
-
-function getMetadata(pdf)
-{
-  var r = cpdf.cpdflib.getMetadata(pdf);
-  return r.data;
-}
-
-function removeMetadata(pdf)
-{
-  cpdf.cpdflib.removeMetadata(pdf);
-}
-
-function createMetadata(pdf)
-{
-  cpdf.cpdflib.createMetadata(pdf);
-}
-
-function setMetadataDate(pdf, date)
-{
-  cpdf.cpdflib.setMetadataDate(pdf, caml_string_of_jsstring(date));
-}
-
-function setMetadataFromByteArray(pdf, arr)
-{
-  var bigarray = caml_ba_from_typed_array(arr);
-  cpdf.cpdflib.setMetadataFromByteArray(pdf, bigarray);
-}
-
+// CHAPTER 12. File Attachments
 
 module.exports =
   {
@@ -3294,11 +3141,6 @@ function blankDocumentPaper(papersize, pages)
   return r;
 }
 
-function isLinearized(filename)
-{
-  var r = cpdf.cpdflib.isLinearized(caml_string_of_jsstring(filename));
-  return r;
-}
 
 
 function numberFonts()
@@ -3461,12 +3303,175 @@ function textToPDFPaper(papersize, font, fontsize, filename)
   return r;
 }
 
-function annotationsJSON(pdf)
+
+
+
+
+function startGetOCGList(pdf)
 {
-  var r = cpdf.cpdflib.annotationsJSON(pdf);
+  var r = cpdf.cpdflib.startGetOCGList(pdf);
+  return r;
+}
+
+function ocgListEntry(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.ocgListEntry(n));
+  return r;
+}
+
+function endGetOCGList()
+{
+  cpdf.cpdflib.endGetOCGList();
+}
+
+function ocgCoalesce(pdf)
+{
+  cpdf.cpdflib.ocgCoalesce(pdf);
+}
+
+function ocgRename(pdf, f, t)
+{
+  cpdf.cpdflib.ocgRename(pdf, caml_string_of_jsstring(f), caml_string_of_jsstring(t));
+}
+
+function ocgOrderAll(pdf)
+{
+  cpdf.cpdflib.ocgOrderAll(pdf);
+}
+
+function startGetImageResolution(pdf, res)
+{
+  var r = cpdf.cpdflib.startGetImageResolution(pdf, res);
+  return r;
+}
+
+function getImageResolutionPageNumber(n)
+{
+  var r = cpdf.cpdflib.getImageResolutionPageNumber(n);
+  return r;
+}
+
+function getImageResolutionImageName(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getImageResolutionImageName(n));
+  return r;
+}
+
+function getImageResolutionXPixels(n)
+{
+  var r = cpdf.cpdflib.getImageResolutionXPixels(n);
+  return r;
+}
+
+function getImageResolutionYPixels(n)
+{
+  var r = cpdf.cpdflib.getImageResolutionYPixels(n);
+  return r;
+}
+
+function getImageResolutionXRes(n)
+{
+  var r = cpdf.cpdflib.getImageResolutionXRes(n);
+  return r;
+}
+
+function getImageResolutionYRes(n)
+{
+  var r = cpdf.cpdflib.getImageResolutionYRes(n);
+  return r;
+}
+
+function endGetImageResolution()
+{
+  cpdf.cpdflib.endGetImageResolution();
+}
+
+function attachFile(file, pdf)
+{
+  cpdf.cpdflib.attachFile(caml_string_of_jsstring(file), pdf);
+}
+
+function attachFileFromMemory(data, filename, pdf)
+{
+  var bigarray = caml_ba_from_typed_array(data);
+  var r = cpdf.cpdflib.attachFileFromMemory(bigarray, caml_string_of_jsstring(filename), pdf);
+  return r;
+}
+
+function attachFileToPageFromMemory(data, filename, pdf, pagenumber)
+{
+  var bigarray = caml_ba_from_typed_array(data);
+  var r = cpdf.cpdflib.attachFileToPageFromMemory(bigarray, caml_string_of_jsstring(filename), pdf, pagenumber);
+  return r;
+}
+
+function attachFileToPage(file, pdf, pagenumber)
+{
+  cpdf.cpdflib.attachFileToPage(caml_string_of_jsstring(file), pdf, pagenumber);
+}
+
+function removeAttachedFiles(pdf)
+{
+  cpdf.cpdflib.removeAttachedFiles(pdf);
+}
+
+function startGetAttachments(pdf)
+{
+  cpdf.cpdflib.startGetAttachments(pdf);
+}
+
+function endGetAttachments()
+{
+  cpdf.cpdflib.endGetAttachments();
+}
+
+function numberGetAttachments()
+{
+  var r = cpdf.cpdflib.numberGetAttachments();
+  return r;
+}
+
+function getAttachmentName(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getAttachmentName(n));
+  return r;
+}
+
+function getAttachmentPage(n)
+{
+  var r = cpdf.cpdflib.getAttachmentPage(n);
+  return r;
+}
+
+function getAttachmentData(n)
+{
+  var r = cpdf.cpdflib.getAttachmentData(n);
   return r.data;
 }
 
+function outputJSON(filename, a, b, c, pdf)
+{
+  cpdf.cpdflib.outputJSON(caml_string_of_jsstring(filename), a, b, c, pdf);
+}
+
+function outputJSONMemory(a, b, c, pdf)
+{
+  var r = cpdf.cpdflib.outputJSONMemory(a, b, c, pdf);
+  return r.data;
+}
+
+function fromJSON(filename)
+{
+  var r = cpdf.cpdflib.fromJSON(caml_string_of_jsstring(filename));
+  return r;
+}
+
+function fromJSONMemory(buf)
+{
+  var bigarray = caml_ba_from_typed_array(buf);
+  var r = cpdf.cpdflib.fromJSONMemory(bigarray);
+  return r;
+}
 
 
 
