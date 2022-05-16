@@ -1483,7 +1483,7 @@ function caml_js_to_string (s) {
   return caml_string_of_jsstring(s);
 }
 
-/* Internal */
+// Internal
 function deleterange(r)
 {
   cpdf.cpdflib.deleterange(r);
@@ -1511,7 +1511,7 @@ function range_of_array(a)
   return r;
 }
 
-/* Positions */
+// Positions
 function Position(anchor, p1, p2)
 {
   this.anchor = anchor;
@@ -1519,7 +1519,12 @@ function Position(anchor, p1, p2)
   this.p2 = p2; //may be undefined
 }
 
-/* CHAPTER 0. Preliminaries */
+// CHAPTER 0. Preliminaries
+function version()
+{
+  return caml_jsstring_of_string(cpdf.cpdflib.version);
+}
+
 function setFast()
 {
   return cpdf.cpdflib.setFast();
@@ -1530,12 +1535,6 @@ function setSlow()
   return cpdf.cpdflib.setSlow();
 }
 
-function version()
-{
-  return caml_jsstring_of_string(cpdf.cpdflib.version);
-}
-
-//CHAPTER 1. Basics
 function deletePdf(pdf)
 {
   cpdf.cpdflib.deletePdf(pdf);
@@ -1546,11 +1545,232 @@ function onexit()
   cpdf.cpdflib.onexit();
 }
 
+//CHAPTER 1. Basics
 function fromFile(filename, userpw)
 {
   var r = 
     cpdf.cpdflib.fromFile(caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw));
   return r
+}
+
+function fromFileLazy(filename, userpw)
+{
+  var r =
+    cpdf.cpdflib.fromFileLazy(caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw));
+  return r;
+}
+
+function fromMemory(data, userpw)
+{
+  var bigarray = caml_ba_from_typed_array(data);
+  var r = cpdf.cpdflib.fromMemory(bigarray, userpw);
+  return r;
+}
+
+function fromMemoryLazy(data, userpw)
+{
+  var bigarray = caml_ba_from_typed_array(data);
+  var r = cpdf.cpdflib.fromMemoryLazy(bigarray, userpw);
+  return r;
+}
+
+function startEnumeratePDFs()
+{
+  var r = cpdf.cpdflib.startEnumeratePDFs();
+  return r;
+}
+
+function enumeratePDFsKey(n)
+{
+  var r = cpdf.cpdflib.enumeratePDFsKey(n);
+  return r;
+}
+
+function enumeratePDFsInfo(n)
+{
+  var r = cpdf.cpdflib.enumeratePDFsInfo(n);
+  return caml_jsstring_of_string(r);
+}
+
+function endEnumeratePDFs()
+{
+  cpdf.cpdflib.endEnumeratePDFs();
+}
+
+function ptOfCm(i)
+{
+  return cpdf.cpdflib.ptOfCm(i);
+}
+
+function ptOfMm(i)
+{
+  return cpdf.cpdflib.ptOfMm(i);
+}
+
+function ptOfIn(i)
+{
+  return cpdf.cpdflib.ptOfIn(i);
+}
+
+function cmOfPt(i)
+{
+  return cpdf.cpdflib.cmOfPt(i);
+}
+
+function mmOfPt(i)
+{
+  return cpdf.cpdflib.mmOfPt(i);
+}
+
+function inOfPt(i)
+{
+  return cpdf.cpdflib.inOfPt(i);
+}
+
+function parsePagespec(pdf, pagespec)
+{
+  var r = cpdf.cpdflib.parsePagespec(pdf, caml_string_of_jsstring(pagespec));
+  var arr = array_of_range(r);
+  deleterange(r);
+  return arr;
+}
+
+function validatePagespec(pagespec)
+{
+  var r = cpdf.cpdflib.validatePagespec(caml_string_of_jsstring(pagespec));
+  return r;
+}
+
+function stringOfPagespec(pdf, r)
+{
+  var rn = range_of_array(r);
+  var ret = caml_jsstring_of_string(cpdf.cpdflib.stringOfPagespec(pdf, rn));
+  deleterange(rn);
+  return ret;
+}
+
+function blankRange()
+{
+  var rn = cpdf.cpdflib.blankRange();
+  var r = array_of_range(rn);
+  deleterange(rn);
+  return r;
+}
+
+function range(f, t)
+{
+  var rn = cpdf.cpdflib.range(f, t);
+  var r = array_of_range(rn);
+  deleterange(rn);
+  return r;
+}
+
+function all(pdf)
+{
+  var rn = cpdf.cpdflib.all(pdf);
+  var r = array_of_range(rn);
+  deleterange(rn);
+  return r;
+}
+
+function even(r_in)
+{
+  var ri = range_of_array(r_in);
+  var rn = cpdf.cpdflib.even(ri);
+  var r = array_of_range(rn);
+  deleterange(rn);
+  deleterange(ri);
+  return r;
+}
+
+function odd(r_in)
+{
+  var ri = range_of_array(r_in);
+  var rn = cpdf.cpdflib.odd(ri);
+  var r = array_of_range(rn);
+  deleterange(rn);
+  deleterange(ri);
+  return r;
+}
+
+function rangeUnion(a, b)
+{
+  var ra = range_of_array(a);
+  var rb = range_of_array(b);
+  var rn = cpdf.cpdflib.rangeUnion(ra, rb);
+  var r = array_of_range(rn);
+  deleterange(rn);
+  deleterange(ra);
+  deleterange(rb);
+  return r;
+}
+
+function difference(a, b)
+{
+  var ra = range_of_array(a);
+  var rb = range_of_array(b);
+  var rn = cpdf.cpdflib.difference(ra, rb);
+  var r = array_of_range(rn);
+  deleterange(rn);
+  deleterange(ra);
+  deleterange(rb);
+  return r;
+}
+
+function removeDuplicates(a)
+{
+  var rn = range_of_array(a);
+  var rdup = cpdf.cpdflib.removeDuplicates(rn);
+  var r = array_of_range(rdup);
+  deleterange(rn);
+  deleterange(rdup);
+  return r;
+}
+
+function rangeLength(r)
+{
+  var rn = range_of_array(r);
+  var r_out = cpdf.cpdflib.rangeLength(rn);
+  deleterange(rn);
+  return r_out;
+}
+
+function rangeGet(r, n)
+{
+  var rn = range_of_array(r);
+  var r_out = cpdf.cpdflib.rangeGet(rn, n);
+  deleterange(rn);
+  return r_out;
+}
+
+function rangeAdd(r, page)
+{
+  var rn = range_of_array(r)
+  var r2 = cpdf.cpdflib.rangeAdd(rn, page);
+  var rout = array_of_range(r2);
+  deleterange(rn);
+  deleterange(r2);
+  return rout;
+}
+
+function isInRange(r, page)
+{
+  var rn = range_of_array(r);
+  var r = cpdf.cpdflib.isInRange(rn, page);
+  deleterange(rn);
+  return r;
+}
+
+function pages(pdf)
+{
+  var r = cpdf.cpdflib.pages(pdf);
+  return r;
+}
+
+function pagesFast(password, filename)
+{
+  var r = cpdf.cpdflib.pagesFast(caml_string_of_jsstring(password), caml_string_of_jsstring(filename));
+  return r;
 }
 
 function toFile(pdf, filename, linearize, make_id)
@@ -1563,62 +1783,77 @@ function toFileExt(pdf, filename, linearize, make_id, preserve_objstm, create_ob
   cpdf.cpdflib.toFileExt(pdf, caml_string_of_jsstring(filename), linearize, make_id, preserve_objstm, create_objstm, compress_objstm);
 }
 
-function fromFileLazy(filename, userpw)
-{
-  var r =
-    cpdf.cpdflib.fromFileLazy(caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw));
-  return r;
-}
-
-function ptOfCm(x)
-{
-  return cpdf.cpdflib.ptOfCm(x);
-}
-
-function ptOfMm(x)
-{
-  return cpdf.cpdflib.ptOfMm(x);
-}
-
-function ptOfIn(x)
-{
-  return cpdf.cpdflib.ptOfIn(x);
-}
-
-function cmOfPt(x)
-{
-  return cpdf.cpdflib.cmOfPt(x);
-}
-
-function mmOfPt(x)
-{
-  return cpdf.cpdflib.mmOfPt(x);
-}
-
-function inOfPt(x)
-{
-  return cpdf.cpdflib.inOfPt(x);
-}
-
 function toMemory(pdf, linearize, make_id)
 {
   var r = cpdf.cpdflib.toMemory(pdf, linearize, make_id);
   return r.data;
 }
 
-function fromMemory(arr, pw)
+function isEncrypted(pdf)
 {
-  var bigarray = caml_ba_from_typed_array(arr);
-  var r = cpdf.cpdflib.fromMemory(bigarray, pw);
+  var r = cpdf.cpdflib.isEncrypted(pdf);
   return r;
 }
 
-function fromMemoryLazy(arr, pw)
+function decryptPdf(pdf, userpw)
 {
-  var bigarray = caml_ba_from_typed_array(arr);
-  var r = cpdf.cpdflib.fromMemoryLazy(bigarray, pw);
+  cpdf.cpdflib.decryptPdf(pdf, caml_string_of_jsstring(userpw));
+}
+
+function decryptPdfOwner(pdf, ownerpw)
+{
+  cpdf.cpdflib.decryptPdfOwner(pdf, caml_string_of_jsstring(ownerpw));
+}
+
+var noEdit = 0;
+var noPrint = 1;
+var noCopy = 2;
+var noAnnot = 3;
+var noForms = 4;
+var noExtract = 5;
+var noAssemble = 6;
+var noHqPrint = 7;
+
+var pdf40bit = 0;
+var pdf128bit = 1;
+var aes128bitfalse = 2;
+var aes128bittrue = 3;
+var aes256bitfalse = 4;
+var aes256bittrue = 5;
+var aes256bitisofalse = 6;
+var aes256bitisotrue = 7;
+
+function toFileEncrypted(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid, filename)
+{
+  var ps = [0].concat(permissions);
+  cpdf.cpdflib.toFileEncrypted(pdf, encryption_method, ps,
+                               caml_string_of_jsstring(ownerpw), caml_string_of_jsstring(userpw), linearize, makeid,
+                               caml_string_of_jsstring(filename));
+}
+
+function toFileEncryptedExt(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid, preserve_objstm, generate_objstm, compress_objstm, filename)
+{
+  var ps = [0].concat(permissions);
+  cpdf.cpdflib.toFileEncryptedExt(pdf, encryption_method, ps,
+                                  caml_string_of_jsstring(ownerpw), caml_string_of_jsstring(userpw),
+                                  linearize, makeid, preserve_objstm, generate_objstm, compress_objstm,
+                                  caml_string_of_jsstring(filename));
+}
+
+function hasPermission(pdf, permission)
+{
+  var r = cpdf.cpdflib.hasPermission(pdf, permission);
   return r;
 }
+
+function encryptionKind(pdf)
+{
+  var r = cpdf.cpdflib.encryptionKind(pdf);
+  return r;
+}
+
+// CHAPTER 2. Merging and Splitting
+
 
 function blankDocument(w, h, pages)
 {
@@ -1655,237 +1890,14 @@ function isLinearized(filename)
   return r;
 }
 
-function isEncrypted(pdf)
-{
-  var r = cpdf.cpdflib.isEncrypted(pdf);
-  return r;
-}
 
-var noEdit = 0;
-var noPrint = 1;
-var noCopy = 2;
-var noAnnot = 3;
-var noForms = 4;
-var noExtract = 5;
-var noAssemble = 6;
-var noHqPrint = 7;
 
-var pdf40bit = 0;
-var pdf128bit = 1;
-var aes128bitfalse = 2;
-var aes128bittrue = 3;
-var aes256bitfalse = 4;
-var aes256bittrue = 5;
-var aes256bitisofalse = 6;
-var aes256bitisotrue = 7;
 
-function toFileEncrypted(pdf, encryption_method, perms, owner, user, linearize, makeid, filename)
-{
-  var ps = [0].concat(perms);
-  cpdf.cpdflib.toFileEncrypted(pdf, encryption_method, ps,
-                               caml_string_of_jsstring(owner), caml_string_of_jsstring(user), linearize, makeid,
-                               caml_string_of_jsstring(filename));
-}
 
-function toFileEncryptedExt(pdf, encryption_method, perms, owner, user, linearize, makeid, preserve_objstm, generate_objstm, compress_objstm, filename)
-{
-  var ps = [0].concat(perms);
-  cpdf.cpdflib.toFileEncryptedExt(pdf, encryption_method, ps,
-                                  caml_string_of_jsstring(owner), caml_string_of_jsstring(user),
-                                  linearize, makeid, preserve_objstm, generate_objstm, compress_objstm,
-                                  caml_string_of_jsstring(filename));
-}
 
-function range(a, b)
-{
-  var rn = cpdf.cpdflib.range(a, b);
-  var r = array_of_range(rn);
-  deleterange(rn);
-  return r;
-}
 
-function all(x)
-{
-  var rn = cpdf.cpdflib.all(x);
-  var r = array_of_range(rn);
-  deleterange(rn);
-  return r;
-}
 
-function even(x)
-{
-  var ri = range_of_array(x);
-  var rn = cpdf.cpdflib.even(ri);
-  var r = array_of_range(rn);
-  deleterange(rn);
-  deleterange(ri);
-  return r;
-}
 
-function odd(x)
-{
-  var ri = range_of_array(x);
-  var rn = cpdf.cpdflib.odd(ri);
-  var r = array_of_range(rn);
-  deleterange(rn);
-  deleterange(ri);
-  return r;
-}
-
-function rangeUnion(a, b)
-{
-  var ra = range_of_array(a);
-  var rb = range_of_array(b);
-  var rn = cpdf.cpdflib.rangeUnion(ra, rb);
-  var r = array_of_range(rn);
-  deleterange(rn);
-  deleterange(ra);
-  deleterange(rb);
-  return r;
-}
-
-function difference(a, b)
-{
-  var ra = range_of_array(a);
-  var rb = range_of_array(b);
-  var rn = cpdf.cpdflib.difference(ra, rb);
-  var r = array_of_range(rn);
-  deleterange(rn);
-  deleterange(ra);
-  deleterange(rb);
-  return r;
-}
-
-function removeDuplicates(x)
-{
-  var rn = range_of_array(x);
-  var rdup = cpdf.cpdflib.removeDuplicates(rn);
-  var r = array_of_range(rdup);
-  deleterange(rn);
-  deleterange(rdup);
-  return r;
-}
-
-function rangeLength(x)
-{
-  var rn = range_of_array(x);
-  var r = cpdf.cpdflib.rangeLength(rn);
-  deleterange(rn);
-  return r;
-}
-
-function rangeGet(a, b)
-{
-  var rn = range_of_array(a);
-  var r = cpdf.cpdflib.rangeGet(rn, b);
-  deleterange(rn);
-  return r;
-}
-
-function rangeAdd(r, p)
-{
-  var rn = range_of_array(r)
-  var r2 = cpdf.cpdflib.rangeAdd(rn, p);
-  var rout = array_of_range(r2);
-  deleterange(rn);
-  deleterange(r2);
-  return rout;
-}
-
-function isInRange(r, p)
-{
-  var rn = range_of_array(r);
-  var r = cpdf.cpdflib.isInRange(rn, p);
-  deleterange(rn);
-  return r;
-}
-
-function blankRange()
-{
-  var rn = cpdf.cpdflib.blankRange();
-  var r = array_of_range(rn);
-  deleterange(rn);
-  return r;
-}
-
-function pages(pdf)
-{
-  var r = cpdf.cpdflib.pages(pdf);
-  return r;
-}
-
-function pagesFast(filename, pw)
-{
-  var r = cpdf.cpdflib.pagesFast(caml_string_of_jsstring(filename), caml_string_of_jsstring(pw));
-  return r;
-}
-
-function hasPermission(pdf, perm)
-{
-  var r = cpdf.cpdflib.hasPermission(pdf, perm);
-  return r;
-}
-
-function encryptionKind(pdf)
-{
-  var r = cpdf.cpdflib.encryptionKind(pdf);
-  return r;
-}
-
-function decryptPdf(pdf, userpw)
-{
-  cpdf.cpdflib.decryptPdf(pdf, caml_string_of_jsstring(userpw));
-}
-
-function decryptPdfOwner(pdf, ownerpw)
-{
-  cpdf.cpdflib.decryptPdfOwner(pdf, caml_string_of_jsstring(ownerpw));
-}
-
-function parsePagespec(pdf, spec)
-{
-  var r = cpdf.cpdflib.parsePagespec(pdf, caml_string_of_jsstring(spec));
-  var arr = array_of_range(r);
-  deleterange(r);
-  return arr;
-}
-
-function stringOfPagespec(pdf, range)
-{
-  var rn = range_of_array(range);
-  var r = caml_jsstring_of_string(cpdf.cpdflib.stringOfPagespec(pdf, rn));
-  deleterange(rn);
-  return r;
-}
-
-function validatePagespec(spec)
-{
-  var r = cpdf.cpdflib.validatePagespec(caml_string_of_jsstring(spec));
-  return r;
-}
-
-function startEnumeratePDFs()
-{
-  var r = cpdf.cpdflib.startEnumeratePDFs();
-  return r;
-}
-
-function endEnumeratePDFs()
-{
-  cpdf.cpdflib.endEnumeratePDFs();
-}
-
-function enumeratePDFsKey(n)
-{
-  var r = cpdf.cpdflib.enumeratePDFsKey(n);
-  return r;
-}
-
-function enumeratePDFsInfo(n)
-{
-  var r = cpdf.cpdflib.enumeratePDFsInfo(n);
-  return caml_jsstring_of_string(r);
-}
 
 function mergeSimple(arr)
 {
