@@ -1893,12 +1893,18 @@ function selectPages(pdf, r)
 }
 
 // CHAPTER 3. Pages
-
-
-function blankDocument(w, h, pages)
+function scalePages(pdf, range, sx, sy)
 {
-  var r = cpdf.cpdflib.blankDocument(w, h, pages);
-  return r;
+  var rn = range_of_array(range);
+  cpdf.cpdflib.scalePages(pdf, rn, sx, sy);
+  deleterange(rn);
+}
+
+function scaleToFit(pdf, range, sx, sy, scale)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.scaleToFit(pdf, rn, sx, sy, scale);
+  deleterange(rn);
 }
 
 var a0portrait = 0;
@@ -1918,42 +1924,6 @@ var usletterlandscape = 13;
 var uslegalportrait = 14;
 var uslegallandscape = 15;
 
-function blankDocumentPaper(papersize, pages)
-{
-  var r = cpdf.cpdflib.blankDocumentPaper(papersize, pages);
-  return r;
-}
-
-function isLinearized(filename)
-{
-  var r = cpdf.cpdflib.isLinearized(caml_string_of_jsstring(filename));
-  return r;
-}
-
-
-
-
-
-
-
-
-
-
-
-function scalePages(pdf, range, sx, sy)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.scalePages(pdf, rn, sx, sy);
-  deleterange(rn);
-}
-
-function scaleToFit(pdf, range, sx, sy, s)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.scaleToFit(pdf, rn, sx, sy, s);
-  deleterange(rn);
-}
-
 function scaleToFitPaper(pdf, range, papersize, s)
 {
   var rn = range_of_array(range);
@@ -1961,10 +1931,24 @@ function scaleToFitPaper(pdf, range, papersize, s)
   deleterange(rn);
 }
 
-function scaleContents(pdf, range, p, s)
+var posCentre = 0;
+var posLeft = 1;
+var posRight = 2;
+var top = 3;
+var topLeft = 4;
+var topRight = 5;
+var left = 6;
+var bottomLeft = 7;
+var bottom = 8;
+var bottomRight = 9;
+var right = 10;
+var diagonal = 11;
+var reversediagonal = 12;
+
+function scaleContents(pdf, range, position, scale)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.scaleContents(pdf, rn, p.anchor, p.p1, p.p2, s);
+  cpdf.cpdflib.scaleContents(pdf, rn, position.anchor, position.p1, position.p2, scale);
   deleterange(rn);
 }
 
@@ -1975,17 +1959,17 @@ function shiftContents(pdf, range, dx, dy)
   deleterange(rn);
 }
 
-function rotate(pdf, range, angle)
+function rotate(pdf, range, rotation)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.rotate(pdf, rn, angle);
+  cpdf.cpdflib.rotate(pdf, rn, rotation);
   deleterange(rn);
 }
 
-function rotateBy(pdf, range, angle)
+function rotateBy(pdf, range, rotation)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.rotateBy(pdf, rn, angle);
+  cpdf.cpdflib.rotateBy(pdf, rn, rotation);
   deleterange(rn);
 }
 
@@ -2017,24 +2001,10 @@ function vFlip(pdf, range)
   deleterange(rn);
 }
 
-function crop(pdf, range, a, b, c, d)
+function crop(pdf, range, x, y, w, h)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.crop(pdf, rn, a, b, c, d);
-  deleterange(rn);
-}
-
-function trimMarks(pdf, range)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.trimMarks(pdf, rn);
-  deleterange(rn);
-}
-
-function hardBox(pdf, range, boxname)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.hardBox(pdf, rn, caml_string_of_jsstring(boxname));
+  cpdf.cpdflib.crop(pdf, rn, x, y, w, h);
   deleterange(rn);
 }
 
@@ -2042,6 +2012,13 @@ function removeCrop(pdf, range)
 {
   var rn = range_of_array(range);
   cpdf.cpdflib.removeCrop(pdf, rn);
+  deleterange(rn);
+}
+
+function removeTrim(pdf, range)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.removeTrim(pdf, rn);
   deleterange(rn);
 }
 
@@ -2059,10 +2036,10 @@ function removeBleed(pdf, range)
   deleterange(rn);
 }
 
-function removeTrim(pdf, range)
+function trimMarks(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.removeTrim(pdf, rn);
+  cpdf.cpdflib.trimMarks(pdf, rn);
   deleterange(rn);
 }
 
@@ -2072,6 +2049,17 @@ function showBoxes(pdf, range)
   cpdf.cpdflib.showBoxes(pdf, rn);
   deleterange(rn);
 }
+
+function hardBox(pdf, range, boxname)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.hardBox(pdf, rn, caml_string_of_jsstring(boxname));
+  deleterange(rn);
+}
+
+//CHAPTER 4. Encryption
+
+//CHAPTER 5. Compression
 
 function compress(pdf)
 {
@@ -3096,19 +3084,6 @@ var courierBold = 9;
 var courierOblique = 10;
 var courierBoldOblique = 11;
 
-var posCentre = 0;
-var posLeft = 1;
-var posRight = 2;
-var top = 3;
-var topLeft = 4;
-var topRight = 5;
-var left = 6;
-var bottomLeft = 7;
-var bottom = 8;
-var bottomRight = 9;
-var right = 10;
-var diagonal = 11;
-var reversediagonal = 12;
 
 module.exports =
   {
@@ -3468,3 +3443,24 @@ module.exports =
   getDictEntries : getDictEntries,
   removeClipping : removeClipping
 };
+
+function blankDocument(w, h, pages)
+{
+  var r = cpdf.cpdflib.blankDocument(w, h, pages);
+  return r;
+}
+
+
+function blankDocumentPaper(papersize, pages)
+{
+  var r = cpdf.cpdflib.blankDocumentPaper(papersize, pages);
+  return r;
+}
+
+function isLinearized(filename)
+{
+  var r = cpdf.cpdflib.isLinearized(caml_string_of_jsstring(filename));
+  return r;
+}
+
+
