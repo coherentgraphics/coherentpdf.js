@@ -1511,12 +1511,13 @@ function range_of_array(a)
   return r;
 }
 
-// Positions
-function Position(anchor, p1, p2)
+function checkError()
 {
-  this.anchor = anchor;
-  this.p1 = p1; //may be undefined
-  this.p2 = p2; //may be undefined
+  if (cpdf.cpdflib.getLastError() != 0)
+  {
+    cpdf.cpdflib.clearError();
+    throw new Error(caml_jsstring_of_string(cpdf.cpdflib.getLastErrorString()));
+  }
 }
 
 // CHAPTER 0. Preliminaries
@@ -1944,6 +1945,14 @@ var bottomRight = 9;
 var right = 10;
 var diagonal = 11;
 var reversediagonal = 12;
+
+// Positions
+function Position(anchor, p1, p2)
+{
+  this.anchor = anchor;
+  this.p1 = p1; //may be undefined
+  this.p2 = p2; //may be undefined
+}
 
 function scaleContents(pdf, range, position, scale)
 {
@@ -2938,7 +2947,7 @@ function outputJSON(filename, parse_content, no_stream_data, decompress_streams,
   cpdf.cpdflib.outputJSON(caml_string_of_jsstring(filename), parse_content, no_stream_data, decompress_streams, pdf);
 }
 
-function outputJSONMemory(pdf, parse_content, no_stream_data, decompress_streams)
+function outputJSONMemory(parse_content, no_stream_data, decompress_streams, pdf)
 {
   var r = cpdf.cpdflib.outputJSONMemory(parse_content, no_stream_data, decompress_streams, pdf);
   return r.data;

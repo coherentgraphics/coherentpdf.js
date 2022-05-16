@@ -3,6 +3,10 @@ open Js_of_ocaml
 let _ =
   Js.export "cpdflib"
     (object%js
+       (* CHAPTER 0. Preliminaries *)
+       method getLastError = Cpdflib.getLastError ()
+       method getLastErrorString = Cpdflib.getLastErrorString ()
+       method clearError = Cpdflib.clearError ()
        (* CHAPTER 1. Basics *)
        method setFast = Cpdflib.setFast ()
        method setSlow = Cpdflib.setSlow ()

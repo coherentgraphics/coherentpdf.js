@@ -881,5 +881,3 @@ cpdf.deletePdf(misc14);
 cpdf.deletePdf(misc15);
 cpdf.deletePdf(misc16);
 cpdf.deletePdf(misclogo);
-cpdf.onexit();
-process.exit();
