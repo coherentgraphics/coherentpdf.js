@@ -2168,171 +2168,102 @@ function tableOfContents(pdf, font, fontsize, title, bookmark)
 // CHAPTER 7. Presentations
 
 // CHAPTER 8. Logos, Watermarks and Stamps
-
-function numberFonts()
+function stampOn(stamp_pdf, pdf, range)
 {
-  var r = cpdf.cpdflib.numberFonts();
+  var rn = range_of_array(range);
+  cpdf.cpdflib.stampOn(stamp_pdf, pdf, rn);
+  deleterange(rn);
+}
+
+function stampUnder(stamp_pdf, pdf, range)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.stampUnder(stamp_pdf, pdf, rn);
+  deleterange(rn);
+}
+
+function stampExtended(pdf, pdf2, range, isover, scale_stamp_to_fit, position, relative_to_cropbox)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.stampExtended(pdf, pdf2, rn, isover, scale_stamp_to_fit, position.p1, position.p2, position.anchor, relative_to_cropbox);
+  deleterange(rn);
+}
+
+function combinePages(under, over)
+{
+  var r = cpdf.cpdflib.combinePages(under, over);
   return r;
 }
 
-function getFontPage(n)
+var timesRoman = 0;
+var timesBold = 1;
+var timesItalic = 2;
+var timesBoldItalic = 3;
+var helvetica = 4;
+var helveticaBold = 5;
+var helveticaOblique = 6;
+var helveticaBoldOblique = 7;
+var courier = 8;
+var courierBold = 9;
+var courierOblique = 10;
+var courierBoldOblique = 11;
+
+var leftJustify = 0;
+var centreJustify = 1;
+var rightJustify = 2;
+
+function addText(metrics, pdf, range, text, position, linespacing,
+                 bates, font, fontsize, r, g, b, underneath, relative_to_cropbox, outline,
+                 opacity, justification, midline, topline, filename, linewidth, embed_fonts)
 {
-  var r = cpdf.cpdflib.getFontPage(n);
+  var rn = range_of_array(range);
+  cpdf.cpdflib.addText(metrics, pdf, rn, caml_string_of_jsstring(text), position.anchor, position.p1, position.p2,
+                       linespacing, bates, font, fontsize, r, g, b, underneath, relative_to_cropbox, outline,
+                       opacity, justification, midline, topline, caml_string_of_jsstring(filename),
+                       linewidth, embed_fonts);
+  deleterange(rn);
+}
+
+function addTextSimple(pdf, range, text, position, font, fontsize)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.addText(0, pdf, rn, caml_string_of_jsstring(text), position.anchor, position.p1, position.p2, 1.0, 0, font, fontsize, 0, 0, 0, 1, 1, 1, 1.0, leftJustify, 1, 1, caml_string_of_jsstring(""), 0.0, 1);
+  deleterange(rn);
+}
+
+function removeText(pdf, range)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.removeText(pdf, rn);
+  deleterange(rn);
+}
+
+function textWidth(font, text)
+{
+  var r = cpdf.cpdflib.textWidth(font, caml_string_of_jsstring(text));
   return r;
 }
 
-function getFontName(n)
+function addContent(content, before, pdf, range)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontName(n));
+  var rn = range_of_array(range);
+  cpdf.cpdflib.addContent(caml_string_of_jsstring(content), before, pdf, rn);
+  deleterange(rn);
+}
+
+function stampAsXObject(pdf, range, stamp_pdf)
+{
+  var rn = range_of_array(range);
+  var r = caml_jsstring_of_string(cpdf.cpdflib.stampAsXObject(pdf, rn, stamp_pdf));
+  deleterange(rn);
   return r;
 }
 
-function getFontType(n)
+// CHAPTER 9. Multipage facilities
+function impose(pdf, x, y, fit, columns, rtl, btt, center, margin, spacing, linewidth)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontType(n));
+  var r = cpdf.cpdflib.impose(pdf, x, y, fit, columns, rtl, btt, center, margin, spacing, linewidth);
   return r;
-}
-
-function getFontEncoding(n)
-{
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontEncoding(n));
-  return r;
-}
-
-function startGetFontInfo(pdf)
-{
-  cpdf.cpdflib.startGetFontInfo(pdf);
-}
-
-function endGetFontInfo()
-{
-  cpdf.cpdflib.endGetFontInfo();
-}
-
-
-function removeFonts(pdf)
-{
-  cpdf.cpdflib.removeFonts(pdf);
-}
-
-function copyFont(pdf, pdf2, range, pagenumber, fontname)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.copyFont(pdf, pdf2, rn, pagenumber, caml_string_of_jsstring(fontname));
-  deleterange(rn);
-}
-
-function draft(pdf, range, boxes)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.draft(pdf, rn, boxes);
-  deleterange(rn);
-}
-
-function removeAllText(pdf, range)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.removeAllText(pdf, rn);
-  deleterange(rn);
-}
-
-function blackText(pdf, range)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.blackText(pdf, rn);
-  deleterange(rn);
-}
-
-function blackLines(pdf, range)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.blackLines(pdf, rn);
-  deleterange(rn);
-}
-
-function blackFills(pdf, range)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.blackFills(pdf, rn);
-  deleterange(rn);
-}
-
-function thinLines(pdf, range, thickness)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.thinLines(pdf, rn, thickness);
-  deleterange(rn);
-}
-
-function copyId(from_pdf, to_pdf)
-{
-  cpdf.cpdflib.copyId(from_pdf, to_pdf);
-}
-
-function removeId(pdf)
-{
-  cpdf.cpdflib.removeId(pdf);
-}
-
-function setVersion(pdf, a)
-{
-  cpdf.cpdflib.setVersion(pdf, a);
-}
-
-function setFullVersion(pdf, a, b)
-{
-  cpdf.cpdflib.setFullVersion(pdf, a, b);
-}
-
-function removeDictEntry(pdf, key)
-{
-  cpdf.cpdflib.removeDictEntry(pdf, caml_string_of_jsstring(key));
-}
-
-function removeDictEntrySearch(pdf, key, searchterm)
-{
-  cpdf.cpdflib.removeDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(searchterm));
-}
-
-function replaceDictEntry(pdf, key, newval)
-{
-  cpdf.cpdflib.replaceDictEntry(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval));
-}
-
-function replaceDictEntrySearch(pdf, key, searchterm, newval)
-{
-  cpdf.cpdflib.replaceDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(searchterm), caml_string_of_jsstring(newval));
-}
-
-function getDictEntries(pdf, key)
-{
-  var r = cpdf.cpdflib.getDictEntries(pdf, caml_string_of_jsstring(key));
-  return r.data;
-}
-
-function removeClipping(pdf, range)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.removeClipping(pdf, rn);
-  deleterange(rn);
-}
-
-function textToPDF(w, h, font, fontsize, filename)
-{
-  var r = cpdf.cpdflib.textToPDF(w, h, font, fontsize, caml_string_of_jsstring(filename));
-  return r;
-}
-
-function textToPDFPaper(papersize, font, fontsize, filename)
-{
-  var r = cpdf.cpdflib.textToPDFPaper(papersize, font, fontsize, caml_string_of_jsstring(filename));
-  return r;
-}
-
-function annotationsJSON(pdf)
-{
-  var r = cpdf.cpdflib.annotationsJSON(pdf);
-  return r.data;
 }
 
 function twoUp(pdf)
@@ -2344,12 +2275,6 @@ function twoUp(pdf)
 function twoUpStack(pdf)
 {
   var r = cpdf.cpdflib.twoUpStack(pdf);
-  return r;
-}
-
-function impose(pdf, a, b, c, d, e, f, g, h, i, j)
-{
-  var r = cpdf.cpdflib.impose(pdf, a, b, c, d, e, f, g, h, i, j);
   return r;
 }
 
@@ -2367,104 +2292,22 @@ function padAfter(pdf, range)
   deleterange(rn);
 }
 
-function padEvery(pdf, range)
+function padEvery(pdf, n)
 {
-  var rn = range_of_array(range);
-  cpdf.cpdflib.padEvery(pdf, rn);
-  deleterange(rn);
+  cpdf.cpdflib.padEvery(pdf, n);
 }
 
-function padMultiple(pdf, range)
+function padMultiple(pdf, n)
 {
-  var rn = range_of_array(range);
-  cpdf.cpdflib.padMultiple(pdf, rn);
-  deleterange(rn);
+  cpdf.cpdflib.padMultiple(pdf, n);
 }
 
-function padMultipleBefore(pdf, range)
+function padMultipleBefore(pdf, n)
 {
-  var rn = range_of_array(range);
-  cpdf.cpdflib.padMultipleBefore(pdf, rn);
-  deleterange(rn);
+  cpdf.cpdflib.padMultipleBefore(pdf, n);
 }
 
-function stampOn(stamp, stampee, stamp_range)
-{
-  var rn = range_of_array(stamp_range);
-  cpdf.cpdflib.stampOn(stamp, stampee, rn);
-  deleterange(rn);
-}
-
-function stampUnder(stamp, stampee, stamp_range)
-{
-  var rn = range_of_array(stamp_range);
-  cpdf.cpdflib.stampUnder(stamp, stampee, rn);
-  deleterange(rn);
-}
-
-function stampExtended(stamp, stampee, stamp_range, is_over, scale_stamp_to_fit, p, relative_to_cropbox)
-{
-  var rn = range_of_array(stamp_range);
-  cpdf.cpdflib.stampExtended(stamp, stampee, rn, is_over, scale_stamp_to_fit, p.p1, p.p2, p.anchor, relative_to_cropbox);
-  deleterange(rn);
-}
-
-function combinePages(a, b)
-{
-  var r = cpdf.cpdflib.combinePages(a, b);
-  return r;
-}
-
-function addText(metrics, pdf, range, text, p, linespacing,
-                 bates, font, fontsize, r, g, b, underneath, cropbox, outline,
-                 opacity, justification, midline, topline, filename, linewidth, embed_fonts)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.addText(metrics, pdf, rn, caml_string_of_jsstring(text), p.anchor, p.p1, p.p2,
-                       linespacing, bates, font, fontsize, r, g, b, underneath, cropbox, outline,
-                       opacity, justification, midline, topline, caml_string_of_jsstring(filename),
-                       linewidth, embed_fonts);
-  deleterange(rn);
-}
-
-function addTextSimple(pdf, range, text, p, font, fontsize)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.addText(0, pdf, rn, caml_string_of_jsstring(text), p.anchor, p.p1, p.p2, 1.0, 0, font, fontsize, 0, 0, 0, 1, 1, 1, 1.0, leftJustify, 1, 1, caml_string_of_jsstring(""), 0.0, 1);
-  deleterange(rn);
-}
-
-function removeText(pdf, range)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.removeText(pdf, rn);
-  deleterange(rn);
-}
-
-function addContent(content, underneath, pdf, range)
-{
-  var rn = range_of_array(range);
-  cpdf.cpdflib.addContent(caml_string_of_jsstring(content), underneath, pdf, rn);
-  deleterange(rn);
-}
-
-function stampAsXObject(pdf, range, pdf2)
-{
-  var rn = range_of_array(range);
-  var r = caml_jsstring_of_string(cpdf.cpdflib.stampAsXObject(pdf, rn, pdf2));
-  deleterange(rn);
-  return r;
-}
-
-function textWidth(font, text)
-{
-  var r = cpdf.cpdflib.textWidth(font, caml_string_of_jsstring(text));
-  return r;
-}
-
-var leftJustify = 0;
-var centreJustify = 1;
-var rightJustify = 2;
+// CHAPTER 10. Annotations 
 
 function startGetOCGList(pdf)
 {
@@ -3078,19 +2921,6 @@ function setMetadataFromByteArray(pdf, arr)
   cpdf.cpdflib.setMetadataFromByteArray(pdf, bigarray);
 }
 
-var timesRoman = 0;
-var timesBold = 1;
-var timesItalic = 2;
-var timesBoldItalic = 3;
-var helvetica = 4;
-var helveticaBold = 5;
-var helveticaOblique = 6;
-var helveticaBoldOblique = 7;
-var courier = 8;
-var courierBold = 9;
-var courierOblique = 10;
-var courierBoldOblique = 11;
-
 
 module.exports =
   {
@@ -3469,5 +3299,174 @@ function isLinearized(filename)
   var r = cpdf.cpdflib.isLinearized(caml_string_of_jsstring(filename));
   return r;
 }
+
+
+function numberFonts()
+{
+  var r = cpdf.cpdflib.numberFonts();
+  return r;
+}
+
+function getFontPage(n)
+{
+  var r = cpdf.cpdflib.getFontPage(n);
+  return r;
+}
+
+function getFontName(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontName(n));
+  return r;
+}
+
+function getFontType(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontType(n));
+  return r;
+}
+
+function getFontEncoding(n)
+{
+  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontEncoding(n));
+  return r;
+}
+
+function startGetFontInfo(pdf)
+{
+  cpdf.cpdflib.startGetFontInfo(pdf);
+}
+
+function endGetFontInfo()
+{
+  cpdf.cpdflib.endGetFontInfo();
+}
+
+
+function removeFonts(pdf)
+{
+  cpdf.cpdflib.removeFonts(pdf);
+}
+
+function copyFont(pdf, pdf2, range, pagenumber, fontname)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.copyFont(pdf, pdf2, rn, pagenumber, caml_string_of_jsstring(fontname));
+  deleterange(rn);
+}
+
+function draft(pdf, range, boxes)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.draft(pdf, rn, boxes);
+  deleterange(rn);
+}
+
+function removeAllText(pdf, range)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.removeAllText(pdf, rn);
+  deleterange(rn);
+}
+
+function blackText(pdf, range)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.blackText(pdf, rn);
+  deleterange(rn);
+}
+
+function blackLines(pdf, range)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.blackLines(pdf, rn);
+  deleterange(rn);
+}
+
+function blackFills(pdf, range)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.blackFills(pdf, rn);
+  deleterange(rn);
+}
+
+function thinLines(pdf, range, thickness)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.thinLines(pdf, rn, thickness);
+  deleterange(rn);
+}
+
+function copyId(from_pdf, to_pdf)
+{
+  cpdf.cpdflib.copyId(from_pdf, to_pdf);
+}
+
+function removeId(pdf)
+{
+  cpdf.cpdflib.removeId(pdf);
+}
+
+function setVersion(pdf, a)
+{
+  cpdf.cpdflib.setVersion(pdf, a);
+}
+
+function setFullVersion(pdf, a, b)
+{
+  cpdf.cpdflib.setFullVersion(pdf, a, b);
+}
+
+function removeDictEntry(pdf, key)
+{
+  cpdf.cpdflib.removeDictEntry(pdf, caml_string_of_jsstring(key));
+}
+
+function removeDictEntrySearch(pdf, key, searchterm)
+{
+  cpdf.cpdflib.removeDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(searchterm));
+}
+
+function replaceDictEntry(pdf, key, newval)
+{
+  cpdf.cpdflib.replaceDictEntry(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval));
+}
+
+function replaceDictEntrySearch(pdf, key, searchterm, newval)
+{
+  cpdf.cpdflib.replaceDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(searchterm), caml_string_of_jsstring(newval));
+}
+
+function getDictEntries(pdf, key)
+{
+  var r = cpdf.cpdflib.getDictEntries(pdf, caml_string_of_jsstring(key));
+  return r.data;
+}
+
+function removeClipping(pdf, range)
+{
+  var rn = range_of_array(range);
+  cpdf.cpdflib.removeClipping(pdf, rn);
+  deleterange(rn);
+}
+
+function textToPDF(w, h, font, fontsize, filename)
+{
+  var r = cpdf.cpdflib.textToPDF(w, h, font, fontsize, caml_string_of_jsstring(filename));
+  return r;
+}
+
+function textToPDFPaper(papersize, font, fontsize, filename)
+{
+  var r = cpdf.cpdflib.textToPDFPaper(papersize, font, fontsize, caml_string_of_jsstring(filename));
+  return r;
+}
+
+function annotationsJSON(pdf)
+{
+  var r = cpdf.cpdflib.annotationsJSON(pdf);
+  return r.data;
+}
+
+
 
 
