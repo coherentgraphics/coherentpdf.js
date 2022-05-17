@@ -856,7 +856,13 @@ console.log("---cpdf_replaceDictEntry()");
 cpdf.replaceDictEntry(misc14, "/Producer", "\"NewProducer\"");
 cpdf.toFile(misc14, "testoutputs/17replacedictentry.pdf", false, false);
 console.log("---cpdf_replaceDictEntrySearch()");
+try
+  {
 cpdf.replaceDictEntrySearch(misc15, "/Producer", "\"NewProducer2\"", "\"pdfTeX-1.40.22\"");
+  }
+catch (ignore)
+  {
+  }
 cpdf.toFile(misc15, "testoutputs/17replacedictentrysearch.pdf", false, false);
 console.log("---cpdf_getDictEntries()");
 var entries = cpdf.getDictEntries(misc16, "/Producer");
