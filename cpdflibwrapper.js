@@ -2769,6 +2769,9 @@ function annotationsJSON(pdf)
 }
 
 // CHAPTER 11. Document Information and Metadata
+
+/** Finds out if a document is linearized as quickly as possible without
+loading it. */
 function isLinearized(filename)
 {
   var r = cpdf.cpdflib.isLinearized(caml_string_of_jsstring(filename));
@@ -2776,6 +2779,7 @@ function isLinearized(filename)
   return r;
 }
 
+/** Returns the minor version number of a document. */
 function getVersion(pdf)
 {
   var r = cpdf.cpdflib.getVersion(pdf);
@@ -2783,6 +2787,7 @@ function getVersion(pdf)
   return r;
 }
 
+/** Returns the major version number of a document. */
 function getMajorVersion(pdf)
 {
   var r = cpdf.cpdflib.getMajorVersion(pdf);
@@ -2790,6 +2795,7 @@ function getMajorVersion(pdf)
   return r;
 }
 
+/** Returns the title of a document. */
 function getTitle(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getTitle(pdf));
@@ -2797,6 +2803,7 @@ function getTitle(pdf)
   return r;
 }
 
+/** Returns the author of a document. */
 function getAuthor(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getAuthor(pdf));
@@ -2804,6 +2811,7 @@ function getAuthor(pdf)
   return r;
 }
 
+/** Returns the subject of a document. */
 function getSubject(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getSubject(pdf));
@@ -2811,6 +2819,7 @@ function getSubject(pdf)
   return r;
 }
 
+/** Returns the keywords of a document. */
 function getKeywords(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getKeywords(pdf));
@@ -2818,6 +2827,7 @@ function getKeywords(pdf)
   return r;
 }
 
+/** Returns the creator of a document. */
 function getCreator(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getCreator(pdf));
@@ -2825,6 +2835,7 @@ function getCreator(pdf)
   return r;
 }
 
+/** Returns the producer of a document. */
 function getProducer(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getProducer(pdf));
@@ -2832,6 +2843,7 @@ function getProducer(pdf)
   return r;
 }
 
+/** Returns the creation date of a document. */
 function getCreationDate(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getCreationDate(pdf));
@@ -2839,6 +2851,7 @@ function getCreationDate(pdf)
   return r;
 }
 
+/** Returns the modification date of a document. */
 function getModificationDate(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getModificationDate(pdf));
@@ -2846,6 +2859,7 @@ function getModificationDate(pdf)
   return r;
 }
 
+/** Returns the XMP title of a document. */
 function getTitleXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getTitleXMP(pdf));
@@ -2853,6 +2867,7 @@ function getTitleXMP(pdf)
   return r;
 }
 
+/** Returns the XMP author of a document. */
 function getAuthorXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getAuthorXMP(pdf));
@@ -2860,6 +2875,7 @@ function getAuthorXMP(pdf)
   return r;
 }
 
+/** Returns the XMP subject of a document. */
 function getSubjectXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getSubjectXMP(pdf));
@@ -2867,6 +2883,7 @@ function getSubjectXMP(pdf)
   return r;
 }
 
+/** Returns the XMP keywords of a document. */
 function getKeywordsXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getKeywordsXMP(pdf));
@@ -2874,6 +2891,7 @@ function getKeywordsXMP(pdf)
   return r;
 }
 
+/** Returns the XMP creator of a document. */
 function getCreatorXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getCreatorXMP(pdf));
@@ -2881,6 +2899,7 @@ function getCreatorXMP(pdf)
   return r;
 }
 
+/** Returns the XMP producer of a document. */
 function getProducerXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getProducerXMP(pdf));
@@ -2888,6 +2907,7 @@ function getProducerXMP(pdf)
   return r;
 }
 
+/** Returns the XMP creation date of a document. */
 function getCreationDateXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getCreationDateXMP(pdf));
@@ -2895,6 +2915,7 @@ function getCreationDateXMP(pdf)
   return r;
 }
 
+/** Returns the XMP modification date of a document. */
 function getModificationDateXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getModificationDateXMP(pdf));
@@ -2902,102 +2923,119 @@ function getModificationDateXMP(pdf)
   return r;
 }
 
+/** Sets the title of a document. */
 function setTitle(pdf, s)
 {
   cpdf.cpdflib.setTitle(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the author of a document. */
 function setAuthor(pdf, s)
 {
   cpdf.cpdflib.setAuthor(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the subject of a document. */
 function setSubject(pdf, s)
 {
   cpdf.cpdflib.setSubject(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the keywords of a document. */
 function setKeywords(pdf, s)
 {
   cpdf.cpdflib.setKeywords(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the creator of a document. */
 function setCreator(pdf, s)
 {
   cpdf.cpdflib.setCreator(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the producer of a document. */
 function setProducer(pdf, s)
 {
   cpdf.cpdflib.setProducer(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the creation date of a document. */
 function setCreationDate(pdf, s)
 {
   cpdf.cpdflib.setCreationDate(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the modification date of a document. */
 function setModificationDate(pdf, s)
 {
   cpdf.cpdflib.setModificationDate(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the XMP title of a document. */
 function setTitleXMP(pdf, s)
 {
   cpdf.cpdflib.setTitleXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the XMP author of a document. */
 function setAuthorXMP(pdf, s)
 {
   cpdf.cpdflib.setAuthorXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the XMP author of a document. */
 function setSubjectXMP(pdf, s)
 {
   cpdf.cpdflib.setSubjectXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the XMP keywords of a document. */
 function setKeywordsXMP(pdf, s)
 {
   cpdf.cpdflib.setKeywordsXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the XMP creator of a document. */
 function setCreatorXMP(pdf, s)
 {
   cpdf.cpdflib.setCreatorXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the XMP producer of a document. */
 function setProducerXMP(pdf, s)
 {
   cpdf.cpdflib.setProducerXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the XMP creation date of a document. */
 function setCreationDateXMP(pdf, s)
 {
   cpdf.cpdflib.setCreationDateXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Sets the XMP modification date of a document. */
 function setModificationDateXMP(pdf, s)
 {
   cpdf.cpdflib.setModificationDateXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
+/** Returns the components from a PDF date string. */
 function getDateComponents(string)
 {
   var r = cpdf.cpdflib.getDateComponents(caml_string_of_jsstring(string));
@@ -3005,6 +3043,7 @@ function getDateComponents(string)
   return r.slice(1);
 }
 
+/** Builds a PDF date string from individual components. */
 function dateStringOfComponents(y, m, d, h, min, sec, hour_offset, minute_offset)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.dateStringOfComponents(y, m, d, h, min, sec, hour_offset, minute_offset));
@@ -3012,6 +3051,7 @@ function dateStringOfComponents(y, m, d, h, min, sec, hour_offset, minute_offset
   return r;
 }
 
+/** Gets the viewing rotation for a given page. */
 function getPageRotation(pdf, page)
 {
   var r = cpdf.cpdflib.getPageRotation(pdf, page);
@@ -3019,6 +3059,7 @@ function getPageRotation(pdf, page)
   return r;
 }
 
+/** Returns true, if that page has the given box. E.g "/CropBox". */
 function hasBox(pdf, page, box)
 {
   var r = cpdf.cpdflib.hasBox(pdf, page, caml_string_of_jsstring(box));
@@ -3026,6 +3067,9 @@ function hasBox(pdf, page, box)
   return r;
 }
 
+/** These functions get a box given the document, page number, min x, max x,
+min y, max y in points. Only succeeds if such a box exists, as checked by
+hasBox. */
 function getMediaBox(pdf, pagenumber)
 {
   var r = cpdf.cpdflib.getMediaBox(pdf, pagenumber);
@@ -3033,6 +3077,9 @@ function getMediaBox(pdf, pagenumber)
   return r.slice(1);
 }
 
+/** These functions get a box given the document, page number, min x, max x,
+min y, max y in points. Only succeeds if such a box exists, as checked by
+hasBox. */
 function getCropBox(pdf, pagenumber)
 {
   var r = cpdf.cpdflib.getCropBox(pdf, pagenumber);
@@ -3040,6 +3087,9 @@ function getCropBox(pdf, pagenumber)
   return r.slice(1);
 }
 
+/** These functions get a box given the document, page number, min x, max x,
+min y, max y in points. Only succeeds if such a box exists, as checked by
+hasBox. */
 function getArtBox(pdf, pagenumber)
 {
   var r = cpdf.cpdflib.getArtBox(pdf, pagenumber);
@@ -3047,6 +3097,9 @@ function getArtBox(pdf, pagenumber)
   return r.slice(1);
 }
 
+/** These functions get a box given the document, page number, min x, max x,
+min y, max y in points. Only succeeds if such a box exists, as checked by
+hasBox. */
 function getBleedBox(pdf, pagenumber)
 {
   var r = cpdf.cpdflib.getBleedBox(pdf, pagenumber);
@@ -3054,6 +3107,9 @@ function getBleedBox(pdf, pagenumber)
   return r.slice(1);
 }
 
+/** These functions get a box given the document, page number, min x, max x,
+min y, max y in points. Only succeeds if such a box exists, as checked by
+hasBox. */
 function getTrimBox(pdf, pagenumber)
 {
   var r = cpdf.cpdflib.getTrimBox(pdf, pagenumber);
@@ -3061,6 +3117,8 @@ function getTrimBox(pdf, pagenumber)
   return r.slice(1);
 }
 
+/** These functions set a box given the document, page range, min x, max x,
+min y, max y in points. */
 function setMediabox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
@@ -3069,6 +3127,8 @@ function setMediabox(pdf, range, minx, maxx, miny, maxy)
   checkError();
 }
 
+/** These functions set a box given the document, page range, min x, max x,
+min y, max y in points. */
 function setCropBox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
@@ -3077,6 +3137,8 @@ function setCropBox(pdf, range, minx, maxx, miny, maxy)
   checkError();
 }
 
+/** These functions set a box given the document, page range, min x, max x,
+min y, max y in points. */
 function setTrimBox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
@@ -3085,6 +3147,8 @@ function setTrimBox(pdf, range, minx, maxx, miny, maxy)
   checkError();
 }
 
+/** These functions set a box given the document, page range, min x, max x,
+min y, max y in points. */
 function setBleedBox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
@@ -3093,6 +3157,8 @@ function setBleedBox(pdf, range, minx, maxx, miny, maxy)
   checkError();
 }
 
+/** These functions set a box given the document, page range, min x, max x,
+min y, max y in points. */
 function setArtBox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
@@ -3101,103 +3167,139 @@ function setArtBox(pdf, range, minx, maxx, miny, maxy)
   checkError();
 }
 
+/** Marks a document as trapped. */
 function markTrapped(pdf)
 {
   cpdf.cpdflib.markTrapped(pdf);
   checkError();
 }
 
+/** Marks a document as untrapped. */
 function markUntrapped(pdf)
 {
   cpdf.cpdflib.markUntrapped(pdf);
   checkError();
 }
 
+/** Marks a document as trapped in XMP metadata. */
 function markTrappedXMP(pdf)
 {
   cpdf.cpdflib.markTrappedXMP(pdf);
   checkError();
 }
 
+/** Marks a document as untrapped in XMP metadata. */
 function markUntrappedXMP(pdf)
 {
   cpdf.cpdflib.markUntrappedXMP(pdf);
   checkError();
 }
 
+/** Single page */
 var singlePage = 0;
+
+/** One column */
 var oneColumn = 1;
+
+/** Two column left */
 var twoColumnLeft = 2;
+
+/** Two column right */
 var twoColumnRight = 3;
+
+/** Two page left */
 var twoPageLeft = 4;
+
+/** Two page right */
 var twoPageRight = 5;
   
+/** Sets the page layout for a document. */
 function setPageLayout(pdf, layout)
 {
   cpdf.cpdflib.setPageLayout(pdf, layout);
   checkError();
 }
 
+/** Use none */
 var useNone = 0;
+
+/** Use outlines */
 var useOutlines = 1;
+
+/** Use thumbs */
 var useThumbs = 2;
+
+/** Use OC */
 var useOC = 3;
+
+/** Use attachments */
 var useAttachments = 4;
 
+/** Sets the page mode for a document. */
 function setPageMode(pdf, mode)
 {
   cpdf.cpdflib.setPageMode(pdf, mode);
   checkError();
 }
 
+/** Sets the hide toolbar flag. */
 function hideToolbar(pdf, flag)
 {
   cpdf.cpdflib.hideToolbar(pdf, flag);
   checkError();
 }
 
+/** Sets the hide menubar flag. */
 function hideMenubar(pdf, flag)
 {
   cpdf.cpdflib.hideMenubar(pdf, flag);
   checkError();
 }
 
+/** Sets the hide window UI flag. */
 function hideWindowUi(pdf, flag)
 {
   cpdf.cpdflib.hideWindowUi(pdf, flag);
   checkError();
 }
 
+/** Sets the fit window flag. */
 function fitWindow(pdf, flag)
 {
   cpdf.cpdflib.fitWindow(pdf, flag);
   checkError();
 }
 
+/** Sets the center window flag. */
 function centerWindow(pdf, flag)
 {
   cpdf.cpdflib.centerWindow(pdf, flag);
   checkError();
 }
 
+/** Sets the display doc title flag. */
 function displayDocTitle(pdf, flag)
 {
   cpdf.cpdflib.displayDocTitle(pdf, flag);
   checkError();
 }
 
+/** Sets the PDF to open, possibly with zoom-to-fit, at the given page
+number. */
 function openAtPage(pdf, fit, pagenumber)
 {
   cpdf.cpdflib.openAtPage(pdf, fit, pagenumber);
   checkError();
 }
 
+/** Sets the XMP metadata of a document, given a file name. */
 function setMetadataFromFile(pdf, filename)
 {
   cpdf.cpdflib.setMetadataFromFile(pdf, caml_string_of_jsstring(filename));
   checkError();
 }
 
+/** Sets the XMP metadata from an array of bytes. */
 function setMetadataFromByteArray(pdf, data)
 {
   var bigarray = caml_ba_from_typed_array(data);
@@ -3205,12 +3307,14 @@ function setMetadataFromByteArray(pdf, data)
   checkError();
 }
 
+/** Removes the XMP metadata from a document. */
 function removeMetadata(pdf)
 {
   cpdf.cpdflib.removeMetadata(pdf);
   checkError();
 }
 
+/** Returns the XMP metadata from a document. */
 function getMetadata(pdf)
 {
   var r = cpdf.cpdflib.getMetadata(pdf);
@@ -3218,24 +3322,40 @@ function getMetadata(pdf)
   checkError();
 }
 
+/** Builds fresh XMP metadata as best it can from existing metadata in the
+document. */
 function createMetadata(pdf)
 {
   cpdf.cpdflib.createMetadata(pdf);
   checkError();
 }
 
+/** Sets the metadata date for a PDF. The date is given in PDF date format --
+cpdf will convert it to XMP format. The date 'now' means now. */
 function setMetadataDate(pdf, date)
 {
   cpdf.cpdflib.setMetadataDate(pdf, caml_string_of_jsstring(date));
   checkError();
 }
 
+/** 1, 2, 3... */
 var decimalArabic = 0;
+
+/** I, II, III... */
 var uppercaseRoman = 1;
+
+/** i, ii, iii... */
 var lowercaseRoman = 2;
+
+/** A, B, C... */
 var uppercaseLetters = 3;
+
+/** a, b, c... */
 var lowercaseLetters = 4;
 
+/** Adds page labels. The prefix is prefix text for each label. The range is
+the page range the labels apply to. Offset can be used to shift the numbering
+up or down. */
 function addPageLabels(pdf, style, prefix, offset, range, progress)
 {
   var rn = range_of_array(range);
@@ -3244,12 +3364,14 @@ function addPageLabels(pdf, style, prefix, offset, range, progress)
   checkError();
 }
 
+/** Removes the page labels from the document. */
 function removePageLabels(pdf)
 {
   cpdf.cpdflib.removePageLabels(pdf);
   checkError();
 }
 
+/** Calculates the full label string for a given page, and returns it. */
 function getPageLabelStringForPage(pdf, pagenumber)
 {
   var r = cpdf.cpdflib.getPageLabelStringForPage(pdf, pagenumber);
@@ -3257,6 +3379,23 @@ function getPageLabelStringForPage(pdf, pagenumber)
   return r;
 }
 
+/** Gets page label data. Call startGetPageLabels to find out how many
+there are, then use these serial numbers to get the style, prefix, offset
+and start value (note not a range). Call endGetPageLabels to clean up.
+
+For example, a document might have five pages of introduction with roman
+numerals, followed by the rest of the pages in decimal arabic, numbered from
+one:
+
+labelstyle = LowercaseRoman
+labelprefix = ""
+startpage = 1
+startvalue = 1
+
+labelstyle = DecimalArabic
+labelprefix = ""
+startpage = 6
+startvalue = 1 */
 function startGetPageLabels(pdf)
 {
   var r = cpdf.cpdflib.startGetPageLabels(pdf);
@@ -3264,6 +3403,23 @@ function startGetPageLabels(pdf)
   return r;
 }
 
+/** Gets page label data. Call startGetPageLabels to find out how many
+there are, then use these serial numbers to get the style, prefix, offset
+and start value (note not a range). Call endGetPageLabels to clean up.
+
+For example, a document might have five pages of introduction with roman
+numerals, followed by the rest of the pages in decimal arabic, numbered from
+one:
+
+labelstyle = LowercaseRoman
+labelprefix = ""
+startpage = 1
+startvalue = 1
+
+labelstyle = DecimalArabic
+labelprefix = ""
+startpage = 6
+startvalue = 1 */
 function getPageLabelStyle(n)
 {
   var r = cpdf.cpdflib.getPageLabelStyle(n);
@@ -3271,6 +3427,23 @@ function getPageLabelStyle(n)
   return r;
 }
 
+/** Gets page label data. Call startGetPageLabels to find out how many
+there are, then use these serial numbers to get the style, prefix, offset
+and start value (note not a range). Call endGetPageLabels to clean up.
+
+For example, a document might have five pages of introduction with roman
+numerals, followed by the rest of the pages in decimal arabic, numbered from
+one:
+
+labelstyle = LowercaseRoman
+labelprefix = ""
+startpage = 1
+startvalue = 1
+
+labelstyle = DecimalArabic
+labelprefix = ""
+startpage = 6
+startvalue = 1 */
 function getPageLabelPrefix(n)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getPageLabelPrefix(n));
@@ -3278,6 +3451,23 @@ function getPageLabelPrefix(n)
   return r;
 }
 
+/** Gets page label data. Call startGetPageLabels to find out how many
+there are, then use these serial numbers to get the style, prefix, offset
+and start value (note not a range). Call endGetPageLabels to clean up.
+
+For example, a document might have five pages of introduction with roman
+numerals, followed by the rest of the pages in decimal arabic, numbered from
+one:
+
+labelstyle = LowercaseRoman
+labelprefix = ""
+startpage = 1
+startvalue = 1
+
+labelstyle = DecimalArabic
+labelprefix = ""
+startpage = 6
+startvalue = 1 */
 function getPageLabelOffset(n)
 {
   var r = cpdf.cpdflib.getPageLabelOffset(n);
@@ -3285,6 +3475,23 @@ function getPageLabelOffset(n)
   return r;
 }
 
+/** Gets page label data. Call startGetPageLabels to find out how many
+there are, then use these serial numbers to get the style, prefix, offset
+and start value (note not a range). Call endGetPageLabels to clean up.
+
+For example, a document might have five pages of introduction with roman
+numerals, followed by the rest of the pages in decimal arabic, numbered from
+one:
+
+labelstyle = LowercaseRoman
+labelprefix = ""
+startpage = 1
+startvalue = 1
+
+labelstyle = DecimalArabic
+labelprefix = ""
+startpage = 6
+startvalue = 1 */
 function getPageLabelRange(n)
 {
   var r = cpdf.cpdflib.getPageLabelRange(n);
@@ -3292,6 +3499,23 @@ function getPageLabelRange(n)
   return r;
 }
 
+/** Gets page label data. Call startGetPageLabels to find out how many
+there are, then use these serial numbers to get the style, prefix, offset
+and start value (note not a range). Call endGetPageLabels to clean up.
+
+For example, a document might have five pages of introduction with roman
+numerals, followed by the rest of the pages in decimal arabic, numbered from
+one:
+
+labelstyle = LowercaseRoman
+labelprefix = ""
+startpage = 1
+startvalue = 1
+
+labelstyle = DecimalArabic
+labelprefix = ""
+startpage = 6
+startvalue = 1 */
 function endGetPageLabels()
 {
   cpdf.cpdflib.endGetPageLabels();
