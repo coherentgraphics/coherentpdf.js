@@ -1566,6 +1566,10 @@ function onexit()
 }
 
 //CHAPTER 1. Basics
+
+/** Loads a PDF file from a given file. Supply a user password (possibly blank)
+in case the file is encrypted. It won't be decrypted, but sometimes the
+password is needed just to load the file. */
 function fromFile(filename, userpw)
 {
   var r = 
@@ -1573,6 +1577,11 @@ function fromFile(filename, userpw)
   return r
 }
 
+/** Loads a PDF from a file, doing only minimal parsing. The objects will be
+read and parsed when they are actually needed. Use this when the whole file
+won't be required. Also supply a user password (possibly blank) in case the
+file is encrypted. It won't be decrypted, but sometimes the password is needed
+just to load the file. */
 function fromFileLazy(filename, userpw)
 {
   var r =
@@ -1581,6 +1590,7 @@ function fromFileLazy(filename, userpw)
   return r;
 }
 
+/** Loads a file from memory given any user password. */
 function fromMemory(data, userpw)
 {
   var bigarray = caml_ba_from_typed_array(data);
@@ -1589,6 +1599,8 @@ function fromMemory(data, userpw)
   return r;
 }
 
+/** Loads a file from memory, given a pointer and a length, and the user
+password, but lazily like fromFileLazy. */
 function fromMemoryLazy(data, userpw)
 {
   var bigarray = caml_ba_from_typed_array(data);
@@ -1597,6 +1609,10 @@ function fromMemoryLazy(data, userpw)
   return r;
 }
 
+/** To enumerate the list of currently allocated PDFs, call startEnumeratePDFs
+which gives the number, n, of PDFs allocated, then enumeratePDFsInfo and
+enumeratePDFsKey with index numbers from 0...(n - 1). Call endEnumeratePDFs to
+clean up. */
 function startEnumeratePDFs()
 {
   var r = cpdf.cpdflib.startEnumeratePDFs();
@@ -1604,6 +1620,10 @@ function startEnumeratePDFs()
   return r;
 }
 
+/** To enumerate the list of currently allocated PDFs, call startEnumeratePDFs
+which gives the number, n, of PDFs allocated, then enumeratePDFsInfo and
+enumeratePDFsKey with index numbers from 0...(n - 1). Call endEnumeratePDFs to
+clean up. */
 function enumeratePDFsKey(n)
 {
   var r = cpdf.cpdflib.enumeratePDFsKey(n);
@@ -1611,6 +1631,10 @@ function enumeratePDFsKey(n)
   return r;
 }
 
+/** To enumerate the list of currently allocated PDFs, call startEnumeratePDFs
+which gives the number, n, of PDFs allocated, then enumeratePDFsInfo and
+enumeratePDFsKey with index numbers from 0...(n - 1). Call endEnumeratePDFs to
+clean up. */
 function enumeratePDFsInfo(n)
 {
   var r = cpdf.cpdflib.enumeratePDFsInfo(n);
@@ -1618,12 +1642,17 @@ function enumeratePDFsInfo(n)
   return caml_jsstring_of_string(r);
 }
 
+/** To enumerate the list of currently allocated PDFs, call startEnumeratePDFs
+which gives the number, n, of PDFs allocated, then enumeratePDFsInfo and
+enumeratePDFsKey with index numbers from 0...(n - 1). Call endEnumeratePDFs to
+clean up. */
 function endEnumeratePDFs()
 {
   cpdf.cpdflib.endEnumeratePDFs();
   checkError();
 }
 
+/** Converts a figure in centimetres to points (72 points to 1 inch) */
 function ptOfCm(i)
 {
   var r = cpdf.cpdflib.ptOfCm(i);
@@ -1631,6 +1660,7 @@ function ptOfCm(i)
   return r;
 }
 
+/** Converts a figure in millimetres to points (72 points to 1 inch) */
 function ptOfMm(i)
 {
   var r = cpdf.cpdflib.ptOfMm(i);
@@ -1638,6 +1668,7 @@ function ptOfMm(i)
   return r;
 }
 
+/** Converts a figure in inches to points (72 points to 1 inch) */
 function ptOfIn(i)
 {
   var r = cpdf.cpdflib.ptOfIn(i);
@@ -1645,6 +1676,8 @@ function ptOfIn(i)
   return r;
 }
 
+
+/** Converts a figure in points to centimetres (72 points to 1 inch) */
 function cmOfPt(i)
 {
   var r = cpdf.cpdflib.cmOfPt(i);
@@ -1652,6 +1685,7 @@ function cmOfPt(i)
   return r;
 }
 
+/** Converts a figure in points to millimetres (72 points to 1 inch) */
 function mmOfPt(i)
 {
   var r = cpdf.cpdflib.mmOfPt(i);
@@ -1659,6 +1693,7 @@ function mmOfPt(i)
   return r;
 }
 
+/** Converts a figure in points to inches (72 points to 1 inch) */
 function inOfPt(i)
 {
   var r = cpdf.cpdflib.inOfPt(i);
@@ -1666,6 +1701,9 @@ function inOfPt(i)
   return r;
 }
 
+/** Parses a page specification with reference to a given PDF (the PDF is
+supplied so that page ranges which reference pages which do not exist are
+rejected). */
 function parsePagespec(pdf, pagespec)
 {
   var r = cpdf.cpdflib.parsePagespec(pdf, caml_string_of_jsstring(pagespec));
@@ -1675,6 +1713,8 @@ function parsePagespec(pdf, pagespec)
   return arr;
 }
 
+/** Validates a page specification so far as is possible in the absence of
+the actual document. Result is true if valid. */
 function validatePagespec(pagespec)
 {
   var r = cpdf.cpdflib.validatePagespec(caml_string_of_jsstring(pagespec));
@@ -1682,6 +1722,8 @@ function validatePagespec(pagespec)
   return r;
 }
 
+/** Builds a page specification from a page range. For example, the range
+containing 1,2,3,6,7,8 in a document of 8 pages might yield "1-3,6-end" */
 function stringOfPagespec(pdf, r)
 {
   var rn = range_of_array(r);
@@ -1691,6 +1733,7 @@ function stringOfPagespec(pdf, r)
   return ret;
 }
 
+/** Creates a range with no pages in. */
 function blankRange()
 {
   var rn = cpdf.cpdflib.blankRange();
@@ -1700,6 +1743,8 @@ function blankRange()
   return r;
 }
 
+/** Builds a range from one page to another inclusive. For example, range(3,7)
+gives the range 3,4,5,6,7 */
 function range(f, t)
 {
   var rn = cpdf.cpdflib.range(f, t);
@@ -1709,6 +1754,7 @@ function range(f, t)
   return r;
 }
 
+/** The range containing all the pages in a given document. */
 function all(pdf)
 {
   var rn = cpdf.cpdflib.all(pdf);
@@ -1718,6 +1764,7 @@ function all(pdf)
   return r;
 }
 
+/** Makes a range which contains just the even pages of another range. */
 function even(r_in)
 {
   var ri = range_of_array(r_in);
@@ -1729,6 +1776,7 @@ function even(r_in)
   return r;
 }
 
+/** Makes a range which contains just the odd pages of another range. */
 function odd(r_in)
 {
   var ri = range_of_array(r_in);
@@ -1740,6 +1788,8 @@ function odd(r_in)
   return r;
 }
 
+/** Makes the union of two ranges giving a range containing the pages in range
+a and range b. */
 function rangeUnion(a, b)
 {
   var ra = range_of_array(a);
@@ -1753,6 +1803,8 @@ function rangeUnion(a, b)
   return r;
 }
 
+/** Makes the difference of two ranges, giving a range containing all the
+pages in a except for those which are also in b. */
 function difference(a, b)
 {
   var ra = range_of_array(a);
@@ -1766,6 +1818,7 @@ function difference(a, b)
   return r;
 }
 
+/** Deduplicates a range, making a new one. */
 function removeDuplicates(a)
 {
   var rn = range_of_array(a);
@@ -1777,6 +1830,7 @@ function removeDuplicates(a)
   return r;
 }
 
+/** Gives the number of pages in a range. */
 function rangeLength(r)
 {
   var rn = range_of_array(r);
@@ -1786,6 +1840,8 @@ function rangeLength(r)
   return r_out;
 }
 
+/** Gets the page number at position n in a range, where n runs from 0 to
+rangeLength - 1. */
 function rangeGet(r, n)
 {
   var rn = range_of_array(r);
@@ -1795,6 +1851,7 @@ function rangeGet(r, n)
   return r_out;
 }
 
+/** Adds the page to a range, if it is not already there. */
 function rangeAdd(r, page)
 {
   var rn = range_of_array(r)
@@ -1806,6 +1863,7 @@ function rangeAdd(r, page)
   return rout;
 }
 
+/** Returns true if the page is in the range, false otherwise. */
 function isInRange(r, page)
 {
   var rn = range_of_array(r);
@@ -1815,6 +1873,7 @@ function isInRange(r, page)
   return ret;
 }
 
+/** Returns the number of pages in a PDF. */
 function pages(pdf)
 {
   var r = cpdf.cpdflib.pages(pdf);
@@ -1822,6 +1881,8 @@ function pages(pdf)
   return r;
 }
 
+/** Returns the number of pages in a given PDF, with given user password. It
+tries to do this as fast as possible, without loading the whole file. */
 function pagesFast(password, filename)
 {
   var r = cpdf.cpdflib.pagesFast(caml_string_of_jsstring(password), caml_string_of_jsstring(filename));
@@ -1829,18 +1890,28 @@ function pagesFast(password, filename)
   return r;
 }
 
+/** Writes the file to a given filename. If linearize is true, it will be
+linearized if a linearizer is available. If make_id is true, it will be
+given a new ID. */
 function toFile(pdf, filename, linearize, make_id)
 {
   cpdf.cpdflib.toFile(pdf, caml_string_of_jsstring(filename), linearize, make_id);
   checkError();
 }
 
+/** Writes the file to a given filename. If make_id is true, it will be given
+a new ID.  If preserve_objstm is true, existing object streams will be
+preserved. If generate_objstm is true, object streams will be generated even if
+not originally present. If compress_objstm is true, object streams will be
+compressed (what we usually want). WARNING: the pdf argument will be invalid
+after this call, and should be not be used again. */
 function toFileExt(pdf, filename, linearize, make_id, preserve_objstm, create_objstm, compress_objstm)
 {
   cpdf.cpdflib.toFileExt(pdf, caml_string_of_jsstring(filename), linearize, make_id, preserve_objstm, create_objstm, compress_objstm);
   checkError();
 }
 
+/** Writes a PDF file and returns as an array of bytes. */
 function toMemory(pdf, linearize, make_id)
 {
   var r = cpdf.cpdflib.toMemory(pdf, linearize, make_id);
@@ -1848,6 +1919,7 @@ function toMemory(pdf, linearize, make_id)
   return r.data;
 }
 
+/** Returns true if a document is encrypted, false otherwise. */
 function isEncrypted(pdf)
 {
   var r = cpdf.cpdflib.isEncrypted(pdf);
@@ -1855,36 +1927,71 @@ function isEncrypted(pdf)
   return r;
 }
 
+/** Attempts to decrypt a PDF using the given user password. An exception is
+raised if the decryption fails. */
 function decryptPdf(pdf, userpw)
 {
   cpdf.cpdflib.decryptPdf(pdf, caml_string_of_jsstring(userpw));
   checkError();
 }
 
+/** Attempts to decrypt a PDF using the given owner password. Raises an
+exception if the decryption fails. */
 function decryptPdfOwner(pdf, ownerpw)
 {
   cpdf.cpdflib.decryptPdfOwner(pdf, caml_string_of_jsstring(ownerpw));
   checkError();
 }
 
+/** Cannot edit the document */
 var noEdit = 0;
+
+/** Cannot print the document */
 var noPrint = 1;
+
+/** Cannot copy the document */
 var noCopy = 2;
+
+/** Cannot annotate the document */
 var noAnnot = 3;
+
+/** Cannot edit forms in the document */
 var noForms = 4;
+
+/** Cannot extract information */
 var noExtract = 5;
+
+/** Cannot assemble into a bigger document */
 var noAssemble = 6;
+
+/** Cannot print high quality */
 var noHqPrint = 7;
 
+/** 40 bit RC4 encryption */
 var pdf40bit = 0;
+
+/** 128 bit RC4 encryption */
 var pdf128bit = 1;
+
+/** 128 bit AES encryption, do not encrypt metadata */
 var aes128bitfalse = 2;
+
+/** 128 bit AES encryption, encrypt metadata */
 var aes128bittrue = 3;
+
+/** Deprecated. Do not use for new files */
 var aes256bitfalse = 4;
+
+/** Deprecated. Do not use for new files */
 var aes256bittrue = 5;
+
+/** 256 bit AES encryption, do not encrypt metadata */
 var aes256bitisofalse = 6;
+
+/** 256 bit AES encryption, encrypt metadata */
 var aes256bitisotrue = 7;
 
+/** Writes a file as encrypted. */
 function toFileEncrypted(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid, filename)
 {
   var ps = [0].concat(permissions);
@@ -1894,6 +2001,8 @@ function toFileEncrypted(pdf, encryption_method, permissions, ownerpw, userpw, l
   checkError();
 }
 
+/** Writes a file as encrypted with extra parameters. WARNING: the pdf argument
+will be invalid after this call, and should not be used again. */
 function toFileEncryptedExt(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid, preserve_objstm, generate_objstm, compress_objstm, filename)
 {
   var ps = [0].concat(permissions);
@@ -1904,6 +2013,7 @@ function toFileEncryptedExt(pdf, encryption_method, permissions, ownerpw, userpw
   checkError();
 }
 
+/** Returns true if the given permission (restriction) is present. */
 function hasPermission(pdf, permission)
 {
   var r = cpdf.cpdflib.hasPermission(pdf, permission);
@@ -1911,6 +2021,7 @@ function hasPermission(pdf, permission)
   return r;
 }
 
+/** Returns the encryption method currently in use on a document. */
 function encryptionKind(pdf)
 {
   var r = cpdf.cpdflib.encryptionKind(pdf);
