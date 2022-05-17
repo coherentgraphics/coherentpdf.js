@@ -3102,18 +3102,23 @@ function endGetPageLabels()
 }
 
 // CHAPTER 12. File Attachments
+    
+/** Attaches a file to the pdf. It is attached at document level. */
 function attachFile(filename, pdf)
 {
   cpdf.cpdflib.attachFile(caml_string_of_jsstring(filename), pdf);
   checkError();
 }
 
+/** Attaches a file, given its file name, pdf, and the page number
+to which it should be attached. */
 function attachFileToPage(filename, pdf, pagenumber)
 {
   cpdf.cpdflib.attachFileToPage(caml_string_of_jsstring(filename), pdf, pagenumber);
   checkError();
 }
 
+/** Attaches data from memory, just like attachFile. */
 function attachFileFromMemory(data, filename, pdf)
 {
   var bigarray = caml_ba_from_typed_array(data);
@@ -3122,6 +3127,7 @@ function attachFileFromMemory(data, filename, pdf)
   return r;
 }
 
+/** Attaches to a page from memory, just like attachFileToPage. */
 function attachFileToPageFromMemory(data, filename, pdf, pagenumber)
 {
   var bigarray = caml_ba_from_typed_array(data);
@@ -3130,24 +3136,27 @@ function attachFileToPageFromMemory(data, filename, pdf, pagenumber)
   return r;
 }
 
+/** Removes all page- and document-level attachments from a document. */
 function removeAttachedFiles(pdf)
 {
   cpdf.cpdflib.removeAttachedFiles(pdf);
   checkError();
 }
 
+/** Lists information about attachments. Call startGetAttachments(pdf) first,
+then numberGetAttachments to find out how many there are. Then
+getAttachmentName etc. to return each one 0...(n - 1). Finally, call
+endGetAttachments to clean up. */
 function startGetAttachments(pdf)
 {
   cpdf.cpdflib.startGetAttachments(pdf);
   checkError();
 }
 
-function endGetAttachments()
-{
-  cpdf.cpdflib.endGetAttachments();
-  checkError();
-}
-
+/** Lists information about attachments. Call startGetAttachments(pdf) first,
+then numberGetAttachments to find out how many there are. Then
+getAttachmentName etc. to return each one 0...(n - 1). Finally, call
+endGetAttachments to clean up. */
 function numberGetAttachments()
 {
   var r = cpdf.cpdflib.numberGetAttachments();
@@ -3155,6 +3164,7 @@ function numberGetAttachments()
   return r;
 }
 
+/** Gets the name of an attachment. */
 function getAttachmentName(n)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getAttachmentName(n));
@@ -3162,6 +3172,7 @@ function getAttachmentName(n)
   return r;
 }
 
+/** Gets the page number. 0 = document level. */
 function getAttachmentPage(n)
 {
   var r = cpdf.cpdflib.getAttachmentPage(n);
@@ -3169,6 +3180,7 @@ function getAttachmentPage(n)
   return r;
 }
 
+/** Gets the attachment data itself. */
 function getAttachmentData(n)
 {
   var r = cpdf.cpdflib.getAttachmentData(n);
@@ -3176,7 +3188,22 @@ function getAttachmentData(n)
   return r.data;
 }
 
+/** Cleans up after getting attachments. */
+function endGetAttachments()
+{
+  cpdf.cpdflib.endGetAttachments();
+  checkError();
+}
+
 //CHAPTER 13. Images
+
+/** Gets image data, including resolution at all points of use. Call
+startGetImageResolution(pdf, min_required_resolution) to begin the process of
+obtaining data on all image uses below min_required_resolution, returning the
+total number. So, to return all image uses, specify a very high
+min_required_resolution. Then, call the other functions giving a serial number
+0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
+up. */
 function startGetImageResolution(pdf, min_required_resolution)
 {
   var r = cpdf.cpdflib.startGetImageResolution(pdf, min_required_resolution);
@@ -3184,6 +3211,13 @@ function startGetImageResolution(pdf, min_required_resolution)
   return r;
 }
 
+/** Gets image data, including resolution at all points of use. Call
+startGetImageResolution(pdf, min_required_resolution) to begin the process of
+obtaining data on all image uses below min_required_resolution, returning the
+total number. So, to return all image uses, specify a very high
+min_required_resolution. Then, call the other functions giving a serial number
+0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
+up. */
 function getImageResolutionPageNumber(n)
 {
   var r = cpdf.cpdflib.getImageResolutionPageNumber(n);
@@ -3191,6 +3225,13 @@ function getImageResolutionPageNumber(n)
   return r;
 }
 
+/** Gets image data, including resolution at all points of use. Call
+startGetImageResolution(pdf, min_required_resolution) to begin the process of
+obtaining data on all image uses below min_required_resolution, returning the
+total number. So, to return all image uses, specify a very high
+min_required_resolution. Then, call the other functions giving a serial number
+0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
+up. */
 function getImageResolutionImageName(n)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getImageResolutionImageName(n));
@@ -3198,6 +3239,13 @@ function getImageResolutionImageName(n)
   return r;
 }
 
+/** Gets image data, including resolution at all points of use. Call
+startGetImageResolution(pdf, min_required_resolution) to begin the process of
+obtaining data on all image uses below min_required_resolution, returning the
+total number. So, to return all image uses, specify a very high
+min_required_resolution. Then, call the other functions giving a serial number
+0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
+up. */
 function getImageResolutionXPixels(n)
 {
   var r = cpdf.cpdflib.getImageResolutionXPixels(n);
@@ -3205,6 +3253,13 @@ function getImageResolutionXPixels(n)
   return r;
 }
 
+/** Gets image data, including resolution at all points of use. Call
+startGetImageResolution(pdf, min_required_resolution) to begin the process of
+obtaining data on all image uses below min_required_resolution, returning the
+total number. So, to return all image uses, specify a very high
+min_required_resolution. Then, call the other functions giving a serial number
+0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
+up. */
 function getImageResolutionYPixels(n)
 {
   var r = cpdf.cpdflib.getImageResolutionYPixels(n);
@@ -3212,6 +3267,13 @@ function getImageResolutionYPixels(n)
   return r;
 }
 
+/** Gets image data, including resolution at all points of use. Call
+startGetImageResolution(pdf, min_required_resolution) to begin the process of
+obtaining data on all image uses below min_required_resolution, returning the
+total number. So, to return all image uses, specify a very high
+min_required_resolution. Then, call the other functions giving a serial number
+0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
+up. */
 function getImageResolutionXRes(n)
 {
   var r = cpdf.cpdflib.getImageResolutionXRes(n);
@@ -3219,6 +3281,13 @@ function getImageResolutionXRes(n)
   return r;
 }
 
+/** Gets image data, including resolution at all points of use. Call
+startGetImageResolution(pdf, min_required_resolution) to begin the process of
+obtaining data on all image uses below min_required_resolution, returning the
+total number. So, to return all image uses, specify a very high
+min_required_resolution. Then, call the other functions giving a serial number
+0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
+up. */
 function getImageResolutionYRes(n)
 {
   var r = cpdf.cpdflib.getImageResolutionYRes(n);
@@ -3226,6 +3295,13 @@ function getImageResolutionYRes(n)
   return r;
 }
 
+/** Gets image data, including resolution at all points of use. Call
+startGetImageResolution(pdf, min_required_resolution) to begin the process of
+obtaining data on all image uses below min_required_resolution, returning the
+total number. So, to return all image uses, specify a very high
+min_required_resolution. Then, call the other functions giving a serial number
+0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
+up. */
 function endGetImageResolution()
 {
   checkError();
@@ -3233,12 +3309,23 @@ function endGetImageResolution()
 }
 
 // CHAPTER 14. Fonts.
+
+/** Retrieves font information. First, call startGetFontInfo(pdf). Now call
+numberFonts to return the number of fonts. For each font, call one or more of
+getFontPage, getFontName, getFontType, and getFontEncoding giving a serial
+number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
+up. */
 function startGetFontInfo(pdf)
 {
   checkError();
   cpdf.cpdflib.startGetFontInfo(pdf);
 }
 
+/** Retrieves font information. First, call startGetFontInfo(pdf). Now call
+numberFonts to return the number of fonts. For each font, call one or more of
+getFontPage, getFontName, getFontType, and getFontEncoding giving a serial
+number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
+up. */
 function numberFonts()
 {
   var r = cpdf.cpdflib.numberFonts();
@@ -3246,6 +3333,11 @@ function numberFonts()
   return r;
 }
 
+/** Retrieves font information. First, call startGetFontInfo(pdf). Now call
+numberFonts to return the number of fonts. For each font, call one or more of
+getFontPage, getFontName, getFontType, and getFontEncoding giving a serial
+number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
+up. */
 function getFontPage(n)
 {
   var r = cpdf.cpdflib.getFontPage(n);
@@ -3253,6 +3345,11 @@ function getFontPage(n)
   return r;
 }
 
+/** Retrieves font information. First, call startGetFontInfo(pdf). Now call
+numberFonts to return the number of fonts. For each font, call one or more of
+getFontPage, getFontName, getFontType, and getFontEncoding giving a serial
+number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
+up. */
 function getFontName(n)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getFontName(n));
@@ -3260,6 +3357,11 @@ function getFontName(n)
   return r;
 }
 
+/** Retrieves font information. First, call startGetFontInfo(pdf). Now call
+numberFonts to return the number of fonts. For each font, call one or more of
+getFontPage, getFontName, getFontType, and getFontEncoding giving a serial
+number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
+up. */
 function getFontType(n)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getFontType(n));
@@ -3267,6 +3369,11 @@ function getFontType(n)
   return r;
 }
 
+/** Retrieves font information. First, call startGetFontInfo(pdf). Now call
+numberFonts to return the number of fonts. For each font, call one or more of
+getFontPage, getFontName, getFontType, and getFontEncoding giving a serial
+number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
+up. */
 function getFontEncoding(n)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getFontEncoding(n));
@@ -3274,18 +3381,26 @@ function getFontEncoding(n)
   return r;
 }
 
+/** Retrieves font information. First, call startGetFontInfo(pdf). Now call
+numberFonts to return the number of fonts. For each font, call one or more of
+getFontPage, getFontName, getFontType, and getFontEncoding giving a serial
+number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
+up. */
 function endGetFontInfo()
 {
   cpdf.cpdflib.endGetFontInfo();
   checkError();
 }
 
+/** Removes all font data from a file. */
 function removeFonts(pdf)
 {
   cpdf.cpdflib.removeFonts(pdf);
   checkError();
 }
 
+/** Copies the given font from the given page in the 'from' PDF to every page
+in the 'to' PDF. The new font is stored under its font name. */
 function copyFont(docfrom, docto, range, pagenumber, fontname)
 {
   var rn = range_of_array(range);
@@ -3295,12 +3410,17 @@ function copyFont(docfrom, docto, range, pagenumber, fontname)
 }
 
 // CHAPTER 15. PDF and JSON
+
+/** Outputs a PDF in JSON format to the given filename. If parse_content is
+true, page content is parsed. If no_stream_data is true, all stream data is
+suppressed entirely. If decompress_streams is true, streams are decompressed. */
 function outputJSON(filename, parse_content, no_stream_data, decompress_streams, pdf)
 {
   cpdf.cpdflib.outputJSON(caml_string_of_jsstring(filename), parse_content, no_stream_data, decompress_streams, pdf);
   checkError();
 }
 
+/** Like outputJSON, but it writes to a byte array in memory. */
 function outputJSONMemory(parse_content, no_stream_data, decompress_streams, pdf)
 {
   var r = cpdf.cpdflib.outputJSONMemory(parse_content, no_stream_data, decompress_streams, pdf);
@@ -3308,6 +3428,7 @@ function outputJSONMemory(parse_content, no_stream_data, decompress_streams, pdf
   return r.data;
 }
 
+/** Loads a PDF from a JSON file given its filename. */
 function fromJSON(filename)
 {
   var r = cpdf.cpdflib.fromJSON(caml_string_of_jsstring(filename));
@@ -3315,6 +3436,7 @@ function fromJSON(filename)
   return r;
 }
 
+/** Loads a PDF from a JSON file in memory. */
 function fromJSONMemory(data)
 {
   var bigarray = caml_ba_from_typed_array(data);
