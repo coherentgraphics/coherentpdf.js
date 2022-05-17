@@ -2085,6 +2085,9 @@ function selectPages(pdf, r)
 }
 
 // CHAPTER 3. Pages
+
+/** Scales the page dimensions and content by the given scale, about (0, 0).
+Other boxes (crop etc. are altered as appropriate) */
 function scalePages(pdf, range, sx, sy)
 {
   var rn = range_of_array(range);
@@ -2093,6 +2096,8 @@ function scalePages(pdf, range, sx, sy)
   checkError();
 }
 
+/** Scales the content to fit new page dimensions (width x height) multiplied
+by scale (typically 1.0). Other boxes (crop etc. are altered as appropriate). */
 function scaleToFit(pdf, range, sx, sy, scale)
 {
   var rn = range_of_array(range);
@@ -2101,23 +2106,56 @@ function scaleToFit(pdf, range, sx, sy, scale)
   checkError();
 }
 
+/** A0 Portrait paper */
 var a0portrait = 0;
+
+/** A1 Portrait paper */
 var a1portrait = 1;
+
+/** A2 Portrait paper */
 var a2portrait = 2;
+
+/** A3 Portrait paper */
 var a3portrait = 3;
+
+/** A4 Portrait paper */
 var a4portrait = 4;
+
+/** A5 Portrait paper */
 var a5portrait = 5;
+
+/** A0 Landscape paper */
 var a0landscape = 6;
+
+/** A1 Landscape paper */
 var a1landscape = 7;
+
+/** A2 Landscape paper */
 var a2landscape = 8;
+
+/** A3 Landscape paper */
 var a3landscape = 9;
+
+/** A4 Landscape paper */
 var a4landscape = 10;
+
+/** A5 Landscape paper */
 var a5landscape = 11;
+
+/** US Letter Portrait paper */
 var usletterportrait = 12;
+
+/** US Letter Landscape paper */
 var usletterlandscape = 13;
+
+/** US Legal Portrait paper */
 var uslegalportrait = 14;
+
+/** US Legal Landscape paper */
 var uslegallandscape = 15;
 
+/** Scales the page content to fit the given page size, possibly multiplied by
+scale (typically 1.0) */
 function scaleToFitPaper(pdf, range, papersize, s)
 {
   var rn = range_of_array(range);
@@ -2126,21 +2164,62 @@ function scaleToFitPaper(pdf, range, papersize, s)
   checkError();
 }
 
+/** Absolute centre */
 var posCentre = 0;
+
+/** Absolute left */
 var posLeft = 1;
+
+/** Absolute right */
 var posRight = 2;
+
+/** The top centre of the page */
 var top = 3;
+
+/** The top left of the page */
 var topLeft = 4;
+
+/** The top right of the page */
 var topRight = 5;
+
+/** The left hand side of the page, halfway down */
 var left = 6;
+
+/** The bottom left of the page */
 var bottomLeft = 7;
+
+/** The bottom middle of the page */
 var bottom = 8;
+
+/** The bottom right of the page */
 var bottomRight = 9;
+
+/** The right hand side of the page, halfway down */
 var right = 10;
+
+/** Diagonal, bottom left to top right */
 var diagonal = 11;
+
+/** Diagonal, top left to bottom right */
 var reversediagonal = 12;
 
-// Positions
+/** Positions on the page. Used for scaling about a point, and adding text.
+
+A position is an anchor and zero or one or two parameters. Constructors are provided.
+
+posCentre: Two parameters, x and y
+posLeft: Two parameters, x and y
+posRight: Two parameters, x and y
+top: One parameter - distance from top
+topLeft: One parameter - distance from top left
+topRight: One parameter - distance from top right
+left: One parameter - distance from left middle
+bottomLeft: One parameter - distance from bottom left
+bottom: One parameter - distance from bottom
+bottomRight: One parameter - distance from bottom right
+right: One parameter - distance from right
+diagonal: Zero parameters
+reverseDiagonal: Zero parameters */
 function Position(anchor, p1, p2)
 {
   this.anchor = anchor;
@@ -2148,6 +2227,8 @@ function Position(anchor, p1, p2)
   this.p2 = p2; //may be undefined
 }
 
+/** Scales the contents of the pages in the range about the point given by
+the position, by the scale given. */
 function scaleContents(pdf, range, position, scale)
 {
   var rn = range_of_array(range);
@@ -2156,6 +2237,7 @@ function scaleContents(pdf, range, position, scale)
   checkError();
 }
 
+/** Shifts the content of the pages in the range. */
 function shiftContents(pdf, range, dx, dy)
 {
   var rn = range_of_array(range);
@@ -2164,6 +2246,8 @@ function shiftContents(pdf, range, dx, dy)
   checkError();
 }
 
+/** Changes the viewing rotation to an absolute value. Appropriate rotations
+are 0, 90, 180, 270. */
 function rotate(pdf, range, rotation)
 {
   var rn = range_of_array(range);
@@ -2172,6 +2256,8 @@ function rotate(pdf, range, rotation)
   checkError();
 }
 
+/** Rotates the content about the centre of the page by the given number of
+degrees, in a clockwise direction. */
 function rotateBy(pdf, range, rotation)
 {
   var rn = range_of_array(range);
@@ -2180,6 +2266,8 @@ function rotateBy(pdf, range, rotation)
   checkError();
 }
 
+/** Rotates the content about the centre of the page by the given number of
+degrees, in a clockwise direction. */
 function rotateContents(pdf, range, angle)
 {
   var rn = range_of_array(range);
@@ -2188,6 +2276,8 @@ function rotateContents(pdf, range, angle)
   checkError();
 }
 
+/** Changes the viewing rotation of the pages in the range, counter-rotating
+the dimensions and content such that there is no visual change. */
 function upright(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2196,6 +2286,7 @@ function upright(pdf, range)
   checkError();
 }
 
+/** Flips horizontally the pages in the range. */
 function hFlip(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2204,6 +2295,7 @@ function hFlip(pdf, range)
   checkError();
 }
 
+/** Flips vertically the pages in the range. */
 function vFlip(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2212,6 +2304,8 @@ function vFlip(pdf, range)
   checkError();
 }
 
+/** Crops a page, replacing any existing crop box. The dimensions are in
+points. */
 function crop(pdf, range, x, y, w, h)
 {
   var rn = range_of_array(range);
@@ -2220,6 +2314,7 @@ function crop(pdf, range, x, y, w, h)
   checkError();
 }
 
+/** Removes any crop box from pages in the range. */
 function removeCrop(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2228,6 +2323,7 @@ function removeCrop(pdf, range)
   checkError();
 }
 
+/** Removes any trim box from pages in the range. */
 function removeTrim(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2236,6 +2332,7 @@ function removeTrim(pdf, range)
   checkError();
 }
 
+/** Removes any art box from pages in the range. */
 function removeArt(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2244,6 +2341,7 @@ function removeArt(pdf, range)
   checkError();
 }
 
+/** Removes any bleed box from pages in the range. */
 function removeBleed(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2252,6 +2350,7 @@ function removeBleed(pdf, range)
   checkError();
 }
 
+/** Adds trim marks to the given pages, if the trimbox exists. */
 function trimMarks(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2260,6 +2359,7 @@ function trimMarks(pdf, range)
   checkError();
 }
 
+/** Shows the boxes on the given pages, for debug. */
 function showBoxes(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2268,6 +2368,7 @@ function showBoxes(pdf, range)
   checkError();
 }
 
+/** Makes a given box a 'hard box' i.e clips it explicitly. */
 function hardBox(pdf, range, boxname)
 {
   var rn = range_of_array(range);
@@ -2280,7 +2381,7 @@ function hardBox(pdf, range, boxname)
 
 // CHAPTER 5. Compression
 
-/** Compresses any uncompressed streams in the given PDF using the Flate
+ /** Compresses any uncompressed streams in the given PDF using the Flate
 algorithm. */
 function compress(pdf)
 {
