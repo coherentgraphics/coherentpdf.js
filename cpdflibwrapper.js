@@ -2280,18 +2280,23 @@ function hardBox(pdf, range, boxname)
 
 // CHAPTER 5. Compression
 
+/** Compresses any uncompressed streams in the given PDF using the Flate
+algorithm. */
 function compress(pdf)
 {
   cpdf.cpdflib.compress(pdf);
   checkError();
 }
 
+/** Decompresses any streams in the given PDF, so long as the compression
+method is supported. */
 function decompress(pdf)
 {
   cpdf.cpdflib.decompress(pdf);
   checkError();
 }
 
+/** Squeezes a pdf in memory. */
 function squeezeInMemory(pdf)
 {
   cpdf.cpdflib.squeezeInMemory(pdf);
@@ -2300,12 +2305,14 @@ function squeezeInMemory(pdf)
 
 // CHAPTER 6. Bookmarks
 
+/** Starts the bookmark retrieval process for a given PDF. */
 function startGetBookmarkInfo(pdf)
 {
   cpdf.cpdflib.startGetBookmarkInfo(pdf);
   checkError();
 }
 
+/** Gets the number of bookmarks for the PDF given to startGetBookmarkInfo. */
 function numberBookmarks()
 {
   var r = cpdf.cpdflib.numberBookmarks();
@@ -2313,6 +2320,7 @@ function numberBookmarks()
   return r;
 }
 
+/** Gets the bookmark level for the given bookmark (0...(n - 1)). */
 function getBookmarkLevel(n)
 {
   var r = cpdf.cpdflib.getBookmarkLevel(n);
@@ -2320,6 +2328,8 @@ function getBookmarkLevel(n)
   return r;
 }
 
+/** Gets the bookmark target page for the given PDF (which must be the same
+as the PDF passed to startSetBookmarkInfo) and bookmark (0...(n - 1)). */
 function getBookmarkPage(pdf, n)
 {
   var r = cpdf.cpdflib.getBookmarkPage(pdf, n);
@@ -2327,6 +2337,7 @@ function getBookmarkPage(pdf, n)
   return r;
 }
 
+/** Returns the text of bookmark (0...(n - 1)). */
 function getBookmarkText(n)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.getBookmarkText(n));
@@ -2334,6 +2345,7 @@ function getBookmarkText(n)
   return r;
 }
 
+/** True if the bookmark is open. */
 function getBookmarkOpenStatus(n)
 {
   var r = cpdf.cpdflib.getBookmarkOpenStatus(n);
@@ -2341,48 +2353,59 @@ function getBookmarkOpenStatus(n)
   return r;
 }
 
+/** Ends the bookmark retrieval process, cleaning up. */
 function endGetBookmarkInfo()
 {
   cpdf.cpdflib.endGetBookmarkInfo();
   checkError();
 }
 
+/** Starts the bookmark setting process for n bookmarks. */
 function startSetBookmarkInfo(n)
 {
   cpdf.cpdflib.startSetBookmarkInfo(n);
   checkError();
 }
 
+/** Set bookmark level for the given bookmark (0...(n - 1)). */
 function setBookmarkLevel(a, b)
 {
   cpdf.cpdflib.setBookmarkLevel(a, b);
   checkError();
 }
 
+/** Sets the bookmark target page for the given PDF (which must be the same as
+the PDF to be passed to endSetBookmarkInfo) and bookmark (0...(n - 1)). */
 function setBookmarkPage(pdf, a, b)
 {
   cpdf.cpdflib.setBookmarkPage(pdf, a, b);
   checkError();
 }
 
+/** Sets the open status of bookmark (0...(n - 1)). */
 function setBookmarkOpenStatus(a, b)
 {
   cpdf.cpdflib.setBookmarkOpenStatus(a, b);
   checkError();
 }
 
+/** Sets the text of bookmark (0...(n - 1)). */
 function setBookmarkText(n, t)
 {
   cpdf.cpdflib.setBookmarkText(n, caml_string_of_jsstring(t));
   checkError();
 }
 
+/** Ends the bookmark setting process, writing the bookmarks to the given
+PDF. */
 function endSetBookmarkInfo(pdf)
 {
   cpdf.cpdflib.endSetBookmarkInfo(pdf);
   checkError();
 }
 
+
+/** Returns the bookmark data in JSON format. */
 function getBookmarksJSON(pdf)
 {
   var r = cpdf.cpdflib.getBookmarksJSON(pdf).data;
@@ -2390,6 +2413,7 @@ function getBookmarksJSON(pdf)
   return r;
 }
 
+/** Sets the bookmarks from JSON bookmark data. */
 function setBookmarksJSON(pdf, data)
 {
   var bigarray = caml_ba_from_typed_array(data);
@@ -2397,6 +2421,9 @@ function setBookmarksJSON(pdf, data)
   checkError();
 }
 
+/** Typesets a table of contents from existing bookmarks and prepends it to
+the document. If bookmark is set, the table of contents gets its own
+bookmark. */
 function tableOfContents(pdf, font, fontsize, title, bookmark)
 {
   cpdf.cpdflib.tableOfContents(pdf, font, fontsize, caml_string_of_jsstring(title), bookmark);
