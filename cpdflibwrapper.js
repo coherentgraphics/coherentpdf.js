@@ -3411,6 +3411,9 @@ function textToPDFPaper(papersize, font, fontsize, filename)
 }
 
 //CHAPTER 18. Miscellaneous
+
+/** Removes images on the given pages, replacing them with crossed boxes if
+'boxes' is true. */
 function draft(pdf, range, boxes)
 {
   var rn = range_of_array(range);
@@ -3419,6 +3422,7 @@ function draft(pdf, range, boxes)
   checkError();
 }
 
+/** Removes all text from the given pages in a given document. */
 function removeAllText(pdf, range)
 {
   var rn = range_of_array(range);
@@ -3427,6 +3431,7 @@ function removeAllText(pdf, range)
   checkError();
 }
 
+/* Blackens all text on the given pages. */
 function blackText(pdf, range)
 {
   var rn = range_of_array(range);
@@ -3435,6 +3440,7 @@ function blackText(pdf, range)
   checkError();
 }
 
+/** Blackens all lines on the given pages. */
 function blackLines(pdf, range)
 {
   var rn = range_of_array(range);
@@ -3443,6 +3449,7 @@ function blackLines(pdf, range)
   checkError();
 }
 
+/** Blackens all fills on the given pages. */
 function blackFills(pdf, range)
 {
   var rn = range_of_array(range);
@@ -3451,6 +3458,8 @@ function blackFills(pdf, range)
   checkError();
 }
 
+/** Thickens every line less than min_thickness to min_thickness. Thickness
+given in points. */
 function thinLines(pdf, range, min_thickness)
 {
   var rn = range_of_array(range);
@@ -3459,54 +3468,65 @@ function thinLines(pdf, range, min_thickness)
   checkError();
 }
 
+/** Copies the /ID from one document to another. */
 function copyId(pdf_from, pdf_to)
 {
   cpdf.cpdflib.copyId(pdf_from, pdf_to);
   checkError();
 }
 
+/** Removes a document's /ID. */
 function removeId(pdf)
 {
   cpdf.cpdflib.removeId(pdf);
   checkError();
 }
 
+/** Sets the minor version number of a document. */
 function setVersion(pdf, version)
 {
   cpdf.cpdflib.setVersion(pdf, version);
   checkError();
 }
 
+/** Sets the full version number of a document. */
 function setFullVersion(pdf, major, minor)
 {
   cpdf.cpdflib.setFullVersion(pdf, major, minor);
   checkError();
 }
 
+/** Removes any dictionary entry with the given key anywhere in the document. */
 function removeDictEntry(pdf, key)
 {
   cpdf.cpdflib.removeDictEntry(pdf, caml_string_of_jsstring(key));
   checkError();
 }
 
+/** Removes any dictionary entry with the given key whose value matches the
+given search term. */
 function removeDictEntrySearch(pdf, key, searchterm)
 {
   cpdf.cpdflib.removeDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(searchterm));
   checkError();
 }
 
+/** Replaces the value associated with the given key. */
 function replaceDictEntry(pdf, key, newval)
 {
   cpdf.cpdflib.replaceDictEntry(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval));
   checkError();
 }
 
+/** Replaces the value associated with the given key if the existing value
+matches the search term. */
 function replaceDictEntrySearch(pdf, key, newval, searchterm)
 {
   cpdf.cpdflib.replaceDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval), caml_string_of_jsstring(searchterm));
   checkError();
 }
 
+/** Removes all clipping from pages in the given range. */
 function removeClipping(pdf, range)
 {
   var rn = range_of_array(range);
@@ -3515,6 +3535,8 @@ function removeClipping(pdf, range)
   checkError();
 }
 
+/* Returns a JSON array containing any and all values associated with the
+given key, and fills in its length. */
 function getDictEntries(pdf, key)
 {
   var r = cpdf.cpdflib.getDictEntries(pdf, caml_string_of_jsstring(key));
