@@ -2404,7 +2404,6 @@ function endSetBookmarkInfo(pdf)
   checkError();
 }
 
-
 /** Returns the bookmark data in JSON format. */
 function getBookmarksJSON(pdf)
 {
@@ -2433,6 +2432,11 @@ function tableOfContents(pdf, font, fontsize, title, bookmark)
 // CHAPTER 7. Presentations
 
 // CHAPTER 8. Logos, Watermarks and Stamps
+   
+/** A stamping function with extra features. - isover true, pdf goes over pdf2,
+isover false, pdf goes under pdf2 - scale_stamp_to_fit scales the stamp to fit
+the page - pos gives the position to put the stamp - relative_to_cropbox: if
+true, pos is relative to cropbox not mediabox. */
 function stampOn(stamp_pdf, pdf, range)
 {
   var rn = range_of_array(range);
@@ -2441,6 +2445,9 @@ function stampOn(stamp_pdf, pdf, range)
   checkError();
 }
 
+/** Stamps stamp_pdf under all the pages in the document which are in the
+range. The stamp is placed with its origin at the origin of the target
+document. */
 function stampUnder(stamp_pdf, pdf, range)
 {
   var rn = range_of_array(range);
@@ -2449,6 +2456,10 @@ function stampUnder(stamp_pdf, pdf, range)
   checkError();
 }
 
+/** A stamping function with extra features. - isover true, pdf goes over
+pdf2, isover false, pdf goes under pdf2 - scale_stamp_to_fit scales the
+stamp to fit the page - pos gives the position to put the stamp -
+relative_to_cropbox: if true, pos is relative to cropbox not mediabox. */
 function stampExtended(pdf, pdf2, range, isover, scale_stamp_to_fit, position, relative_to_cropbox)
 {
   var rn = range_of_array(range);
@@ -2457,6 +2468,8 @@ function stampExtended(pdf, pdf2, range, isover, scale_stamp_to_fit, position, r
   checkError();
 }
 
+/** Combines the PDFs page-by-page, putting each page of 'over' over each page
+of 'under'. */
 function combinePages(under, over)
 {
   var r = cpdf.cpdflib.combinePages(under, over);
@@ -2464,23 +2477,52 @@ function combinePages(under, over)
   return r;
 }
 
+/** Times Roman */
 var timesRoman = 0;
+
+/** Times Bold */
 var timesBold = 1;
+
+/** Times Italic */
 var timesItalic = 2;
+
+/** Times Bold Italic */
 var timesBoldItalic = 3;
+
+/** Helvetica */
 var helvetica = 4;
+
+/** Helvetica Bold */
 var helveticaBold = 5;
+
+/** Helvetica Oblique */
 var helveticaOblique = 6;
+
+/** Helvetica Bold Oblique */
 var helveticaBoldOblique = 7;
+
+/** Courier */
 var courier = 8;
+
+/** Courier Bold */
 var courierBold = 9;
+
+/** Courier Oblique */
 var courierOblique = 10;
+
+/** Courier Bold Oblique */
 var courierBoldOblique = 11;
 
+/** Left justify */
 var leftJustify = 0;
+
+/** Centre justify */
 var centreJustify = 1;
+
+/** Right justify */
 var rightJustify = 2;
 
+/** Adds text to the pages in the given range. */
 function addText(metrics, pdf, range, text, position, linespacing,
                  bates, font, fontsize, r, g, b, underneath, relative_to_cropbox, outline,
                  opacity, justification, midline, topline, filename, linewidth, embed_fonts)
@@ -2494,6 +2536,7 @@ function addText(metrics, pdf, range, text, position, linespacing,
   checkError();
 }
 
+/** Adds text with most parameters default. */
 function addTextSimple(pdf, range, text, position, font, fontsize)
 {
   var rn = range_of_array(range);
@@ -2502,6 +2545,7 @@ function addTextSimple(pdf, range, text, position, font, fontsize)
   checkError();
 }
 
+/** Removes any text added by cpdf from the given pages. */
 function removeText(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2510,6 +2554,8 @@ function removeText(pdf, range)
   checkError();
 }
 
+/** Returns the width of a given string in the given font in thousandths of a
+point. */
 function textWidth(font, text)
 {
   var r = cpdf.cpdflib.textWidth(font, caml_string_of_jsstring(text));
@@ -2517,6 +2563,8 @@ function textWidth(font, text)
   return r;
 }
 
+/** Adds page content before (if true) or after (if false) the existing
+content to pages in the given range in the given PDF. */
 function addContent(content, before, pdf, range)
 {
   var rn = range_of_array(range);
@@ -2525,6 +2573,8 @@ function addContent(content, before, pdf, range)
   checkError();
 }
 
+/** Stamps stamp_pdf onto the pages in the given range in pdf as a shared Form
+XObject. The name of the newly-created XObject is returned. */
 function stampAsXObject(pdf, range, stamp_pdf)
 {
   var rn = range_of_array(range);
