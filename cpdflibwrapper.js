@@ -2030,6 +2030,8 @@ function encryptionKind(pdf)
 }
 
 // CHAPTER 2. Merging and Splitting
+
+/** Given a list of PDFs, merges the files into a new one, which is returned. */
 function mergeSimple(pdfs)
 {
   var arr2 = [0].concat(pdfs);
@@ -2038,6 +2040,10 @@ function mergeSimple(pdfs)
   return r;
 }
 
+/** Merges the PDFs. If retain_numbering is true page labels are not
+rewritten. If remove_duplicate_fonts is true, duplicate fonts are merged.
+This is useful when the source documents for merging originate from the same
+source. */
 function merge(pdfs, retain_numbering, remove_duplicate_fonts)
 {
   var arr2 = [0].concat(pdfs);
@@ -2046,6 +2052,10 @@ function merge(pdfs, retain_numbering, remove_duplicate_fonts)
   return r;
 }
 
+/** The same as merge, except that it has an additional argument - a list of
+page ranges. This is used to select the pages to pick from each PDF. This
+avoids duplication of information when multiple discrete parts of a source PDF
+are included. */
 function mergeSame(pdfs, retain_numbering, remove_duplicate_fonts, ranges)
 {
   var arr2 = [0].concat(pdfs);
@@ -2064,6 +2074,7 @@ function mergeSame(pdfs, retain_numbering, remove_duplicate_fonts, ranges)
   return r;
 }
 
+/** Returns a new document with just those pages in the page range. */
 function selectPages(pdf, r)
 {
   var rn = range_of_array(r);
@@ -3313,6 +3324,9 @@ function fromJSONMemory(data)
 }
 
 // CHAPTER 16. Optional Content Groups
+
+/** Begins retrieving optional content group names. The serial number 0..n - 1
+is returned. */
 function startGetOCGList(pdf)
 {
   var r = cpdf.cpdflib.startGetOCGList(pdf);
@@ -3320,6 +3334,7 @@ function startGetOCGList(pdf)
   return r;
 }
 
+/** Retrieves an OCG name, given its serial number 0..n - 1. */
 function ocgListEntry(n)
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.ocgListEntry(n));
@@ -3327,31 +3342,41 @@ function ocgListEntry(n)
   return r;
 }
 
+/** Ends retrieval of optional content group names. */
 function endGetOCGList()
 {
   cpdf.cpdflib.endGetOCGList();
   checkError();
 }
 
-function ocgCoalesce(pdf)
-{
-  cpdf.cpdflib.ocgCoalesce(pdf);
-  checkError();
-}
-
+/** Renames an optional content group. */
 function ocgRename(pdf, name_from, name_to)
 {
   cpdf.cpdflib.ocgRename(pdf, caml_string_of_jsstring(name_from), caml_string_of_jsstring(name_to));
   checkError();
 }
 
+/** Ensures that every optional content group appears in the OCG order list. */
 function ocgOrderAll(pdf)
 {
   cpdf.cpdflib.ocgOrderAll(pdf);
   checkError();
 }
 
+/** Coalesces optional content groups. For example, if we merge or stamp two
+files both with an OCG called "Layer 1", we will have two different optional
+content groups. This function will merge the two into a single optional
+content group. */
+function ocgCoalesce(pdf)
+{
+  cpdf.cpdflib.ocgCoalesce(pdf);
+  checkError();
+}
+
 // CHAPTER 17. Creating new PDFs
+
+/** Creates a blank document with pages of the given width (in points), height
+(in points), and number of pages. */
 function blankDocument(w, h, pages)
 {
   var r = cpdf.cpdflib.blankDocument(w, h, pages);
@@ -3359,6 +3384,7 @@ function blankDocument(w, h, pages)
   return r;
 }
 
+/** Makes a blank document given a page size and number of pages. */
 function blankDocumentPaper(papersize, pages)
 {
   var r = cpdf.cpdflib.blankDocumentPaper(papersize, pages);
@@ -3366,6 +3392,8 @@ function blankDocumentPaper(papersize, pages)
   return r;
 }
 
+/** Typesets a UTF8 text file ragged right on a page of size w * h in points
+in the given font and font size. */
 function textToPDF(w, h, font, fontsize, filename)
 {
   var r = cpdf.cpdflib.textToPDF(w, h, font, fontsize, caml_string_of_jsstring(filename));
@@ -3373,6 +3401,8 @@ function textToPDF(w, h, font, fontsize, filename)
   return r;
 }
 
+/** Typesets a UTF8 text file ragged right on a page of the given size in the
+given font and font size. */
 function textToPDFPaper(papersize, font, fontsize, filename)
 {
   var r = cpdf.cpdflib.textToPDFPaper(papersize, font, fontsize, caml_string_of_jsstring(filename));
