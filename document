@@ -1,1 +1,2 @@
-jsdoc -d manual cpdflibwrapper.js
+tail -n+1524 cpdflibwrapper.js > jsdoc.js
+jsdoc -d manual jsdoc.js

@@ -1522,6 +1522,8 @@ function checkError()
 }
 
 // CHAPTER 0. Preliminaries
+
+/** Returns a string giving the version number of the CPDF library. */
 function version()
 {
   var r = caml_jsstring_of_string(cpdf.cpdflib.version);
@@ -1529,24 +1531,34 @@ function version()
   return r;
 }
 
+/** Some operations have a fast mode. The default is 'slow' mode, which works
+even on old-fashioned files. For more details, see section 1.13 of the CPDF
+manual. This function sets the mode to fast globally. */
 function setFast()
 {
   cpdf.cpdflib.setFast();
   checkError();
 }
 
+/** Some operations have a fast mode. The default is 'slow' mode, which works
+even on old-fashioned files. For more details, see section 1.13 of the CPDF
+manual. This function sets the mode to slow globally. */
 function setSlow()
 {
   cpdf.cpdflib.setSlow();
   checkError();
 }
 
+/** Delete a PDF so the memory representing it may be recovered. */
 function deletePdf(pdf)
 {
   cpdf.cpdflib.deletePdf(pdf);
   checkError();
 }
 
+/* A debug function which prints some information about resource usage. This
+can be used to detect if PDFs or ranges are being deallocated properly.
+Contrary to its name, it may be run at any time. */
 function onexit()
 {
   cpdf.cpdflib.onexit();
