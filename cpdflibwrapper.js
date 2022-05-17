@@ -2585,6 +2585,12 @@ function stampAsXObject(pdf, range, stamp_pdf)
 }
 
 // CHAPTER 9. Multipage facilities
+
+/** Imposes a PDF. There are two modes: imposing x * y, or imposing to fit a
+page of size x * y. This is controlled by fit. Columns imposes by columns
+rather than rows. rtl is right-to-left, btt bottom-to-top. Center is unused
+for now. Margin is the margin around the output, spacing the spacing between
+imposed inputs. */
 function impose(pdf, x, y, fit, columns, rtl, btt, center, margin, spacing, linewidth)
 {
   var r = cpdf.cpdflib.impose(pdf, x, y, fit, columns, rtl, btt, center, margin, spacing, linewidth);
@@ -2592,6 +2598,8 @@ function impose(pdf, x, y, fit, columns, rtl, btt, center, margin, spacing, line
   return r;
 }
 
+/** Imposes a document two up. twoUp does so by shrinking the page size, to fit
+two pages on one. */
 function twoUp(pdf)
 {
   var r = cpdf.cpdflib.twoUp(pdf);
@@ -2599,6 +2607,8 @@ function twoUp(pdf)
   return r;
 }
 
+/** Impose a document two up. twoUpStack does so by doubling the page size,
+to fit two pages on one. */
 function twoUpStack(pdf)
 {
   var r = cpdf.cpdflib.twoUpStack(pdf);
@@ -2606,6 +2616,7 @@ function twoUpStack(pdf)
   return r;
 }
 
+/** Adds a blank page before each page in the given range. */
 function padBefore(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2614,6 +2625,7 @@ function padBefore(pdf, range)
   checkError();
 }
 
+/** Adds a blank page after every n pages. */
 function padAfter(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2622,18 +2634,23 @@ function padAfter(pdf, range)
   checkError();
 }
 
+/** Adds a blank page after every n pages. */
 function padEvery(pdf, n)
 {
   cpdf.cpdflib.padEvery(pdf, n);
   checkError();
 }
 
+/** Adds pages at the end to pad the file to a multiple of n pages in
+length. */
 function padMultiple(pdf, n)
 {
   cpdf.cpdflib.padMultiple(pdf, n);
   checkError();
 }
 
+/** Adds pages at the beginning to pad the file to a multiple of n pages in
+length. */
 function padMultipleBefore(pdf, n)
 {
   cpdf.cpdflib.padMultipleBefore(pdf, n);
@@ -2641,6 +2658,8 @@ function padMultipleBefore(pdf, n)
 }
 
 // CHAPTER 10. Annotations 
+
+/** Returns the annotations from a PDF in JSON format. */
 function annotationsJSON(pdf)
 {
   var r = cpdf.cpdflib.annotationsJSON(pdf);
