@@ -6,4 +6,5 @@ cp ../cpdf-source/*.ml .
 cp ../cpdf-source/*.mli .
 cp ../cpdflib-source/*.ml .
 cp ../cpdflib-source/*.mli .
+cat bigarray.js mlBytes.js fail.js cpdfsource.js > cpdf.js
 make
