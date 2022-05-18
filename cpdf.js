@@ -1,5 +1,7 @@
 "use strict";
 
+const cpdflib = require('./cpdflib.js');
+
 // Js_of_ocaml runtime support
 // http://www.ocsigen.org/js_of_ocaml/
 // Copyright (C) 2014 Jérôme Vouillon, Hugo Heuzard, Andy Ray
@@ -1486,25 +1488,25 @@ function caml_js_to_string (s) {
 // Internal
 function deleterange(r)
 {
-  cpdf.cpdflib.deleterange(r);
+  cpdflib.cpdflib.deleterange(r);
 }
 
 function array_of_range(r)
 {
  var l = [];
- for (var x = 0; x < cpdf.cpdflib.rangeLength(r); x++)
+ for (var x = 0; x < cpdflib.cpdflib.rangeLength(r); x++)
  {
-   l.push(cpdf.cpdflib.rangeGet(r, x));
+   l.push(cpdflib.cpdflib.rangeGet(r, x));
  }
  return l;
 }
 
 function range_of_array(a)
 {
-  var r = cpdf.cpdflib.blankRange();
+  var r = cpdflib.cpdflib.blankRange();
   for (var x = 0; x < a.length; x++)
   {
-    var rn = cpdf.cpdflib.rangeAdd(r, a[x]);
+    var rn = cpdflib.cpdflib.rangeAdd(r, a[x]);
     deleterange(r);
     r = rn;
   }
@@ -1513,10 +1515,10 @@ function range_of_array(a)
 
 function checkError()
 {
-  if (cpdf.cpdflib.getLastError() != 0)
+  if (cpdflib.cpdflib.getLastError() != 0)
   {
-    var str = caml_jsstring_of_string(cpdf.cpdflib.getLastErrorString());
-    cpdf.cpdflib.clearError();
+    var str = caml_jsstring_of_string(cpdflib.cpdflib.getLastErrorString());
+    cpdflib.cpdflib.clearError();
     throw new Error(str);
   }
 }
@@ -1526,7 +1528,7 @@ function checkError()
 /** Returns a string giving the version number of the CPDF library. */
 function version()
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.version);
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.version);
   checkError();
   return r;
 }
@@ -1536,7 +1538,7 @@ even on old-fashioned files. For more details, see section 1.13 of the CPDF
 manual. This function sets the mode to fast globally. */
 function setFast()
 {
-  cpdf.cpdflib.setFast();
+  cpdflib.cpdflib.setFast();
   checkError();
 }
 
@@ -1545,14 +1547,14 @@ even on old-fashioned files. For more details, see section 1.13 of the CPDF
 manual. This function sets the mode to slow globally. */
 function setSlow()
 {
-  cpdf.cpdflib.setSlow();
+  cpdflib.cpdflib.setSlow();
   checkError();
 }
 
 /** Delete a PDF so the memory representing it may be recovered. */
 function deletePdf(pdf)
 {
-  cpdf.cpdflib.deletePdf(pdf);
+  cpdflib.cpdflib.deletePdf(pdf);
   checkError();
 }
 
@@ -1561,7 +1563,7 @@ can be used to detect if PDFs or ranges are being deallocated properly.
 Contrary to its name, it may be run at any time. */
 function onexit()
 {
-  cpdf.cpdflib.onexit();
+  cpdflib.cpdflib.onexit();
   checkError();
 }
 
@@ -1573,7 +1575,7 @@ password is needed just to load the file. */
 function fromFile(filename, userpw)
 {
   var r = 
-    cpdf.cpdflib.fromFile(caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw));
+    cpdflib.cpdflib.fromFile(caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw));
   return r
 }
 
@@ -1585,7 +1587,7 @@ just to load the file. */
 function fromFileLazy(filename, userpw)
 {
   var r =
-    cpdf.cpdflib.fromFileLazy(caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw));
+    cpdflib.cpdflib.fromFileLazy(caml_string_of_jsstring(filename), caml_string_of_jsstring(userpw));
   checkError();
   return r;
 }
@@ -1594,7 +1596,7 @@ function fromFileLazy(filename, userpw)
 function fromMemory(data, userpw)
 {
   var bigarray = caml_ba_from_typed_array(data);
-  var r = cpdf.cpdflib.fromMemory(bigarray, userpw);
+  var r = cpdflib.cpdflib.fromMemory(bigarray, userpw);
   checkError();
   return r;
 }
@@ -1604,7 +1606,7 @@ password, but lazily like fromFileLazy. */
 function fromMemoryLazy(data, userpw)
 {
   var bigarray = caml_ba_from_typed_array(data);
-  var r = cpdf.cpdflib.fromMemoryLazy(bigarray, userpw);
+  var r = cpdflib.cpdflib.fromMemoryLazy(bigarray, userpw);
   checkError();
   return r;
 }
@@ -1615,7 +1617,7 @@ enumeratePDFsKey with index numbers from 0...(n - 1). Call endEnumeratePDFs to
 clean up. */
 function startEnumeratePDFs()
 {
-  var r = cpdf.cpdflib.startEnumeratePDFs();
+  var r = cpdflib.cpdflib.startEnumeratePDFs();
   checkError();
   return r;
 }
@@ -1626,7 +1628,7 @@ enumeratePDFsKey with index numbers from 0...(n - 1). Call endEnumeratePDFs to
 clean up. */
 function enumeratePDFsKey(n)
 {
-  var r = cpdf.cpdflib.enumeratePDFsKey(n);
+  var r = cpdflib.cpdflib.enumeratePDFsKey(n);
   checkError();
   return r;
 }
@@ -1637,7 +1639,7 @@ enumeratePDFsKey with index numbers from 0...(n - 1). Call endEnumeratePDFs to
 clean up. */
 function enumeratePDFsInfo(n)
 {
-  var r = cpdf.cpdflib.enumeratePDFsInfo(n);
+  var r = cpdflib.cpdflib.enumeratePDFsInfo(n);
   checkError();
   return caml_jsstring_of_string(r);
 }
@@ -1648,14 +1650,14 @@ enumeratePDFsKey with index numbers from 0...(n - 1). Call endEnumeratePDFs to
 clean up. */
 function endEnumeratePDFs()
 {
-  cpdf.cpdflib.endEnumeratePDFs();
+  cpdflib.cpdflib.endEnumeratePDFs();
   checkError();
 }
 
 /** Converts a figure in centimetres to points (72 points to 1 inch) */
 function ptOfCm(i)
 {
-  var r = cpdf.cpdflib.ptOfCm(i);
+  var r = cpdflib.cpdflib.ptOfCm(i);
   checkError();
   return r;
 }
@@ -1663,7 +1665,7 @@ function ptOfCm(i)
 /** Converts a figure in millimetres to points (72 points to 1 inch) */
 function ptOfMm(i)
 {
-  var r = cpdf.cpdflib.ptOfMm(i);
+  var r = cpdflib.cpdflib.ptOfMm(i);
   checkError();
   return r;
 }
@@ -1671,7 +1673,7 @@ function ptOfMm(i)
 /** Converts a figure in inches to points (72 points to 1 inch) */
 function ptOfIn(i)
 {
-  var r = cpdf.cpdflib.ptOfIn(i);
+  var r = cpdflib.cpdflib.ptOfIn(i);
   checkError();
   return r;
 }
@@ -1680,7 +1682,7 @@ function ptOfIn(i)
 /** Converts a figure in points to centimetres (72 points to 1 inch) */
 function cmOfPt(i)
 {
-  var r = cpdf.cpdflib.cmOfPt(i);
+  var r = cpdflib.cpdflib.cmOfPt(i);
   checkError();
   return r;
 }
@@ -1688,7 +1690,7 @@ function cmOfPt(i)
 /** Converts a figure in points to millimetres (72 points to 1 inch) */
 function mmOfPt(i)
 {
-  var r = cpdf.cpdflib.mmOfPt(i);
+  var r = cpdflib.cpdflib.mmOfPt(i);
   checkError();
   return r;
 }
@@ -1696,7 +1698,7 @@ function mmOfPt(i)
 /** Converts a figure in points to inches (72 points to 1 inch) */
 function inOfPt(i)
 {
-  var r = cpdf.cpdflib.inOfPt(i);
+  var r = cpdflib.cpdflib.inOfPt(i);
   checkError();
   return r;
 }
@@ -1706,7 +1708,7 @@ supplied so that page ranges which reference pages which do not exist are
 rejected). */
 function parsePagespec(pdf, pagespec)
 {
-  var r = cpdf.cpdflib.parsePagespec(pdf, caml_string_of_jsstring(pagespec));
+  var r = cpdflib.cpdflib.parsePagespec(pdf, caml_string_of_jsstring(pagespec));
   var arr = array_of_range(r);
   deleterange(r);
   checkError();
@@ -1717,7 +1719,7 @@ function parsePagespec(pdf, pagespec)
 the actual document. Result is true if valid. */
 function validatePagespec(pagespec)
 {
-  var r = cpdf.cpdflib.validatePagespec(caml_string_of_jsstring(pagespec));
+  var r = cpdflib.cpdflib.validatePagespec(caml_string_of_jsstring(pagespec));
   checkError();
   return r;
 }
@@ -1727,7 +1729,7 @@ containing 1,2,3,6,7,8 in a document of 8 pages might yield "1-3,6-end" */
 function stringOfPagespec(pdf, r)
 {
   var rn = range_of_array(r);
-  var ret = caml_jsstring_of_string(cpdf.cpdflib.stringOfPagespec(pdf, rn));
+  var ret = caml_jsstring_of_string(cpdflib.cpdflib.stringOfPagespec(pdf, rn));
   deleterange(rn);
   checkError();
   return ret;
@@ -1736,7 +1738,7 @@ function stringOfPagespec(pdf, r)
 /** Creates a range with no pages in. */
 function blankRange()
 {
-  var rn = cpdf.cpdflib.blankRange();
+  var rn = cpdflib.cpdflib.blankRange();
   var r = array_of_range(rn);
   deleterange(rn);
   checkError();
@@ -1747,7 +1749,7 @@ function blankRange()
 gives the range 3,4,5,6,7 */
 function range(f, t)
 {
-  var rn = cpdf.cpdflib.range(f, t);
+  var rn = cpdflib.cpdflib.range(f, t);
   var r = array_of_range(rn);
   deleterange(rn);
   checkError();
@@ -1757,7 +1759,7 @@ function range(f, t)
 /** The range containing all the pages in a given document. */
 function all(pdf)
 {
-  var rn = cpdf.cpdflib.all(pdf);
+  var rn = cpdflib.cpdflib.all(pdf);
   var r = array_of_range(rn);
   deleterange(rn);
   checkError();
@@ -1768,7 +1770,7 @@ function all(pdf)
 function even(r_in)
 {
   var ri = range_of_array(r_in);
-  var rn = cpdf.cpdflib.even(ri);
+  var rn = cpdflib.cpdflib.even(ri);
   var r = array_of_range(rn);
   deleterange(rn);
   deleterange(ri);
@@ -1780,7 +1782,7 @@ function even(r_in)
 function odd(r_in)
 {
   var ri = range_of_array(r_in);
-  var rn = cpdf.cpdflib.odd(ri);
+  var rn = cpdflib.cpdflib.odd(ri);
   var r = array_of_range(rn);
   deleterange(rn);
   deleterange(ri);
@@ -1794,7 +1796,7 @@ function rangeUnion(a, b)
 {
   var ra = range_of_array(a);
   var rb = range_of_array(b);
-  var rn = cpdf.cpdflib.rangeUnion(ra, rb);
+  var rn = cpdflib.cpdflib.rangeUnion(ra, rb);
   var r = array_of_range(rn);
   deleterange(rn);
   deleterange(ra);
@@ -1809,7 +1811,7 @@ function difference(a, b)
 {
   var ra = range_of_array(a);
   var rb = range_of_array(b);
-  var rn = cpdf.cpdflib.difference(ra, rb);
+  var rn = cpdflib.cpdflib.difference(ra, rb);
   var r = array_of_range(rn);
   deleterange(rn);
   deleterange(ra);
@@ -1822,7 +1824,7 @@ function difference(a, b)
 function removeDuplicates(a)
 {
   var rn = range_of_array(a);
-  var rdup = cpdf.cpdflib.removeDuplicates(rn);
+  var rdup = cpdflib.cpdflib.removeDuplicates(rn);
   var r = array_of_range(rdup);
   deleterange(rn);
   deleterange(rdup);
@@ -1834,7 +1836,7 @@ function removeDuplicates(a)
 function rangeLength(r)
 {
   var rn = range_of_array(r);
-  var r_out = cpdf.cpdflib.rangeLength(rn);
+  var r_out = cpdflib.cpdflib.rangeLength(rn);
   deleterange(rn);
   checkError();
   return r_out;
@@ -1845,7 +1847,7 @@ rangeLength - 1. */
 function rangeGet(r, n)
 {
   var rn = range_of_array(r);
-  var r_out = cpdf.cpdflib.rangeGet(rn, n);
+  var r_out = cpdflib.cpdflib.rangeGet(rn, n);
   deleterange(rn);
   checkError();
   return r_out;
@@ -1855,7 +1857,7 @@ function rangeGet(r, n)
 function rangeAdd(r, page)
 {
   var rn = range_of_array(r)
-  var r2 = cpdf.cpdflib.rangeAdd(rn, page);
+  var r2 = cpdflib.cpdflib.rangeAdd(rn, page);
   var rout = array_of_range(r2);
   deleterange(rn);
   deleterange(r2);
@@ -1867,7 +1869,7 @@ function rangeAdd(r, page)
 function isInRange(r, page)
 {
   var rn = range_of_array(r);
-  var ret = cpdf.cpdflib.isInRange(rn, page);
+  var ret = cpdflib.cpdflib.isInRange(rn, page);
   deleterange(rn);
   checkError();
   return ret;
@@ -1876,7 +1878,7 @@ function isInRange(r, page)
 /** Returns the number of pages in a PDF. */
 function pages(pdf)
 {
-  var r = cpdf.cpdflib.pages(pdf);
+  var r = cpdflib.cpdflib.pages(pdf);
   checkError();
   return r;
 }
@@ -1885,7 +1887,7 @@ function pages(pdf)
 tries to do this as fast as possible, without loading the whole file. */
 function pagesFast(password, filename)
 {
-  var r = cpdf.cpdflib.pagesFast(caml_string_of_jsstring(password), caml_string_of_jsstring(filename));
+  var r = cpdflib.cpdflib.pagesFast(caml_string_of_jsstring(password), caml_string_of_jsstring(filename));
   checkError();
   return r;
 }
@@ -1895,7 +1897,7 @@ linearized if a linearizer is available. If make_id is true, it will be
 given a new ID. */
 function toFile(pdf, filename, linearize, make_id)
 {
-  cpdf.cpdflib.toFile(pdf, caml_string_of_jsstring(filename), linearize, make_id);
+  cpdflib.cpdflib.toFile(pdf, caml_string_of_jsstring(filename), linearize, make_id);
   checkError();
 }
 
@@ -1907,14 +1909,14 @@ compressed (what we usually want). WARNING: the pdf argument will be invalid
 after this call, and should be not be used again. */
 function toFileExt(pdf, filename, linearize, make_id, preserve_objstm, create_objstm, compress_objstm)
 {
-  cpdf.cpdflib.toFileExt(pdf, caml_string_of_jsstring(filename), linearize, make_id, preserve_objstm, create_objstm, compress_objstm);
+  cpdflib.cpdflib.toFileExt(pdf, caml_string_of_jsstring(filename), linearize, make_id, preserve_objstm, create_objstm, compress_objstm);
   checkError();
 }
 
 /** Writes a PDF file and returns as an array of bytes. */
 function toMemory(pdf, linearize, make_id)
 {
-  var r = cpdf.cpdflib.toMemory(pdf, linearize, make_id);
+  var r = cpdflib.cpdflib.toMemory(pdf, linearize, make_id);
   checkError();
   return r.data;
 }
@@ -1922,7 +1924,7 @@ function toMemory(pdf, linearize, make_id)
 /** Returns true if a document is encrypted, false otherwise. */
 function isEncrypted(pdf)
 {
-  var r = cpdf.cpdflib.isEncrypted(pdf);
+  var r = cpdflib.cpdflib.isEncrypted(pdf);
   checkError();
   return r;
 }
@@ -1931,7 +1933,7 @@ function isEncrypted(pdf)
 raised if the decryption fails. */
 function decryptPdf(pdf, userpw)
 {
-  cpdf.cpdflib.decryptPdf(pdf, caml_string_of_jsstring(userpw));
+  cpdflib.cpdflib.decryptPdf(pdf, caml_string_of_jsstring(userpw));
   checkError();
 }
 
@@ -1939,7 +1941,7 @@ function decryptPdf(pdf, userpw)
 exception if the decryption fails. */
 function decryptPdfOwner(pdf, ownerpw)
 {
-  cpdf.cpdflib.decryptPdfOwner(pdf, caml_string_of_jsstring(ownerpw));
+  cpdflib.cpdflib.decryptPdfOwner(pdf, caml_string_of_jsstring(ownerpw));
   checkError();
 }
 
@@ -1995,7 +1997,7 @@ var aes256bitisotrue = 7;
 function toFileEncrypted(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid, filename)
 {
   var ps = [0].concat(permissions);
-  cpdf.cpdflib.toFileEncrypted(pdf, encryption_method, ps,
+  cpdflib.cpdflib.toFileEncrypted(pdf, encryption_method, ps,
                                caml_string_of_jsstring(ownerpw), caml_string_of_jsstring(userpw), linearize, makeid,
                                caml_string_of_jsstring(filename));
   checkError();
@@ -2006,7 +2008,7 @@ will be invalid after this call, and should not be used again. */
 function toFileEncryptedExt(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid, preserve_objstm, generate_objstm, compress_objstm, filename)
 {
   var ps = [0].concat(permissions);
-  cpdf.cpdflib.toFileEncryptedExt(pdf, encryption_method, ps,
+  cpdflib.cpdflib.toFileEncryptedExt(pdf, encryption_method, ps,
                                   caml_string_of_jsstring(ownerpw), caml_string_of_jsstring(userpw),
                                   linearize, makeid, preserve_objstm, generate_objstm, compress_objstm,
                                   caml_string_of_jsstring(filename));
@@ -2016,7 +2018,7 @@ function toFileEncryptedExt(pdf, encryption_method, permissions, ownerpw, userpw
 /** Returns true if the given permission (restriction) is present. */
 function hasPermission(pdf, permission)
 {
-  var r = cpdf.cpdflib.hasPermission(pdf, permission);
+  var r = cpdflib.cpdflib.hasPermission(pdf, permission);
   checkError();
   return r;
 }
@@ -2024,7 +2026,7 @@ function hasPermission(pdf, permission)
 /** Returns the encryption method currently in use on a document. */
 function encryptionKind(pdf)
 {
-  var r = cpdf.cpdflib.encryptionKind(pdf);
+  var r = cpdflib.cpdflib.encryptionKind(pdf);
   checkError();
   return r;
 }
@@ -2035,7 +2037,7 @@ function encryptionKind(pdf)
 function mergeSimple(pdfs)
 {
   var arr2 = [0].concat(pdfs);
-  var r = cpdf.cpdflib.mergeSimple(arr2);
+  var r = cpdflib.cpdflib.mergeSimple(arr2);
   checkError();
   return r;
 }
@@ -2047,7 +2049,7 @@ source. */
 function merge(pdfs, retain_numbering, remove_duplicate_fonts)
 {
   var arr2 = [0].concat(pdfs);
-  var r = cpdf.cpdflib.merge(arr2, retain_numbering, remove_duplicate_fonts);
+  var r = cpdflib.cpdflib.merge(arr2, retain_numbering, remove_duplicate_fonts);
   checkError();
   return r;
 }
@@ -2065,7 +2067,7 @@ function mergeSame(pdfs, retain_numbering, remove_duplicate_fonts, ranges)
     nativeranges.push(range_of_array(ranges[x]));
   }
   var ranges2 = [0].concat(nativeranges);
-  var r = cpdf.cpdflib.mergeSame(arr2, retain_numbering, remove_duplicate_fonts, ranges2);
+  var r = cpdflib.cpdflib.mergeSame(arr2, retain_numbering, remove_duplicate_fonts, ranges2);
   for (var y = 0; y < nativeranges.length; y++)
   {
     deleterange(nativeranges[y]);
@@ -2078,7 +2080,7 @@ function mergeSame(pdfs, retain_numbering, remove_duplicate_fonts, ranges)
 function selectPages(pdf, r)
 {
   var rn = range_of_array(r);
-  var r_out = cpdf.cpdflib.selectPages(pdf, rn);
+  var r_out = cpdflib.cpdflib.selectPages(pdf, rn);
   deleterange(rn);
   checkError();
   return r_out;
@@ -2091,7 +2093,7 @@ Other boxes (crop etc. are altered as appropriate) */
 function scalePages(pdf, range, sx, sy)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.scalePages(pdf, rn, sx, sy);
+  cpdflib.cpdflib.scalePages(pdf, rn, sx, sy);
   deleterange(rn);
   checkError();
 }
@@ -2101,7 +2103,7 @@ by scale (typically 1.0). Other boxes (crop etc. are altered as appropriate). */
 function scaleToFit(pdf, range, sx, sy, scale)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.scaleToFit(pdf, rn, sx, sy, scale);
+  cpdflib.cpdflib.scaleToFit(pdf, rn, sx, sy, scale);
   deleterange(rn);
   checkError();
 }
@@ -2159,7 +2161,7 @@ scale (typically 1.0) */
 function scaleToFitPaper(pdf, range, papersize, s)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.scaleToFitPaper(pdf, rn, papersize, s);
+  cpdflib.cpdflib.scaleToFitPaper(pdf, rn, papersize, s);
   deleterange(rn);
   checkError();
 }
@@ -2232,7 +2234,7 @@ the position, by the scale given. */
 function scaleContents(pdf, range, position, scale)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.scaleContents(pdf, rn, position.anchor, position.p1, position.p2, scale);
+  cpdflib.cpdflib.scaleContents(pdf, rn, position.anchor, position.p1, position.p2, scale);
   deleterange(rn);
   checkError();
 }
@@ -2241,7 +2243,7 @@ function scaleContents(pdf, range, position, scale)
 function shiftContents(pdf, range, dx, dy)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.shiftContents(pdf, rn, dx, dy);
+  cpdflib.cpdflib.shiftContents(pdf, rn, dx, dy);
   deleterange(rn);
   checkError();
 }
@@ -2251,7 +2253,7 @@ are 0, 90, 180, 270. */
 function rotate(pdf, range, rotation)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.rotate(pdf, rn, rotation);
+  cpdflib.cpdflib.rotate(pdf, rn, rotation);
   deleterange(rn);
   checkError();
 }
@@ -2261,7 +2263,7 @@ degrees, in a clockwise direction. */
 function rotateBy(pdf, range, rotation)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.rotateBy(pdf, rn, rotation);
+  cpdflib.cpdflib.rotateBy(pdf, rn, rotation);
   deleterange(rn);
   checkError();
 }
@@ -2271,7 +2273,7 @@ degrees, in a clockwise direction. */
 function rotateContents(pdf, range, angle)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.rotateContents(pdf, rn, angle);
+  cpdflib.cpdflib.rotateContents(pdf, rn, angle);
   deleterange(rn);
   checkError();
 }
@@ -2281,7 +2283,7 @@ the dimensions and content such that there is no visual change. */
 function upright(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.upright(pdf, rn);
+  cpdflib.cpdflib.upright(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2290,7 +2292,7 @@ function upright(pdf, range)
 function hFlip(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.hFlip(pdf, rn);
+  cpdflib.cpdflib.hFlip(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2299,7 +2301,7 @@ function hFlip(pdf, range)
 function vFlip(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.vFlip(pdf, rn);
+  cpdflib.cpdflib.vFlip(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2309,7 +2311,7 @@ points. */
 function crop(pdf, range, x, y, w, h)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.crop(pdf, rn, x, y, w, h);
+  cpdflib.cpdflib.crop(pdf, rn, x, y, w, h);
   deleterange(rn);
   checkError();
 }
@@ -2318,7 +2320,7 @@ function crop(pdf, range, x, y, w, h)
 function removeCrop(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.removeCrop(pdf, rn);
+  cpdflib.cpdflib.removeCrop(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2327,7 +2329,7 @@ function removeCrop(pdf, range)
 function removeTrim(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.removeTrim(pdf, rn);
+  cpdflib.cpdflib.removeTrim(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2336,7 +2338,7 @@ function removeTrim(pdf, range)
 function removeArt(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.removeArt(pdf, rn);
+  cpdflib.cpdflib.removeArt(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2345,7 +2347,7 @@ function removeArt(pdf, range)
 function removeBleed(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.removeBleed(pdf, rn);
+  cpdflib.cpdflib.removeBleed(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2354,7 +2356,7 @@ function removeBleed(pdf, range)
 function trimMarks(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.trimMarks(pdf, rn);
+  cpdflib.cpdflib.trimMarks(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2363,7 +2365,7 @@ function trimMarks(pdf, range)
 function showBoxes(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.showBoxes(pdf, rn);
+  cpdflib.cpdflib.showBoxes(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2372,7 +2374,7 @@ function showBoxes(pdf, range)
 function hardBox(pdf, range, boxname)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.hardBox(pdf, rn, caml_string_of_jsstring(boxname));
+  cpdflib.cpdflib.hardBox(pdf, rn, caml_string_of_jsstring(boxname));
   deleterange(rn);
   checkError();
 }
@@ -2385,7 +2387,7 @@ function hardBox(pdf, range, boxname)
 algorithm. */
 function compress(pdf)
 {
-  cpdf.cpdflib.compress(pdf);
+  cpdflib.cpdflib.compress(pdf);
   checkError();
 }
 
@@ -2393,14 +2395,14 @@ function compress(pdf)
 method is supported. */
 function decompress(pdf)
 {
-  cpdf.cpdflib.decompress(pdf);
+  cpdflib.cpdflib.decompress(pdf);
   checkError();
 }
 
 /** Squeezes a pdf in memory. */
 function squeezeInMemory(pdf)
 {
-  cpdf.cpdflib.squeezeInMemory(pdf);
+  cpdflib.cpdflib.squeezeInMemory(pdf);
   checkError();
 }
 
@@ -2409,14 +2411,14 @@ function squeezeInMemory(pdf)
 /** Starts the bookmark retrieval process for a given PDF. */
 function startGetBookmarkInfo(pdf)
 {
-  cpdf.cpdflib.startGetBookmarkInfo(pdf);
+  cpdflib.cpdflib.startGetBookmarkInfo(pdf);
   checkError();
 }
 
 /** Gets the number of bookmarks for the PDF given to startGetBookmarkInfo. */
 function numberBookmarks()
 {
-  var r = cpdf.cpdflib.numberBookmarks();
+  var r = cpdflib.cpdflib.numberBookmarks();
   checkError();
   return r;
 }
@@ -2424,7 +2426,7 @@ function numberBookmarks()
 /** Gets the bookmark level for the given bookmark (0...(n - 1)). */
 function getBookmarkLevel(n)
 {
-  var r = cpdf.cpdflib.getBookmarkLevel(n);
+  var r = cpdflib.cpdflib.getBookmarkLevel(n);
   checkError();
   return r;
 }
@@ -2433,7 +2435,7 @@ function getBookmarkLevel(n)
 as the PDF passed to startSetBookmarkInfo) and bookmark (0...(n - 1)). */
 function getBookmarkPage(pdf, n)
 {
-  var r = cpdf.cpdflib.getBookmarkPage(pdf, n);
+  var r = cpdflib.cpdflib.getBookmarkPage(pdf, n);
   checkError();
   return r;
 }
@@ -2441,7 +2443,7 @@ function getBookmarkPage(pdf, n)
 /** Returns the text of bookmark (0...(n - 1)). */
 function getBookmarkText(n)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getBookmarkText(n));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getBookmarkText(n));
   checkError();
   return r;
 }
@@ -2449,7 +2451,7 @@ function getBookmarkText(n)
 /** True if the bookmark is open. */
 function getBookmarkOpenStatus(n)
 {
-  var r = cpdf.cpdflib.getBookmarkOpenStatus(n);
+  var r = cpdflib.cpdflib.getBookmarkOpenStatus(n);
   checkError();
   return r;
 }
@@ -2457,21 +2459,21 @@ function getBookmarkOpenStatus(n)
 /** Ends the bookmark retrieval process, cleaning up. */
 function endGetBookmarkInfo()
 {
-  cpdf.cpdflib.endGetBookmarkInfo();
+  cpdflib.cpdflib.endGetBookmarkInfo();
   checkError();
 }
 
 /** Starts the bookmark setting process for n bookmarks. */
 function startSetBookmarkInfo(n)
 {
-  cpdf.cpdflib.startSetBookmarkInfo(n);
+  cpdflib.cpdflib.startSetBookmarkInfo(n);
   checkError();
 }
 
 /** Set bookmark level for the given bookmark (0...(n - 1)). */
 function setBookmarkLevel(a, b)
 {
-  cpdf.cpdflib.setBookmarkLevel(a, b);
+  cpdflib.cpdflib.setBookmarkLevel(a, b);
   checkError();
 }
 
@@ -2479,21 +2481,21 @@ function setBookmarkLevel(a, b)
 the PDF to be passed to endSetBookmarkInfo) and bookmark (0...(n - 1)). */
 function setBookmarkPage(pdf, a, b)
 {
-  cpdf.cpdflib.setBookmarkPage(pdf, a, b);
+  cpdflib.cpdflib.setBookmarkPage(pdf, a, b);
   checkError();
 }
 
 /** Sets the open status of bookmark (0...(n - 1)). */
 function setBookmarkOpenStatus(a, b)
 {
-  cpdf.cpdflib.setBookmarkOpenStatus(a, b);
+  cpdflib.cpdflib.setBookmarkOpenStatus(a, b);
   checkError();
 }
 
 /** Sets the text of bookmark (0...(n - 1)). */
 function setBookmarkText(n, t)
 {
-  cpdf.cpdflib.setBookmarkText(n, caml_string_of_jsstring(t));
+  cpdflib.cpdflib.setBookmarkText(n, caml_string_of_jsstring(t));
   checkError();
 }
 
@@ -2501,14 +2503,14 @@ function setBookmarkText(n, t)
 PDF. */
 function endSetBookmarkInfo(pdf)
 {
-  cpdf.cpdflib.endSetBookmarkInfo(pdf);
+  cpdflib.cpdflib.endSetBookmarkInfo(pdf);
   checkError();
 }
 
 /** Returns the bookmark data in JSON format. */
 function getBookmarksJSON(pdf)
 {
-  var r = cpdf.cpdflib.getBookmarksJSON(pdf).data;
+  var r = cpdflib.cpdflib.getBookmarksJSON(pdf).data;
   checkError();
   return r;
 }
@@ -2517,7 +2519,7 @@ function getBookmarksJSON(pdf)
 function setBookmarksJSON(pdf, data)
 {
   var bigarray = caml_ba_from_typed_array(data);
-  cpdf.cpdflib.setBookmarksJSON(pdf, bigarray);
+  cpdflib.cpdflib.setBookmarksJSON(pdf, bigarray);
   checkError();
 }
 
@@ -2526,7 +2528,7 @@ the document. If bookmark is set, the table of contents gets its own
 bookmark. */
 function tableOfContents(pdf, font, fontsize, title, bookmark)
 {
-  cpdf.cpdflib.tableOfContents(pdf, font, fontsize, caml_string_of_jsstring(title), bookmark);
+  cpdflib.cpdflib.tableOfContents(pdf, font, fontsize, caml_string_of_jsstring(title), bookmark);
   checkError();
 }
 
@@ -2541,7 +2543,7 @@ true, pos is relative to cropbox not mediabox. */
 function stampOn(stamp_pdf, pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.stampOn(stamp_pdf, pdf, rn);
+  cpdflib.cpdflib.stampOn(stamp_pdf, pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2552,7 +2554,7 @@ document. */
 function stampUnder(stamp_pdf, pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.stampUnder(stamp_pdf, pdf, rn);
+  cpdflib.cpdflib.stampUnder(stamp_pdf, pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2564,7 +2566,7 @@ relative_to_cropbox: if true, pos is relative to cropbox not mediabox. */
 function stampExtended(pdf, pdf2, range, isover, scale_stamp_to_fit, position, relative_to_cropbox)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.stampExtended(pdf, pdf2, rn, isover, scale_stamp_to_fit, position.p1, position.p2, position.anchor, relative_to_cropbox);
+  cpdflib.cpdflib.stampExtended(pdf, pdf2, rn, isover, scale_stamp_to_fit, position.p1, position.p2, position.anchor, relative_to_cropbox);
   deleterange(rn);
   checkError();
 }
@@ -2573,7 +2575,7 @@ function stampExtended(pdf, pdf2, range, isover, scale_stamp_to_fit, position, r
 of 'under'. */
 function combinePages(under, over)
 {
-  var r = cpdf.cpdflib.combinePages(under, over);
+  var r = cpdflib.cpdflib.combinePages(under, over);
   checkError();
   return r;
 }
@@ -2629,7 +2631,7 @@ function addText(metrics, pdf, range, text, position, linespacing,
                  opacity, justification, midline, topline, filename, linewidth, embed_fonts)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.addText(metrics, pdf, rn, caml_string_of_jsstring(text), position.anchor, position.p1, position.p2,
+  cpdflib.cpdflib.addText(metrics, pdf, rn, caml_string_of_jsstring(text), position.anchor, position.p1, position.p2,
                        linespacing, bates, font, fontsize, r, g, b, underneath, relative_to_cropbox, outline,
                        opacity, justification, midline, topline, caml_string_of_jsstring(filename),
                        linewidth, embed_fonts);
@@ -2641,7 +2643,7 @@ function addText(metrics, pdf, range, text, position, linespacing,
 function addTextSimple(pdf, range, text, position, font, fontsize)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.addText(0, pdf, rn, caml_string_of_jsstring(text), position.anchor, position.p1, position.p2, 1.0, 0, font, fontsize, 0, 0, 0, 1, 1, 1, 1.0, leftJustify, 1, 1, caml_string_of_jsstring(""), 0.0, 1);
+  cpdflib.cpdflib.addText(0, pdf, rn, caml_string_of_jsstring(text), position.anchor, position.p1, position.p2, 1.0, 0, font, fontsize, 0, 0, 0, 1, 1, 1, 1.0, leftJustify, 1, 1, caml_string_of_jsstring(""), 0.0, 1);
   deleterange(rn);
   checkError();
 }
@@ -2650,7 +2652,7 @@ function addTextSimple(pdf, range, text, position, font, fontsize)
 function removeText(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.removeText(pdf, rn);
+  cpdflib.cpdflib.removeText(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2659,7 +2661,7 @@ function removeText(pdf, range)
 point. */
 function textWidth(font, text)
 {
-  var r = cpdf.cpdflib.textWidth(font, caml_string_of_jsstring(text));
+  var r = cpdflib.cpdflib.textWidth(font, caml_string_of_jsstring(text));
   checkError();
   return r;
 }
@@ -2669,7 +2671,7 @@ content to pages in the given range in the given PDF. */
 function addContent(content, before, pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.addContent(caml_string_of_jsstring(content), before, pdf, rn);
+  cpdflib.cpdflib.addContent(caml_string_of_jsstring(content), before, pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2679,7 +2681,7 @@ XObject. The name of the newly-created XObject is returned. */
 function stampAsXObject(pdf, range, stamp_pdf)
 {
   var rn = range_of_array(range);
-  var r = caml_jsstring_of_string(cpdf.cpdflib.stampAsXObject(pdf, rn, stamp_pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.stampAsXObject(pdf, rn, stamp_pdf));
   deleterange(rn);
   checkError();
   return r;
@@ -2694,7 +2696,7 @@ for now. Margin is the margin around the output, spacing the spacing between
 imposed inputs. */
 function impose(pdf, x, y, fit, columns, rtl, btt, center, margin, spacing, linewidth)
 {
-  var r = cpdf.cpdflib.impose(pdf, x, y, fit, columns, rtl, btt, center, margin, spacing, linewidth);
+  var r = cpdflib.cpdflib.impose(pdf, x, y, fit, columns, rtl, btt, center, margin, spacing, linewidth);
   checkError();
   return r;
 }
@@ -2703,7 +2705,7 @@ function impose(pdf, x, y, fit, columns, rtl, btt, center, margin, spacing, line
 two pages on one. */
 function twoUp(pdf)
 {
-  var r = cpdf.cpdflib.twoUp(pdf);
+  var r = cpdflib.cpdflib.twoUp(pdf);
   checkError();
   return r;
 }
@@ -2712,7 +2714,7 @@ function twoUp(pdf)
 to fit two pages on one. */
 function twoUpStack(pdf)
 {
-  var r = cpdf.cpdflib.twoUpStack(pdf);
+  var r = cpdflib.cpdflib.twoUpStack(pdf);
   checkError();
   return r;
 }
@@ -2721,7 +2723,7 @@ function twoUpStack(pdf)
 function padBefore(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.padBefore(pdf, rn);
+  cpdflib.cpdflib.padBefore(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2730,7 +2732,7 @@ function padBefore(pdf, range)
 function padAfter(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.padAfter(pdf, rn);
+  cpdflib.cpdflib.padAfter(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -2738,7 +2740,7 @@ function padAfter(pdf, range)
 /** Adds a blank page after every n pages. */
 function padEvery(pdf, n)
 {
-  cpdf.cpdflib.padEvery(pdf, n);
+  cpdflib.cpdflib.padEvery(pdf, n);
   checkError();
 }
 
@@ -2746,7 +2748,7 @@ function padEvery(pdf, n)
 length. */
 function padMultiple(pdf, n)
 {
-  cpdf.cpdflib.padMultiple(pdf, n);
+  cpdflib.cpdflib.padMultiple(pdf, n);
   checkError();
 }
 
@@ -2754,7 +2756,7 @@ function padMultiple(pdf, n)
 length. */
 function padMultipleBefore(pdf, n)
 {
-  cpdf.cpdflib.padMultipleBefore(pdf, n);
+  cpdflib.cpdflib.padMultipleBefore(pdf, n);
   checkError();
 }
 
@@ -2763,7 +2765,7 @@ function padMultipleBefore(pdf, n)
 /** Returns the annotations from a PDF in JSON format. */
 function annotationsJSON(pdf)
 {
-  var r = cpdf.cpdflib.annotationsJSON(pdf);
+  var r = cpdflib.cpdflib.annotationsJSON(pdf);
   checkError();
   return r.data;
 }
@@ -2774,7 +2776,7 @@ function annotationsJSON(pdf)
 loading it. */
 function isLinearized(filename)
 {
-  var r = cpdf.cpdflib.isLinearized(caml_string_of_jsstring(filename));
+  var r = cpdflib.cpdflib.isLinearized(caml_string_of_jsstring(filename));
   checkError();
   return r;
 }
@@ -2782,7 +2784,7 @@ function isLinearized(filename)
 /** Returns the minor version number of a document. */
 function getVersion(pdf)
 {
-  var r = cpdf.cpdflib.getVersion(pdf);
+  var r = cpdflib.cpdflib.getVersion(pdf);
   checkError();
   return r;
 }
@@ -2790,7 +2792,7 @@ function getVersion(pdf)
 /** Returns the major version number of a document. */
 function getMajorVersion(pdf)
 {
-  var r = cpdf.cpdflib.getMajorVersion(pdf);
+  var r = cpdflib.cpdflib.getMajorVersion(pdf);
   checkError();
   return r;
 }
@@ -2798,7 +2800,7 @@ function getMajorVersion(pdf)
 /** Returns the title of a document. */
 function getTitle(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getTitle(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getTitle(pdf));
   checkError();
   return r;
 }
@@ -2806,7 +2808,7 @@ function getTitle(pdf)
 /** Returns the author of a document. */
 function getAuthor(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getAuthor(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getAuthor(pdf));
   checkError();
   return r;
 }
@@ -2814,7 +2816,7 @@ function getAuthor(pdf)
 /** Returns the subject of a document. */
 function getSubject(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getSubject(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getSubject(pdf));
   checkError();
   return r;
 }
@@ -2822,7 +2824,7 @@ function getSubject(pdf)
 /** Returns the keywords of a document. */
 function getKeywords(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getKeywords(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getKeywords(pdf));
   checkError();
   return r;
 }
@@ -2830,7 +2832,7 @@ function getKeywords(pdf)
 /** Returns the creator of a document. */
 function getCreator(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getCreator(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getCreator(pdf));
   checkError();
   return r;
 }
@@ -2838,7 +2840,7 @@ function getCreator(pdf)
 /** Returns the producer of a document. */
 function getProducer(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getProducer(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getProducer(pdf));
   checkError();
   return r;
 }
@@ -2846,7 +2848,7 @@ function getProducer(pdf)
 /** Returns the creation date of a document. */
 function getCreationDate(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getCreationDate(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getCreationDate(pdf));
   checkError();
   return r;
 }
@@ -2854,7 +2856,7 @@ function getCreationDate(pdf)
 /** Returns the modification date of a document. */
 function getModificationDate(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getModificationDate(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getModificationDate(pdf));
   checkError();
   return r;
 }
@@ -2862,7 +2864,7 @@ function getModificationDate(pdf)
 /** Returns the XMP title of a document. */
 function getTitleXMP(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getTitleXMP(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getTitleXMP(pdf));
   checkError();
   return r;
 }
@@ -2870,7 +2872,7 @@ function getTitleXMP(pdf)
 /** Returns the XMP author of a document. */
 function getAuthorXMP(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getAuthorXMP(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getAuthorXMP(pdf));
   checkError();
   return r;
 }
@@ -2878,7 +2880,7 @@ function getAuthorXMP(pdf)
 /** Returns the XMP subject of a document. */
 function getSubjectXMP(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getSubjectXMP(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getSubjectXMP(pdf));
   checkError();
   return r;
 }
@@ -2886,7 +2888,7 @@ function getSubjectXMP(pdf)
 /** Returns the XMP keywords of a document. */
 function getKeywordsXMP(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getKeywordsXMP(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getKeywordsXMP(pdf));
   checkError();
   return r;
 }
@@ -2894,7 +2896,7 @@ function getKeywordsXMP(pdf)
 /** Returns the XMP creator of a document. */
 function getCreatorXMP(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getCreatorXMP(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getCreatorXMP(pdf));
   checkError();
   return r;
 }
@@ -2902,7 +2904,7 @@ function getCreatorXMP(pdf)
 /** Returns the XMP producer of a document. */
 function getProducerXMP(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getProducerXMP(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getProducerXMP(pdf));
   checkError();
   return r;
 }
@@ -2910,7 +2912,7 @@ function getProducerXMP(pdf)
 /** Returns the XMP creation date of a document. */
 function getCreationDateXMP(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getCreationDateXMP(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getCreationDateXMP(pdf));
   checkError();
   return r;
 }
@@ -2918,7 +2920,7 @@ function getCreationDateXMP(pdf)
 /** Returns the XMP modification date of a document. */
 function getModificationDateXMP(pdf)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getModificationDateXMP(pdf));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getModificationDateXMP(pdf));
   checkError();
   return r;
 }
@@ -2926,119 +2928,119 @@ function getModificationDateXMP(pdf)
 /** Sets the title of a document. */
 function setTitle(pdf, s)
 {
-  cpdf.cpdflib.setTitle(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setTitle(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the author of a document. */
 function setAuthor(pdf, s)
 {
-  cpdf.cpdflib.setAuthor(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setAuthor(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the subject of a document. */
 function setSubject(pdf, s)
 {
-  cpdf.cpdflib.setSubject(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setSubject(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the keywords of a document. */
 function setKeywords(pdf, s)
 {
-  cpdf.cpdflib.setKeywords(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setKeywords(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the creator of a document. */
 function setCreator(pdf, s)
 {
-  cpdf.cpdflib.setCreator(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setCreator(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the producer of a document. */
 function setProducer(pdf, s)
 {
-  cpdf.cpdflib.setProducer(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setProducer(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the creation date of a document. */
 function setCreationDate(pdf, s)
 {
-  cpdf.cpdflib.setCreationDate(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setCreationDate(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the modification date of a document. */
 function setModificationDate(pdf, s)
 {
-  cpdf.cpdflib.setModificationDate(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setModificationDate(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the XMP title of a document. */
 function setTitleXMP(pdf, s)
 {
-  cpdf.cpdflib.setTitleXMP(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setTitleXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the XMP author of a document. */
 function setAuthorXMP(pdf, s)
 {
-  cpdf.cpdflib.setAuthorXMP(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setAuthorXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the XMP author of a document. */
 function setSubjectXMP(pdf, s)
 {
-  cpdf.cpdflib.setSubjectXMP(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setSubjectXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the XMP keywords of a document. */
 function setKeywordsXMP(pdf, s)
 {
-  cpdf.cpdflib.setKeywordsXMP(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setKeywordsXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the XMP creator of a document. */
 function setCreatorXMP(pdf, s)
 {
-  cpdf.cpdflib.setCreatorXMP(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setCreatorXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the XMP producer of a document. */
 function setProducerXMP(pdf, s)
 {
-  cpdf.cpdflib.setProducerXMP(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setProducerXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the XMP creation date of a document. */
 function setCreationDateXMP(pdf, s)
 {
-  cpdf.cpdflib.setCreationDateXMP(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setCreationDateXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Sets the XMP modification date of a document. */
 function setModificationDateXMP(pdf, s)
 {
-  cpdf.cpdflib.setModificationDateXMP(pdf, caml_string_of_jsstring(s));
+  cpdflib.cpdflib.setModificationDateXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
 /** Returns the components from a PDF date string. */
 function getDateComponents(string)
 {
-  var r = cpdf.cpdflib.getDateComponents(caml_string_of_jsstring(string));
+  var r = cpdflib.cpdflib.getDateComponents(caml_string_of_jsstring(string));
   checkError();
   return r.slice(1);
 }
@@ -3046,7 +3048,7 @@ function getDateComponents(string)
 /** Builds a PDF date string from individual components. */
 function dateStringOfComponents(y, m, d, h, min, sec, hour_offset, minute_offset)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.dateStringOfComponents(y, m, d, h, min, sec, hour_offset, minute_offset));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.dateStringOfComponents(y, m, d, h, min, sec, hour_offset, minute_offset));
   checkError();
   return r;
 }
@@ -3054,7 +3056,7 @@ function dateStringOfComponents(y, m, d, h, min, sec, hour_offset, minute_offset
 /** Gets the viewing rotation for a given page. */
 function getPageRotation(pdf, page)
 {
-  var r = cpdf.cpdflib.getPageRotation(pdf, page);
+  var r = cpdflib.cpdflib.getPageRotation(pdf, page);
   checkError();
   return r;
 }
@@ -3062,7 +3064,7 @@ function getPageRotation(pdf, page)
 /** Returns true, if that page has the given box. E.g "/CropBox". */
 function hasBox(pdf, page, box)
 {
-  var r = cpdf.cpdflib.hasBox(pdf, page, caml_string_of_jsstring(box));
+  var r = cpdflib.cpdflib.hasBox(pdf, page, caml_string_of_jsstring(box));
   checkError();
   return r;
 }
@@ -3072,7 +3074,7 @@ min y, max y in points. Only succeeds if such a box exists, as checked by
 hasBox. */
 function getMediaBox(pdf, pagenumber)
 {
-  var r = cpdf.cpdflib.getMediaBox(pdf, pagenumber);
+  var r = cpdflib.cpdflib.getMediaBox(pdf, pagenumber);
   checkError();
   return r.slice(1);
 }
@@ -3082,7 +3084,7 @@ min y, max y in points. Only succeeds if such a box exists, as checked by
 hasBox. */
 function getCropBox(pdf, pagenumber)
 {
-  var r = cpdf.cpdflib.getCropBox(pdf, pagenumber);
+  var r = cpdflib.cpdflib.getCropBox(pdf, pagenumber);
   checkError();
   return r.slice(1);
 }
@@ -3092,7 +3094,7 @@ min y, max y in points. Only succeeds if such a box exists, as checked by
 hasBox. */
 function getArtBox(pdf, pagenumber)
 {
-  var r = cpdf.cpdflib.getArtBox(pdf, pagenumber);
+  var r = cpdflib.cpdflib.getArtBox(pdf, pagenumber);
   checkError();
   return r.slice(1);
 }
@@ -3102,7 +3104,7 @@ min y, max y in points. Only succeeds if such a box exists, as checked by
 hasBox. */
 function getBleedBox(pdf, pagenumber)
 {
-  var r = cpdf.cpdflib.getBleedBox(pdf, pagenumber);
+  var r = cpdflib.cpdflib.getBleedBox(pdf, pagenumber);
   checkError();
   return r.slice(1);
 }
@@ -3112,7 +3114,7 @@ min y, max y in points. Only succeeds if such a box exists, as checked by
 hasBox. */
 function getTrimBox(pdf, pagenumber)
 {
-  var r = cpdf.cpdflib.getTrimBox(pdf, pagenumber);
+  var r = cpdflib.cpdflib.getTrimBox(pdf, pagenumber);
   checkError();
   return r.slice(1);
 }
@@ -3122,7 +3124,7 @@ min y, max y in points. */
 function setMediabox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.setMediabox(pdf, rn, minx, maxx, miny, maxy);
+  cpdflib.cpdflib.setMediabox(pdf, rn, minx, maxx, miny, maxy);
   deleterange(rn);
   checkError();
 }
@@ -3132,7 +3134,7 @@ min y, max y in points. */
 function setCropBox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.setCropBox(pdf, rn, minx, maxx, miny, maxy);
+  cpdflib.cpdflib.setCropBox(pdf, rn, minx, maxx, miny, maxy);
   deleterange(rn);
   checkError();
 }
@@ -3142,7 +3144,7 @@ min y, max y in points. */
 function setTrimBox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.setTrimBox(pdf, rn, minx, maxx, miny, maxy);
+  cpdflib.cpdflib.setTrimBox(pdf, rn, minx, maxx, miny, maxy);
   deleterange(rn);
   checkError();
 }
@@ -3152,7 +3154,7 @@ min y, max y in points. */
 function setBleedBox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.setBleedBox(pdf, rn, minx, maxx, miny, maxy);
+  cpdflib.cpdflib.setBleedBox(pdf, rn, minx, maxx, miny, maxy);
   deleterange(rn);
   checkError();
 }
@@ -3162,7 +3164,7 @@ min y, max y in points. */
 function setArtBox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.setArtBox(pdf, rn, minx, maxx, miny, maxy);
+  cpdflib.cpdflib.setArtBox(pdf, rn, minx, maxx, miny, maxy);
   deleterange(rn);
   checkError();
 }
@@ -3170,28 +3172,28 @@ function setArtBox(pdf, range, minx, maxx, miny, maxy)
 /** Marks a document as trapped. */
 function markTrapped(pdf)
 {
-  cpdf.cpdflib.markTrapped(pdf);
+  cpdflib.cpdflib.markTrapped(pdf);
   checkError();
 }
 
 /** Marks a document as untrapped. */
 function markUntrapped(pdf)
 {
-  cpdf.cpdflib.markUntrapped(pdf);
+  cpdflib.cpdflib.markUntrapped(pdf);
   checkError();
 }
 
 /** Marks a document as trapped in XMP metadata. */
 function markTrappedXMP(pdf)
 {
-  cpdf.cpdflib.markTrappedXMP(pdf);
+  cpdflib.cpdflib.markTrappedXMP(pdf);
   checkError();
 }
 
 /** Marks a document as untrapped in XMP metadata. */
 function markUntrappedXMP(pdf)
 {
-  cpdf.cpdflib.markUntrappedXMP(pdf);
+  cpdflib.cpdflib.markUntrappedXMP(pdf);
   checkError();
 }
 
@@ -3216,7 +3218,7 @@ var twoPageRight = 5;
 /** Sets the page layout for a document. */
 function setPageLayout(pdf, layout)
 {
-  cpdf.cpdflib.setPageLayout(pdf, layout);
+  cpdflib.cpdflib.setPageLayout(pdf, layout);
   checkError();
 }
 
@@ -3238,49 +3240,49 @@ var useAttachments = 4;
 /** Sets the page mode for a document. */
 function setPageMode(pdf, mode)
 {
-  cpdf.cpdflib.setPageMode(pdf, mode);
+  cpdflib.cpdflib.setPageMode(pdf, mode);
   checkError();
 }
 
 /** Sets the hide toolbar flag. */
 function hideToolbar(pdf, flag)
 {
-  cpdf.cpdflib.hideToolbar(pdf, flag);
+  cpdflib.cpdflib.hideToolbar(pdf, flag);
   checkError();
 }
 
 /** Sets the hide menubar flag. */
 function hideMenubar(pdf, flag)
 {
-  cpdf.cpdflib.hideMenubar(pdf, flag);
+  cpdflib.cpdflib.hideMenubar(pdf, flag);
   checkError();
 }
 
 /** Sets the hide window UI flag. */
 function hideWindowUi(pdf, flag)
 {
-  cpdf.cpdflib.hideWindowUi(pdf, flag);
+  cpdflib.cpdflib.hideWindowUi(pdf, flag);
   checkError();
 }
 
 /** Sets the fit window flag. */
 function fitWindow(pdf, flag)
 {
-  cpdf.cpdflib.fitWindow(pdf, flag);
+  cpdflib.cpdflib.fitWindow(pdf, flag);
   checkError();
 }
 
 /** Sets the center window flag. */
 function centerWindow(pdf, flag)
 {
-  cpdf.cpdflib.centerWindow(pdf, flag);
+  cpdflib.cpdflib.centerWindow(pdf, flag);
   checkError();
 }
 
 /** Sets the display doc title flag. */
 function displayDocTitle(pdf, flag)
 {
-  cpdf.cpdflib.displayDocTitle(pdf, flag);
+  cpdflib.cpdflib.displayDocTitle(pdf, flag);
   checkError();
 }
 
@@ -3288,14 +3290,14 @@ function displayDocTitle(pdf, flag)
 number. */
 function openAtPage(pdf, fit, pagenumber)
 {
-  cpdf.cpdflib.openAtPage(pdf, fit, pagenumber);
+  cpdflib.cpdflib.openAtPage(pdf, fit, pagenumber);
   checkError();
 }
 
 /** Sets the XMP metadata of a document, given a file name. */
 function setMetadataFromFile(pdf, filename)
 {
-  cpdf.cpdflib.setMetadataFromFile(pdf, caml_string_of_jsstring(filename));
+  cpdflib.cpdflib.setMetadataFromFile(pdf, caml_string_of_jsstring(filename));
   checkError();
 }
 
@@ -3303,21 +3305,21 @@ function setMetadataFromFile(pdf, filename)
 function setMetadataFromByteArray(pdf, data)
 {
   var bigarray = caml_ba_from_typed_array(data);
-  cpdf.cpdflib.setMetadataFromByteArray(pdf, bigarray);
+  cpdflib.cpdflib.setMetadataFromByteArray(pdf, bigarray);
   checkError();
 }
 
 /** Removes the XMP metadata from a document. */
 function removeMetadata(pdf)
 {
-  cpdf.cpdflib.removeMetadata(pdf);
+  cpdflib.cpdflib.removeMetadata(pdf);
   checkError();
 }
 
 /** Returns the XMP metadata from a document. */
 function getMetadata(pdf)
 {
-  var r = cpdf.cpdflib.getMetadata(pdf);
+  var r = cpdflib.cpdflib.getMetadata(pdf);
   return r.data;
   checkError();
 }
@@ -3326,7 +3328,7 @@ function getMetadata(pdf)
 document. */
 function createMetadata(pdf)
 {
-  cpdf.cpdflib.createMetadata(pdf);
+  cpdflib.cpdflib.createMetadata(pdf);
   checkError();
 }
 
@@ -3334,7 +3336,7 @@ function createMetadata(pdf)
 cpdf will convert it to XMP format. The date 'now' means now. */
 function setMetadataDate(pdf, date)
 {
-  cpdf.cpdflib.setMetadataDate(pdf, caml_string_of_jsstring(date));
+  cpdflib.cpdflib.setMetadataDate(pdf, caml_string_of_jsstring(date));
   checkError();
 }
 
@@ -3359,7 +3361,7 @@ up or down. */
 function addPageLabels(pdf, style, prefix, offset, range, progress)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.addPageLabels(pdf, style, caml_string_of_jsstring(prefix), offset, rn, progress);
+  cpdflib.cpdflib.addPageLabels(pdf, style, caml_string_of_jsstring(prefix), offset, rn, progress);
   deleterange(rn);
   checkError();
 }
@@ -3367,14 +3369,14 @@ function addPageLabels(pdf, style, prefix, offset, range, progress)
 /** Removes the page labels from the document. */
 function removePageLabels(pdf)
 {
-  cpdf.cpdflib.removePageLabels(pdf);
+  cpdflib.cpdflib.removePageLabels(pdf);
   checkError();
 }
 
 /** Calculates the full label string for a given page, and returns it. */
 function getPageLabelStringForPage(pdf, pagenumber)
 {
-  var r = cpdf.cpdflib.getPageLabelStringForPage(pdf, pagenumber);
+  var r = cpdflib.cpdflib.getPageLabelStringForPage(pdf, pagenumber);
   checkError();
   return r;
 }
@@ -3398,7 +3400,7 @@ startpage = 6
 startvalue = 1 */
 function startGetPageLabels(pdf)
 {
-  var r = cpdf.cpdflib.startGetPageLabels(pdf);
+  var r = cpdflib.cpdflib.startGetPageLabels(pdf);
   checkError();
   return r;
 }
@@ -3422,7 +3424,7 @@ startpage = 6
 startvalue = 1 */
 function getPageLabelStyle(n)
 {
-  var r = cpdf.cpdflib.getPageLabelStyle(n);
+  var r = cpdflib.cpdflib.getPageLabelStyle(n);
   checkError();
   return r;
 }
@@ -3446,7 +3448,7 @@ startpage = 6
 startvalue = 1 */
 function getPageLabelPrefix(n)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getPageLabelPrefix(n));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getPageLabelPrefix(n));
   checkError();
   return r;
 }
@@ -3470,7 +3472,7 @@ startpage = 6
 startvalue = 1 */
 function getPageLabelOffset(n)
 {
-  var r = cpdf.cpdflib.getPageLabelOffset(n);
+  var r = cpdflib.cpdflib.getPageLabelOffset(n);
   checkError();
   return r;
 }
@@ -3494,7 +3496,7 @@ startpage = 6
 startvalue = 1 */
 function getPageLabelRange(n)
 {
-  var r = cpdf.cpdflib.getPageLabelRange(n);
+  var r = cpdflib.cpdflib.getPageLabelRange(n);
   checkError();
   return r;
 }
@@ -3518,7 +3520,7 @@ startpage = 6
 startvalue = 1 */
 function endGetPageLabels()
 {
-  cpdf.cpdflib.endGetPageLabels();
+  cpdflib.cpdflib.endGetPageLabels();
   checkError();
 }
 
@@ -3527,7 +3529,7 @@ function endGetPageLabels()
 /** Attaches a file to the pdf. It is attached at document level. */
 function attachFile(filename, pdf)
 {
-  cpdf.cpdflib.attachFile(caml_string_of_jsstring(filename), pdf);
+  cpdflib.cpdflib.attachFile(caml_string_of_jsstring(filename), pdf);
   checkError();
 }
 
@@ -3535,7 +3537,7 @@ function attachFile(filename, pdf)
 to which it should be attached. */
 function attachFileToPage(filename, pdf, pagenumber)
 {
-  cpdf.cpdflib.attachFileToPage(caml_string_of_jsstring(filename), pdf, pagenumber);
+  cpdflib.cpdflib.attachFileToPage(caml_string_of_jsstring(filename), pdf, pagenumber);
   checkError();
 }
 
@@ -3543,7 +3545,7 @@ function attachFileToPage(filename, pdf, pagenumber)
 function attachFileFromMemory(data, filename, pdf)
 {
   var bigarray = caml_ba_from_typed_array(data);
-  var r = cpdf.cpdflib.attachFileFromMemory(bigarray, caml_string_of_jsstring(filename), pdf);
+  var r = cpdflib.cpdflib.attachFileFromMemory(bigarray, caml_string_of_jsstring(filename), pdf);
   checkError();
   return r;
 }
@@ -3552,7 +3554,7 @@ function attachFileFromMemory(data, filename, pdf)
 function attachFileToPageFromMemory(data, filename, pdf, pagenumber)
 {
   var bigarray = caml_ba_from_typed_array(data);
-  var r = cpdf.cpdflib.attachFileToPageFromMemory(bigarray, caml_string_of_jsstring(filename), pdf, pagenumber);
+  var r = cpdflib.cpdflib.attachFileToPageFromMemory(bigarray, caml_string_of_jsstring(filename), pdf, pagenumber);
   checkError();
   return r;
 }
@@ -3560,7 +3562,7 @@ function attachFileToPageFromMemory(data, filename, pdf, pagenumber)
 /** Removes all page- and document-level attachments from a document. */
 function removeAttachedFiles(pdf)
 {
-  cpdf.cpdflib.removeAttachedFiles(pdf);
+  cpdflib.cpdflib.removeAttachedFiles(pdf);
   checkError();
 }
 
@@ -3570,7 +3572,7 @@ getAttachmentName etc. to return each one 0...(n - 1). Finally, call
 endGetAttachments to clean up. */
 function startGetAttachments(pdf)
 {
-  cpdf.cpdflib.startGetAttachments(pdf);
+  cpdflib.cpdflib.startGetAttachments(pdf);
   checkError();
 }
 
@@ -3580,7 +3582,7 @@ getAttachmentName etc. to return each one 0...(n - 1). Finally, call
 endGetAttachments to clean up. */
 function numberGetAttachments()
 {
-  var r = cpdf.cpdflib.numberGetAttachments();
+  var r = cpdflib.cpdflib.numberGetAttachments();
   checkError();
   return r;
 }
@@ -3588,7 +3590,7 @@ function numberGetAttachments()
 /** Gets the name of an attachment. */
 function getAttachmentName(n)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getAttachmentName(n));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getAttachmentName(n));
   checkError();
   return r;
 }
@@ -3596,7 +3598,7 @@ function getAttachmentName(n)
 /** Gets the page number. 0 = document level. */
 function getAttachmentPage(n)
 {
-  var r = cpdf.cpdflib.getAttachmentPage(n);
+  var r = cpdflib.cpdflib.getAttachmentPage(n);
   checkError();
   return r;
 }
@@ -3604,7 +3606,7 @@ function getAttachmentPage(n)
 /** Gets the attachment data itself. */
 function getAttachmentData(n)
 {
-  var r = cpdf.cpdflib.getAttachmentData(n);
+  var r = cpdflib.cpdflib.getAttachmentData(n);
   checkError();
   return r.data;
 }
@@ -3612,7 +3614,7 @@ function getAttachmentData(n)
 /** Cleans up after getting attachments. */
 function endGetAttachments()
 {
-  cpdf.cpdflib.endGetAttachments();
+  cpdflib.cpdflib.endGetAttachments();
   checkError();
 }
 
@@ -3627,7 +3629,7 @@ min_required_resolution. Then, call the other functions giving a serial number
 up. */
 function startGetImageResolution(pdf, min_required_resolution)
 {
-  var r = cpdf.cpdflib.startGetImageResolution(pdf, min_required_resolution);
+  var r = cpdflib.cpdflib.startGetImageResolution(pdf, min_required_resolution);
   checkError();
   return r;
 }
@@ -3641,7 +3643,7 @@ min_required_resolution. Then, call the other functions giving a serial number
 up. */
 function getImageResolutionPageNumber(n)
 {
-  var r = cpdf.cpdflib.getImageResolutionPageNumber(n);
+  var r = cpdflib.cpdflib.getImageResolutionPageNumber(n);
   checkError();
   return r;
 }
@@ -3655,7 +3657,7 @@ min_required_resolution. Then, call the other functions giving a serial number
 up. */
 function getImageResolutionImageName(n)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getImageResolutionImageName(n));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getImageResolutionImageName(n));
   checkError();
   return r;
 }
@@ -3669,7 +3671,7 @@ min_required_resolution. Then, call the other functions giving a serial number
 up. */
 function getImageResolutionXPixels(n)
 {
-  var r = cpdf.cpdflib.getImageResolutionXPixels(n);
+  var r = cpdflib.cpdflib.getImageResolutionXPixels(n);
   checkError();
   return r;
 }
@@ -3683,7 +3685,7 @@ min_required_resolution. Then, call the other functions giving a serial number
 up. */
 function getImageResolutionYPixels(n)
 {
-  var r = cpdf.cpdflib.getImageResolutionYPixels(n);
+  var r = cpdflib.cpdflib.getImageResolutionYPixels(n);
   checkError();
   return r;
 }
@@ -3697,7 +3699,7 @@ min_required_resolution. Then, call the other functions giving a serial number
 up. */
 function getImageResolutionXRes(n)
 {
-  var r = cpdf.cpdflib.getImageResolutionXRes(n);
+  var r = cpdflib.cpdflib.getImageResolutionXRes(n);
   checkError();
   return r;
 }
@@ -3711,7 +3713,7 @@ min_required_resolution. Then, call the other functions giving a serial number
 up. */
 function getImageResolutionYRes(n)
 {
-  var r = cpdf.cpdflib.getImageResolutionYRes(n);
+  var r = cpdflib.cpdflib.getImageResolutionYRes(n);
   checkError();
   return r;
 }
@@ -3726,7 +3728,7 @@ up. */
 function endGetImageResolution()
 {
   checkError();
-  cpdf.cpdflib.endGetImageResolution();
+  cpdflib.cpdflib.endGetImageResolution();
 }
 
 // CHAPTER 14. Fonts.
@@ -3739,7 +3741,7 @@ up. */
 function startGetFontInfo(pdf)
 {
   checkError();
-  cpdf.cpdflib.startGetFontInfo(pdf);
+  cpdflib.cpdflib.startGetFontInfo(pdf);
 }
 
 /** Retrieves font information. First, call startGetFontInfo(pdf). Now call
@@ -3749,7 +3751,7 @@ number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
 up. */
 function numberFonts()
 {
-  var r = cpdf.cpdflib.numberFonts();
+  var r = cpdflib.cpdflib.numberFonts();
   checkError();
   return r;
 }
@@ -3761,7 +3763,7 @@ number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
 up. */
 function getFontPage(n)
 {
-  var r = cpdf.cpdflib.getFontPage(n);
+  var r = cpdflib.cpdflib.getFontPage(n);
   checkError();
   return r;
 }
@@ -3773,7 +3775,7 @@ number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
 up. */
 function getFontName(n)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontName(n));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getFontName(n));
   checkError();
   return r;
 }
@@ -3785,7 +3787,7 @@ number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
 up. */
 function getFontType(n)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontType(n));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getFontType(n));
   checkError();
   return r;
 }
@@ -3797,7 +3799,7 @@ number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
 up. */
 function getFontEncoding(n)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.getFontEncoding(n));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getFontEncoding(n));
   checkError();
   return r;
 }
@@ -3809,14 +3811,14 @@ number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
 up. */
 function endGetFontInfo()
 {
-  cpdf.cpdflib.endGetFontInfo();
+  cpdflib.cpdflib.endGetFontInfo();
   checkError();
 }
 
 /** Removes all font data from a file. */
 function removeFonts(pdf)
 {
-  cpdf.cpdflib.removeFonts(pdf);
+  cpdflib.cpdflib.removeFonts(pdf);
   checkError();
 }
 
@@ -3825,7 +3827,7 @@ in the 'to' PDF. The new font is stored under its font name. */
 function copyFont(docfrom, docto, range, pagenumber, fontname)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.copyFont(docfrom, docto, rn, pagenumber, caml_string_of_jsstring(fontname));
+  cpdflib.cpdflib.copyFont(docfrom, docto, rn, pagenumber, caml_string_of_jsstring(fontname));
   deleterange(rn);
   checkError();
 }
@@ -3837,14 +3839,14 @@ true, page content is parsed. If no_stream_data is true, all stream data is
 suppressed entirely. If decompress_streams is true, streams are decompressed. */
 function outputJSON(filename, parse_content, no_stream_data, decompress_streams, pdf)
 {
-  cpdf.cpdflib.outputJSON(caml_string_of_jsstring(filename), parse_content, no_stream_data, decompress_streams, pdf);
+  cpdflib.cpdflib.outputJSON(caml_string_of_jsstring(filename), parse_content, no_stream_data, decompress_streams, pdf);
   checkError();
 }
 
 /** Like outputJSON, but it writes to a byte array in memory. */
 function outputJSONMemory(parse_content, no_stream_data, decompress_streams, pdf)
 {
-  var r = cpdf.cpdflib.outputJSONMemory(parse_content, no_stream_data, decompress_streams, pdf);
+  var r = cpdflib.cpdflib.outputJSONMemory(parse_content, no_stream_data, decompress_streams, pdf);
   checkError();
   return r.data;
 }
@@ -3852,7 +3854,7 @@ function outputJSONMemory(parse_content, no_stream_data, decompress_streams, pdf
 /** Loads a PDF from a JSON file given its filename. */
 function fromJSON(filename)
 {
-  var r = cpdf.cpdflib.fromJSON(caml_string_of_jsstring(filename));
+  var r = cpdflib.cpdflib.fromJSON(caml_string_of_jsstring(filename));
   checkError();
   return r;
 }
@@ -3861,7 +3863,7 @@ function fromJSON(filename)
 function fromJSONMemory(data)
 {
   var bigarray = caml_ba_from_typed_array(data);
-  var r = cpdf.cpdflib.fromJSONMemory(bigarray);
+  var r = cpdflib.cpdflib.fromJSONMemory(bigarray);
   checkError();
   return r;
 }
@@ -3872,7 +3874,7 @@ function fromJSONMemory(data)
 is returned. */
 function startGetOCGList(pdf)
 {
-  var r = cpdf.cpdflib.startGetOCGList(pdf);
+  var r = cpdflib.cpdflib.startGetOCGList(pdf);
   checkError();
   return r;
 }
@@ -3880,7 +3882,7 @@ function startGetOCGList(pdf)
 /** Retrieves an OCG name, given its serial number 0..n - 1. */
 function ocgListEntry(n)
 {
-  var r = caml_jsstring_of_string(cpdf.cpdflib.ocgListEntry(n));
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.ocgListEntry(n));
   checkError();
   return r;
 }
@@ -3888,21 +3890,21 @@ function ocgListEntry(n)
 /** Ends retrieval of optional content group names. */
 function endGetOCGList()
 {
-  cpdf.cpdflib.endGetOCGList();
+  cpdflib.cpdflib.endGetOCGList();
   checkError();
 }
 
 /** Renames an optional content group. */
 function ocgRename(pdf, name_from, name_to)
 {
-  cpdf.cpdflib.ocgRename(pdf, caml_string_of_jsstring(name_from), caml_string_of_jsstring(name_to));
+  cpdflib.cpdflib.ocgRename(pdf, caml_string_of_jsstring(name_from), caml_string_of_jsstring(name_to));
   checkError();
 }
 
 /** Ensures that every optional content group appears in the OCG order list. */
 function ocgOrderAll(pdf)
 {
-  cpdf.cpdflib.ocgOrderAll(pdf);
+  cpdflib.cpdflib.ocgOrderAll(pdf);
   checkError();
 }
 
@@ -3912,7 +3914,7 @@ content groups. This function will merge the two into a single optional
 content group. */
 function ocgCoalesce(pdf)
 {
-  cpdf.cpdflib.ocgCoalesce(pdf);
+  cpdflib.cpdflib.ocgCoalesce(pdf);
   checkError();
 }
 
@@ -3922,7 +3924,7 @@ function ocgCoalesce(pdf)
 (in points), and number of pages. */
 function blankDocument(w, h, pages)
 {
-  var r = cpdf.cpdflib.blankDocument(w, h, pages);
+  var r = cpdflib.cpdflib.blankDocument(w, h, pages);
   checkError();
   return r;
 }
@@ -3930,7 +3932,7 @@ function blankDocument(w, h, pages)
 /** Makes a blank document given a page size and number of pages. */
 function blankDocumentPaper(papersize, pages)
 {
-  var r = cpdf.cpdflib.blankDocumentPaper(papersize, pages);
+  var r = cpdflib.cpdflib.blankDocumentPaper(papersize, pages);
   checkError();
   return r;
 }
@@ -3939,7 +3941,7 @@ function blankDocumentPaper(papersize, pages)
 in the given font and font size. */
 function textToPDF(w, h, font, fontsize, filename)
 {
-  var r = cpdf.cpdflib.textToPDF(w, h, font, fontsize, caml_string_of_jsstring(filename));
+  var r = cpdflib.cpdflib.textToPDF(w, h, font, fontsize, caml_string_of_jsstring(filename));
   checkError();
   return r;
 }
@@ -3948,7 +3950,7 @@ function textToPDF(w, h, font, fontsize, filename)
 given font and font size. */
 function textToPDFPaper(papersize, font, fontsize, filename)
 {
-  var r = cpdf.cpdflib.textToPDFPaper(papersize, font, fontsize, caml_string_of_jsstring(filename));
+  var r = cpdflib.cpdflib.textToPDFPaper(papersize, font, fontsize, caml_string_of_jsstring(filename));
   checkError();
   return r;
 }
@@ -3960,7 +3962,7 @@ function textToPDFPaper(papersize, font, fontsize, filename)
 function draft(pdf, range, boxes)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.draft(pdf, rn, boxes);
+  cpdflib.cpdflib.draft(pdf, rn, boxes);
   deleterange(rn);
   checkError();
 }
@@ -3969,7 +3971,7 @@ function draft(pdf, range, boxes)
 function removeAllText(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.removeAllText(pdf, rn);
+  cpdflib.cpdflib.removeAllText(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -3978,7 +3980,7 @@ function removeAllText(pdf, range)
 function blackText(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.blackText(pdf, rn);
+  cpdflib.cpdflib.blackText(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -3987,7 +3989,7 @@ function blackText(pdf, range)
 function blackLines(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.blackLines(pdf, rn);
+  cpdflib.cpdflib.blackLines(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -3996,7 +3998,7 @@ function blackLines(pdf, range)
 function blackFills(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.blackFills(pdf, rn);
+  cpdflib.cpdflib.blackFills(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -4006,7 +4008,7 @@ given in points. */
 function thinLines(pdf, range, min_thickness)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.thinLines(pdf, rn, min_thickness);
+  cpdflib.cpdflib.thinLines(pdf, rn, min_thickness);
   deleterange(rn);
   checkError();
 }
@@ -4014,35 +4016,35 @@ function thinLines(pdf, range, min_thickness)
 /** Copies the /ID from one document to another. */
 function copyId(pdf_from, pdf_to)
 {
-  cpdf.cpdflib.copyId(pdf_from, pdf_to);
+  cpdflib.cpdflib.copyId(pdf_from, pdf_to);
   checkError();
 }
 
 /** Removes a document's /ID. */
 function removeId(pdf)
 {
-  cpdf.cpdflib.removeId(pdf);
+  cpdflib.cpdflib.removeId(pdf);
   checkError();
 }
 
 /** Sets the minor version number of a document. */
 function setVersion(pdf, version)
 {
-  cpdf.cpdflib.setVersion(pdf, version);
+  cpdflib.cpdflib.setVersion(pdf, version);
   checkError();
 }
 
 /** Sets the full version number of a document. */
 function setFullVersion(pdf, major, minor)
 {
-  cpdf.cpdflib.setFullVersion(pdf, major, minor);
+  cpdflib.cpdflib.setFullVersion(pdf, major, minor);
   checkError();
 }
 
 /** Removes any dictionary entry with the given key anywhere in the document. */
 function removeDictEntry(pdf, key)
 {
-  cpdf.cpdflib.removeDictEntry(pdf, caml_string_of_jsstring(key));
+  cpdflib.cpdflib.removeDictEntry(pdf, caml_string_of_jsstring(key));
   checkError();
 }
 
@@ -4050,14 +4052,14 @@ function removeDictEntry(pdf, key)
 given search term. */
 function removeDictEntrySearch(pdf, key, searchterm)
 {
-  cpdf.cpdflib.removeDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(searchterm));
+  cpdflib.cpdflib.removeDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(searchterm));
   checkError();
 }
 
 /** Replaces the value associated with the given key. */
 function replaceDictEntry(pdf, key, newval)
 {
-  cpdf.cpdflib.replaceDictEntry(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval));
+  cpdflib.cpdflib.replaceDictEntry(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval));
   checkError();
 }
 
@@ -4065,7 +4067,7 @@ function replaceDictEntry(pdf, key, newval)
 matches the search term. */
 function replaceDictEntrySearch(pdf, key, newval, searchterm)
 {
-  cpdf.cpdflib.replaceDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval), caml_string_of_jsstring(searchterm));
+  cpdflib.cpdflib.replaceDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval), caml_string_of_jsstring(searchterm));
   checkError();
 }
 
@@ -4073,7 +4075,7 @@ function replaceDictEntrySearch(pdf, key, newval, searchterm)
 function removeClipping(pdf, range)
 {
   var rn = range_of_array(range);
-  cpdf.cpdflib.removeClipping(pdf, rn);
+  cpdflib.cpdflib.removeClipping(pdf, rn);
   deleterange(rn);
   checkError();
 }
@@ -4082,7 +4084,7 @@ function removeClipping(pdf, range)
 given key, and fills in its length. */
 function getDictEntries(pdf, key)
 {
-  var r = cpdf.cpdflib.getDictEntries(pdf, caml_string_of_jsstring(key));
+  var r = cpdflib.cpdflib.getDictEntries(pdf, caml_string_of_jsstring(key));
   checkError();
   return r.data;
 }

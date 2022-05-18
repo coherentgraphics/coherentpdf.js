@@ -23,14 +23,14 @@ PACKS = js_of_ocaml,js_of_ocaml-ppx
 OCAMLBCFLAGS = -g
 OCAMLLDFLAGS = -g
 
-RESULT = cpdf.byte
+RESULT = cpdflib.byte
 
 all : byte-code js
 
 -include OCamlMakefile
 
 js :
-	js_of_ocaml --extern-fs -I . --file=hello.pdf -q --pretty --debuginfo --source-map-inline nodestubs.js sjclstub.js cpdfzlib.js cpdfcrypt.js cpdflibwrapper.js cpdf.byte
+	js_of_ocaml --extern-fs -I . --file=hello.pdf -q --pretty --debuginfo --source-map-inline nodestubs.js sjclstub.js cpdfzlib.js cpdfcrypt.js cpdflib.byte
 
 small:
 	js_of_ocaml -q nodestubs.js sjclstub.js cpdfzlib.js cpdfcrypt.js cpdflibwrapper.js cpdf.byte
@@ -44,4 +44,4 @@ smallbrowser:
 
 clean ::
 	rm -rf doc foo foo2 out.pdf out2.pdf foo.pdf decomp.pdf *.cmt *.cmti \
-	*.json test/*.pdf debug/*.pdf *.ps *.aux *.idx *.log *.out *.toc *.cut cpdf.js cpdf-browser.js
+	*.json test/*.pdf debug/*.pdf *.ps *.aux *.idx *.log *.out *.toc *.cut cpdflib.js cpdf-browser.js
