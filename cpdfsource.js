@@ -1,4 +1,3 @@
-
 "use strict";
 
 const cpdflib = require('./cpdflib.js');
