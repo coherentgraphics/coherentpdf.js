@@ -725,7 +725,7 @@ var reversediagonal = 12;
 
 /** Positions on the page. Used for scaling about a point, and adding text.
 
-A position is an anchor and zero or one or two parameters. Constructors are provided.
+A position is an anchor and zero or one or two parameters.
 
 posCentre: Two parameters, x and y
 posLeft: Two parameters, x and y
@@ -901,7 +901,7 @@ function hardBox(pdf, range, boxname)
 
 // CHAPTER 5. Compression
 
- /** Compresses any uncompressed streams in the given PDF using the Flate
+/** Compresses any uncompressed streams in the given PDF using the Flate
 algorithm. */
 function compress(pdf)
 {
