@@ -1837,8 +1837,8 @@ function removeMetadata(pdf)
 function getMetadata(pdf)
 {
   var r = cpdflib.cpdflib.getMetadata(pdf);
-  return r.data;
   checkError();
+  return r.data;
 }
 
 /** Builds fresh XMP metadata as best it can from existing metadata in the
