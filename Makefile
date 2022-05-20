@@ -16,7 +16,8 @@ SOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
 	  $(foreach x,$(PDFMODS),$(x).ml $(x).mli) exports.ml
 
 XSOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
-	  $(foreach x,$(PDFMODS),$(x).ml $(x).mli) cpdfcommand.ml cpdfcommandrun.ml
+	  $(foreach x,$(PDFMODS),$(x).ml $(x).mli) cpdfcommand.ml \
+	  cpdfcommandrun.ml
 
 PACKS = js_of_ocaml,js_of_ocaml-ppx
 
@@ -30,24 +31,25 @@ all : byte-code js
 -include OCamlMakefile
 
 js :
-	js_of_ocaml --extern-fs -I . --file=hello.pdf -q --pretty --debuginfo --source-map-inline nodestubs.js sjclstub.js cpdfzlib.js cpdfcrypt.js cpdflib.byte
+	js_of_ocaml --extern-fs -I . --file=hello.pdf -q --pretty --debuginfo \
+	--source-map-inline nodestubs.js sjclstub.js cpdfzlib.js cpdfcrypt.js \
+	cpdflib.byte
 
 distrib:
 	cp cpdflib.js dist/
 	cp cpdf.js dist/
-	js_of_ocaml -o cpdflib.small.js -q nodestubs.js sjclstub.js cpdfzlib.js cpdfcrypt.js cpdflib.byte
-	uglifyjs cpdflib.small.js --compress --mangle --output dist/cpdflib.min.js
+	js_of_ocaml -o cpdflib.min.js -q nodestubs.js sjclstub.js \
+	cpdfzlib.js cpdfcrypt.js cpdflib.byte
+	uglifyjs cpdflib.min.js --compress --mangle \
+	--output dist/cpdflib.min.js
 	uglifyjs cpdf.js --compress --mangle --output dist/cpdf.min.js
-	gzip -k dist/cpdf.min.js
-	gzip -k dist/cpdflib.min.js
-
-browser:
-	browserify cpdf.js -s cpdf -o cpdf-browser.js
-
-smallbrowser:
-	uglifyjs cpdf-browser.js --compress --mangle --output cpdf-browser.js
+	cp dist/cpdflib.min.js cpdflib.js
+	cp dist/cpdf.min.js cpdf.js
+	browserify cpdflib.js cpdf.js -s cpdf -o cpdf.browser.js
+	uglifyjs cpdf.browser.js --compress --mangle --output cpdf.browser.min.js
+	cp cpdf.browser.min.js cpdf.browser.js dist/
 
 clean ::
 	rm -rf doc foo foo2 out.pdf out2.pdf foo.pdf decomp.pdf *.cmt *.cmti \
-	*.json test/*.pdf debug/*.pdf *.ps *.aux *.idx *.log *.out *.toc *.cut \
-	cpdflib.js cpdf.js cpdf-browser.js dist/*.js* *.small.js
+	*.json test/*.pdf debug/*.pdf *.ps *.aux *.idx *.log *.out *.toc \
+	*.cut cpdflib.js cpdf.js cpdf-browser.js dist/*.js*
