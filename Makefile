@@ -32,13 +32,12 @@ all : byte-code js
 
 js :
 	js_of_ocaml --extern-fs -I . --file=hello.pdf -q --pretty --debuginfo \
-	--source-map-inline nodestubs.js sjclstub.js cpdfzlib.js cpdfcrypt.js \
-	cpdflib.byte
+	--source-map-inline nodestubs.js cpdfzlib.js cpdfcrypt.js cpdflib.byte
 
 distrib:
 	cp cpdflib.js dist/
 	cp cpdf.js dist/
-	js_of_ocaml -o cpdflib.min.js -q nodestubs.js sjclstub.js \
+	js_of_ocaml -o cpdflib.min.js -q nodestubs.js \
 	cpdfzlib.js cpdfcrypt.js cpdflib.byte
 	uglifyjs cpdflib.min.js --compress --mangle \
 	--output dist/cpdflib.min.js
