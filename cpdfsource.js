@@ -42,7 +42,8 @@ function checkError()
 
 // CHAPTER 0. Preliminaries
 
-/** Returns a string giving the version number of the CPDF library. */
+/** Returns a string giving the version number of the CPDF library.
+@returns {string} version*/
 function version()
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.version);
@@ -68,7 +69,8 @@ function setSlow()
   checkError();
 }
 
-/** Delete a PDF so the memory representing it may be recovered. */
+/** Delete a PDF so the memory representing it may be recovered.
+@arg {pdf} pdf PDF document to delete */
 function deletePdf(pdf)
 {
   cpdflib.cpdflib.deletePdf(pdf);
@@ -88,7 +90,9 @@ function onexit()
 
 /** Loads a PDF file from a given file. Supply a user password (possibly blank)
 in case the file is encrypted. It won't be decrypted, but sometimes the
-password is needed just to load the file. */
+password is needed just to load the file.
+@arg {string} filename File name
+@arg {string} userpw User password, or blank if none */
 function fromFile(filename, userpw)
 {
   var r = 
@@ -100,7 +104,9 @@ function fromFile(filename, userpw)
 read and parsed when they are actually needed. Use this when the whole file
 won't be required. Also supply a user password (possibly blank) in case the
 file is encrypted. It won't be decrypted, but sometimes the password is needed
-just to load the file. */
+just to load the file.
+@arg {string} filename File name
+@arg {string} userpw User password, or blank if none */
 function fromFileLazy(filename, userpw)
 {
   var r =
@@ -109,7 +115,9 @@ function fromFileLazy(filename, userpw)
   return r;
 }
 
-/** Loads a file from memory given any user password. */
+/** Loads a file from memory given any user password.
+@arg {Uint8Array} data PDF document as an array of bytes
+@arg {string} userpw User password, or blank if none */
 function fromMemory(data, userpw)
 {
   var bigarray = caml_ba_from_typed_array(data);
@@ -119,7 +127,9 @@ function fromMemory(data, userpw)
 }
 
 /** Loads a file from memory, given a pointer and a length, and the user
-password, but lazily like fromFileLazy. */
+password, but lazily like fromFileLazy.
+@arg {Uint8Array} data PDF document as an array of bytes
+@arg {string} userpw User password, or blank if none */
 function fromMemoryLazy(data, userpw)
 {
   var bigarray = caml_ba_from_typed_array(data);
@@ -131,7 +141,8 @@ function fromMemoryLazy(data, userpw)
 /** To enumerate the list of currently allocated PDFs, call startEnumeratePDFs
 which gives the number, n, of PDFs allocated, then enumeratePDFsInfo and
 enumeratePDFsKey with index numbers from 0...(n - 1). Call endEnumeratePDFs to
-clean up. */
+clean up.
+@return {number} number of PDFs */
 function startEnumeratePDFs()
 {
   var r = cpdflib.cpdflib.startEnumeratePDFs();
@@ -142,7 +153,9 @@ function startEnumeratePDFs()
 /** To enumerate the list of currently allocated PDFs, call startEnumeratePDFs
 which gives the number, n, of PDFs allocated, then enumeratePDFsInfo and
 enumeratePDFsKey with index numbers from 0...(n - 1). Call endEnumeratePDFs to
-clean up. */
+clean up.
+@arg {n} index number
+@return {number} PDF key */
 function enumeratePDFsKey(n)
 {
   var r = cpdflib.cpdflib.enumeratePDFsKey(n);
@@ -153,7 +166,9 @@ function enumeratePDFsKey(n)
 /** To enumerate the list of currently allocated PDFs, call startEnumeratePDFs
 which gives the number, n, of PDFs allocated, then enumeratePDFsInfo and
 enumeratePDFsKey with index numbers from 0...(n - 1). Call endEnumeratePDFs to
-clean up. */
+clean up.
+@arg {n} index number
+@return {number} PDF information */
 function enumeratePDFsInfo(n)
 {
   var r = cpdflib.cpdflib.enumeratePDFsInfo(n);
@@ -171,7 +186,9 @@ function endEnumeratePDFs()
   checkError();
 }
 
-/** Converts a figure in centimetres to points (72 points to 1 inch) */
+/** Converts a figure in centimetres to points (72 points to 1 inch)
+@arg {number} i figure in centimetres
+@return {number} figure in points */
 function ptOfCm(i)
 {
   var r = cpdflib.cpdflib.ptOfCm(i);
@@ -179,7 +196,9 @@ function ptOfCm(i)
   return r;
 }
 
-/** Converts a figure in millimetres to points (72 points to 1 inch) */
+/** Converts a figure in millimetres to points (72 points to 1 inch)
+@arg {number} i figure in millimetres
+@return {number} figure in points */
 function ptOfMm(i)
 {
   var r = cpdflib.cpdflib.ptOfMm(i);
@@ -187,7 +206,9 @@ function ptOfMm(i)
   return r;
 }
 
-/** Converts a figure in inches to points (72 points to 1 inch) */
+/** Converts a figure in inches to points (72 points to 1 inch)
+@arg {number} i figure in inches
+@return {number} figure in points */
 function ptOfIn(i)
 {
   var r = cpdflib.cpdflib.ptOfIn(i);
@@ -195,8 +216,9 @@ function ptOfIn(i)
   return r;
 }
 
-
-/** Converts a figure in points to centimetres (72 points to 1 inch) */
+/** Converts a figure in points to centimetres (72 points to 1 inch)
+@arg {number} i figure in points
+@return {number} figure in centimetres */
 function cmOfPt(i)
 {
   var r = cpdflib.cpdflib.cmOfPt(i);
@@ -204,7 +226,9 @@ function cmOfPt(i)
   return r;
 }
 
-/** Converts a figure in points to millimetres (72 points to 1 inch) */
+/** Converts a figure in points to millimetres (72 points to 1 inch)
+@arg {number} i figure in points
+@return {number} figure in millimetres */
 function mmOfPt(i)
 {
   var r = cpdflib.cpdflib.mmOfPt(i);
@@ -212,7 +236,9 @@ function mmOfPt(i)
   return r;
 }
 
-/** Converts a figure in points to inches (72 points to 1 inch) */
+/** Converts a figure in points to inches (72 points to 1 inch)
+@arg {number} i figure in points 
+@return {number} figure in inches */
 function inOfPt(i)
 {
   var r = cpdflib.cpdflib.inOfPt(i);
