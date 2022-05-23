@@ -248,7 +248,10 @@ function inOfPt(i)
 
 /** Parses a page specification with reference to a given PDF (the PDF is
 supplied so that page ranges which reference pages which do not exist are
-rejected). */
+rejected).
+@arg {pdf} pdf PDF document
+@arg {string} pagespec Page specification
+@return {array} page range */
 function parsePagespec(pdf, pagespec)
 {
   var r = cpdflib.cpdflib.parsePagespec(pdf, caml_string_of_jsstring(pagespec));
@@ -259,7 +262,9 @@ function parsePagespec(pdf, pagespec)
 }
 
 /** Validates a page specification so far as is possible in the absence of
-the actual document. Result is true if valid. */
+the actual document. Result is true if valid.
+@arg {string} pagespec Page specification
+@return {boolean} validity or otherwise of page specification */
 function validatePagespec(pagespec)
 {
   var r = cpdflib.cpdflib.validatePagespec(caml_string_of_jsstring(pagespec));
@@ -268,7 +273,10 @@ function validatePagespec(pagespec)
 }
 
 /** Builds a page specification from a page range. For example, the range
-containing 1,2,3,6,7,8 in a document of 8 pages might yield "1-3,6-end" */
+containing 1,2,3,6,7,8 in a document of 8 pages might yield "1-3,6-end"
+@arg {pdf} pdf PDF document
+@arg {array} r Page range
+@return {string} Page specifcation */
 function stringOfPagespec(pdf, r)
 {
   var rn = range_of_array(r);
@@ -278,7 +286,8 @@ function stringOfPagespec(pdf, r)
   return ret;
 }
 
-/** Creates a range with no pages in. */
+/** Creates a range with no pages in.
+@return {array} Page range */
 function blankRange()
 {
   var rn = cpdflib.cpdflib.blankRange();
@@ -289,7 +298,10 @@ function blankRange()
 }
 
 /** Builds a range from one page to another inclusive. For example, range(3,7)
-gives the range 3,4,5,6,7 */
+gives the range 3,4,5,6,7
+@arg {number} f begining of page range
+@arg {number} t end of page range
+@return {array} page range */
 function range(f, t)
 {
   var rn = cpdflib.cpdflib.range(f, t);
@@ -299,7 +311,9 @@ function range(f, t)
   return r;
 }
 
-/** The range containing all the pages in a given document. */
+/** The range containing all the pages in a given document.
+@arg {pdf} pdf PDF document
+@return {array} page range */
 function all(pdf)
 {
   var rn = cpdflib.cpdflib.all(pdf);
@@ -309,7 +323,9 @@ function all(pdf)
   return r;
 }
 
-/** Makes a range which contains just the even pages of another range. */
+/** Makes a range which contains just the even pages of another range.
+@arg {array} r_in page range
+@return {array} page range */
 function even(r_in)
 {
   var ri = range_of_array(r_in);
@@ -321,7 +337,9 @@ function even(r_in)
   return r;
 }
 
-/** Makes a range which contains just the odd pages of another range. */
+/** Makes a range which contains just the odd pages of another range.
+@arg {array} r_in page range
+@return {array} page range */
 function odd(r_in)
 {
   var ri = range_of_array(r_in);
@@ -334,7 +352,10 @@ function odd(r_in)
 }
 
 /** Makes the union of two ranges giving a range containing the pages in range
-a and range b. */
+a and range b.
+@arg {array} a page range
+@arg {array} b page range
+@return {array} page range */
 function rangeUnion(a, b)
 {
   var ra = range_of_array(a);
@@ -349,7 +370,10 @@ function rangeUnion(a, b)
 }
 
 /** Makes the difference of two ranges, giving a range containing all the
-pages in a except for those which are also in b. */
+pages in a except for those which are also in b.
+@arg {array} a page range
+@arg {array} b page range
+@return {array} page range */
 function difference(a, b)
 {
   var ra = range_of_array(a);
@@ -363,7 +387,9 @@ function difference(a, b)
   return r;
 }
 
-/** Deduplicates a range, making a new one. */
+/** Deduplicates a range, making a new one.
+@arg {array} a page range
+@return {array} page range */
 function removeDuplicates(a)
 {
   var rn = range_of_array(a);
@@ -375,7 +401,9 @@ function removeDuplicates(a)
   return r;
 }
 
-/** Gives the number of pages in a range. */
+/** Gives the number of pages in a range.
+@arg {array} r page range
+@return {number} length */
 function rangeLength(r)
 {
   var rn = range_of_array(r);
@@ -386,7 +414,10 @@ function rangeLength(r)
 }
 
 /** Gets the page number at position n in a range, where n runs from 0 to
-rangeLength - 1. */
+rangeLength - 1.
+@arg {array} r page range
+@arg {number} n position
+@return {number} page at given position */
 function rangeGet(r, n)
 {
   var rn = range_of_array(r);
@@ -396,7 +427,9 @@ function rangeGet(r, n)
   return r_out;
 }
 
-/** Adds the page to a range, if it is not already there. */
+/** Adds the page to a range, if it is not already there.
+@arg {array} r page range
+@arg {number} page page number */
 function rangeAdd(r, page)
 {
   var rn = range_of_array(r)
@@ -408,7 +441,10 @@ function rangeAdd(r, page)
   return rout;
 }
 
-/** Returns true if the page is in the range, false otherwise. */
+/** Returns true if the page is in the range, false otherwise.
+@arg {array} r page range
+@arg {number} page page number
+@return {boolean} true if page in range, false otherwise */
 function isInRange(r, page)
 {
   var rn = range_of_array(r);
