@@ -454,7 +454,9 @@ function isInRange(r, page)
   return ret;
 }
 
-/** Returns the number of pages in a PDF. */
+/** Returns the number of pages in a PDF.
+@arg {pdf} pdf PDF document
+@return {number} number of pages */
 function pages(pdf)
 {
   var r = cpdflib.cpdflib.pages(pdf);
@@ -463,7 +465,10 @@ function pages(pdf)
 }
 
 /** Returns the number of pages in a given PDF, with given user password. It
-tries to do this as fast as possible, without loading the whole file. */
+tries to do this as fast as possible, without loading the whole file.
+@arg {string} password user password
+@arg {string} filename file name
+@return {number} number of pages */
 function pagesFast(password, filename)
 {
   var r = cpdflib.cpdflib.pagesFast(caml_string_of_jsstring(password), caml_string_of_jsstring(filename));
@@ -473,7 +478,11 @@ function pagesFast(password, filename)
 
 /** Writes the file to a given filename. If linearize is true, it will be
 linearized if a linearizer is available. If make_id is true, it will be
-given a new ID. */
+given a new ID.
+@arg {pdf} pdf PDF document
+@arg {string} filename file name
+@arg {boolean} linearize linearize if a linearizer is available
+@arg {boolean} make_id make a new /ID */
 function toFile(pdf, filename, linearize, make_id)
 {
   cpdflib.cpdflib.toFile(pdf, caml_string_of_jsstring(filename), linearize, make_id);
@@ -485,14 +494,24 @@ a new ID.  If preserve_objstm is true, existing object streams will be
 preserved. If generate_objstm is true, object streams will be generated even if
 not originally present. If compress_objstm is true, object streams will be
 compressed (what we usually want). WARNING: the pdf argument will be invalid
-after this call, and should be not be used again. */
+after this call, and should be not be used again.
+@arg {pdf} pdf PDF document
+@arg {string} filename file name
+@arg {boolean} linearize linearize if a linearizer is available
+@arg {boolean} preserve_objstm preserve existing object streams
+@arg {boolean} create_objstm create new object streams
+@arg {boolean} compress_objstm compress new object streams */
 function toFileExt(pdf, filename, linearize, make_id, preserve_objstm, create_objstm, compress_objstm)
 {
   cpdflib.cpdflib.toFileExt(pdf, caml_string_of_jsstring(filename), linearize, make_id, preserve_objstm, create_objstm, compress_objstm);
   checkError();
 }
 
-/** Writes a PDF file and returns as an array of bytes. */
+/** Writes a PDF file and returns as an array of bytes.
+@arg {pdf} pdf PDF document
+@arg {boolean} linearize linearize if a linearizer is available
+@arg {boolean} make_id make a new /ID
+@return {Uint8Array} PDF document as an array of bytes */
 function toMemory(pdf, linearize, make_id)
 {
   var r = cpdflib.cpdflib.toMemory(pdf, linearize, make_id);
@@ -500,7 +519,9 @@ function toMemory(pdf, linearize, make_id)
   return r.data;
 }
 
-/** Returns true if a document is encrypted, false otherwise. */
+/** Returns true if a document is encrypted, false otherwise.
+@arg {pdf} pdf PDF document
+@return {boolean} true if document encrypted, false otherwise */
 function isEncrypted(pdf)
 {
   var r = cpdflib.cpdflib.isEncrypted(pdf);
@@ -509,7 +530,9 @@ function isEncrypted(pdf)
 }
 
 /** Attempts to decrypt a PDF using the given user password. An exception is
-raised if the decryption fails. */
+raised if the decryption fails.
+@arg {pdf} pdf PDF document
+@arg {string} userpw user password, or empty if none */
 function decryptPdf(pdf, userpw)
 {
   cpdflib.cpdflib.decryptPdf(pdf, caml_string_of_jsstring(userpw));
@@ -517,7 +540,9 @@ function decryptPdf(pdf, userpw)
 }
 
 /** Attempts to decrypt a PDF using the given owner password. Raises an
-exception if the decryption fails. */
+exception if the decryption fails.
+@arg {pdf} pdf PDF document
+@arg {string} ownerpw owner password, or empty if none */
 function decryptPdfOwner(pdf, ownerpw)
 {
   cpdflib.cpdflib.decryptPdfOwner(pdf, caml_string_of_jsstring(ownerpw));
