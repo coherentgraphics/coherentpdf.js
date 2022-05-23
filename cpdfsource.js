@@ -597,7 +597,15 @@ var aes256bitisofalse = 6;
 /** 256 bit AES encryption, encrypt metadata */
 var aes256bitisotrue = 7;
 
-/** Writes a file as encrypted. */
+/** Writes a file as encrypted.
+@arg {pdf} pdf PDF document
+@arg {"encryption method"} encryption_method encryption method
+@arg {"permission array"} array of permissions
+@arg {string} ownerpw owner password
+@arg {string} userpw user password
+@arg {boolean} linearize linearize if a linearizer is available
+@arg {boolean} makeid make a new /ID
+@arg {string} filename file name */
 function toFileEncrypted(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid, filename)
 {
   var ps = [0].concat(permissions);
@@ -608,7 +616,18 @@ function toFileEncrypted(pdf, encryption_method, permissions, ownerpw, userpw, l
 }
 
 /** Writes a file as encrypted with extra parameters. WARNING: the pdf argument
-will be invalid after this call, and should not be used again. */
+will be invalid after this call, and should not be used again.
+@arg {pdf} pdf PDF document
+@arg {"encryption method"} encryption_method encryption method
+@arg {"permission array"} array of permissions
+@arg {string} ownerpw owner password
+@arg {string} userpw user password
+@arg {boolean} linearize linearize if a linearizer is available
+@arg {boolean} makeid make a new /ID
+@arg {boolean} preserve_objstm preserve existing object streams
+@arg {boolean} generate_objstm generate new object streams
+@arg {boolean} compress_objstm compress object streams
+@arg {string} filename file name */
 function toFileEncryptedExt(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid, preserve_objstm, generate_objstm, compress_objstm, filename)
 {
   var ps = [0].concat(permissions);
@@ -619,7 +638,10 @@ function toFileEncryptedExt(pdf, encryption_method, permissions, ownerpw, userpw
   checkError();
 }
 
-/** Returns true if the given permission (restriction) is present. */
+/** Returns true if the given permission (restriction) is present.
+@arg {pdf} pdf PDF document
+@arg {permission} permission permission
+@return {boolean} true if permission present */
 function hasPermission(pdf, permission)
 {
   var r = cpdflib.cpdflib.hasPermission(pdf, permission);
@@ -627,7 +649,9 @@ function hasPermission(pdf, permission)
   return r;
 }
 
-/** Returns the encryption method currently in use on a document. */
+/** Returns the encryption method currently in use on a document.
+@arg {pdf} pdf PDF document
+@return {"encryption method"} encryption method */
 function encryptionKind(pdf)
 {
   var r = cpdflib.cpdflib.encryptionKind(pdf);
