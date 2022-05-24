@@ -1050,14 +1050,16 @@ function squeezeInMemory(pdf)
 
 // CHAPTER 6. Bookmarks
 
-/** Starts the bookmark retrieval process for a given PDF. */
+/** Starts the bookmark retrieval process for a given PDF.
+@arg {pdf} pdf PDF document */
 function startGetBookmarkInfo(pdf)
 {
   cpdflib.cpdflib.startGetBookmarkInfo(pdf);
   checkError();
 }
 
-/** Gets the number of bookmarks for the PDF given to startGetBookmarkInfo. */
+/** Gets the number of bookmarks for the PDF given to startGetBookmarkInfo.
+@return {number} number of bookmarks */
 function numberBookmarks()
 {
   var r = cpdflib.cpdflib.numberBookmarks();
@@ -1065,7 +1067,9 @@ function numberBookmarks()
   return r;
 }
 
-/** Gets the bookmark level for the given bookmark (0...(n - 1)). */
+/** Gets the bookmark level for the given bookmark (0...(n - 1)).
+@arg {number} n serial number
+@return {number} bookmark level */
 function getBookmarkLevel(n)
 {
   var r = cpdflib.cpdflib.getBookmarkLevel(n);
@@ -1074,7 +1078,10 @@ function getBookmarkLevel(n)
 }
 
 /** Gets the bookmark target page for the given PDF (which must be the same
-as the PDF passed to startSetBookmarkInfo) and bookmark (0...(n - 1)). */
+as the PDF passed to startSetBookmarkInfo) and bookmark (0...(n - 1)).
+@arg {pdf} pdf PDF document
+@arg {number} n serial number
+@return {number} bookmark page */
 function getBookmarkPage(pdf, n)
 {
   var r = cpdflib.cpdflib.getBookmarkPage(pdf, n);
@@ -1082,7 +1089,9 @@ function getBookmarkPage(pdf, n)
   return r;
 }
 
-/** Returns the text of bookmark (0...(n - 1)). */
+/** Returns the text of bookmark (0...(n - 1)).
+@arg {number} n serial number
+@return {string} bookmark text */
 function getBookmarkText(n)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getBookmarkText(n));
@@ -1090,7 +1099,9 @@ function getBookmarkText(n)
   return r;
 }
 
-/** True if the bookmark is open. */
+/** True if the bookmark is open.
+@arg {number} n serial number
+@return {boolean} open status */
 function getBookmarkOpenStatus(n)
 {
   var r = cpdflib.cpdflib.getBookmarkOpenStatus(n);
@@ -1105,51 +1116,64 @@ function endGetBookmarkInfo()
   checkError();
 }
 
-/** Starts the bookmark setting process for n bookmarks. */
+/** Starts the bookmark setting process for n bookmarks.
+@arg {number} n number of bookmarks required */
 function startSetBookmarkInfo(n)
 {
   cpdflib.cpdflib.startSetBookmarkInfo(n);
   checkError();
 }
 
-/** Set bookmark level for the given bookmark (0...(n - 1)). */
-function setBookmarkLevel(a, b)
+/** Set bookmark level for the given bookmark (0...(n - 1)).
+@arg {number} n serial number
+@arg {number} level bookmark level */
+function setBookmarkLevel(n, level)
 {
-  cpdflib.cpdflib.setBookmarkLevel(a, b);
+  cpdflib.cpdflib.setBookmarkLevel(n, level);
   checkError();
 }
 
 /** Sets the bookmark target page for the given PDF (which must be the same as
-the PDF to be passed to endSetBookmarkInfo) and bookmark (0...(n - 1)). */
-function setBookmarkPage(pdf, a, b)
+the PDF to be passed to endSetBookmarkInfo) and bookmark (0...(n - 1)).
+@arg {pdf} pdf PDF document
+@arg {number} n serial number
+@arg {number} targetpage target page */
+function setBookmarkPage(pdf, n, targetpage)
 {
-  cpdflib.cpdflib.setBookmarkPage(pdf, a, b);
+  cpdflib.cpdflib.setBookmarkPage(pdf, n, targetpage);
   checkError();
 }
 
-/** Sets the open status of bookmark (0...(n - 1)). */
-function setBookmarkOpenStatus(a, b)
+/** Sets the open status of bookmark (0...(n - 1)).
+@arg {number} n serial number
+@arg {boolean} status open status */
+function setBookmarkOpenStatus(n, status)
 {
-  cpdflib.cpdflib.setBookmarkOpenStatus(a, b);
+  cpdflib.cpdflib.setBookmarkOpenStatus(n, status);
   checkError();
 }
 
-/** Sets the text of bookmark (0...(n - 1)). */
-function setBookmarkText(n, t)
+/** Sets the text of bookmark (0...(n - 1)).
+@arg {number} n serial number
+@arg {string} text bookmark text */
+function setBookmarkText(n, text)
 {
-  cpdflib.cpdflib.setBookmarkText(n, caml_string_of_jsstring(t));
+  cpdflib.cpdflib.setBookmarkText(n, caml_string_of_jsstring(text));
   checkError();
 }
 
 /** Ends the bookmark setting process, writing the bookmarks to the given
-PDF. */
+PDF.
+@arg {pdf} pdf PDF document */
 function endSetBookmarkInfo(pdf)
 {
   cpdflib.cpdflib.endSetBookmarkInfo(pdf);
   checkError();
 }
 
-/** Returns the bookmark data in JSON format. */
+/** Returns the bookmark data in JSON format.
+@arg {pdf} pdf PDF document
+@result {Uint8Array} result as a byte array */
 function getBookmarksJSON(pdf)
 {
   var r = cpdflib.cpdflib.getBookmarksJSON(pdf).data;
@@ -1157,7 +1181,9 @@ function getBookmarksJSON(pdf)
   return r;
 }
 
-/** Sets the bookmarks from JSON bookmark data. */
+/** Sets the bookmarks from JSON bookmark data.
+@arg {pdf} pdf PDF document
+@arg {Uint8Array} byte array of JSON bookmark data */
 function setBookmarksJSON(pdf, data)
 {
   var bigarray = caml_ba_from_typed_array(data);
@@ -1167,7 +1193,12 @@ function setBookmarksJSON(pdf, data)
 
 /** Typesets a table of contents from existing bookmarks and prepends it to
 the document. If bookmark is set, the table of contents gets its own
-bookmark. */
+bookmark.
+@arg {pdf} pdf PDF document
+@arg {font} font font
+@arg {number} fontsize font size
+@arg {string} title title
+@arg {boolean} bookmark table of contents gets its own bookmark */
 function tableOfContents(pdf, font, fontsize, title, bookmark)
 {
   cpdflib.cpdflib.tableOfContents(pdf, font, fontsize, caml_string_of_jsstring(title), bookmark);
@@ -2052,21 +2083,21 @@ function getPageLabelStringForPage(pdf, pagenumber)
 
 /** Gets page label data. Call startGetPageLabels to find out how many
 there are, then use these serial numbers to get the style, prefix, offset
-and start value (note not a range). Call endGetPageLabels to clean up.
+and start value (note not a range). Call endGetPageLabels to clean up.<br/><br/>
 
 For example, a document might have five pages of introduction with roman
 numerals, followed by the rest of the pages in decimal arabic, numbered from
-one:
+one:<br/><br/>
 
-labelstyle = LowercaseRoman
-labelprefix = ""
-startpage = 1
-startvalue = 1
+labelstyle = LowercaseRoman<br/>
+labelprefix = ""<br/>
+startpage = 1<br/>
+startvalue = 1<br/></br>
 
-labelstyle = DecimalArabic
-labelprefix = ""
-startpage = 6
-startvalue = 1 */
+labelstyle = DecimalArabic<br/>
+labelprefix = ""<br/>
+startpage = 6<br/>
+startvalue = 1<br/> */
 function startGetPageLabels(pdf)
 {
   var r = cpdflib.cpdflib.startGetPageLabels(pdf);
@@ -2076,21 +2107,21 @@ function startGetPageLabels(pdf)
 
 /** Gets page label data. Call startGetPageLabels to find out how many
 there are, then use these serial numbers to get the style, prefix, offset
-and start value (note not a range). Call endGetPageLabels to clean up.
+and start value (note not a range). Call endGetPageLabels to clean up.<br/><br/>
 
 For example, a document might have five pages of introduction with roman
 numerals, followed by the rest of the pages in decimal arabic, numbered from
-one:
+one:<br/><br/>
 
-labelstyle = LowercaseRoman
-labelprefix = ""
-startpage = 1
-startvalue = 1
+labelstyle = LowercaseRoman<br/>
+labelprefix = ""<br/>
+startpage = 1<br/>
+startvalue = 1<br/></br>
 
-labelstyle = DecimalArabic
-labelprefix = ""
-startpage = 6
-startvalue = 1 */
+labelstyle = DecimalArabic<br/>
+labelprefix = ""<br/>
+startpage = 6<br/>
+startvalue = 1<br/> */
 function getPageLabelStyle(n)
 {
   var r = cpdflib.cpdflib.getPageLabelStyle(n);
@@ -2100,21 +2131,21 @@ function getPageLabelStyle(n)
 
 /** Gets page label data. Call startGetPageLabels to find out how many
 there are, then use these serial numbers to get the style, prefix, offset
-and start value (note not a range). Call endGetPageLabels to clean up.
+and start value (note not a range). Call endGetPageLabels to clean up.<br/><br/>
 
 For example, a document might have five pages of introduction with roman
 numerals, followed by the rest of the pages in decimal arabic, numbered from
-one:
+one:<br/><br/>
 
-labelstyle = LowercaseRoman
-labelprefix = ""
-startpage = 1
-startvalue = 1
+labelstyle = LowercaseRoman<br/>
+labelprefix = ""<br/>
+startpage = 1<br/>
+startvalue = 1<br/></br>
 
-labelstyle = DecimalArabic
-labelprefix = ""
-startpage = 6
-startvalue = 1 */
+labelstyle = DecimalArabic<br/>
+labelprefix = ""<br/>
+startpage = 6<br/>
+startvalue = 1<br/> */
 function getPageLabelPrefix(n)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getPageLabelPrefix(n));
@@ -2124,21 +2155,21 @@ function getPageLabelPrefix(n)
 
 /** Gets page label data. Call startGetPageLabels to find out how many
 there are, then use these serial numbers to get the style, prefix, offset
-and start value (note not a range). Call endGetPageLabels to clean up.
+and start value (note not a range). Call endGetPageLabels to clean up.<br/><br/>
 
 For example, a document might have five pages of introduction with roman
 numerals, followed by the rest of the pages in decimal arabic, numbered from
-one:
+one:<br/><br/>
 
-labelstyle = LowercaseRoman
-labelprefix = ""
-startpage = 1
-startvalue = 1
+labelstyle = LowercaseRoman<br/>
+labelprefix = ""<br/>
+startpage = 1<br/>
+startvalue = 1<br/></br>
 
-labelstyle = DecimalArabic
-labelprefix = ""
-startpage = 6
-startvalue = 1 */
+labelstyle = DecimalArabic<br/>
+labelprefix = ""<br/>
+startpage = 6<br/>
+startvalue = 1<br/> */
 function getPageLabelOffset(n)
 {
   var r = cpdflib.cpdflib.getPageLabelOffset(n);
@@ -2148,21 +2179,21 @@ function getPageLabelOffset(n)
 
 /** Gets page label data. Call startGetPageLabels to find out how many
 there are, then use these serial numbers to get the style, prefix, offset
-and start value (note not a range). Call endGetPageLabels to clean up.
+and start value (note not a range). Call endGetPageLabels to clean up.<br/><br/>
 
 For example, a document might have five pages of introduction with roman
 numerals, followed by the rest of the pages in decimal arabic, numbered from
-one:
+one:<br/><br/>
 
-labelstyle = LowercaseRoman
-labelprefix = ""
-startpage = 1
-startvalue = 1
+labelstyle = LowercaseRoman<br/>
+labelprefix = ""<br/>
+startpage = 1<br/>
+startvalue = 1<br/></br>
 
-labelstyle = DecimalArabic
-labelprefix = ""
-startpage = 6
-startvalue = 1 */
+labelstyle = DecimalArabic<br/>
+labelprefix = ""<br/>
+startpage = 6<br/>
+startvalue = 1<br/> */
 function getPageLabelRange(n)
 {
   var r = cpdflib.cpdflib.getPageLabelRange(n);
@@ -2172,21 +2203,21 @@ function getPageLabelRange(n)
 
 /** Gets page label data. Call startGetPageLabels to find out how many
 there are, then use these serial numbers to get the style, prefix, offset
-and start value (note not a range). Call endGetPageLabels to clean up.
+and start value (note not a range). Call endGetPageLabels to clean up.<br/><br/>
 
 For example, a document might have five pages of introduction with roman
 numerals, followed by the rest of the pages in decimal arabic, numbered from
-one:
+one:<br/><br/>
 
-labelstyle = LowercaseRoman
-labelprefix = ""
-startpage = 1
-startvalue = 1
+labelstyle = LowercaseRoman<br/>
+labelprefix = ""<br/>
+startpage = 1<br/>
+startvalue = 1<br/></br>
 
-labelstyle = DecimalArabic
-labelprefix = ""
-startpage = 6
-startvalue = 1 */
+labelstyle = DecimalArabic<br/>
+labelprefix = ""<br/>
+startpage = 6<br/>
+startvalue = 1<br/> */
 function endGetPageLabels()
 {
   cpdflib.cpdflib.endGetPageLabels();
