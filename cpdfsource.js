@@ -661,7 +661,9 @@ function encryptionKind(pdf)
 
 // CHAPTER 2. Merging and Splitting
 
-/** Given a list of PDFs, merges the files into a new one, which is returned. */
+/** Given a list of PDFs, merges the files into a new one, which is returned.
+@arg {"array of pdfs"} pdfs array of PDF documents to merge
+@return {pdf} merged PDF document */
 function mergeSimple(pdfs)
 {
   var arr2 = [0].concat(pdfs);
@@ -673,7 +675,10 @@ function mergeSimple(pdfs)
 /** Merges the PDFs. If retain_numbering is true page labels are not
 rewritten. If remove_duplicate_fonts is true, duplicate fonts are merged.
 This is useful when the source documents for merging originate from the same
-source. */
+source.
+@arg {"array of pdfs"} pdfs array of PDF documents to merge
+@arg {boolean} retain_numbering keep page numbering
+@arg {boolean} remove_duplicate_fonts remove duplicate font data */
 function merge(pdfs, retain_numbering, remove_duplicate_fonts)
 {
   var arr2 = [0].concat(pdfs);
@@ -685,7 +690,11 @@ function merge(pdfs, retain_numbering, remove_duplicate_fonts)
 /** The same as merge, except that it has an additional argument - a list of
 page ranges. This is used to select the pages to pick from each PDF. This
 avoids duplication of information when multiple discrete parts of a source PDF
-are included. */
+are included.
+@arg {"array of pdfs"} pdfs array of PDF documents to merge
+@arg {boolean} retain_numbering keep page numbering
+@arg {boolean} remove_duplicate_fonts remove duplicate font data 
+@arg {"array of arrays of numbers"} ranges page ranges, one for each input PDF */
 function mergeSame(pdfs, retain_numbering, remove_duplicate_fonts, ranges)
 {
   var arr2 = [0].concat(pdfs);
@@ -704,7 +713,9 @@ function mergeSame(pdfs, retain_numbering, remove_duplicate_fonts, ranges)
   return r;
 }
 
-/** Returns a new document with just those pages in the page range. */
+/** Returns a new document with just those pages in the page range.
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} page range */
 function selectPages(pdf, r)
 {
   var rn = range_of_array(r);
@@ -2549,7 +2560,11 @@ function ocgCoalesce(pdf)
 // CHAPTER 17. Creating new PDFs
 
 /** Creates a blank document with pages of the given width (in points), height
-(in points), and number of pages. */
+(in points), and number of pages.
+@arg {number} w page width
+@arg {number} h page height
+@arg {number} number of pages
+@return {pdf} PDF document */
 function blankDocument(w, h, pages)
 {
   var r = cpdflib.cpdflib.blankDocument(w, h, pages);
@@ -2557,7 +2572,10 @@ function blankDocument(w, h, pages)
   return r;
 }
 
-/** Makes a blank document given a page size and number of pages. */
+/** Makes a blank document given a page size and number of pages.
+@arg {"paper size"} papersize paper size
+@arg {number} pages number of pages
+@return {pdf} PDF document */
 function blankDocumentPaper(papersize, pages)
 {
   var r = cpdflib.cpdflib.blankDocumentPaper(papersize, pages);
@@ -2566,7 +2584,13 @@ function blankDocumentPaper(papersize, pages)
 }
 
 /** Typesets a UTF8 text file ragged right on a page of size w * h in points
-in the given font and font size. */
+in the given font and font size.
+@arg {number} w page width
+@arg {number} h page height
+@arg {font} font font
+@arg {number} fontsize font size
+@arg {string} filename file name
+@result {pdf} PDF document */
 function textToPDF(w, h, font, fontsize, filename)
 {
   var r = cpdflib.cpdflib.textToPDF(w, h, font, fontsize, caml_string_of_jsstring(filename));
@@ -2575,7 +2599,12 @@ function textToPDF(w, h, font, fontsize, filename)
 }
 
 /** Typesets a UTF8 text file ragged right on a page of the given size in the
-given font and font size. */
+given font and font size.
+@arg {"paper size"} papersize paper size
+@arg {font} font font
+@arg {number} fontsize font size
+@arg {string} filename file name
+@result {pdf} PDF document */
 function textToPDFPaper(papersize, font, fontsize, filename)
 {
   var r = cpdflib.cpdflib.textToPDFPaper(papersize, font, fontsize, caml_string_of_jsstring(filename));
@@ -2586,7 +2615,10 @@ function textToPDFPaper(papersize, font, fontsize, filename)
 //CHAPTER 18. Miscellaneous
 
 /** Removes images on the given pages, replacing them with crossed boxes if
-'boxes' is true. */
+'boxes' is true.
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range
+@arg {boolean} boxes replace with crossed boxes */
 function draft(pdf, range, boxes)
 {
   var rn = range_of_array(range);
@@ -2595,7 +2627,9 @@ function draft(pdf, range, boxes)
   checkError();
 }
 
-/** Removes all text from the given pages in a given document. */
+/** Removes all text from the given pages in a given document.
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range */
 function removeAllText(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2604,7 +2638,9 @@ function removeAllText(pdf, range)
   checkError();
 }
 
-/* Blackens all text on the given pages. */
+/* Blackens all text on the given pages.
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range */
 function blackText(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2613,7 +2649,9 @@ function blackText(pdf, range)
   checkError();
 }
 
-/** Blackens all lines on the given pages. */
+/** Blackens all lines on the given pages.
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range */
 function blackLines(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2622,7 +2660,9 @@ function blackLines(pdf, range)
   checkError();
 }
 
-/** Blackens all fills on the given pages. */
+/** Blackens all fills on the given pages.
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range */
 function blackFills(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2632,7 +2672,10 @@ function blackFills(pdf, range)
 }
 
 /** Thickens every line less than min_thickness to min_thickness. Thickness
-given in points. */
+given in points.
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range
+@arg {number} min_thickness minimum required thickness */
 function thinLines(pdf, range, min_thickness)
 {
   var rn = range_of_array(range);
@@ -2641,28 +2684,36 @@ function thinLines(pdf, range, min_thickness)
   checkError();
 }
 
-/** Copies the /ID from one document to another. */
+/** Copies the /ID from one document to another.
+@arg {pdf} pdf_from source document
+@arg {pdf} pdf_to destination document */
 function copyId(pdf_from, pdf_to)
 {
   cpdflib.cpdflib.copyId(pdf_from, pdf_to);
   checkError();
 }
 
-/** Removes a document's /ID. */
+/** Removes a document's /ID.
+@arg {pdf} pdf PDF document */
 function removeId(pdf)
 {
   cpdflib.cpdflib.removeId(pdf);
   checkError();
 }
 
-/** Sets the minor version number of a document. */
+/** Sets the minor version number of a document.
+@arg {pdf} pdf PDF document
+@arg {number} version */
 function setVersion(pdf, version)
 {
   cpdflib.cpdflib.setVersion(pdf, version);
   checkError();
 }
 
-/** Sets the full version number of a document. */
+/** Sets the full version number of a document.
+@arg {pdf} pdf PDF document
+@arg {number} major version
+@arg {number} minor version */
 function setFullVersion(pdf, major, minor)
 {
   cpdflib.cpdflib.setFullVersion(pdf, major, minor);
