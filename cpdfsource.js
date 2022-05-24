@@ -1023,7 +1023,8 @@ function hardBox(pdf, range, boxname)
 // CHAPTER 5. Compression
 
 /** Compresses any uncompressed streams in the given PDF using the Flate
-algorithm. */
+algorithm.
+@arg {pdf} pdf PDF document */
 function compress(pdf)
 {
   cpdflib.cpdflib.compress(pdf);
@@ -1031,14 +1032,16 @@ function compress(pdf)
 }
 
 /** Decompresses any streams in the given PDF, so long as the compression
-method is supported. */
+method is supported.
+@arg {pdf} pdf PDF document */
 function decompress(pdf)
 {
   cpdflib.cpdflib.decompress(pdf);
   checkError();
 }
 
-/** Squeezes a pdf in memory. */
+/** Squeezes a pdf in memory.
+@arg {pdf} pdf PDF document */
 function squeezeInMemory(pdf)
 {
   cpdflib.cpdflib.squeezeInMemory(pdf);
@@ -1332,7 +1335,18 @@ function stampAsXObject(pdf, range, stamp_pdf)
 page of size x * y. This is controlled by fit. Columns imposes by columns
 rather than rows. rtl is right-to-left, btt bottom-to-top. Center is unused
 for now. Margin is the margin around the output, spacing the spacing between
-imposed inputs. */
+imposed inputs.
+@arg {pdf} pdf PDF document
+@arg {number} x (explained above)
+@arg {number} y (explained above)
+@arg {boolean} fit (explained above)
+@arg {boolean} rtl impose right to left
+@arg {boolean} btt impose bottom to top
+@arg {boolean} center unused
+@arg {number} margin margin around output pages
+@arg {number} spacing spacing between imposed pages
+@arg {number} linewidth line width
+@return {pdf} imposed document */
 function impose(pdf, x, y, fit, columns, rtl, btt, center, margin, spacing, linewidth)
 {
   var r = cpdflib.cpdflib.impose(pdf, x, y, fit, columns, rtl, btt, center, margin, spacing, linewidth);
@@ -1341,7 +1355,9 @@ function impose(pdf, x, y, fit, columns, rtl, btt, center, margin, spacing, line
 }
 
 /** Imposes a document two up. twoUp does so by shrinking the page size, to fit
-two pages on one. */
+two pages on one.
+@arg {pdf} pdf PDF document
+@return {pdf} imposed document  */
 function twoUp(pdf)
 {
   var r = cpdflib.cpdflib.twoUp(pdf);
@@ -1350,7 +1366,9 @@ function twoUp(pdf)
 }
 
 /** Impose a document two up. twoUpStack does so by doubling the page size,
-to fit two pages on one. */
+to fit two pages on one.
+@arg {pdf} pdf PDF document
+@return {pdf} imposed document */
 function twoUpStack(pdf)
 {
   var r = cpdflib.cpdflib.twoUpStack(pdf);
@@ -1358,7 +1376,9 @@ function twoUpStack(pdf)
   return r;
 }
 
-/** Adds a blank page before each page in the given range. */
+/** Adds a blank page before each page in the given range.
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range */
 function padBefore(pdf, range)
 {
   var rn = range_of_array(range);
@@ -1367,7 +1387,9 @@ function padBefore(pdf, range)
   checkError();
 }
 
-/** Adds a blank page after every n pages. */
+/** Adds a blank page after every n pages.
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range */
 function padAfter(pdf, range)
 {
   var rn = range_of_array(range);
@@ -1376,7 +1398,9 @@ function padAfter(pdf, range)
   checkError();
 }
 
-/** Adds a blank page after every n pages. */
+/** Adds a blank page after every n pages.
+@arg {pdf} pdf PDF document
+@arg {number} interval */
 function padEvery(pdf, n)
 {
   cpdflib.cpdflib.padEvery(pdf, n);
@@ -1384,7 +1408,9 @@ function padEvery(pdf, n)
 }
 
 /** Adds pages at the end to pad the file to a multiple of n pages in
-length. */
+length.
+@arg {pdf} pdf PDF document
+@arg {number} multiple to pad to */
 function padMultiple(pdf, n)
 {
   cpdflib.cpdflib.padMultiple(pdf, n);
@@ -1392,7 +1418,9 @@ function padMultiple(pdf, n)
 }
 
 /** Adds pages at the beginning to pad the file to a multiple of n pages in
-length. */
+length.
+@arg {pdf} pdf PDF document
+@arg {number} multiple to pad to */
 function padMultipleBefore(pdf, n)
 {
   cpdflib.cpdflib.padMultipleBefore(pdf, n);
@@ -1401,7 +1429,9 @@ function padMultipleBefore(pdf, n)
 
 // CHAPTER 10. Annotations 
 
-/** Returns the annotations from a PDF in JSON format. */
+/** Returns the annotations from a PDF in JSON format.
+@arg {pdf} pdf PDF document
+@return {Uint8Array} results as an array of bytes */
 function annotationsJSON(pdf)
 {
   var r = cpdflib.cpdflib.annotationsJSON(pdf);
