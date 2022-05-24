@@ -2720,7 +2720,9 @@ function setFullVersion(pdf, major, minor)
   checkError();
 }
 
-/** Removes any dictionary entry with the given key anywhere in the document. */
+/** Removes any dictionary entry with the given key anywhere in the document.
+@arg {pdf} pdf PDF document
+@arg {string} key key to remove */
 function removeDictEntry(pdf, key)
 {
   cpdflib.cpdflib.removeDictEntry(pdf, caml_string_of_jsstring(key));
@@ -2728,14 +2730,20 @@ function removeDictEntry(pdf, key)
 }
 
 /** Removes any dictionary entry with the given key whose value matches the
-given search term. */
+given search term.
+@arg {pdf} pdf PDF document
+@arg {string} key key to remove
+@arg {string} searchterm search term */
 function removeDictEntrySearch(pdf, key, searchterm)
 {
   cpdflib.cpdflib.removeDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(searchterm));
   checkError();
 }
 
-/** Replaces the value associated with the given key. */
+/** Replaces the value associated with the given key.
+@arg {pdf} pdf PDF document
+@arg {string} key key to remove
+@arg {string} newval new value */
 function replaceDictEntry(pdf, key, newval)
 {
   cpdflib.cpdflib.replaceDictEntry(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval));
@@ -2743,14 +2751,20 @@ function replaceDictEntry(pdf, key, newval)
 }
 
 /** Replaces the value associated with the given key if the existing value
-matches the search term. */
+matches the search term.
+@arg {pdf} pdf PDF document
+@arg {string} key key to remove
+@arg {string} newval new value
+@arg {string} searchterm search term */
 function replaceDictEntrySearch(pdf, key, newval, searchterm)
 {
   cpdflib.cpdflib.replaceDictEntrySearch(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval), caml_string_of_jsstring(searchterm));
   checkError();
 }
 
-/** Removes all clipping from pages in the given range. */
+/** Removes all clipping from pages in the given range.
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range */
 function removeClipping(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2760,7 +2774,10 @@ function removeClipping(pdf, range)
 }
 
 /* Returns a JSON array containing any and all values associated with the
-given key, and fills in its length. */
+given key, and fills in its length.
+@arg {pdf} pdf PDF docment
+@arg {string} key key
+@return {Uint8Array} results as an array of bytes */
 function getDictEntries(pdf, key)
 {
   var r = cpdflib.cpdflib.getDictEntries(pdf, caml_string_of_jsstring(key));
