@@ -715,7 +715,7 @@ function mergeSame(pdfs, retain_numbering, remove_duplicate_fonts, ranges)
 
 /** Returns a new document with just those pages in the page range.
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} page range */
+@arg {range} page range */
 function selectPages(pdf, r)
 {
   var rn = range_of_array(r);
@@ -728,7 +728,11 @@ function selectPages(pdf, r)
 // CHAPTER 3. Pages
 
 /** Scales the page dimensions and content by the given scale, about (0, 0).
-Other boxes (crop etc. are altered as appropriate) */
+Other boxes (crop etc. are altered as appropriate)
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {number} sx x scale
+@arg {number} sy y scale */
 function scalePages(pdf, range, sx, sy)
 {
   var rn = range_of_array(range);
@@ -738,7 +742,12 @@ function scalePages(pdf, range, sx, sy)
 }
 
 /** Scales the content to fit new page dimensions (width x height) multiplied
-by scale (typically 1.0). Other boxes (crop etc. are altered as appropriate). */
+by scale (typically 1.0). Other boxes (crop etc. are altered as appropriate).
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {number} sx x scale
+@arg {number} sy y scale
+@arg {number} scale scale */
 function scaleToFit(pdf, range, sx, sy, scale)
 {
   var rn = range_of_array(range);
@@ -796,7 +805,11 @@ var uslegalportrait = 14;
 var uslegallandscape = 15;
 
 /** Scales the page content to fit the given page size, possibly multiplied by
-scale (typically 1.0) */
+scale (typically 1.0)
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {"paper size"} papersize paper size
+@arg {number} s scale */
 function scaleToFitPaper(pdf, range, papersize, s)
 {
   var rn = range_of_array(range);
@@ -848,18 +861,18 @@ var reversediagonal = 12;
 
 A position is an anchor and zero or one or two parameters.
 
-posCentre: Two parameters, x and y
-posLeft: Two parameters, x and y
-posRight: Two parameters, x and y
-top: One parameter - distance from top
-topLeft: One parameter - distance from top left
-topRight: One parameter - distance from top right
-left: One parameter - distance from left middle
-bottomLeft: One parameter - distance from bottom left
-bottom: One parameter - distance from bottom
-bottomRight: One parameter - distance from bottom right
-right: One parameter - distance from right
-diagonal: Zero parameters
+posCentre: Two parameters, x and y<br/>
+posLeft: Two parameters, x and y<br/>
+posRight: Two parameters, x and y<br/>
+top: One parameter - distance from top<br/>
+topLeft: One parameter - distance from top left<br/>
+topRight: One parameter - distance from top right<br/>
+left: One parameter - distance from left middle<br/>
+bottomLeft: One parameter - distance from bottom left<br/>
+bottom: One parameter - distance from bottom<br/>
+bottomRight: One parameter - distance from bottom right<br/>
+right: One parameter - distance from right<br/>
+diagonal: Zero parameters<br/>
 reverseDiagonal: Zero parameters */
 function Position(anchor, p1, p2)
 {
@@ -869,7 +882,11 @@ function Position(anchor, p1, p2)
 }
 
 /** Scales the contents of the pages in the range about the point given by
-the position, by the scale given. */
+the position, by the scale given.
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {position} position position
+@arg {number} scale scale */
 function scaleContents(pdf, range, position, scale)
 {
   var rn = range_of_array(range);
@@ -878,7 +895,11 @@ function scaleContents(pdf, range, position, scale)
   checkError();
 }
 
-/** Shifts the content of the pages in the range. */
+/** Shifts the content of the pages in the range.
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {number} dx x shift
+@arg {number} dy y shift */
 function shiftContents(pdf, range, dx, dy)
 {
   var rn = range_of_array(range);
@@ -888,7 +909,10 @@ function shiftContents(pdf, range, dx, dy)
 }
 
 /** Changes the viewing rotation to an absolute value. Appropriate rotations
-are 0, 90, 180, 270. */
+are 0, 90, 180, 270.
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {number} rotation rotation */
 function rotate(pdf, range, rotation)
 {
   var rn = range_of_array(range);
@@ -898,7 +922,11 @@ function rotate(pdf, range, rotation)
 }
 
 /** Rotates the content about the centre of the page by the given number of
-degrees, in a clockwise direction. */
+degrees, in a clockwise direction. Appropriate rotations
+are 0, 90, 180, 270.
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {number} rotation rotation */
 function rotateBy(pdf, range, rotation)
 {
   var rn = range_of_array(range);
@@ -908,7 +936,10 @@ function rotateBy(pdf, range, rotation)
 }
 
 /** Rotates the content about the centre of the page by the given number of
-degrees, in a clockwise direction. */
+degrees, in a clockwise direction.
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {number} angle angle */
 function rotateContents(pdf, range, angle)
 {
   var rn = range_of_array(range);
@@ -918,7 +949,9 @@ function rotateContents(pdf, range, angle)
 }
 
 /** Changes the viewing rotation of the pages in the range, counter-rotating
-the dimensions and content such that there is no visual change. */
+the dimensions and content such that there is no visual change.
+@arg {pdf} pdf PDF document
+@arg {range} range page range */
 function upright(pdf, range)
 {
   var rn = range_of_array(range);
@@ -927,7 +960,9 @@ function upright(pdf, range)
   checkError();
 }
 
-/** Flips horizontally the pages in the range. */
+/** Flips horizontally the pages in the range.
+@arg {pdf} pdf PDF document
+@arg {range} range page range */
 function hFlip(pdf, range)
 {
   var rn = range_of_array(range);
@@ -936,7 +971,9 @@ function hFlip(pdf, range)
   checkError();
 }
 
-/** Flips vertically the pages in the range. */
+/** Flips vertically the pages in the range.
+@arg {pdf} pdf PDF document
+@arg {range} range page range */
 function vFlip(pdf, range)
 {
   var rn = range_of_array(range);
@@ -946,7 +983,13 @@ function vFlip(pdf, range)
 }
 
 /** Crops a page, replacing any existing crop box. The dimensions are in
-points. */
+points.
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {number} x x position
+@arg {number} y y position
+@arg {number} w width
+@arg {number} h height */
 function crop(pdf, range, x, y, w, h)
 {
   var rn = range_of_array(range);
@@ -955,7 +998,9 @@ function crop(pdf, range, x, y, w, h)
   checkError();
 }
 
-/** Removes any crop box from pages in the range. */
+/** Removes any crop box from pages in the range.
+@arg {pdf} pdf PDF document
+@arg {range} range page range */
 function removeCrop(pdf, range)
 {
   var rn = range_of_array(range);
@@ -964,7 +1009,9 @@ function removeCrop(pdf, range)
   checkError();
 }
 
-/** Removes any trim box from pages in the range. */
+/** Removes any trim box from pages in the range.
+@arg {pdf} pdf PDF document
+@arg {range} range page range */
 function removeTrim(pdf, range)
 {
   var rn = range_of_array(range);
@@ -973,7 +1020,9 @@ function removeTrim(pdf, range)
   checkError();
 }
 
-/** Removes any art box from pages in the range. */
+/** Removes any art box from pages in the range.
+@arg {pdf} pdf PDF document
+@arg {range} range page range */
 function removeArt(pdf, range)
 {
   var rn = range_of_array(range);
@@ -982,7 +1031,9 @@ function removeArt(pdf, range)
   checkError();
 }
 
-/** Removes any bleed box from pages in the range. */
+/** Removes any bleed box from pages in the range.
+@arg {pdf} pdf PDF document
+@arg {range} range page range */
 function removeBleed(pdf, range)
 {
   var rn = range_of_array(range);
@@ -991,7 +1042,9 @@ function removeBleed(pdf, range)
   checkError();
 }
 
-/** Adds trim marks to the given pages, if the trimbox exists. */
+/** Adds trim marks to the given pages, if the trimbox exists.
+@arg {pdf} pdf PDF document
+@arg {range} range page range */
 function trimMarks(pdf, range)
 {
   var rn = range_of_array(range);
@@ -1000,7 +1053,9 @@ function trimMarks(pdf, range)
   checkError();
 }
 
-/** Shows the boxes on the given pages, for debug. */
+/** Shows the boxes on the given pages, for debug.
+@arg {pdf} pdf PDF document
+@arg {range} range page range */
 function showBoxes(pdf, range)
 {
   var rn = range_of_array(range);
@@ -1009,7 +1064,10 @@ function showBoxes(pdf, range)
   checkError();
 }
 
-/** Makes a given box a 'hard box' i.e clips it explicitly. */
+/** Makes a given box a 'hard box' i.e clips it explicitly.
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {string} boxname box name */
 function hardBox(pdf, range, boxname)
 {
   var rn = range_of_array(range);
@@ -1215,7 +1273,7 @@ range. The stamp is placed with its origin at the origin of the target
 document.
 @arg {pdf} stamp_pdf stamp
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range */
+@arg {range} range page range */
 function stampOn(stamp_pdf, pdf, range)
 {
   var rn = range_of_array(range);
@@ -1229,7 +1287,7 @@ range. The stamp is placed with its origin at the origin of the target
 document.
 @arg {pdf} stamp_pdf stamp
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range */
+@arg {range} range page range */
 function stampUnder(stamp_pdf, pdf, range)
 {
   var rn = range_of_array(range);
@@ -1313,7 +1371,7 @@ var rightJustify = 2;
 /** Adds text to the pages in the given range.
 @arg {boolean} metrics collect metrics only
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range
+@arg {range} range page range
 @arg {string} text text to add
 @arg {position} position position to add text at
 @arg {number} linespacing line spacing
@@ -1349,7 +1407,7 @@ function addText(metrics, pdf, range, text, position, linespacing,
 
 /** Adds text with most parameters default.
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range
+@arg {range} range page range
 @arg {string} text text to add
 @arg {position} position position to add text at
 @arg {font} font font
@@ -1364,7 +1422,7 @@ function addTextSimple(pdf, range, text, position, font, fontsize)
 
 /** Removes any text added by cpdf from the given pages.
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range */
+@arg {range} range page range */
 function removeText(pdf, range)
 {
   var rn = range_of_array(range);
@@ -1390,7 +1448,7 @@ content to pages in the given range in the given PDF.
 @arg {string} content content to add
 @arg {boolean} before rather than after
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range */
+@arg {range} range page range */
 function addContent(content, before, pdf, range)
 {
   var rn = range_of_array(range);
@@ -1402,7 +1460,7 @@ function addContent(content, before, pdf, range)
 /** Stamps stamp_pdf onto the pages in the given range in pdf as a shared Form
 XObject. The name of the newly-created XObject is returned.
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range
+@arg {range} range page range
 @arg {pdf} stamp_pdf stamp pdf
 @result {string} name of XObject */
 function stampAsXObject(pdf, range, stamp_pdf)
@@ -1463,7 +1521,7 @@ function twoUpStack(pdf)
 
 /** Adds a blank page before each page in the given range.
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range */
+@arg {range} range page range */
 function padBefore(pdf, range)
 {
   var rn = range_of_array(range);
@@ -1474,7 +1532,7 @@ function padBefore(pdf, range)
 
 /** Adds a blank page after every n pages.
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range */
+@arg {range} range page range */
 function padAfter(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2625,7 +2683,7 @@ function removeFonts(pdf)
 in the range of the 'to' PDF. The new font is stored under its font name.
 @arg {pdf} docfrom source document
 @arg {pdf} docto destination document
-@arg {"array of numbers"} page range
+@arg {range} page range
 @arg {number} pagenumber source page number
 @arg {string} fontname font name */
 function copyFont(docfrom, docto, range, pagenumber, fontname)
@@ -2804,7 +2862,7 @@ function textToPDFPaper(papersize, font, fontsize, filename)
 /** Removes images on the given pages, replacing them with crossed boxes if
 'boxes' is true.
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range
+@arg {range} range page range
 @arg {boolean} boxes replace with crossed boxes */
 function draft(pdf, range, boxes)
 {
@@ -2816,7 +2874,7 @@ function draft(pdf, range, boxes)
 
 /** Removes all text from the given pages in a given document.
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range */
+@arg {range} range page range */
 function removeAllText(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2827,7 +2885,7 @@ function removeAllText(pdf, range)
 
 /* Blackens all text on the given pages.
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range */
+@arg {range} range page range */
 function blackText(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2838,7 +2896,7 @@ function blackText(pdf, range)
 
 /** Blackens all lines on the given pages.
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range */
+@arg {range} range page range */
 function blackLines(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2849,7 +2907,7 @@ function blackLines(pdf, range)
 
 /** Blackens all fills on the given pages.
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range */
+@arg {range} range page range */
 function blackFills(pdf, range)
 {
   var rn = range_of_array(range);
@@ -2861,7 +2919,7 @@ function blackFills(pdf, range)
 /** Thickens every line less than min_thickness to min_thickness. Thickness
 given in points.
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range
+@arg {range} range page range
 @arg {number} min_thickness minimum required thickness */
 function thinLines(pdf, range, min_thickness)
 {
@@ -2951,7 +3009,7 @@ function replaceDictEntrySearch(pdf, key, newval, searchterm)
 
 /** Removes all clipping from pages in the given range.
 @arg {pdf} pdf PDF document
-@arg {"array of numbers"} range page range */
+@arg {range} range page range */
 function removeClipping(pdf, range)
 {
   var rn = range_of_array(range);
