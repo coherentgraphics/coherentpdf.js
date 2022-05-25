@@ -2536,14 +2536,24 @@ function copyFont(docfrom, docto, range, pagenumber, fontname)
 
 /** Outputs a PDF in JSON format to the given filename. If parse_content is
 true, page content is parsed. If no_stream_data is true, all stream data is
-suppressed entirely. If decompress_streams is true, streams are decompressed. */
+suppressed entirely. If decompress_streams is true, streams are decompressed.
+@arg {string} filename file name
+@arg {boolean} parse_content parse page content
+@arg {boolean} no_stream_data suppress stream data
+@arg {boolean} decompress_streams decompress streams
+@arg {pdf} pdf PDF document */
 function outputJSON(filename, parse_content, no_stream_data, decompress_streams, pdf)
 {
   cpdflib.cpdflib.outputJSON(caml_string_of_jsstring(filename), parse_content, no_stream_data, decompress_streams, pdf);
   checkError();
 }
 
-/** Like outputJSON, but it writes to a byte array in memory. */
+/** Like outputJSON, but it writes to a byte array in memory.
+@arg {boolean} parse_content parse page content
+@arg {boolean} no_stream_data suppress stream data
+@arg {boolean} decompress_streams decompress streams
+@arg {pdf} pdf PDF document
+@return {Uint8Array} JSON data as a byte array */
 function outputJSONMemory(parse_content, no_stream_data, decompress_streams, pdf)
 {
   var r = cpdflib.cpdflib.outputJSONMemory(parse_content, no_stream_data, decompress_streams, pdf);
@@ -2551,7 +2561,9 @@ function outputJSONMemory(parse_content, no_stream_data, decompress_streams, pdf
   return r.data;
 }
 
-/** Loads a PDF from a JSON file given its filename. */
+/** Loads a PDF from a JSON file given its filename.
+@arg {string} filename file name
+@return {pdf} PDF document */
 function fromJSON(filename)
 {
   var r = cpdflib.cpdflib.fromJSON(caml_string_of_jsstring(filename));
@@ -2559,7 +2571,9 @@ function fromJSON(filename)
   return r;
 }
 
-/** Loads a PDF from a JSON file in memory. */
+/** Loads a PDF from a JSON file in memory. 
+@arg {Uint8Array} data JSON data as a byte array
+@return {pdf} PDF document */
 function fromJSONMemory(data)
 {
   var bigarray = caml_ba_from_typed_array(data);
@@ -2570,8 +2584,9 @@ function fromJSONMemory(data)
 
 // CHAPTER 16. Optional Content Groups
 
-/** Begins retrieving optional content group names. The serial number 0..n - 1
-is returned. */
+/** Begins retrieving optional content group names. The number of entries is returned.
+@arg {pdf} pdf PDF document
+@return {number} number of entries */
 function startGetOCGList(pdf)
 {
   var r = cpdflib.cpdflib.startGetOCGList(pdf);
@@ -2579,7 +2594,9 @@ function startGetOCGList(pdf)
   return r;
 }
 
-/** Retrieves an OCG name, given its serial number 0..n - 1. */
+/** Retrieves an OCG name, given its serial number 0..n - 1.
+@arg {number} n serial number
+@return {string} OCG name */
 function ocgListEntry(n)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.ocgListEntry(n));
@@ -2594,14 +2611,18 @@ function endGetOCGList()
   checkError();
 }
 
-/** Renames an optional content group. */
+/** Renames an optional content group.
+@arg {pdf} pdf PDF document
+@arg {string} name_from source name
+@arg {string} name_to destination name */
 function ocgRename(pdf, name_from, name_to)
 {
   cpdflib.cpdflib.ocgRename(pdf, caml_string_of_jsstring(name_from), caml_string_of_jsstring(name_to));
   checkError();
 }
 
-/** Ensures that every optional content group appears in the OCG order list. */
+/** Ensures that every optional content group appears in the OCG order list.
+@arg {pdf} pdf PDF document */
 function ocgOrderAll(pdf)
 {
   cpdflib.cpdflib.ocgOrderAll(pdf);
@@ -2611,7 +2632,8 @@ function ocgOrderAll(pdf)
 /** Coalesces optional content groups. For example, if we merge or stamp two
 files both with an OCG called "Layer 1", we will have two different optional
 content groups. This function will merge the two into a single optional
-content group. */
+content group.
+@arg {pdf} pdf PDF document */
 function ocgCoalesce(pdf)
 {
   cpdflib.cpdflib.ocgCoalesce(pdf);
