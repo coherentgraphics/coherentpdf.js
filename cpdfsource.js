@@ -2326,7 +2326,10 @@ obtaining data on all image uses below min_required_resolution, returning the
 total number. So, to return all image uses, specify a very high
 min_required_resolution. Then, call the other functions giving a serial number
 0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
-up. */
+up.
+@arg {pdf} pdf PDF document
+@arg {number} min_required_resolution minimum required resolution
+@return {number} number of uses */
 function startGetImageResolution(pdf, min_required_resolution)
 {
   var r = cpdflib.cpdflib.startGetImageResolution(pdf, min_required_resolution);
@@ -2340,7 +2343,9 @@ obtaining data on all image uses below min_required_resolution, returning the
 total number. So, to return all image uses, specify a very high
 min_required_resolution. Then, call the other functions giving a serial number
 0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
-up. */
+up.
+@arg {number} n serial number
+@return {number} page number */
 function getImageResolutionPageNumber(n)
 {
   var r = cpdflib.cpdflib.getImageResolutionPageNumber(n);
@@ -2354,7 +2359,9 @@ obtaining data on all image uses below min_required_resolution, returning the
 total number. So, to return all image uses, specify a very high
 min_required_resolution. Then, call the other functions giving a serial number
 0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
-up. */
+up.
+@arg {number} n serial number
+@return {string} image name */
 function getImageResolutionImageName(n)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getImageResolutionImageName(n));
@@ -2368,7 +2375,9 @@ obtaining data on all image uses below min_required_resolution, returning the
 total number. So, to return all image uses, specify a very high
 min_required_resolution. Then, call the other functions giving a serial number
 0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
-up. */
+up.
+@arg {number} n serial number
+@return {number} X pixels */
 function getImageResolutionXPixels(n)
 {
   var r = cpdflib.cpdflib.getImageResolutionXPixels(n);
@@ -2382,7 +2391,9 @@ obtaining data on all image uses below min_required_resolution, returning the
 total number. So, to return all image uses, specify a very high
 min_required_resolution. Then, call the other functions giving a serial number
 0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
-up. */
+up.
+@arg {number} n serial number
+@return {number} Y pixels */
 function getImageResolutionYPixels(n)
 {
   var r = cpdflib.cpdflib.getImageResolutionYPixels(n);
@@ -2396,7 +2407,9 @@ obtaining data on all image uses below min_required_resolution, returning the
 total number. So, to return all image uses, specify a very high
 min_required_resolution. Then, call the other functions giving a serial number
 0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
-up. */
+up.
+@arg {number} n serial number
+@return {number} X Res */
 function getImageResolutionXRes(n)
 {
   var r = cpdflib.cpdflib.getImageResolutionXRes(n);
@@ -2410,7 +2423,9 @@ obtaining data on all image uses below min_required_resolution, returning the
 total number. So, to return all image uses, specify a very high
 min_required_resolution. Then, call the other functions giving a serial number
 0..n - 1, to retrieve the data. Finally, call endGetImageResolution to clean
-up. */
+up.
+@arg {number} n serial number
+@return {number} Y Res */
 function getImageResolutionYRes(n)
 {
   var r = cpdflib.cpdflib.getImageResolutionYRes(n);
@@ -2437,7 +2452,8 @@ function endGetImageResolution()
 numberFonts to return the number of fonts. For each font, call one or more of
 getFontPage, getFontName, getFontType, and getFontEncoding giving a serial
 number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
-up. */
+up.
+@ {pdf} pdf PDF document */
 function startGetFontInfo(pdf)
 {
   checkError();
@@ -2448,7 +2464,8 @@ function startGetFontInfo(pdf)
 numberFonts to return the number of fonts. For each font, call one or more of
 getFontPage, getFontName, getFontType, and getFontEncoding giving a serial
 number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
-up. */
+up.
+@result {number} number of fonts */
 function numberFonts()
 {
   var r = cpdflib.cpdflib.numberFonts();
@@ -2460,7 +2477,9 @@ function numberFonts()
 numberFonts to return the number of fonts. For each font, call one or more of
 getFontPage, getFontName, getFontType, and getFontEncoding giving a serial
 number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
-up. */
+up.
+@arg {number} n serial number
+@return {number} page number */
 function getFontPage(n)
 {
   var r = cpdflib.cpdflib.getFontPage(n);
@@ -2472,7 +2491,9 @@ function getFontPage(n)
 numberFonts to return the number of fonts. For each font, call one or more of
 getFontPage, getFontName, getFontType, and getFontEncoding giving a serial
 number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
-up. */
+up.
+@arg {number} n serial number
+@return {string} font name */
 function getFontName(n)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getFontName(n));
@@ -2484,7 +2505,9 @@ function getFontName(n)
 numberFonts to return the number of fonts. For each font, call one or more of
 getFontPage, getFontName, getFontType, and getFontEncoding giving a serial
 number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
-up. */
+up.
+@arg {number} n serial number
+@return {string} font type */
 function getFontType(n)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getFontType(n));
@@ -2496,7 +2519,9 @@ function getFontType(n)
 numberFonts to return the number of fonts. For each font, call one or more of
 getFontPage, getFontName, getFontType, and getFontEncoding giving a serial
 number 0..n - 1 to return information. Finally, call endGetFontInfo to clean
-up. */
+up.
+@arg {number} n serial number
+@return {string} font encoding */
 function getFontEncoding(n)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getFontEncoding(n));
@@ -2515,7 +2540,8 @@ function endGetFontInfo()
   checkError();
 }
 
-/** Removes all font data from a file. */
+/** Removes all font data from a file.
+@arg {pdf} pdf PDF document */
 function removeFonts(pdf)
 {
   cpdflib.cpdflib.removeFonts(pdf);
@@ -2523,7 +2549,12 @@ function removeFonts(pdf)
 }
 
 /** Copies the given font from the given page in the 'from' PDF to every page
-in the 'to' PDF. The new font is stored under its font name. */
+in the range of the 'to' PDF. The new font is stored under its font name.
+@arg {pdf} docfrom source document
+@arg {pdf} docto destination document
+@arg {"array of numbers"} page range
+@arg {number} pagenumber source page number
+@arg {string} fontname font name */
 function copyFont(docfrom, docto, range, pagenumber, fontname)
 {
   var rn = range_of_array(range);
