@@ -2164,7 +2164,9 @@ var twoPageLeft = 4;
 /** Two page right */
 var twoPageRight = 5;
   
-/** Sets the page layout for a document. */
+/** Sets the page layout for a document.
+@arg {pdf} pdf PDF document
+@arg {layout} layout page layout */
 function setPageLayout(pdf, layout)
 {
   cpdflib.cpdflib.setPageLayout(pdf, layout);
@@ -2186,49 +2188,63 @@ var useOC = 3;
 /** Use attachments */
 var useAttachments = 4;
 
-/** Sets the page mode for a document. */
+/** Sets the page mode for a document.
+@arg {pdf} pdf PDF document
+@arg {mode} mode page mode */
 function setPageMode(pdf, mode)
 {
   cpdflib.cpdflib.setPageMode(pdf, mode);
   checkError();
 }
 
-/** Sets the hide toolbar flag. */
+/** Sets the hide toolbar flag.
+@arg {pdf} pdf PDF document
+@arg {boolean} flag hide toolbar */
 function hideToolbar(pdf, flag)
 {
   cpdflib.cpdflib.hideToolbar(pdf, flag);
   checkError();
 }
 
-/** Sets the hide menubar flag. */
+/** Sets the hide menubar flag.
+@arg {pdf} pdf PDF document
+@arg {boolean} flag hide menubar */
 function hideMenubar(pdf, flag)
 {
   cpdflib.cpdflib.hideMenubar(pdf, flag);
   checkError();
 }
 
-/** Sets the hide window UI flag. */
+/** Sets the hide window UI flag.
+@arg {pdf} pdf PDF document
+@arg {boolean} flag hide UI */
 function hideWindowUi(pdf, flag)
 {
   cpdflib.cpdflib.hideWindowUi(pdf, flag);
   checkError();
 }
 
-/** Sets the fit window flag. */
+/** Sets the fit window flag.
+@arg {pdf} pdf PDF document
+@arg {boolean} flag fit window */
 function fitWindow(pdf, flag)
 {
   cpdflib.cpdflib.fitWindow(pdf, flag);
   checkError();
 }
 
-/** Sets the center window flag. */
+/** Sets the center window flag.
+@arg {pdf} pdf PDF document
+@arg {boolean} flag center window */
 function centerWindow(pdf, flag)
 {
   cpdflib.cpdflib.centerWindow(pdf, flag);
   checkError();
 }
 
-/** Sets the display doc title flag. */
+/** Sets the display doc title flag.
+@arg {pdf} pdf PDF document
+@arg {boolean} flag display doc title */
 function displayDocTitle(pdf, flag)
 {
   cpdflib.cpdflib.displayDocTitle(pdf, flag);
@@ -2236,21 +2252,28 @@ function displayDocTitle(pdf, flag)
 }
 
 /** Sets the PDF to open, possibly with zoom-to-fit, at the given page
-number. */
+number.
+@arg {pdf} pdf PDF document
+@arg {boolean} fit zoom-to-fit
+@arg {number} pagenumber page number */
 function openAtPage(pdf, fit, pagenumber)
 {
   cpdflib.cpdflib.openAtPage(pdf, fit, pagenumber);
   checkError();
 }
 
-/** Sets the XMP metadata of a document, given a file name. */
+/** Sets the XMP metadata of a document, given a file name.
+@arg {pdf} pdf PDF document
+@arg {string} filename file name */
 function setMetadataFromFile(pdf, filename)
 {
   cpdflib.cpdflib.setMetadataFromFile(pdf, caml_string_of_jsstring(filename));
   checkError();
 }
 
-/** Sets the XMP metadata from an array of bytes. */
+/** Sets the XMP metadata from an array of bytes.
+@arg {pdf} pdf PDF document
+@arg {Uint8Array} data XMP metadata as an array of bytes */
 function setMetadataFromByteArray(pdf, data)
 {
   var bigarray = caml_ba_from_typed_array(data);
@@ -2258,14 +2281,17 @@ function setMetadataFromByteArray(pdf, data)
   checkError();
 }
 
-/** Removes the XMP metadata from a document. */
+/** Removes the XMP metadata from a document.
+@arg {pdf} pdf PDF document */
 function removeMetadata(pdf)
 {
   cpdflib.cpdflib.removeMetadata(pdf);
   checkError();
 }
 
-/** Returns the XMP metadata from a document. */
+/** Returns the XMP metadata from a document.
+@arg {pdf} pdf PDF document
+@result {Uint8Array} XMP metadata as a byte array */
 function getMetadata(pdf)
 {
   var r = cpdflib.cpdflib.getMetadata(pdf);
@@ -2274,7 +2300,8 @@ function getMetadata(pdf)
 }
 
 /** Builds fresh XMP metadata as best it can from existing metadata in the
-document. */
+document.
+@arg {pdf} pdf PDF document */
 function createMetadata(pdf)
 {
   cpdflib.cpdflib.createMetadata(pdf);
