@@ -2226,7 +2226,9 @@ function endGetPageLabels()
 
 // CHAPTER 12. File Attachments
     
-/** Attaches a file to the pdf. It is attached at document level. */
+/** Attaches a file to the pdf. It is attached at document level.
+@arg {string} filename file name
+@arg {pdf} pdf PDF document */
 function attachFile(filename, pdf)
 {
   cpdflib.cpdflib.attachFile(caml_string_of_jsstring(filename), pdf);
@@ -2234,32 +2236,41 @@ function attachFile(filename, pdf)
 }
 
 /** Attaches a file, given its file name, pdf, and the page number
-to which it should be attached. */
+to which it should be attached.
+@arg {string} filename file name
+@arg {pdf} pdf PDF document
+@arg {number} pagenumber page number */
 function attachFileToPage(filename, pdf, pagenumber)
 {
   cpdflib.cpdflib.attachFileToPage(caml_string_of_jsstring(filename), pdf, pagenumber);
   checkError();
 }
 
-/** Attaches data from memory, just like attachFile. */
+/** Attaches data from memory, just like attachFile.
+@arg {Uint8Array} data file as a byte array
+@arg {string} filename file name to call it in the PDF
+@arg {pdf} pdf PDF document */
 function attachFileFromMemory(data, filename, pdf)
 {
   var bigarray = caml_ba_from_typed_array(data);
-  var r = cpdflib.cpdflib.attachFileFromMemory(bigarray, caml_string_of_jsstring(filename), pdf);
+  cpdflib.cpdflib.attachFileFromMemory(bigarray, caml_string_of_jsstring(filename), pdf);
   checkError();
-  return r;
 }
 
-/** Attaches to a page from memory, just like attachFileToPage. */
+/** Attaches to a page from memory, just like attachFileToPage.
+@arg {Uint8Array} data file as a byte array
+@arg {string} filename file name to call it in the PDF
+@arg {pdf} pdf PDF document
+@arg {number} pagenumber page number */
 function attachFileToPageFromMemory(data, filename, pdf, pagenumber)
 {
   var bigarray = caml_ba_from_typed_array(data);
-  var r = cpdflib.cpdflib.attachFileToPageFromMemory(bigarray, caml_string_of_jsstring(filename), pdf, pagenumber);
+  cpdflib.cpdflib.attachFileToPageFromMemory(bigarray, caml_string_of_jsstring(filename), pdf, pagenumber);
   checkError();
-  return r;
 }
 
-/** Removes all page- and document-level attachments from a document. */
+/** Removes all page- and document-level attachments from a document.
+@arg {pdf} pdf PDF document */
 function removeAttachedFiles(pdf)
 {
   cpdflib.cpdflib.removeAttachedFiles(pdf);
@@ -2269,7 +2280,8 @@ function removeAttachedFiles(pdf)
 /** Lists information about attachments. Call startGetAttachments(pdf) first,
 then numberGetAttachments to find out how many there are. Then
 getAttachmentName etc. to return each one 0...(n - 1). Finally, call
-endGetAttachments to clean up. */
+endGetAttachments to clean up.
+@arg {pdf} pdf PDF document */
 function startGetAttachments(pdf)
 {
   cpdflib.cpdflib.startGetAttachments(pdf);
@@ -2279,7 +2291,8 @@ function startGetAttachments(pdf)
 /** Lists information about attachments. Call startGetAttachments(pdf) first,
 then numberGetAttachments to find out how many there are. Then
 getAttachmentName etc. to return each one 0...(n - 1). Finally, call
-endGetAttachments to clean up. */
+endGetAttachments to clean up.
+@return {number} number of attachments */
 function numberGetAttachments()
 {
   var r = cpdflib.cpdflib.numberGetAttachments();
@@ -2287,7 +2300,9 @@ function numberGetAttachments()
   return r;
 }
 
-/** Gets the name of an attachment. */
+/** Gets the name of an attachment.
+@arg {number} n serial number
+@return {string} attachment name */
 function getAttachmentName(n)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getAttachmentName(n));
@@ -2295,7 +2310,9 @@ function getAttachmentName(n)
   return r;
 }
 
-/** Gets the page number. 0 = document level. */
+/** Gets the page number. 0 = document level.
+@arg {number} n serial number
+@return {number} attachment page */
 function getAttachmentPage(n)
 {
   var r = cpdflib.cpdflib.getAttachmentPage(n);
@@ -2303,7 +2320,9 @@ function getAttachmentPage(n)
   return r;
 }
 
-/** Gets the attachment data itself. */
+/** Gets the attachment data itself.
+@arg {number} n serial number
+@return {Uint8Array} attachment data */
 function getAttachmentData(n)
 {
   var r = cpdflib.cpdflib.getAttachmentData(n);
