@@ -1209,10 +1209,13 @@ function tableOfContents(pdf, font, fontsize, title, bookmark)
 
 // CHAPTER 8. Logos, Watermarks and Stamps
    
-/** A stamping function with extra features. - isover true, pdf goes over pdf2,
-isover false, pdf goes under pdf2 - scale_stamp_to_fit scales the stamp to fit
-the page - pos gives the position to put the stamp - relative_to_cropbox: if
-true, pos is relative to cropbox not mediabox. */
+
+/** Stamps stamp_pdf on all the pages in the document which are in the
+range. The stamp is placed with its origin at the origin of the target
+document.
+@arg {pdf} stamp_pdf stamp
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range */
 function stampOn(stamp_pdf, pdf, range)
 {
   var rn = range_of_array(range);
@@ -1223,7 +1226,10 @@ function stampOn(stamp_pdf, pdf, range)
 
 /** Stamps stamp_pdf under all the pages in the document which are in the
 range. The stamp is placed with its origin at the origin of the target
-document. */
+document.
+@arg {pdf} stamp_pdf stamp
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range */
 function stampUnder(stamp_pdf, pdf, range)
 {
   var rn = range_of_array(range);
@@ -1232,10 +1238,13 @@ function stampUnder(stamp_pdf, pdf, range)
   checkError();
 }
 
-/** A stamping function with extra features. - isover true, pdf goes over
-pdf2, isover false, pdf goes under pdf2 - scale_stamp_to_fit scales the
-stamp to fit the page - pos gives the position to put the stamp -
-relative_to_cropbox: if true, pos is relative to cropbox not mediabox. */
+/** A stamping function with extra features. 
+@arg {pdf} pdf first PDF document
+@arg {pdf} pdf second PDF document
+@arg {boolean} isover pdf goes over pdf2, otherwise under
+@arg {boolean} scale_stamp_to_fit scales the stamp to fit the page
+@arg {position} pos gives the position to put the stamp
+@arg {boolean} relative_to_cropbox pos is relative to cropbox not mediabox. */
 function stampExtended(pdf, pdf2, range, isover, scale_stamp_to_fit, position, relative_to_cropbox)
 {
   var rn = range_of_array(range);
@@ -1245,7 +1254,10 @@ function stampExtended(pdf, pdf2, range, isover, scale_stamp_to_fit, position, r
 }
 
 /** Combines the PDFs page-by-page, putting each page of 'over' over each page
-of 'under'. */
+of 'under'.
+@arg {pdf} under PDF document
+@arg {pdf} over PDF document
+@result {pdf} resultant PDF document */
 function combinePages(under, over)
 {
   var r = cpdflib.cpdflib.combinePages(under, over);
@@ -1298,7 +1310,30 @@ var centreJustify = 1;
 /** Right justify */
 var rightJustify = 2;
 
-/** Adds text to the pages in the given range. */
+/** Adds text to the pages in the given range.
+@arg {boolean} metrics collect metrics only
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range
+@arg {string} text text to add
+@arg {position} position position to add text at
+@arg {number} linespacing line spacing
+@arg {number} bates starting bates number
+@arg {font} font font
+@arg {number} fontsize font size
+@arg {number} r red component of colour 0..1
+@arg {number} g green component of colour 0..1
+@arg {number} b blue component of colour 0..1
+@arg {boolean} underneath put text under the page rather than over
+@arg {boolean} relative_to_cropbox position is relative to crop box not media box
+@arg {boolean} outline text is outline
+@arg {number} opacity opacity 0..1
+@arg {justification} justification justification
+@arg {boolean} midline position is relative to midline not baseline
+@arg {boolean} topline position is relative to topline not baseline
+@arg {string} filename file name
+@arg {number} linewidth line width
+@arg {boolean} embed_fonts add font information
+*/
 function addText(metrics, pdf, range, text, position, linespacing,
                  bates, font, fontsize, r, g, b, underneath, relative_to_cropbox, outline,
                  opacity, justification, midline, topline, filename, linewidth, embed_fonts)
@@ -1312,7 +1347,13 @@ function addText(metrics, pdf, range, text, position, linespacing,
   checkError();
 }
 
-/** Adds text with most parameters default. */
+/** Adds text with most parameters default.
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range
+@arg {string} text text to add
+@arg {position} position position to add text at
+@arg {font} font font
+@arg {number} fontsize font size */
 function addTextSimple(pdf, range, text, position, font, fontsize)
 {
   var rn = range_of_array(range);
@@ -1321,7 +1362,9 @@ function addTextSimple(pdf, range, text, position, font, fontsize)
   checkError();
 }
 
-/** Removes any text added by cpdf from the given pages. */
+/** Removes any text added by cpdf from the given pages.
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range */
 function removeText(pdf, range)
 {
   var rn = range_of_array(range);
@@ -1331,7 +1374,10 @@ function removeText(pdf, range)
 }
 
 /** Returns the width of a given string in the given font in thousandths of a
-point. */
+point.
+@arg {font} font font
+@arg {string} text text
+@result {number} width */
 function textWidth(font, text)
 {
   var r = cpdflib.cpdflib.textWidth(font, caml_string_of_jsstring(text));
@@ -1340,7 +1386,11 @@ function textWidth(font, text)
 }
 
 /** Adds page content before (if true) or after (if false) the existing
-content to pages in the given range in the given PDF. */
+content to pages in the given range in the given PDF.
+@arg {string} content content to add
+@arg {boolean} before rather than after
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range */
 function addContent(content, before, pdf, range)
 {
   var rn = range_of_array(range);
@@ -1350,7 +1400,11 @@ function addContent(content, before, pdf, range)
 }
 
 /** Stamps stamp_pdf onto the pages in the given range in pdf as a shared Form
-XObject. The name of the newly-created XObject is returned. */
+XObject. The name of the newly-created XObject is returned.
+@arg {pdf} pdf PDF document
+@arg {"array of numbers"} range page range
+@arg {pdf} stamp_pdf stamp pdf
+@result {string} name of XObject */
 function stampAsXObject(pdf, range, stamp_pdf)
 {
   var rn = range_of_array(range);
