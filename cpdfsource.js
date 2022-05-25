@@ -2383,7 +2383,10 @@ startvalue = 1<br/></br>
 labelstyle = DecimalArabic<br/>
 labelprefix = ""<br/>
 startpage = 6<br/>
-startvalue = 1<br/> */
+startvalue = 1<br/>
+
+@arg {pdf} pdf PDF document
+@result {number} number of page labels */
 function startGetPageLabels(pdf)
 {
   var r = cpdflib.cpdflib.startGetPageLabels(pdf);
@@ -2407,7 +2410,10 @@ startvalue = 1<br/></br>
 labelstyle = DecimalArabic<br/>
 labelprefix = ""<br/>
 startpage = 6<br/>
-startvalue = 1<br/> */
+startvalue = 1<br/>
+
+@arg {number} n serial number
+@result {"label style"} page label style */
 function getPageLabelStyle(n)
 {
   var r = cpdflib.cpdflib.getPageLabelStyle(n);
@@ -2431,7 +2437,10 @@ startvalue = 1<br/></br>
 labelstyle = DecimalArabic<br/>
 labelprefix = ""<br/>
 startpage = 6<br/>
-startvalue = 1<br/> */
+startvalue = 1<br/>
+
+@arg {number} n serial number
+@result {string} page label prefix */
 function getPageLabelPrefix(n)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getPageLabelPrefix(n));
@@ -2455,7 +2464,10 @@ startvalue = 1<br/></br>
 labelstyle = DecimalArabic<br/>
 labelprefix = ""<br/>
 startpage = 6<br/>
-startvalue = 1<br/> */
+startvalue = 1<br/>
+
+@arg {number} n serial number
+@result {number} page label offset */
 function getPageLabelOffset(n)
 {
   var r = cpdflib.cpdflib.getPageLabelOffset(n);
@@ -2479,7 +2491,10 @@ startvalue = 1<br/></br>
 labelstyle = DecimalArabic<br/>
 labelprefix = ""<br/>
 startpage = 6<br/>
-startvalue = 1<br/> */
+startvalue = 1<br/>
+
+@arg {number} n serial number
+@result {number} page label range */
 function getPageLabelRange(n)
 {
   var r = cpdflib.cpdflib.getPageLabelRange(n);
