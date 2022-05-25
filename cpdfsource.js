@@ -2333,7 +2333,13 @@ var lowercaseLetters = 4;
 
 /** Adds page labels. The prefix is prefix text for each label. The range is
 the page range the labels apply to. Offset can be used to shift the numbering
-up or down. */
+up or down.
+@arg {pdf} pdf PDF document
+@arg {style} style page label style
+@arg {string} prefix label prefix
+@arg {number} offset offset
+@arg {range} range page range
+@arg {boolean} progress labels progress */
 function addPageLabels(pdf, style, prefix, offset, range, progress)
 {
   var rn = range_of_array(range);
@@ -2342,14 +2348,18 @@ function addPageLabels(pdf, style, prefix, offset, range, progress)
   checkError();
 }
 
-/** Removes the page labels from the document. */
+/** Removes the page labels from the document.
+@arg {pdf} pdf PDF document */
 function removePageLabels(pdf)
 {
   cpdflib.cpdflib.removePageLabels(pdf);
   checkError();
 }
 
-/** Calculates the full label string for a given page, and returns it. */
+/** Calculates the full label string for a given page, and returns it.
+@arg {pdf} pdf PDF document
+@arg {number} pagenumber page number
+@result {string} page label string */
 function getPageLabelStringForPage(pdf, pagenumber)
 {
   var r = cpdflib.cpdflib.getPageLabelStringForPage(pdf, pagenumber);
