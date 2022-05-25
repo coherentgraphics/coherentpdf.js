@@ -1971,7 +1971,10 @@ function hasBox(pdf, page, box)
 
 /** These functions get a box given the document, page number, min x, max x,
 min y, max y in points. Only succeeds if such a box exists, as checked by
-hasBox. */
+hasBox.
+@arg {pdf} pdf PDF document
+@arg {number} pagenumber page number
+@return {"array of numbers"} media box */
 function getMediaBox(pdf, pagenumber)
 {
   var r = cpdflib.cpdflib.getMediaBox(pdf, pagenumber);
@@ -1981,7 +1984,10 @@ function getMediaBox(pdf, pagenumber)
 
 /** These functions get a box given the document, page number, min x, max x,
 min y, max y in points. Only succeeds if such a box exists, as checked by
-hasBox. */
+hasBox.
+@arg {pdf} pdf PDF document
+@arg {number} pagenumber page number
+@return {"array of numbers"} crop box */
 function getCropBox(pdf, pagenumber)
 {
   var r = cpdflib.cpdflib.getCropBox(pdf, pagenumber);
@@ -1991,7 +1997,10 @@ function getCropBox(pdf, pagenumber)
 
 /** These functions get a box given the document, page number, min x, max x,
 min y, max y in points. Only succeeds if such a box exists, as checked by
-hasBox. */
+hasBox.
+@arg {pdf} pdf PDF document
+@arg {number} pagenumber page number
+@return {"array of numbers"} art box */
 function getArtBox(pdf, pagenumber)
 {
   var r = cpdflib.cpdflib.getArtBox(pdf, pagenumber);
@@ -2001,7 +2010,10 @@ function getArtBox(pdf, pagenumber)
 
 /** These functions get a box given the document, page number, min x, max x,
 min y, max y in points. Only succeeds if such a box exists, as checked by
-hasBox. */
+hasBox.
+@arg {pdf} pdf PDF document
+@arg {number} pagenumber page number
+@return {"array of numbers"} bleed box */
 function getBleedBox(pdf, pagenumber)
 {
   var r = cpdflib.cpdflib.getBleedBox(pdf, pagenumber);
@@ -2011,7 +2023,10 @@ function getBleedBox(pdf, pagenumber)
 
 /** These functions get a box given the document, page number, min x, max x,
 min y, max y in points. Only succeeds if such a box exists, as checked by
-hasBox. */
+hasBox.
+@arg {pdf} pdf PDF document
+@arg {number} pagenumber page number
+@return {"array of numbers"} trim box */
 function getTrimBox(pdf, pagenumber)
 {
   var r = cpdflib.cpdflib.getTrimBox(pdf, pagenumber);
@@ -2020,7 +2035,13 @@ function getTrimBox(pdf, pagenumber)
 }
 
 /** These functions set a box given the document, page range, min x, max x,
-min y, max y in points. */
+min y, max y in points.
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {number} minx min x
+@arg {number} maxx max x
+@arg {number} minx min y
+@arg {number} maxx max y */
 function setMediabox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
@@ -2030,7 +2051,13 @@ function setMediabox(pdf, range, minx, maxx, miny, maxy)
 }
 
 /** These functions set a box given the document, page range, min x, max x,
-min y, max y in points. */
+min y, max y in points.
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {number} minx min x
+@arg {number} maxx max x
+@arg {number} minx min y
+@arg {number} maxx max y */
 function setCropBox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
@@ -2040,7 +2067,13 @@ function setCropBox(pdf, range, minx, maxx, miny, maxy)
 }
 
 /** These functions set a box given the document, page range, min x, max x,
-min y, max y in points. */
+min y, max y in points.
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {number} minx min x
+@arg {number} maxx max x
+@arg {number} minx min y
+@arg {number} maxx max y */
 function setTrimBox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
@@ -2050,7 +2083,13 @@ function setTrimBox(pdf, range, minx, maxx, miny, maxy)
 }
 
 /** These functions set a box given the document, page range, min x, max x,
-min y, max y in points. */
+min y, max y in points.
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {number} minx min x
+@arg {number} maxx max x
+@arg {number} minx min y
+@arg {number} maxx max y */
 function setBleedBox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
@@ -2060,7 +2099,13 @@ function setBleedBox(pdf, range, minx, maxx, miny, maxy)
 }
 
 /** These functions set a box given the document, page range, min x, max x,
-min y, max y in points. */
+min y, max y in points.
+@arg {pdf} pdf PDF document
+@arg {range} range page range
+@arg {number} minx min x
+@arg {number} maxx max x
+@arg {number} minx min y
+@arg {number} maxx max y */
 function setArtBox(pdf, range, minx, maxx, miny, maxy)
 {
   var rn = range_of_array(range);
@@ -2069,28 +2114,32 @@ function setArtBox(pdf, range, minx, maxx, miny, maxy)
   checkError();
 }
 
-/** Marks a document as trapped. */
+/** Marks a document as trapped.
+@arg {pdf} pdf PDF document */
 function markTrapped(pdf)
 {
   cpdflib.cpdflib.markTrapped(pdf);
   checkError();
 }
 
-/** Marks a document as untrapped. */
+/** Marks a document as untrapped.
+@arg {pdf} pdf PDF document */
 function markUntrapped(pdf)
 {
   cpdflib.cpdflib.markUntrapped(pdf);
   checkError();
 }
 
-/** Marks a document as trapped in XMP metadata. */
+/** Marks a document as trapped in XMP metadata.
+@arg {pdf} pdf PDF document */
 function markTrappedXMP(pdf)
 {
   cpdflib.cpdflib.markTrappedXMP(pdf);
   checkError();
 }
 
-/** Marks a document as untrapped in XMP metadata. */
+/** Marks a document as untrapped in XMP metadata.
+@arg {pdf} pdf PDF document */
 function markUntrappedXMP(pdf)
 {
   cpdflib.cpdflib.markUntrappedXMP(pdf);
