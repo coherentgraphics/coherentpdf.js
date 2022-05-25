@@ -1919,7 +1919,9 @@ function setModificationDateXMP(pdf, s)
   checkError();
 }
 
-/** Returns the components from a PDF date string. */
+/** Returns the components from a PDF date string.
+@arg {string} string date string
+@return {"array of numbers"} date components */
 function getDateComponents(string)
 {
   var r = cpdflib.cpdflib.getDateComponents(caml_string_of_jsstring(string));
@@ -1927,7 +1929,16 @@ function getDateComponents(string)
   return r.slice(1);
 }
 
-/** Builds a PDF date string from individual components. */
+/** Builds a PDF date string from individual components.
+@arg {number} y year
+@arg {number} m month
+@arg {number} d day
+@arg {number} h hour
+@arg {number} min minute
+@arg {number} sec second
+@arg {number} hour_offset hour offset
+@arg {number} minute_offset minute offset
+@return {string} date string */
 function dateStringOfComponents(y, m, d, h, min, sec, hour_offset, minute_offset)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.dateStringOfComponents(y, m, d, h, min, sec, hour_offset, minute_offset));
@@ -1935,7 +1946,10 @@ function dateStringOfComponents(y, m, d, h, min, sec, hour_offset, minute_offset
   return r;
 }
 
-/** Gets the viewing rotation for a given page. */
+/** Gets the viewing rotation for a given page.
+@arg {pdf} pdf PDF document
+@arg {number} page page number
+@result {number} page rotation */
 function getPageRotation(pdf, page)
 {
   var r = cpdflib.cpdflib.getPageRotation(pdf, page);
@@ -1943,7 +1957,11 @@ function getPageRotation(pdf, page)
   return r;
 }
 
-/** Returns true, if that page has the given box. E.g "/CropBox". */
+/** Returns true if that page has the given box. E.g "/CropBox".
+@arg {pdf} pdf PDF document
+@arg {number} page page number
+@arg {string} box box name
+@result {boolean} true if box present */
 function hasBox(pdf, page, box)
 {
   var r = cpdflib.cpdflib.hasBox(pdf, page, caml_string_of_jsstring(box));
