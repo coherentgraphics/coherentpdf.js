@@ -1585,7 +1585,9 @@ function annotationsJSON(pdf)
 // CHAPTER 11. Document Information and Metadata
 
 /** Finds out if a document is linearized as quickly as possible without
-loading it. */
+loading it.
+@arg {string} filename file name
+@result {boolean} true if linearized */
 function isLinearized(filename)
 {
   var r = cpdflib.cpdflib.isLinearized(caml_string_of_jsstring(filename));
@@ -1593,7 +1595,9 @@ function isLinearized(filename)
   return r;
 }
 
-/** Returns the minor version number of a document. */
+/** Returns the minor version number of a document.
+@arg {pdf} pdf PDF document
+@return {number} version number */
 function getVersion(pdf)
 {
   var r = cpdflib.cpdflib.getVersion(pdf);
@@ -1601,7 +1605,9 @@ function getVersion(pdf)
   return r;
 }
 
-/** Returns the major version number of a document. */
+/** Returns the major version number of a document.
+@arg {pdf} pdf PDF document
+@return {number} major version number */
 function getMajorVersion(pdf)
 {
   var r = cpdflib.cpdflib.getMajorVersion(pdf);
@@ -1609,7 +1615,9 @@ function getMajorVersion(pdf)
   return r;
 }
 
-/** Returns the title of a document. */
+/** Returns the title of a document.
+@arg {pdf} pdf PDF document
+@return {string} title */
 function getTitle(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getTitle(pdf));
@@ -1617,7 +1625,9 @@ function getTitle(pdf)
   return r;
 }
 
-/** Returns the author of a document. */
+/** Returns the author of a document.
+@arg {pdf} pdf PDF document
+@return {string} author */
 function getAuthor(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getAuthor(pdf));
@@ -1625,7 +1635,9 @@ function getAuthor(pdf)
   return r;
 }
 
-/** Returns the subject of a document. */
+/** Returns the subject of a document.
+@arg {pdf} pdf PDF document
+@return {string} subject */
 function getSubject(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getSubject(pdf));
@@ -1633,7 +1645,9 @@ function getSubject(pdf)
   return r;
 }
 
-/** Returns the keywords of a document. */
+/** Returns the keywords of a document.
+@arg {pdf} pdf PDF document
+@return {string} keywords */
 function getKeywords(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getKeywords(pdf));
@@ -1641,7 +1655,9 @@ function getKeywords(pdf)
   return r;
 }
 
-/** Returns the creator of a document. */
+/** Returns the creator of a document.
+@arg {pdf} pdf PDF document
+@return {string} creator */
 function getCreator(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getCreator(pdf));
@@ -1649,7 +1665,9 @@ function getCreator(pdf)
   return r;
 }
 
-/** Returns the producer of a document. */
+/** Returns the producer of a document.
+@arg {pdf} pdf PDF document
+@return {string} producer */
 function getProducer(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getProducer(pdf));
@@ -1657,7 +1675,9 @@ function getProducer(pdf)
   return r;
 }
 
-/** Returns the creation date of a document. */
+/** Returns the creation date of a document.
+@arg {pdf} pdf PDF document
+@return {string} creation date */
 function getCreationDate(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getCreationDate(pdf));
@@ -1665,7 +1685,9 @@ function getCreationDate(pdf)
   return r;
 }
 
-/** Returns the modification date of a document. */
+/** Returns the modification date of a document.
+@arg {pdf} pdf PDF document
+@return {string} modification date */
 function getModificationDate(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getModificationDate(pdf));
@@ -1673,7 +1695,9 @@ function getModificationDate(pdf)
   return r;
 }
 
-/** Returns the XMP title of a document. */
+/** Returns the XMP title of a document.
+@arg {pdf} pdf PDF document
+@return {string} XMP title */
 function getTitleXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getTitleXMP(pdf));
@@ -1681,7 +1705,9 @@ function getTitleXMP(pdf)
   return r;
 }
 
-/** Returns the XMP author of a document. */
+/** Returns the XMP author of a document.
+@arg {pdf} pdf PDF document
+@return {string} XMP author */
 function getAuthorXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getAuthorXMP(pdf));
@@ -1689,7 +1715,9 @@ function getAuthorXMP(pdf)
   return r;
 }
 
-/** Returns the XMP subject of a document. */
+/** Returns the XMP subject of a document.
+@arg {pdf} pdf PDF document
+@return {string} XMP subject */
 function getSubjectXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getSubjectXMP(pdf));
@@ -1697,7 +1725,9 @@ function getSubjectXMP(pdf)
   return r;
 }
 
-/** Returns the XMP keywords of a document. */
+/** Returns the XMP keywords of a document.
+@arg {pdf} pdf PDF document
+@return {string} XMP keywords */
 function getKeywordsXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getKeywordsXMP(pdf));
@@ -1705,7 +1735,9 @@ function getKeywordsXMP(pdf)
   return r;
 }
 
-/** Returns the XMP creator of a document. */
+/** Returns the XMP creator of a document.
+@arg {pdf} pdf PDF document
+@return {string} XMP creator */
 function getCreatorXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getCreatorXMP(pdf));
@@ -1713,7 +1745,9 @@ function getCreatorXMP(pdf)
   return r;
 }
 
-/** Returns the XMP producer of a document. */
+/** Returns the XMP producer of a document.
+@arg {pdf} pdf PDF document
+@return {string} XMP producer */
 function getProducerXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getProducerXMP(pdf));
@@ -1721,7 +1755,9 @@ function getProducerXMP(pdf)
   return r;
 }
 
-/** Returns the XMP creation date of a document. */
+/** Returns the XMP creation date of a document.
+@arg {pdf} pdf PDF document
+@return {string} XMP creation date */
 function getCreationDateXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getCreationDateXMP(pdf));
@@ -1729,7 +1765,9 @@ function getCreationDateXMP(pdf)
   return r;
 }
 
-/** Returns the XMP modification date of a document. */
+/** Returns the XMP modification date of a document.
+@arg {pdf} pdf PDF document
+@return {string} XMP modification date */
 function getModificationDateXMP(pdf)
 {
   var r = caml_jsstring_of_string(cpdflib.cpdflib.getModificationDateXMP(pdf));
@@ -1737,112 +1775,144 @@ function getModificationDateXMP(pdf)
   return r;
 }
 
-/** Sets the title of a document. */
+/** Sets the title of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s title */
 function setTitle(pdf, s)
 {
   cpdflib.cpdflib.setTitle(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the author of a document. */
+/** Sets the author of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s author */
 function setAuthor(pdf, s)
 {
   cpdflib.cpdflib.setAuthor(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the subject of a document. */
+/** Sets the subject of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s subject */
 function setSubject(pdf, s)
 {
   cpdflib.cpdflib.setSubject(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the keywords of a document. */
+/** Sets the keywords of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s keywords */
 function setKeywords(pdf, s)
 {
   cpdflib.cpdflib.setKeywords(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the creator of a document. */
+/** Sets the creator of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s creator */
 function setCreator(pdf, s)
 {
   cpdflib.cpdflib.setCreator(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the producer of a document. */
+/** Sets the producer of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s producer */
 function setProducer(pdf, s)
 {
   cpdflib.cpdflib.setProducer(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the creation date of a document. */
+/** Sets the creation date of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s creation date */
 function setCreationDate(pdf, s)
 {
   cpdflib.cpdflib.setCreationDate(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the modification date of a document. */
+/** Sets the modification date of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s modification date */
 function setModificationDate(pdf, s)
 {
   cpdflib.cpdflib.setModificationDate(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the XMP title of a document. */
+/** Sets the XMP title of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s XMP title */
 function setTitleXMP(pdf, s)
 {
   cpdflib.cpdflib.setTitleXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the XMP author of a document. */
+/** Sets the XMP author of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s XMP author */
 function setAuthorXMP(pdf, s)
 {
   cpdflib.cpdflib.setAuthorXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the XMP author of a document. */
+/** Sets the XMP author of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s XMP subject */
 function setSubjectXMP(pdf, s)
 {
   cpdflib.cpdflib.setSubjectXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the XMP keywords of a document. */
+/** Sets the XMP keywords of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s XMP keywords */
 function setKeywordsXMP(pdf, s)
 {
   cpdflib.cpdflib.setKeywordsXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the XMP creator of a document. */
+/** Sets the XMP creator of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s XMP creator */
 function setCreatorXMP(pdf, s)
 {
   cpdflib.cpdflib.setCreatorXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the XMP producer of a document. */
+/** Sets the XMP producer of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s XMP producer */
 function setProducerXMP(pdf, s)
 {
   cpdflib.cpdflib.setProducerXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the XMP creation date of a document. */
+/** Sets the XMP creation date of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s XMP creation date */
 function setCreationDateXMP(pdf, s)
 {
   cpdflib.cpdflib.setCreationDateXMP(pdf, caml_string_of_jsstring(s));
   checkError();
 }
 
-/** Sets the XMP modification date of a document. */
+/** Sets the XMP modification date of a document.
+@arg {pdf} pdf PDF document
+@arg {string} s XMP modification date */
 function setModificationDateXMP(pdf, s)
 {
   cpdflib.cpdflib.setModificationDateXMP(pdf, caml_string_of_jsstring(s));
