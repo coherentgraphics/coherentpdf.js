@@ -1,12 +1,7 @@
-cpdf.js
-=======
-
-JavaScript PDF library built by compiling CamlPDF+CPDF+cpdflib with
-`js_of_ocaml`.
-
+A JavaScript library for editing PDF files.
 
 Use
-===
+---
 
 For development server-side with node: cpdf.js / cpdflib.js
 
@@ -23,51 +18,56 @@ Load with <script src="cpdf.browser.js"></script> or similar.
 
 
 Documentation
-=============
+-------------
 
-1. cpdfjsmanual.pdf in this directory contains the API documentation
-   interleaved with the cpdf.js API. This is the primary source of
-   documentation. The command line tools can be found at:
+1. cpdfjsmanual.pdf contains the API documentation interleaved with the cpdf.js
+   API. This is the primary source of documentation:
+
+   https://coherentpdf.com/cpdfjsmanual.pdf
+
+   The command line tools can be found at:
 
    https://community.coherentpdf.com/
 
-2. API documentation online at
+2. API documentation online at https://www.coherentpdf.com/jscpdf/index.html
 
-3. Or read cpdfsource.js manually
+
+Concurrency
+-----------
+
+cpdf.js is synchronous and non-re-entrant.
+
+
+Data types
+----------
+
+Arguments are integers, floating point numbers, strings, or arrays of type
+UInt8Array. Page ranges are represented by arrays of numbers.
+
+
+Memory Management
+-----------------
+
+A PDF n must be explicitly deallocated with deletePdf(n).
+
+
+Errors
+------
+
+Any function may raise an exception, containing a string describing the problem. 
 
 
 Examples
-========
+--------
 
 Server-side: cpdflibtest.js tests every function in cpdf.js.
 
 Client-side: index.html is an interactive browser example.
 
 
-Building
-========
-
-See ./build to build (requires other repositories to be downloaded). Then "make
-distrib" to build. Run ./run to test.
-
-
-Expected test output differences compared with other cpdflib implementations
-============================================================================
-
-1. 03rotatecontents.pdf
-   08stampee\_after.pdf
-
-   Last digit of floating point number differs by one. Difference in libc/js
-   float rounding.
-
-2. 01tofileext.pdf
-   05squeezedinmemory.pdf
-   17draft.pdf
-
-   Differing zlib compression libraries.
-
-
 Contact
-=======
+-------
 
-contact at coherentgraphics.co.uk
+https://www.coherentpdf.com/
+
+For commercial licenses, email contact@coherentgraphics.co.uk
