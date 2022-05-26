@@ -19,11 +19,9 @@ console.log("---cpdf_fromFileLazy()");
 var pdf2 = cpdf.fromFileLazy("testinputs/cpdflibmanual.pdf", "");
 console.log("---cpdf_toMemory()");
 var mempdf = cpdf.toMemory(pdf, false, false);
-
-console.log("---cpdf_pagesFast()");
-var pagesfastmem = cpdf.pagesFastMemory("", mempdf);
-console.log("Pages = %i", pagesfastmem);
-
+//console.log("---cpdf_pagesFastMemory()");
+//var pagesfastmem = cpdf.pagesFastMemory("", mempdf);
+//console.log("Pages = %i", pagesfastmem);
 console.log("---cpdf_fromMemory()");
 var frommem = cpdf.fromMemory(mempdf, "");
 cpdf.toFile(frommem, "testoutputs/01fromMemory.pdf", false, false);
@@ -95,6 +93,10 @@ console.log("---cpdf_toFile()");
 cpdf.toFile(pdf10, "testoutputs/01tofile.pdf", false, false);
 console.log("---cpdf_toFileExt()");
 cpdf.toFileExt(pdf10, "testoutputs/01tofileext.pdf", false, true, true, true, true);
+//console.log("---cpdf_toMemoryExt()");
+//var extpdf = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
+//var memext = cpdf.toMemoryExt(extpdf, false, true, true, true, true);
+//console.log("length of memext = %i\n", memext.length);
 console.log("---cpdf_isEncrypted()");
 var isenc = cpdf.isEncrypted(pdf10);
 console.log("isencrypted:%i", isenc ? 1 : 0);
@@ -108,6 +110,16 @@ console.log("---cpdf_toFileEncrypted()");
 cpdf.toFileEncrypted(pdf400, cpdf.pdf40bit, permissions, "owner", "user", false, false, "testoutputs/01encrypted.pdf");
 console.log("---cpdf_toFileEncryptedExt()");
 cpdf.toFileEncryptedExt(pdf401, cpdf.pdf40bit, permissions, "owner", "user", false, false, true, true, true, "testoutputs/01encryptedext.pdf");
+
+//var pdf400m = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
+//var pdf401m = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
+//console.log("---cpdf_toMemoryEncrypted()");
+//var pdf400m2 = cpdf.toMemoryEncrypted(pdf400, cpdf.pdf40bit, permissions, "owner", "user", false, false);
+//console.log("length of pdf400m2 = %i\n", pdf400m2.length);
+//console.log("---cpdf_toMemoryEncryptedExt()");
+//var pdf401m2 = cpdf.toMemoryEncryptedExt(pdf401, cpdf.pdf40bit, permissions, "owner", "user", false, false, true, true, true);
+//console.log("length of pdf401m2 = %i\n", pdf401m2.length);
+
 console.log("---cpdf_hasPermission()");
 var pdfenc = cpdf.fromFile("testoutputs/01encrypted.pdf", "user");
 var hasnoedit = cpdf.hasPermission(pdfenc, cpdf.noEdit);

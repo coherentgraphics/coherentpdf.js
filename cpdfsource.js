@@ -546,7 +546,7 @@ after this call, and should be not be used again.
 @result {Uint8Array} PDF file as a byte array */
 function toMemoryExt(pdf, linearize, make_id, preserve_objstm, create_objstm, compress_objstm)
 {
-  var r = cpdflib.cpdflib.toFileMemoryExt(pdf, linearize, make_id, preserve_objstm, create_objstm, compress_objstm);
+  var r = cpdflib.cpdflib.toMemoryExt(pdf, linearize, make_id, preserve_objstm, create_objstm, compress_objstm);
   checkError();
   return r.data;
 }
