@@ -476,6 +476,19 @@ function pagesFast(password, filename)
   return r;
 }
 
+/** Returns the number of pages in a given PDF, with given user password. It
+tries to do this as fast as possible, without loading the whole file.
+@arg {string} password user password
+@arg {Uint8Array} data PDF file as a byte array
+@return {number} number of pages */
+function pagesFastMemory(password, data)
+{
+  var bigarray = caml_ba_from_typed_array(data);
+  var r = cpdflib.cpdflib.pagesFast(caml_string_of_jsstring(password), bigarray);
+  checkError();
+  return r;
+}
+
 /** Writes the file to a given filename. If linearize is true, it will be
 linearized if a linearizer is available. If make_id is true, it will be
 given a new ID.
@@ -511,10 +524,29 @@ function toFileExt(pdf, filename, linearize, make_id, preserve_objstm, create_ob
 @arg {pdf} pdf PDF document
 @arg {boolean} linearize linearize if a linearizer is available
 @arg {boolean} make_id make a new /ID
-@return {Uint8Array} PDF document as an array of bytes */
+@result {Uint8Array} PDF document as an array of bytes */
 function toMemory(pdf, linearize, make_id)
 {
   var r = cpdflib.cpdflib.toMemory(pdf, linearize, make_id);
+  checkError();
+  return r.data;
+}
+
+/** Writes the file to memory. If make_id is true, it will be given
+a new ID.  If preserve_objstm is true, existing object streams will be
+preserved. If generate_objstm is true, object streams will be generated even if
+not originally present. If compress_objstm is true, object streams will be
+compressed (what we usually want). WARNING: the pdf argument will be invalid
+after this call, and should be not be used again.
+@arg {pdf} pdf PDF document
+@arg {boolean} linearize linearize if a linearizer is available
+@arg {boolean} preserve_objstm preserve existing object streams
+@arg {boolean} create_objstm create new object streams
+@arg {boolean} compress_objstm compress new object streams
+@result {Uint8Array} PDF file as a byte array */
+function toMemoryExt(pdf, linearize, make_id, preserve_objstm, create_objstm, compress_objstm)
+{
+  var r = cpdflib.cpdflib.toFileMemoryExt(pdf, linearize, make_id, preserve_objstm, create_objstm, compress_objstm);
   checkError();
   return r.data;
 }
@@ -615,6 +647,24 @@ function toFileEncrypted(pdf, encryption_method, permissions, ownerpw, userpw, l
   checkError();
 }
 
+/** Writes to memory as encrypted.
+@arg {pdf} pdf PDF document
+@arg {"encryption method"} encryption_method encryption method
+@arg {"permission array"} array of permissions
+@arg {string} ownerpw owner password
+@arg {string} userpw user password
+@arg {boolean} linearize linearize if a linearizer is available
+@arg {boolean} makeid make a new /ID
+@return {Uint8Array} PDF file as a byte array */
+function toMemoryEncrypted(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid, filename)
+{
+  var ps = [0].concat(permissions);
+  var r = cpdflib.cpdflib.toMemoryEncrypted(pdf, encryption_method, ps,
+                               caml_string_of_jsstring(ownerpw), caml_string_of_jsstring(userpw), linearize, makeid);
+  checkError();
+  return r.data;
+}
+
 /** Writes a file as encrypted with extra parameters. WARNING: the pdf argument
 will be invalid after this call, and should not be used again.
 @arg {pdf} pdf PDF document
@@ -638,6 +688,28 @@ function toFileEncryptedExt(pdf, encryption_method, permissions, ownerpw, userpw
   checkError();
 }
 
+/** Writes a file as encrypted with extra parameters. WARNING: the pdf argument
+will be invalid after this call, and should not be used again.
+@arg {pdf} pdf PDF document
+@arg {"encryption method"} encryption_method encryption method
+@arg {"permission array"} array of permissions
+@arg {string} ownerpw owner password
+@arg {string} userpw user password
+@arg {boolean} linearize linearize if a linearizer is available
+@arg {boolean} makeid make a new /ID
+@arg {boolean} preserve_objstm preserve existing object streams
+@arg {boolean} generate_objstm generate new object streams
+@arg {boolean} compress_objstm compress object streams
+@return {Uint8Array} PDF file as a byte array */
+function toFileEncryptedExt(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid, preserve_objstm, generate_objstm, compress_objstm)
+{
+  var ps = [0].concat(permissions);
+  var r = cpdflib.cpdflib.toMemoryEncryptedExt(pdf, encryption_method, ps,
+                                  caml_string_of_jsstring(ownerpw), caml_string_of_jsstring(userpw),
+                                  linearize, makeid, preserve_objstm, generate_objstm, compress_objstm);
+  checkError();
+  return r.data;
+}
 /** Returns true if the given permission (restriction) is present.
 @arg {pdf} pdf PDF document
 @arg {permission} permission permission
