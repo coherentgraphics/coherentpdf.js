@@ -484,7 +484,7 @@ tries to do this as fast as possible, without loading the whole file.
 function pagesFastMemory(password, data)
 {
   var bigarray = caml_ba_from_typed_array(data);
-  var r = cpdflib.cpdflib.pagesFast(caml_string_of_jsstring(password), bigarray);
+  var r = cpdflib.cpdflib.pagesFastMemory(caml_string_of_jsstring(password), bigarray);
   checkError();
   return r;
 }
@@ -701,7 +701,7 @@ will be invalid after this call, and should not be used again.
 @arg {boolean} generate_objstm generate new object streams
 @arg {boolean} compress_objstm compress object streams
 @return {Uint8Array} PDF file as a byte array */
-function toFileEncryptedExt(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid, preserve_objstm, generate_objstm, compress_objstm)
+function toMemoryEncryptedExt(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid, preserve_objstm, generate_objstm, compress_objstm)
 {
   var ps = [0].concat(permissions);
   var r = cpdflib.cpdflib.toMemoryEncryptedExt(pdf, encryption_method, ps,
@@ -3404,15 +3404,19 @@ module.exports =
   rangeGet : rangeGet,
   fromFile : fromFile,
   fromFileLazy : fromFileLazy,
-  toMemory : toMemory,
   fromMemory : fromMemory,
   fromMemoryLazy : fromMemoryLazy,
+  toMemory : toMemory,
+  toMemoryExt : toMemoryExt,
+  toMemoryEncrypted : toMemoryEncrypted,
+  toMemoryEncryptedExt : toMemoryEncryptedExt,
   toFile : toFile,
   toFileExt : toFileExt,
   toFileEncrypted : toFileEncrypted,
   toFileEncryptedExt : toFileEncryptedExt,
   pages : pages,
   pagesFast : pagesFast,
+  pagesFastMemory : pagesFastMemory,
   isEncrypted : isEncrypted,
   decryptPdf : decryptPdf,
   decryptPdfOwner : decryptPdfOwner,

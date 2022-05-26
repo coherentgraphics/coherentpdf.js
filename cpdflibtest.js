@@ -19,6 +19,11 @@ console.log("---cpdf_fromFileLazy()");
 var pdf2 = cpdf.fromFileLazy("testinputs/cpdflibmanual.pdf", "");
 console.log("---cpdf_toMemory()");
 var mempdf = cpdf.toMemory(pdf, false, false);
+
+console.log("---cpdf_pagesFast()");
+var pagesfastmem = cpdf.pagesFastMemory("", mempdf);
+console.log("Pages = %i", pagesfastmem);
+
 console.log("---cpdf_fromMemory()");
 var frommem = cpdf.fromMemory(mempdf, "");
 cpdf.toFile(frommem, "testoutputs/01fromMemory.pdf", false, false);
