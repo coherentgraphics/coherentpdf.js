@@ -269,7 +269,7 @@ function validatePagespec(pagespec)
 {
   var r = cpdflib.cpdflib.validatePagespec(caml_string_of_jsstring(pagespec));
   checkError();
-  return r;
+  return !!r;
 }
 
 /** Builds a page specification from a page range. For example, the range
@@ -451,7 +451,7 @@ function isInRange(r, page)
   var ret = cpdflib.cpdflib.isInRange(rn, page);
   deleterange(rn);
   checkError();
-  return ret;
+  return !!ret;
 }
 
 /** Returns the number of pages in a PDF.
@@ -558,7 +558,7 @@ function isEncrypted(pdf)
 {
   var r = cpdflib.cpdflib.isEncrypted(pdf);
   checkError();
-  return r;
+  return !!r;
 }
 
 /** Attempts to decrypt a PDF using the given user password. An exception is
@@ -718,7 +718,7 @@ function hasPermission(pdf, permission)
 {
   var r = cpdflib.cpdflib.hasPermission(pdf, permission);
   checkError();
-  return r;
+  return !!r;
 }
 
 /** Returns the encryption method currently in use on a document.
@@ -1236,7 +1236,7 @@ function getBookmarkOpenStatus(n)
 {
   var r = cpdflib.cpdflib.getBookmarkOpenStatus(n);
   checkError();
-  return r;
+  return !!r;
 }
 
 /** Ends the bookmark retrieval process, cleaning up. */
