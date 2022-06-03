@@ -3307,6 +3307,7 @@ module.exports =
   right : right,
   diagonal : diagonal,
   reversediagonal : reversediagonal,
+  Position : Position,
   timesRoman : timesRoman,
   timesBold : timesBold,
   timesItalic : timesItalic,
