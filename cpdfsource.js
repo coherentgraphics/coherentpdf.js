@@ -2848,8 +2848,8 @@ up.
 @ {pdf} pdf PDF document */
 function startGetFontInfo(pdf)
 {
-  checkError();
   cpdflib.cpdflib.startGetFontInfo(pdf);
+  checkError();
 }
 
 /** Retrieves font information. First, call startGetFontInfo(pdf). Now call
