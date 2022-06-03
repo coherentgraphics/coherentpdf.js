@@ -2038,7 +2038,7 @@ function hasBox(pdf, page, box)
 {
   var r = cpdflib.cpdflib.hasBox(pdf, page, caml_string_of_jsstring(box));
   checkError();
-  return r;
+  return !!r;
 }
 
 /** These functions get a box given the document, page number, min x, max x,
