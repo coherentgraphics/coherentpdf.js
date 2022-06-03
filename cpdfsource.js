@@ -2434,7 +2434,7 @@ function removePageLabels(pdf)
 @result {string} page label string */
 function getPageLabelStringForPage(pdf, pagenumber)
 {
-  var r = cpdflib.cpdflib.getPageLabelStringForPage(pdf, pagenumber);
+  var r = caml_jsstring_of_string(cpdflib.cpdflib.getPageLabelStringForPage(pdf, pagenumber));
   checkError();
   return r;
 }
