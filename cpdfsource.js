@@ -1667,6 +1667,18 @@ function isLinearized(filename)
   return r;
 }
 
+/** Finds out if a document in memory is linearized as quickly as possible without
+loading it.
+@arg {Uint8Array} PDF file as a byte array
+@result {boolean} true if linearized */
+function isLinearizedMemory(data)
+{
+  var bigarray = caml_ba_from_typed_array(data);
+  var r = cpdflib.cpdflib.isLinearizedMemory(bigarray);
+  checkError();
+  return r;
+}
+
 /** Returns the minor version number of a document.
 @arg {pdf} pdf PDF document
 @return {number} version number */
@@ -3104,6 +3116,22 @@ function textToPDF(w, h, font, fontsize, filename)
   return r;
 }
 
+/** Typesets a UTF8 text file ragged right on a page of size w * h in points
+in the given font and font size.
+@arg {number} w page width
+@arg {number} h page height
+@arg {font} font font
+@arg {number} fontsize font size
+@arg {Uint8Array} data text
+@result {pdf} PDF document */
+function textToPDFMemory(w, h, font, fontsize, data)
+{
+  var bigarray = caml_ba_from_typed_array(data);
+  var r = cpdflib.cpdflib.textToPDFMemory(w, h, font, fontsize, bigarray);
+  checkError();
+  return r;
+}
+
 /** Typesets a UTF8 text file ragged right on a page of the given size in the
 given font and font size.
 @arg {"paper size"} papersize paper size
@@ -3114,6 +3142,21 @@ given font and font size.
 function textToPDFPaper(papersize, font, fontsize, filename)
 {
   var r = cpdflib.cpdflib.textToPDFPaper(papersize, font, fontsize, caml_string_of_jsstring(filename));
+  checkError();
+  return r;
+}
+
+/** Typesets a UTF8 text file ragged right on a page of the given size in the
+given font and font size.
+@arg {"paper size"} papersize paper size
+@arg {font} font font
+@arg {number} fontsize font size
+@arg {Uint8Array} data text
+@result {pdf} PDF document */
+function textToPDFPaperMemory(papersize, font, fontsize, data)
+{
+  var bigarray = caml_ba_from_typed_array(data);
+  var r = cpdflib.cpdflib.textToPDFPaperMemory(papersize, font, fontsize, bigarray);
   checkError();
   return r;
 }
