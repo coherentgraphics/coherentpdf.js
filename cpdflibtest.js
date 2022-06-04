@@ -221,7 +221,8 @@ console.log("---cpdf_scaleToFitPaper()");
 cpdf.scaleToFitPaper(pagespdf3, r3, cpdf.a4portrait, 0.8);
 cpdf.toFile(pagespdf3, "testoutputs/03scaletofitpaper.pdf", false, false);
 console.log("---cpdf_scaleContents()");
-cpdf.scaleContents(pagespdf4, r4, {anchor : cpdf.topLeft, p1 : 20.0, p2 : 20.0}, 2.0);
+var psc = new cpdf.Position(cpdf.topleft, 20.0, 20.0);
+cpdf.scaleContents(pagespdf4, r4, psc, 2.0);
 cpdf.toFile(pagespdf4, "testoutputs/03scalecontents.pdf", false, false);
 console.log("---cpdf_shiftContents()");
 cpdf.shiftContents(pagespdf5, r5, 1.5, 1.25);
@@ -357,7 +358,7 @@ cpdf.addText(false,
      textfile,
      all,
      "Some Text~~~~~~~~~~!",
-     {anchor : cpdf.topLeft, p1 : 20.0, p2 : 20.0},
+     (new cpdf.Position(cpdf.topLeft, 20.0, 20.0)),
      1.0,
      1,
      cpdf.timesRoman,
@@ -376,7 +377,7 @@ cpdf.addText(false,
      1.0,
      false);
 console.log("---cpdf_addTextSimple()");
-cpdf.addTextSimple(textfile, all, "The text!", {anchor : cpdf.topLeft, p1 : 20.0, p2 : 20.0}, cpdf.timesRoman, 50.0);
+cpdf.addTextSimple(textfile, all, "The text!", (new cpdf.Position(cpdf.topLeft, 20.0, 20.0)), cpdf.timesRoman, 50.0);
 cpdf.toFile(textfile, "testoutputs/08added_text.pdf", false, false);
 console.log("---cpdf_removeText()");
 cpdf.removeText(textfile, all);
@@ -391,7 +392,7 @@ cpdf.stampOn(stamp, stampee, stamp_range);
 console.log("---cpdf_stampUnder()");
 cpdf.stampUnder(stamp, stampee, stamp_range);
 console.log("---cpdf_stampExtended()");
-cpdf.stampExtended(stamp, stampee, stamp_range, true, true, {anchor : cpdf.topLeft, p1 : 20.0, p2 : 20.0}, true);
+cpdf.stampExtended(stamp, stampee, stamp_range, true, true, (new cpdf.Position(cpdf.topLeft, 20.0, 20.0)), true);
 cpdf.toFile(stamp, "testoutputs/08stamp_after.pdf", false, false);
 cpdf.toFile(stampee, "testoutputs/08stampee_after.pdf", false, false);
 var c1 = cpdf.fromFile("testinputs/logo.pdf", "");
