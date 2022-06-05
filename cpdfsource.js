@@ -3323,7 +3323,7 @@ function removeClipping(pdf, range)
 }
 
 /* Returns a JSON array containing any and all values associated with the
-given key, and fills in its length.
+given key.
 @arg {pdf} pdf PDF docment
 @arg {string} key key
 @return {Uint8Array} results as an array of bytes */
