@@ -1664,7 +1664,7 @@ function isLinearized(filename)
 {
   var r = cpdflib.cpdflib.isLinearized(caml_string_of_jsstring(filename));
   checkError();
-  return r;
+  return !!r;
 }
 
 /** Finds out if a document in memory is linearized as quickly as possible without
@@ -1676,7 +1676,7 @@ function isLinearizedMemory(data)
   var bigarray = caml_ba_from_typed_array(data);
   var r = cpdflib.cpdflib.isLinearizedMemory(bigarray);
   checkError();
-  return r;
+  return !!r;
 }
 
 /** Returns the minor version number of a document.
@@ -3560,6 +3560,7 @@ module.exports =
   getVersion : getVersion,
   getMajorVersion : getMajorVersion,
   isLinearized : isLinearized,
+  isLinearizedMemory : isLinearizedMemory,
   getTitle : getTitle,
   getAuthor : getAuthor,
   getSubject : getSubject,
@@ -3678,6 +3679,8 @@ module.exports =
   blankDocumentPaper : blankDocumentPaper,
   textToPDF : textToPDF,
   textToPDFPaper : textToPDFPaper,
+  textToPDFMemory : textToPDFMemory,
+  textToPDFPaperMemory : textToPDFPaperMemory,
 
   //CHAPTER 18. Miscellaneous
   draft : draft,

@@ -155,6 +155,7 @@ let _ =
        method getVersion = Cpdflib.getVersion
        method getMajorVersion = Cpdflib.getMajorVersion
        method isLinearized = Cpdflib.isLinearized
+       method isLinearizedMemory = Cpdflib.isLinearizedMemory
        method getTitle = Cpdflib.getTitle
        method getAuthor = Cpdflib.getAuthor
        method getSubject = Cpdflib.getSubject
@@ -273,6 +274,8 @@ let _ =
        method blankDocumentPaper = Cpdflib.blankDocumentPaper
        method textToPDF = Cpdflib.textToPDF
        method textToPDFPaper = Cpdflib.textToPDFPaper
+       method textToPDFMemory = Cpdflib.textToPDFMemory
+       method textToPDFPaperMemory = Cpdflib.textToPDFPaperMemory
 
        (* CHAPTER 18. Miscellaneous *)
        method draft = Cpdflib.draft
