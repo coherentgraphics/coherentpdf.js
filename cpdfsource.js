@@ -656,7 +656,7 @@ function toFileEncrypted(pdf, encryption_method, permissions, ownerpw, userpw, l
 @arg {boolean} linearize linearize if a linearizer is available
 @arg {boolean} makeid make a new /ID
 @return {Uint8Array} PDF file as a byte array */
-function toMemoryEncrypted(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid, filename)
+function toMemoryEncrypted(pdf, encryption_method, permissions, ownerpw, userpw, linearize, makeid)
 {
   var ps = [0].concat(permissions);
   var r = cpdflib.cpdflib.toMemoryEncrypted(pdf, encryption_method, ps,
