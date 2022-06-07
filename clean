@@ -1,4 +1,4 @@
-rm *.h *.c pdf*.ml pdf*.mli cpdf*.ml cpdf*.mli *.cmi *.cmo *.br *.gz foo.diff
+rm *.h *.c tmp.ml pdf*.ml pdf*.mli cpdf*.ml cpdf*.mli *.cmi *.cmo *.br *.gz foo.diff
 rm -rf testoutputs/* manual
 rm jsdoc.js cpdf.*.js cpdflib.*.js
 make clean
