@@ -42,8 +42,6 @@ distrib:
 	uglifyjs cpdflib.min.js --compress --mangle \
 	--output dist/cpdflib.min.js
 	uglifyjs cpdf.js --compress --mangle --output dist/cpdf.min.js
-	cp dist/cpdflib.min.js cpdflib.js
-	cp dist/cpdf.min.js cpdf.js
 	browserify cpdflib.js cpdf.js -s cpdf -o cpdf.browser.js
 	uglifyjs cpdf.browser.js --compress --mangle --output cpdf.browser.min.js
 	cp cpdf.browser.min.js cpdf.browser.js dist/
@@ -51,4 +49,4 @@ distrib:
 clean ::
 	rm -rf doc foo foo2 out.pdf out2.pdf foo.pdf decomp.pdf *.cmt *.cmti \
 	*.json test/*.pdf debug/*.pdf *.ps *.aux *.idx *.log *.out *.toc \
-	*.cut cpdflib.js cpdf.js cpdf-browser.js dist/*.js*
+	*.cut cpdflib.js cpdf.js all.js cpdf-browser.js dist/*.js*
