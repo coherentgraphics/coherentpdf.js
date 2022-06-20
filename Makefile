@@ -32,7 +32,7 @@ all : byte-code js
 
 js :
 	js_of_ocaml --extern-fs -I . --file=hello.pdf -q --pretty --debuginfo \
-	--disable inline --source-map-inline sjcl.js nodestubs.js cpdfzlib.js cpdfcrypt.js cpdf.byte
+	--disable inline --source-map-inline nodestubs.js cpdfzlib.js cpdfcrypt.js cpdf.byte
 
 distrib:
 	cp cpdflib.js dist/
