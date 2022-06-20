@@ -3295,6 +3295,7 @@ function removeDictEntrySearch(pdf, key, searchterm)
 @arg {string} newval new value */
 function replaceDictEntry(pdf, key, newval)
 {
+  console.log(caml_string_of_jsstring(key));
   cpdflib.cpdflib.replaceDictEntry(pdf, caml_string_of_jsstring(key), caml_string_of_jsstring(newval));
   checkError();
 }
