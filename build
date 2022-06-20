@@ -6,7 +6,8 @@ cp ../cpdf-source/*.ml .
 cp ../cpdf-source/*.mli .
 cp ../cpdflib-source/*.ml .
 cp ../cpdflib-source/*.mli .
-cat bigarray.js mlBytes.js fail.js cpdfsource.js > cpdf.js
+mv cpdflib.ml cpdf.ml
+mv cpdflib.mli cpdf.mli
 awk 'NR!~/^(132|144)$/' cpdfstrftime.ml > tmp.ml
 cp tmp.ml cpdfstrftime.ml
 make

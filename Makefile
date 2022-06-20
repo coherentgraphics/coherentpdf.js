@@ -10,7 +10,7 @@ PDFMODS = pdfutil pdfio pdftransform pdfunits pdfpaper pdfcryptprimitives \
   cpdfbookmarks cpdfpage cpdfaddtext cpdfimage cpdffont cpdftype \
   cpdftexttopdf cpdftoc cpdfpad cpdfocg cpdfsqueeze cpdfdraft cpdfspot \
   cpdfpagelabels cpdfcreate cpdfannot cpdfxobject cpdfimpose cpdftweak \
-  cpdflib
+  cpdf
 
 SOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
 	  $(foreach x,$(PDFMODS),$(x).ml $(x).mli) exports.ml
@@ -24,7 +24,7 @@ PACKS = unix js_of_ocaml,js_of_ocaml-ppx
 OCAMLBCFLAGS = -g
 OCAMLLDFLAGS = -g
 
-RESULT = cpdflib.byte
+RESULT = cpdf.byte
 
 all : byte-code js
 
@@ -32,7 +32,7 @@ all : byte-code js
 
 js :
 	js_of_ocaml --extern-fs -I . --file=hello.pdf -q --pretty --debuginfo \
-	--disable inline --source-map-inline sjcl.js nodestubs.js cpdfzlib.js cpdfcrypt.js cpdflib.byte
+	--disable inline --source-map-inline nodestubs.js cpdfzlib.js cpdfcrypt.js cpdf.byte
 
 distrib:
 	cp cpdflib.js dist/
