@@ -35,14 +35,12 @@ js :
 	--disable inline --source-map-inline nodestubs.js cpdfzlib.js cpdfcrypt.js cpdf.byte
 
 distrib:
-	cp cpdflib.js dist/
 	cp cpdf.js dist/
-	js_of_ocaml -o cpdflib.min.js -q nodestubs.js \
-	cpdfzlib.js cpdfcrypt.js cpdflib.byte
-	uglifyjs cpdflib.min.js --compress --mangle \
-	--output dist/cpdflib.min.js
-	uglifyjs cpdf.js --compress --mangle --output dist/cpdf.min.js
-	browserify cpdflib.js cpdf.js -s cpdf -o cpdf.browser.js
+	js_of_ocaml -o cpdf.min.js -q nodestubs.js \
+	cpdfzlib.js cpdfcrypt.js cpdf.byte
+	uglifyjs cpdf.min.js --compress --mangle \
+	--output dist/cpdf.min.js
+	browserify cpdf.js -s cpdf -o cpdf.browser.js
 	uglifyjs cpdf.browser.js --compress --mangle --output cpdf.browser.min.js
 	cp cpdf.browser.min.js cpdf.browser.js dist/
 

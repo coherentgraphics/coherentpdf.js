@@ -44,7 +44,8 @@ let _ =
        method difference = Cpdf.difference
        method removeDuplicates = Cpdf.removeDuplicates
        method isInRange = Cpdf.isInRange
-       method fromFile = Cpdf.fromFile
+       method fromFile filename userpw =
+         Cpdf.fromFile (Js.to_string filename) (Js.to_string userpw)
        method fromFileLazy = Cpdf.fromFileLazy
        method fromMemory = Cpdf.fromMemory
        method fromMemoryLazy = Cpdf.fromMemoryLazy
