@@ -1,7 +1,7 @@
 open Js_of_ocaml
 
 let _ =
-  Js.export "cpdf"
+  Js.export_all
     (object%js
        (* CHAPTER 0. Preliminaries *)
        method getLastError = Cpdf.getLastError ()
