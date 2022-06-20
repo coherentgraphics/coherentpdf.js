@@ -1,24 +1,28 @@
 open Js_of_ocaml
 
+(* FIXME replicate functionality of checkerror *)
+let checkerror () = ()
+
 let _ =
   Js.export_all
     (object%js
        (* CHAPTER 0. Preliminaries *)
        method getLastError = Cpdf.getLastError ()
-       method getLastErrorString = Cpdf.getLastErrorString ()
+       method getLastErrorString = Js.string (Cpdf.getLastErrorString ())
        method clearError = Cpdf.clearError ()
        (* CHAPTER 1. Basics *)
        method setFast = Cpdf.setFast ()
        method setSlow = Cpdf.setSlow ()
-       val version = Cpdf.version
+       val version = Js.string Cpdf.version
        method onexit = Cpdf.onexit ()
        method startEnumeratePDFs = Cpdf.startEnumeratePDFs ()
        method enumeratePDFsKey = Cpdf.enumeratePDFsKey
-       method enumeratePDFsInfo = Cpdf.enumeratePDFsInfo
+       method enumeratePDFsInfo a = Js.string (Cpdf.enumeratePDFsInfo a)
        method endEnumeratePDFs = Cpdf.endEnumeratePDFs ()
        method deletePdf = Cpdf.deletePdf
        method deleterange = Cpdf.deleterange
-       method parsePagespec = Cpdf.parsePagespec
+       method parsePagespec pdf pagespec = Cpdf.parsePagespec pdf (Js.to_string pagespec)
+
        method stringOfPagespec = Cpdf.stringOfPagespec
        method validatePagespec = Cpdf.validatePagespec
        method ptOfCm = Cpdf.ptOfCm
