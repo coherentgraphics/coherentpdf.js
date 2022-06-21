@@ -13,7 +13,7 @@ let _ =
        (* CHAPTER 1. Basics *)
        method setFast = Cpdf.setFast ()
        method setSlow = Cpdf.setSlow ()
-       val version = Js.string Cpdf.version
+       method version = (fun () -> Js.string Cpdf.version) ()
        method onexit = Cpdf.onexit ()
        method startEnumeratePDFs = Cpdf.startEnumeratePDFs ()
        method enumeratePDFsKey = Cpdf.enumeratePDFsKey
@@ -22,9 +22,8 @@ let _ =
        method deletePdf = Cpdf.deletePdf
        method deleterange = Cpdf.deleterange
        method parsePagespec pdf pagespec = Cpdf.parsePagespec pdf (Js.to_string pagespec)
-
-       method stringOfPagespec = Cpdf.stringOfPagespec
-       method validatePagespec = Cpdf.validatePagespec
+       method stringOfPagespec pdf r = Js.string (Cpdf.stringOfPagespec pdf r)
+       method validatePagespec pagespec = Cpdf.validatePagespec (Js.to_string pagespec)
        method ptOfCm = Cpdf.ptOfCm
        method ptOfMm = Cpdf.ptOfMm
        method ptOfIn = Cpdf.ptOfIn
@@ -46,24 +45,31 @@ let _ =
        method isInRange = Cpdf.isInRange
        method fromFile filename userpw =
          Cpdf.fromFile (Js.to_string filename) (Js.to_string userpw)
-       method fromFileLazy = Cpdf.fromFileLazy
-       method fromMemory = Cpdf.fromMemory
-       method fromMemoryLazy = Cpdf.fromMemoryLazy
-       method toFile = Cpdf.toFile
-       method toFileExt = Cpdf.toFileExt
+       method fromFileLazy filename userpw =
+         Cpdf.fromFileLazy (Js.to_string filename) (Js.to_string userpw)
+
+       method fromMemory = Cpdf.fromMemory (* data *)
+       method fromMemoryLazy = Cpdf.fromMemoryLazy (* data *)
+       method toFile pdf filename linearize make_id =
+         Cpdf.toFile pdf (Js.to_string filename) linearize make_id
+       method toFileExt pdf filename linearize make_id preserve_objstm create_objstm compress_objstm =
+         Cpdf.toFileExt pdf (Js.to_string filename) linearize make_id preserve_objstm create_objstm compress_objstm
        method toFileEncrypted = Cpdf.toFileEncrypted
        method toFileEncryptedExt = Cpdf.toFileEncryptedExt
-       method toMemory = Cpdf.toFileMemory
-       method toMemoryExt = Cpdf.toFileMemoryExt
-       method toMemoryEncrypted = Cpdf.toFileMemoryEncrypted
-       method toMemoryEncryptedExt = Cpdf.toFileMemoryEncryptedExt
+       method toMemory = Cpdf.toFileMemory (* data *)
+       method toMemoryExt = Cpdf.toFileMemoryExt (* data *)
+       method toMemoryEncrypted = Cpdf.toFileMemoryEncrypted (* data *)
+       method toMemoryEncryptedExt = Cpdf.toFileMemoryEncryptedExt (* data *)
        method pages = Cpdf.pages
-       method pagesFast = Cpdf.pagesFast
-       method pagesFastMemory = Cpdf.pagesFastMemory
+       method pagesFast password filename =
+         Cpdf.pagesFast (Js.to_string password) (Js.to_string filename)
+       method pagesFastMemory = Cpdf.pagesFastMemory (* data *)
        method all = Cpdf.all
        method isEncrypted = Cpdf.isEncrypted
-       method decryptPdf = Cpdf.decryptPdf
-       method decryptPdfOwner = Cpdf.decryptPdfOwner
+       method decryptPdf pdf userpw =
+         Cpdf.decryptPdf pdf (Js.to_string userpw)
+       method decryptPdfOwner pdf ownerpw =
+         Cpdf.decryptPdfOwner pdf (Js.to_string ownerpw)
        method hasPermission = Cpdf.hasPermission
        method encryptionKind = Cpdf.encryptionKind
 
