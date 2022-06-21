@@ -3,6 +3,25 @@ open Js_of_ocaml
 (* FIXME replicate functionality of checkerror *)
 let checkerror () = ()
 
+(* Convert Cpdflib range to Javascript array of page numbers *)
+let array_of_range r =
+  let a = Array.make (Cpdf.lengthrange r) 0 in
+    for x = 0 to Cpdf.lengthrange r - 1 do
+      a.(x) <- Cpdf.readrange r x
+    done;
+    Js.array a
+
+(* Convert Javascript array of page numbers to Cpdflib range *)
+let range_of_array a =
+  let a = Js.to_array a in
+  let r = ref (Cpdf.blankrange ()) in
+    for x = 0 to Array.length a - 1 do
+      let rn = Cpdf.addtorange !r a.(x) in
+        Cpdf.deleterange !r;
+        r := rn
+    done;
+    !r
+
 let _ =
   Js.export_all
     (object%js
@@ -47,7 +66,6 @@ let _ =
          Cpdf.fromFile (Js.to_string filename) (Js.to_string userpw)
        method fromFileLazy filename userpw =
          Cpdf.fromFileLazy (Js.to_string filename) (Js.to_string userpw)
-
        method fromMemory = Cpdf.fromMemory (* data *)
        method fromMemoryLazy = Cpdf.fromMemoryLazy (* data *)
        method toFile pdf filename linearize make_id =
@@ -74,9 +92,10 @@ let _ =
        method encryptionKind = Cpdf.encryptionKind
 
        (* CHAPTER 2. Merging and Splitting *)
-       method mergeSimple = Cpdf.mergeSimple
-       method merge = Cpdf.merge
-       method mergeSame = Cpdf.mergeSame
+       method mergeSimple pdfs = Cpdf.mergeSimple (Js.to_array pdfs)
+       method merge pdfs retain_numbering remove_duplicate_fonts =
+         Cpdf.merge (Js.to_array pdfs) retain_numbering remove_duplicate_fonts
+       method mergeSame = Cpdf.mergeSame (* array of arrays *)
        method selectPages = Cpdf.selectPages
 
        (* CHAPTER 3. Pages *)
