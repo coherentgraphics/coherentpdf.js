@@ -1,7 +1,10 @@
 open Js_of_ocaml
 
-(* FIXME replicate functionality of checkerror *)
-let checkerror () = ()
+exception CPDFError of string
+
+(* Check and raise in case of an error. *)
+let checkerror r =
+  if Cpdf.getLastError () != 0 then raise (CPDFError (Cpdf.getLastErrorString ())) else r
 
 (* Convert Cpdflib range to Javascript array of page numbers *)
 let array_of_range r =
@@ -30,25 +33,25 @@ let _ =
        method getLastErrorString = Js.string (Cpdf.getLastErrorString ())
        method clearError = Cpdf.clearError ()
        (* CHAPTER 1. Basics *)
-       method setFast = Cpdf.setFast ()
-       method setSlow = Cpdf.setSlow ()
-       method version = (fun () -> Js.string Cpdf.version) ()
-       method onexit = Cpdf.onexit ()
-       method startEnumeratePDFs = Cpdf.startEnumeratePDFs ()
-       method enumeratePDFsKey = Cpdf.enumeratePDFsKey
-       method enumeratePDFsInfo a = Js.string (Cpdf.enumeratePDFsInfo a)
-       method endEnumeratePDFs = Cpdf.endEnumeratePDFs ()
-       method deletePdf = Cpdf.deletePdf
-       method deleterange = Cpdf.deleterange
-       method parsePagespec pdf pagespec = Cpdf.parsePagespec pdf (Js.to_string pagespec)
-       method stringOfPagespec pdf r = Js.string (Cpdf.stringOfPagespec pdf r)
-       method validatePagespec pagespec = Cpdf.validatePagespec (Js.to_string pagespec)
-       method ptOfCm = Cpdf.ptOfCm
-       method ptOfMm = Cpdf.ptOfMm
-       method ptOfIn = Cpdf.ptOfIn
-       method cmOfPt = Cpdf.cmOfPt
-       method mmOfPt = Cpdf.mmOfPt
-       method inOfPt = Cpdf.inOfPt
+       method setFast = checkerror (Cpdf.setFast ())
+       method setSlow = checkerror (Cpdf.setSlow ())
+       method version = checkerror ((fun () -> Js.string Cpdf.version) ())
+       method onexit = checkerror (Cpdf.onexit ())
+       method startEnumeratePDFs = checkerror (Cpdf.startEnumeratePDFs ())
+       method enumeratePDFsKey a = checkerror (Cpdf.enumeratePDFsKey a)
+       method enumeratePDFsInfo a = checkerror (Js.string (Cpdf.enumeratePDFsInfo a))
+       method endEnumeratePDFs = checkerror (Cpdf.endEnumeratePDFs ())
+       method deletePdf pdf = checkerror (Cpdf.deletePdf pdf)
+       method deleterange r = checkerror (Cpdf.deleterange r)
+       method parsePagespec pdf pagespec = checkerror (Cpdf.parsePagespec pdf (Js.to_string pagespec))
+       method stringOfPagespec pdf r = checkerror (Js.string (Cpdf.stringOfPagespec pdf r))
+       method validatePagespec pagespec = checkerror (Cpdf.validatePagespec (Js.to_string pagespec))
+       method ptOfCm x = checkerror (Cpdf.ptOfCm x)
+       method ptOfMm x = checkerror (Cpdf.ptOfMm x)
+       method ptOfIn x = checkerror (Cpdf.ptOfIn x)
+       method cmOfPt x = checkerror (Cpdf.cmOfPt x)
+       method mmOfPt x = checkerror (Cpdf.mmOfPt x)
+       method inOfPt x = checkerror (Cpdf.inOfPt x)
        method range = Cpdf.range
        method blankRange = Cpdf.blankrange ()
        method makerange = Cpdf.makerange
