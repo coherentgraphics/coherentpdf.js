@@ -42,7 +42,6 @@ let _ =
        method enumeratePDFsInfo a = checkerror (Js.string (Cpdf.enumeratePDFsInfo a))
        method endEnumeratePDFs = checkerror (Cpdf.endEnumeratePDFs ())
        method deletePdf pdf = checkerror (Cpdf.deletePdf pdf)
-       method deleterange r = checkerror (Cpdf.deleterange r)
        method parsePagespec pdf pagespec = checkerror (Cpdf.parsePagespec pdf (Js.to_string pagespec))
        method stringOfPagespec pdf r = checkerror (Js.string (Cpdf.stringOfPagespec pdf r))
        method validatePagespec pagespec = checkerror (Cpdf.validatePagespec (Js.to_string pagespec))
@@ -75,8 +74,17 @@ let _ =
          Cpdf.toFile pdf (Js.to_string filename) linearize make_id
        method toFileExt pdf filename linearize make_id preserve_objstm create_objstm compress_objstm =
          Cpdf.toFileExt pdf (Js.to_string filename) linearize make_id preserve_objstm create_objstm compress_objstm
-       method toFileEncrypted = Cpdf.toFileEncrypted
-       method toFileEncryptedExt = Cpdf.toFileEncryptedExt
+       method toFileEncrypted pdf encryption_method permissions ownerpw userpw linearize makeid filename =
+         Cpdf.toFileEncrypted
+           pdf encryption_method (Js.to_array permissions) (Js.to_string ownerpw) (Js.to_string userpw)
+           linearize makeid (Js.to_string filename)
+       method toFileEncryptedExt
+         pdf encryption_method permissions ownerpw userpw linearize makeid preserve_objstm generate_objstm
+         compress_objstm filename
+       =
+         Cpdf.toFileEncryptedExt
+           pdf encryption_method (Js.to_array permissions) (Js.to_string ownerpw) (Js.to_string userpw)
+           linearize makeid preserve_objstm generate_objstm compress_objstm (Js.to_string filename)
        method toMemory = Cpdf.toFileMemory (* data *)
        method toMemoryExt = Cpdf.toFileMemoryExt (* data *)
        method toMemoryEncrypted = Cpdf.toFileMemoryEncrypted (* data *)
@@ -98,233 +106,233 @@ let _ =
        method mergeSimple pdfs = Cpdf.mergeSimple (Js.to_array pdfs)
        method merge pdfs retain_numbering remove_duplicate_fonts =
          Cpdf.merge (Js.to_array pdfs) retain_numbering remove_duplicate_fonts
-       method mergeSame = Cpdf.mergeSame (* array of arrays *)
+       method mergeSame = Cpdf.mergeSame (* FIXME array of arrays *)
        method selectPages = Cpdf.selectPages
 
        (* CHAPTER 3. Pages *)
        method scalePages = Cpdf.scalePages
        method scaleToFit = Cpdf.scaleToFit
        method scaleToFitPaper = Cpdf.scaleToFitPaper
-       method scaleContents = Cpdf.scaleContents
-       method shiftContents = Cpdf.shiftContents
-       method rotate = Cpdf.rotate
-       method rotateBy = Cpdf.rotateBy
-       method rotateContents = Cpdf.rotateContents
-       method upright = Cpdf.upright
-       method hFlip = Cpdf.hFlip
-       method vFlip = Cpdf.vFlip
-       method crop = Cpdf.crop
-       method setMediabox = Cpdf.setMediabox
-       method setCropBox = Cpdf.setCropBox
-       method setTrimBox = Cpdf.setTrimBox
-       method setArtBox = Cpdf.setArtBox
-       method setBleedBox = Cpdf.setBleedBox
-       method getMediaBox = Cpdf.getMediaBox
-       method getCropBox = Cpdf.getCropBox
-       method getArtBox = Cpdf.getArtBox
-       method getBleedBox = Cpdf.getBleedBox
-       method getTrimBox = Cpdf.getTrimBox
-       method removeCrop = Cpdf.removeCrop
-       method removeArt = Cpdf.removeArt
-       method removeTrim = Cpdf.removeTrim
-       method removeBleed = Cpdf.removeBleed
-       method hardBox = Cpdf.hardBox
-       method trimMarks = Cpdf.trimMarks
-       method showBoxes = Cpdf.showBoxes
-
+       method scaleContents = Cpdf.scaleContents(* TODO *)
+       method shiftContents = Cpdf.shiftContents(* TODO *)
+       method rotate = Cpdf.rotate(* TODO *)
+       method rotateBy = Cpdf.rotateBy(* TODO *)
+       method rotateContents = Cpdf.rotateContents(* TODO *)
+       method upright = Cpdf.upright(* TODO *)
+       method hFlip = Cpdf.hFlip(* TODO *)
+       method vFlip = Cpdf.vFlip(* TODO *)
+       method crop = Cpdf.crop(* TODO *)
+       method setMediabox = Cpdf.setMediabox(* TODO *)
+       method setCropBox = Cpdf.setCropBox(* TODO *)
+       method setTrimBox = Cpdf.setTrimBox(* TODO *)
+       method setArtBox = Cpdf.setArtBox(* TODO *)
+       method setBleedBox = Cpdf.setBleedBox(* TODO *)
+       method getMediaBox = Cpdf.getMediaBox(* TODO *)
+       method getCropBox = Cpdf.getCropBox(* TODO *)
+       method getArtBox = Cpdf.getArtBox(* TODO *)
+       method getBleedBox = Cpdf.getBleedBox(* TODO *)
+       method getTrimBox = Cpdf.getTrimBox(* TODO *)
+       method removeCrop = Cpdf.removeCrop(* TODO *)
+       method removeArt = Cpdf.removeArt(* TODO *)
+       method removeTrim = Cpdf.removeTrim(* TODO *)
+       method removeBleed = Cpdf.removeBleed(* TODO *)
+       method hardBox = Cpdf.hardBox(* TODO *)
+       method trimMarks = Cpdf.trimMarks(* TODO *)
+       method showBoxes = Cpdf.showBoxes(* TODO *)
 
        (* CHAPTER 4. Encryption and Decryption *)
 
        (* CHAPTER 5. Compression *)
-       method compress = Cpdf.compress
-       method decompress = Cpdf.decompress
-       method squeezeInMemory = Cpdf.squeezeInMemory
+       method compress = Cpdf.compress(* TODO *)
+       method decompress = Cpdf.decompress(* TODO *)
+       method squeezeInMemory = Cpdf.squeezeInMemory(* TODO *)
 
        (* CHAPTER 6. Bookmarks *)
-       method startGetBookmarkInfo = Cpdf.startGetBookmarkInfo
-       method endGetBookmarkInfo = Cpdf.endGetBookmarkInfo ()
-       method numberBookmarks = Cpdf.numberBookmarks ()
-       method getBookmarkPage = Cpdf.getBookmarkPage
-       method getBookmarkLevel = Cpdf.getBookmarkLevel
-       method getBookmarkText = Cpdf.getBookmarkText
-       method getBookmarkOpenStatus = Cpdf.getBookmarkOpenStatus
-       method startSetBookmarkInfo = Cpdf.startSetBookmarkInfo
-       method endSetBookmarkInfo = Cpdf.endSetBookmarkInfo
-       method setBookmarkPage = Cpdf.setBookmarkPage
-       method setBookmarkLevel = Cpdf.setBookmarkLevel
-       method setBookmarkText = Cpdf.setBookmarkText
-       method setBookmarkOpenStatus = Cpdf.setBookmarkOpenStatus
-       method getBookmarksJSON = Cpdf.getBookmarksJSON
-       method setBookmarksJSON = Cpdf.setBookmarksJSON
-       method tableOfContents = Cpdf.tableOfContents
+       method startGetBookmarkInfo = Cpdf.startGetBookmarkInfo(* TODO *)
+       method endGetBookmarkInfo = Cpdf.endGetBookmarkInfo ()(* TODO *)
+       method numberBookmarks = Cpdf.numberBookmarks ()(* TODO *)
+       method getBookmarkPage = Cpdf.getBookmarkPage(* TODO *)
+       method getBookmarkLevel = Cpdf.getBookmarkLevel(* TODO *)
+       method getBookmarkText = Cpdf.getBookmarkText(* TODO *)
+       method getBookmarkOpenStatus = Cpdf.getBookmarkOpenStatus(* TODO *)
+       method startSetBookmarkInfo = Cpdf.startSetBookmarkInfo(* TODO *)
+       method endSetBookmarkInfo = Cpdf.endSetBookmarkInfo(* TODO *)
+       method setBookmarkPage = Cpdf.setBookmarkPage(* TODO *)
+       method setBookmarkLevel = Cpdf.setBookmarkLevel(* TODO *)
+       method setBookmarkText = Cpdf.setBookmarkText(* TODO *)
+       method setBookmarkOpenStatus = Cpdf.setBookmarkOpenStatus(* TODO *)
+       method getBookmarksJSON = Cpdf.getBookmarksJSON(* TODO *)
+       method setBookmarksJSON = Cpdf.setBookmarksJSON(* TODO *)
+       method tableOfContents = Cpdf.tableOfContents(* TODO *)
 
        (* CHAPTER 7. Presentations *)
 
        (* CHAPTER 8. Logos, Watermarks and Stamps *)
-       method stampOn = Cpdf.stampOn
-       method stampUnder = Cpdf.stampUnder
-       method stampExtended = Cpdf.stampExtended
-       method combinePages = Cpdf.combinePages
-       method addText = Cpdf.addText
-       method removeText = Cpdf.removeText
-       method addContent = Cpdf.addContent
-       method stampAsXObject = Cpdf.stampAsXObject
-       method textWidth = Cpdf.textWidth
+       method stampOn = Cpdf.stampOn(* TODO *)
+       method stampUnder = Cpdf.stampUnder(* TODO *)
+       method stampExtended = Cpdf.stampExtended(* TODO *)
+       method combinePages = Cpdf.combinePages(* TODO *)
+       method addText = Cpdf.addText(* TODO *)
+       method removeText = Cpdf.removeText(* TODO *)
+       method addContent = Cpdf.addContent(* TODO *)
+       method stampAsXObject = Cpdf.stampAsXObject(* TODO *)
+       method textWidth = Cpdf.textWidth(* TODO *)
 
        (* CHAPTER 9. Multipage facilities *)
-       method twoUp = Cpdf.twoUp
-       method twoUpStack = Cpdf.twoUpStack
-       method impose = Cpdf.impose
-       method padBefore = Cpdf.padBefore
-       method padAfter = Cpdf.padAfter
-       method padEvery = Cpdf.padEvery
-       method padMultiple = Cpdf.padMultiple
-       method padMultipleBefore = Cpdf.padMultipleBefore
+       method twoUp = Cpdf.twoUp(* TODO *)
+       method twoUpStack = Cpdf.twoUpStack(* TODO *)
+       method impose = Cpdf.impose(* TODO *)
+       method padBefore = Cpdf.padBefore(* TODO *)
+       method padAfter = Cpdf.padAfter(* TODO *)
+       method padEvery = Cpdf.padEvery(* TODO *)
+       method padMultiple = Cpdf.padMultiple(* TODO *)
+       method padMultipleBefore = Cpdf.padMultipleBefore(* TODO *)
 
        (* CHAPTER 10. Annotations *)
-       method annotationsJSON = Cpdf.annotationsJSON
+       method annotationsJSON = Cpdf.annotationsJSON(* TODO *)
 
        (* CHAPTER 11. Document Information and Metadata *)
-       method getVersion = Cpdf.getVersion
-       method getMajorVersion = Cpdf.getMajorVersion
-       method isLinearized = Cpdf.isLinearized
-       method isLinearizedMemory = Cpdf.isLinearizedMemory
-       method getTitle = Cpdf.getTitle
-       method getAuthor = Cpdf.getAuthor
-       method getSubject = Cpdf.getSubject
-       method getKeywords = Cpdf.getKeywords
-       method getCreator = Cpdf.getCreator
-       method getProducer = Cpdf.getProducer
-       method getCreationDate = Cpdf.getCreationDate
-       method getModificationDate = Cpdf.getModificationDate
-       method getTitleXMP = Cpdf.getTitleXMP
-       method getAuthorXMP = Cpdf.getAuthorXMP
-       method getSubjectXMP = Cpdf.getSubjectXMP
-       method getKeywordsXMP = Cpdf.getKeywordsXMP
-       method getCreatorXMP = Cpdf.getCreatorXMP
-       method getProducerXMP = Cpdf.getProducerXMP
-       method getCreationDateXMP = Cpdf.getCreationDateXMP
-       method getModificationDateXMP = Cpdf.getModificationDateXMP
-       method getDateComponents = Cpdf.getDateComponents
-       method dateStringOfComponents = Cpdf.dateStringOfComponents
-       method setTitle = Cpdf.setTitle
-       method setAuthor = Cpdf.setAuthor
-       method setSubject = Cpdf.setSubject
-       method setKeywords = Cpdf.setKeywords
-       method setCreator = Cpdf.setCreator
-       method setProducer = Cpdf.setProducer
-       method setCreationDate = Cpdf.setCreationDate
-       method setModificationDate = Cpdf.setModificationDate
-       method markTrapped = Cpdf.markTrapped
-       method markUntrapped = Cpdf.markUntrapped
-       method markTrappedXMP = Cpdf.markTrappedXMP
-       method markUntrappedXMP = Cpdf.markUntrappedXMP
-       method setTitleXMP = Cpdf.setTitleXMP
-       method setAuthorXMP = Cpdf.setAuthorXMP
-       method setSubjectXMP = Cpdf.setSubjectXMP
-       method setKeywordsXMP = Cpdf.setKeywordsXMP
-       method setCreatorXMP = Cpdf.setCreatorXMP
-       method setProducerXMP = Cpdf.setProducerXMP
-       method setCreationDateXMP = Cpdf.setCreationDateXMP
-       method setModificationDateXMP = Cpdf.setModificationDateXMP
-       method hasBox = Cpdf.hasBox
-       method getPageRotation = Cpdf.getPageRotation
-       method setPageLayout = Cpdf.setPageLayout
-       method setPageMode = Cpdf.setPageMode
-       method hideToolbar = Cpdf.hideToolbar
-       method hideMenubar = Cpdf.hideMenubar
-       method hideWindowUi = Cpdf.hideWindowUi
-       method fitWindow = Cpdf.fitWindow
-       method centerWindow = Cpdf.centerWindow
-       method displayDocTitle = Cpdf.displayDocTitle
-       method openAtPage = Cpdf.openAtPage
-       method setMetadataFromFile = Cpdf.setMetadataFromFile
-       method setMetadataFromByteArray = Cpdf.setMetadataFromByteArray
-       method getMetadata = Cpdf.getMetadata
-       method removeMetadata = Cpdf.removeMetadata
-       method createMetadata = Cpdf.createMetadata
-       method setMetadataDate = Cpdf.setMetadataDate
-       method addPageLabels = Cpdf.addPageLabels
-       method removePageLabels = Cpdf.removePageLabels
-       method startGetPageLabels = Cpdf.startGetPageLabels
-       method getPageLabelStyle = Cpdf.getPageLabelStyle
-       method getPageLabelPrefix = Cpdf.getPageLabelPrefix
-       method getPageLabelOffset = Cpdf.getPageLabelOffset
-       method getPageLabelRange = Cpdf.getPageLabelRange
-       method endGetPageLabels = Cpdf.endGetPageLabels ()
-       method getPageLabelStringForPage = Cpdf.getPageLabelStringForPage
+       method getVersion = Cpdf.getVersion(* TODO *)
+       method getMajorVersion = Cpdf.getMajorVersion(* TODO *)
+       method isLinearized filename =
+         Cpdf.isLinearized (Js.to_string filename)
+       method isLinearizedMemory = Cpdf.isLinearizedMemory(* TODO *)
+       method getTitle = Cpdf.getTitle(* TODO *)
+       method getAuthor = Cpdf.getAuthor(* TODO *)
+       method getSubject = Cpdf.getSubject(* TODO *)
+       method getKeywords = Cpdf.getKeywords(* TODO *)
+       method getCreator = Cpdf.getCreator(* TODO *)
+       method getProducer = Cpdf.getProducer(* TODO *)
+       method getCreationDate = Cpdf.getCreationDate(* TODO *)
+       method getModificationDate = Cpdf.getModificationDate(* TODO *)
+       method getTitleXMP = Cpdf.getTitleXMP(* TODO *)
+       method getAuthorXMP = Cpdf.getAuthorXMP(* TODO *)
+       method getSubjectXMP = Cpdf.getSubjectXMP(* TODO *)
+       method getKeywordsXMP = Cpdf.getKeywordsXMP(* TODO *)
+       method getCreatorXMP = Cpdf.getCreatorXMP(* TODO *)
+       method getProducerXMP = Cpdf.getProducerXMP(* TODO *)
+       method getCreationDateXMP = Cpdf.getCreationDateXMP(* TODO *)
+       method getModificationDateXMP = Cpdf.getModificationDateXMP(* TODO *)
+       method getDateComponents = Cpdf.getDateComponents(* TODO *)
+       method dateStringOfComponents = Cpdf.dateStringOfComponents(* TODO *)
+       method setTitle = Cpdf.setTitle(* TODO *)
+       method setAuthor = Cpdf.setAuthor(* TODO *)
+       method setSubject = Cpdf.setSubject(* TODO *)
+       method setKeywords = Cpdf.setKeywords(* TODO *)
+       method setCreator = Cpdf.setCreator(* TODO *)
+       method setProducer = Cpdf.setProducer(* TODO *)
+       method setCreationDate = Cpdf.setCreationDate(* TODO *)
+       method setModificationDate = Cpdf.setModificationDate(* TODO *)
+       method markTrapped = Cpdf.markTrapped(* TODO *)
+       method markUntrapped = Cpdf.markUntrapped(* TODO *)
+       method markTrappedXMP = Cpdf.markTrappedXMP(* TODO *)
+       method markUntrappedXMP = Cpdf.markUntrappedXMP(* TODO *)
+       method setTitleXMP = Cpdf.setTitleXMP(* TODO *)
+       method setAuthorXMP = Cpdf.setAuthorXMP(* TODO *)
+       method setSubjectXMP = Cpdf.setSubjectXMP(* TODO *)
+       method setKeywordsXMP = Cpdf.setKeywordsXMP(* TODO *)
+       method setCreatorXMP = Cpdf.setCreatorXMP(* TODO *)
+       method setProducerXMP = Cpdf.setProducerXMP(* TODO *)
+       method setCreationDateXMP = Cpdf.setCreationDateXMP(* TODO *)
+       method setModificationDateXMP = Cpdf.setModificationDateXMP(* TODO *)
+       method hasBox = Cpdf.hasBox(* TODO *)
+       method getPageRotation = Cpdf.getPageRotation(* TODO *)
+       method setPageLayout = Cpdf.setPageLayout(* TODO *)
+       method setPageMode = Cpdf.setPageMode(* TODO *)
+       method hideToolbar = Cpdf.hideToolbar(* TODO *)
+       method hideMenubar = Cpdf.hideMenubar(* TODO *)
+       method hideWindowUi = Cpdf.hideWindowUi(* TODO *)
+       method fitWindow = Cpdf.fitWindow(* TODO *)
+       method centerWindow = Cpdf.centerWindow(* TODO *)
+       method displayDocTitle = Cpdf.displayDocTitle(* TODO *)
+       method openAtPage = Cpdf.openAtPage(* TODO *)
+       method setMetadataFromFile = Cpdf.setMetadataFromFile(* TODO *)
+       method setMetadataFromByteArray = Cpdf.setMetadataFromByteArray(* TODO *)
+       method getMetadata = Cpdf.getMetadata(* TODO *)
+       method removeMetadata = Cpdf.removeMetadata(* TODO *)
+       method createMetadata = Cpdf.createMetadata(* TODO *)
+       method setMetadataDate = Cpdf.setMetadataDate(* TODO *)
+       method addPageLabels = Cpdf.addPageLabels(* TODO *)
+       method removePageLabels = Cpdf.removePageLabels(* TODO *)
+       method startGetPageLabels = Cpdf.startGetPageLabels(* TODO *)
+       method getPageLabelStyle = Cpdf.getPageLabelStyle(* TODO *)
+       method getPageLabelPrefix = Cpdf.getPageLabelPrefix(* TODO *)
+       method getPageLabelOffset = Cpdf.getPageLabelOffset(* TODO *)
+       method getPageLabelRange = Cpdf.getPageLabelRange(* TODO *)
+       method endGetPageLabels = Cpdf.endGetPageLabels ()(* TODO *)
+       method getPageLabelStringForPage = Cpdf.getPageLabelStringForPage(* TODO *)
 
        (* CHAPTER 12. File Attachments *)
-       method attachFile = Cpdf.attachFile
-       method attachFileToPage = Cpdf.attachFileToPage
-       method attachFileFromMemory = Cpdf.attachFileFromMemory
-       method attachFileToPageFromMemory = Cpdf.attachFileToPageFromMemory
-       method removeAttachedFiles = Cpdf.removeAttachedFiles
-       method startGetAttachments = Cpdf.startGetAttachments
-       method endGetAttachments = Cpdf.endGetAttachments ()
-       method numberGetAttachments = Cpdf.numberGetAttachments ()
-       method getAttachmentName = Cpdf.getAttachmentName
-       method getAttachmentPage = Cpdf.getAttachmentPage
-       method getAttachmentData = Cpdf.getAttachmentData
+       method attachFile = Cpdf.attachFile(* TODO *)
+       method attachFileToPage = Cpdf.attachFileToPage(* TODO *)
+       method attachFileFromMemory = Cpdf.attachFileFromMemory(* TODO *)
+       method attachFileToPageFromMemory = Cpdf.attachFileToPageFromMemory(* TODO *)
+       method removeAttachedFiles = Cpdf.removeAttachedFiles(* TODO *)
+       method startGetAttachments = Cpdf.startGetAttachments(* TODO *)
+       method endGetAttachments = Cpdf.endGetAttachments ()(* TODO *)
+       method numberGetAttachments = Cpdf.numberGetAttachments ()(* TODO *)
+       method getAttachmentName = Cpdf.getAttachmentName(* TODO *)
+       method getAttachmentPage = Cpdf.getAttachmentPage(* TODO *)
+       method getAttachmentData = Cpdf.getAttachmentData(* TODO *)
 
        (* CHAPTER 13. Images *)
-       method startGetImageResolution = Cpdf.startGetImageResolution
-       method getImageResolutionPageNumber = Cpdf.getImageResolutionPageNumber
-       method getImageResolutionImageName = Cpdf.getImageResolutionImageName
-       method getImageResolutionXPixels = Cpdf.getImageResolutionXPixels
-       method getImageResolutionYPixels = Cpdf.getImageResolutionYPixels
-       method getImageResolutionXRes = Cpdf.getImageResolutionXRes
-       method getImageResolutionYRes = Cpdf.getImageResolutionYRes
-       method endGetImageResolution = Cpdf.endGetImageResolution ()
+       method startGetImageResolution = Cpdf.startGetImageResolution(* TODO *)
+       method getImageResolutionPageNumber = Cpdf.getImageResolutionPageNumber(* TODO *)
+       method getImageResolutionImageName = Cpdf.getImageResolutionImageName(* TODO *)
+       method getImageResolutionXPixels = Cpdf.getImageResolutionXPixels(* TODO *)
+       method getImageResolutionYPixels = Cpdf.getImageResolutionYPixels(* TODO *)
+       method getImageResolutionXRes = Cpdf.getImageResolutionXRes(* TODO *)
+       method getImageResolutionYRes = Cpdf.getImageResolutionYRes(* TODO *)
+       method endGetImageResolution = Cpdf.endGetImageResolution ()(* TODO *)
 
        (* CHAPTER 14. Fonts *)
-       method numberFonts = Cpdf.numberFonts ()
-       method getFontPage = Cpdf.getFontPage
-       method getFontName = Cpdf.getFontName
-       method getFontType = Cpdf.getFontType
-       method getFontEncoding = Cpdf.getFontEncoding
-       method startGetFontInfo = Cpdf.startGetFontInfo
-       method endGetFontInfo = Cpdf.endGetFontInfo ()
-       method copyFont = Cpdf.copyFont
-       method removeFonts = Cpdf.removeFonts
+       method numberFonts = Cpdf.numberFonts ()(* TODO *)
+       method getFontPage = Cpdf.getFontPage(* TODO *)
+       method getFontName = Cpdf.getFontName(* TODO *)
+       method getFontType = Cpdf.getFontType(* TODO *)
+       method getFontEncoding = Cpdf.getFontEncoding(* TODO *)
+       method startGetFontInfo = Cpdf.startGetFontInfo(* TODO *)
+       method endGetFontInfo = Cpdf.endGetFontInfo ()(* TODO *)
+       method copyFont = Cpdf.copyFont(* TODO *)
+       method removeFonts = Cpdf.removeFonts(* TODO *)
 
        (* CHAPTER 15. PDF and JSON *)
-       method outputJSON = Cpdf.outputJSON
-       method outputJSONMemory = Cpdf.outputJSONMemory
-       method fromJSON = Cpdf.fromJSON
-       method fromJSONMemory = Cpdf.fromJSONMemory
+       method outputJSON = Cpdf.outputJSON(* TODO *)
+       method outputJSONMemory = Cpdf.outputJSONMemory(* TODO *)
+       method fromJSON = Cpdf.fromJSON(* TODO *)
+       method fromJSONMemory = Cpdf.fromJSONMemory(* TODO *)
 
        (* CHAPTER 16. Optional Content Groups *)
-       method startGetOCGList = Cpdf.startGetOCGList
-       method ocgListEntry = Cpdf.ocgListEntry
-       method endGetOCGList = Cpdf.endGetOCGList ()
-       method ocgCoalesce = Cpdf.ocgCoalesce
-       method ocgRename = Cpdf.ocgRename
-       method ocgOrderAll = Cpdf.ocgOrderAll
+       method startGetOCGList = Cpdf.startGetOCGList(* TODO *)
+       method ocgListEntry = Cpdf.ocgListEntry(* TODO *)
+       method endGetOCGList = Cpdf.endGetOCGList ()(* TODO *)
+       method ocgCoalesce = Cpdf.ocgCoalesce(* TODO *)
+       method ocgRename = Cpdf.ocgRename(* TODO *)
+       method ocgOrderAll = Cpdf.ocgOrderAll(* TODO *)
 
        (* CHAPTER 17. Creating New PDFs *)
-       method blankDocument = Cpdf.blankDocument
-       method blankDocumentPaper = Cpdf.blankDocumentPaper
-       method textToPDF = Cpdf.textToPDF
-       method textToPDFPaper = Cpdf.textToPDFPaper
-       method textToPDFMemory = Cpdf.textToPDFMemory
-       method textToPDFPaperMemory = Cpdf.textToPDFPaperMemory
+       method blankDocument = Cpdf.blankDocument(* TODO *)
+       method blankDocumentPaper = Cpdf.blankDocumentPaper(* TODO *)
+       method textToPDF = Cpdf.textToPDF(* TODO *)
+       method textToPDFPaper = Cpdf.textToPDFPaper(* TODO *)
+       method textToPDFMemory = Cpdf.textToPDFMemory(* TODO *)
+       method textToPDFPaperMemory = Cpdf.textToPDFPaperMemory(* TODO *)
 
        (* CHAPTER 18. Miscellaneous *)
-       method draft = Cpdf.draft
-       method removeAllText = Cpdf.removeAllText
-       method blackText = Cpdf.blackText
-       method blackLines = Cpdf.blackLines
-       method blackFills = Cpdf.blackFills
-       method thinLines = Cpdf.thinLines
-       method copyId = Cpdf.copyId
-       method removeId = Cpdf.removeId
-       method setVersion = Cpdf.setVersion
-       method setFullVersion = Cpdf.setFullVersion
-       method removeDictEntry = Cpdf.removeDictEntry
-       method removeDictEntrySearch = Cpdf.removeDictEntrySearch
-       method replaceDictEntry = Cpdf.replaceDictEntry
-       method replaceDictEntrySearch = Cpdf.replaceDictEntrySearch
-       method getDictEntries = Cpdf.getDictEntries
-       method removeClipping = Cpdf.removeClipping
+       method draft = Cpdf.draft(* TODO *)
+       method removeAllText = Cpdf.removeAllText(* TODO *)
+       method blackText = Cpdf.blackText(* TODO *)
+       method blackLines = Cpdf.blackLines(* TODO *)
+       method blackFills = Cpdf.blackFills(* TODO *)
+       method thinLines = Cpdf.thinLines(* TODO *)
+       method copyId = Cpdf.copyId(* TODO *)
+       method removeId = Cpdf.removeId(* TODO *)
+       method setVersion = Cpdf.setVersion(* TODO *)
+       method setFullVersion = Cpdf.setFullVersion(* TODO *)
+       method removeDictEntry = Cpdf.removeDictEntry(* TODO *)
+       method removeDictEntrySearch = Cpdf.removeDictEntrySearch(* TODO *)
+       method replaceDictEntry = Cpdf.replaceDictEntry(* TODO *)
+       method replaceDictEntrySearch = Cpdf.replaceDictEntrySearch(* TODO *)
+       method getDictEntries = Cpdf.getDictEntries(* TODO *)
+       method removeClipping = Cpdf.removeClipping(* TODO *)
     end)
