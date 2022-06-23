@@ -1,1 +1,4 @@
-npx eslint cpdfsource.js
+npx eslint cpdfcrypt.js
+npx eslint cpdfzlib.js
+npx eslint nodestubs.js
+npx eslint cpdflibtest.js
