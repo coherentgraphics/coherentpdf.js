@@ -323,42 +323,68 @@ let _ =
        method removeFonts = Cpdf.removeFonts(* TODO *)
 
        (* CHAPTER 15. PDF and JSON *)
-       method outputJSON = Cpdf.outputJSON(* TODO *)
-       method outputJSONMemory = Cpdf.outputJSONMemory(* TODO *)
-       method fromJSON = Cpdf.fromJSON(* TODO *)
-       method fromJSONMemory = Cpdf.fromJSONMemory(* TODO *)
+       method outputJSON filename parse_content no_stream_data decompress_streams pdf =
+         checkerror (Cpdf.outputJSON filename parse_content no_stream_data decompress_streams pdf) (* data *)
+       method outputJSONMemory parse_content no_stream_data decompress_streams pdf =
+         checkerror (Cpdf.outputJSONMemory parse_content no_stream_data decompress_streams pdf) (* data *)
+       method fromJSON filename =
+         checkerror (Cpdf.fromJSON filename) (* data *)
+       method fromJSONMemory data =
+         checkerror (Cpdf.fromJSONMemory data) (* data *)
 
        (* CHAPTER 16. Optional Content Groups *)
-       method startGetOCGList = Cpdf.startGetOCGList(* TODO *)
-       method ocgListEntry = Cpdf.ocgListEntry(* TODO *)
-       method endGetOCGList = Cpdf.endGetOCGList ()(* TODO *)
-       method ocgCoalesce = Cpdf.ocgCoalesce(* TODO *)
-       method ocgRename = Cpdf.ocgRename(* TODO *)
-       method ocgOrderAll = Cpdf.ocgOrderAll(* TODO *)
+       method startGetOCGList pdf = checkerror (Cpdf.startGetOCGList pdf)
+       method ocgListEntry n = checkerror (Js.string (Cpdf.ocgListEntry n))
+       method endGetOCGList = checkerror (Cpdf.endGetOCGList ())
+       method ocgCoalesce pdf = checkerror (Cpdf.ocgCoalesce pdf)
+       method ocgRename pdf name_from name_to =
+         checkerror (Cpdf.ocgRename pdf (Js.to_string name_from) (Js.to_string name_to))
+       method ocgOrderAll pdf = checkerror (Cpdf.ocgOrderAll pdf)
 
        (* CHAPTER 17. Creating New PDFs *)
-       method blankDocument = Cpdf.blankDocument(* TODO *)
-       method blankDocumentPaper = Cpdf.blankDocumentPaper(* TODO *)
-       method textToPDF = Cpdf.textToPDF(* TODO *)
-       method textToPDFPaper = Cpdf.textToPDFPaper(* TODO *)
-       method textToPDFMemory = Cpdf.textToPDFMemory(* TODO *)
-       method textToPDFPaperMemory = Cpdf.textToPDFPaperMemory(* TODO *)
+       method blankDocument w h pages = checkerror (Cpdf.blankDocument w h pages)
+       method blankDocumentPaper papersize pages =
+         checkerror (Cpdf.blankDocumentPaper papersize pages)
+       method textToPDF w h font fontsize filename =
+         checkerror (Cpdf.textToPDF w h font fontsize (Js.to_string filename))
+       method textToPDFPaper papersize font fontsize filename =
+         checkerror (Cpdf.textToPDFPaper papersize font fontsize (Js.to_string filename))
+       method textToPDFMemory w h font fontsize data =
+         checkerror (Cpdf.textToPDFMemory w h font fontsize data) (* data *)
+       method textToPDFPaperMemory papersize font fontsize data =
+         checkerror (Cpdf.textToPDFPaperMemory papersize font fontsize data) (* data *)
 
        (* CHAPTER 18. Miscellaneous *)
-       method draft = Cpdf.draft(* TODO *)
-       method removeAllText = Cpdf.removeAllText(* TODO *)
-       method blackText = Cpdf.blackText(* TODO *)
-       method blackLines = Cpdf.blackLines(* TODO *)
-       method blackFills = Cpdf.blackFills(* TODO *)
-       method thinLines = Cpdf.thinLines(* TODO *)
-       method copyId = Cpdf.copyId(* TODO *)
-       method removeId = Cpdf.removeId(* TODO *)
-       method setVersion = Cpdf.setVersion(* TODO *)
-       method setFullVersion = Cpdf.setFullVersion(* TODO *)
-       method removeDictEntry = Cpdf.removeDictEntry(* TODO *)
-       method removeDictEntrySearch = Cpdf.removeDictEntrySearch(* TODO *)
-       method replaceDictEntry = Cpdf.replaceDictEntry(* TODO *)
-       method replaceDictEntrySearch = Cpdf.replaceDictEntrySearch(* TODO *)
-       method getDictEntries = Cpdf.getDictEntries(* TODO *)
-       method removeClipping = Cpdf.removeClipping(* TODO *)
+       method draft pdf range boxes =
+         checkerror (Cpdf.draft pdf range boxes)
+       method removeAllText pdf range =
+         checkerror (Cpdf.removeAllText pdf range)
+       method blackText pdf range =
+         checkerror (Cpdf.blackText pdf range)
+       method blackLines pdf range =
+         checkerror (Cpdf.blackLines pdf range)
+       method blackFills pdf range =
+         checkerror (Cpdf.blackFills pdf range)
+       method thinLines pdf range min_thickness =
+         checkerror (Cpdf.thinLines pdf range min_thickness)
+       method copyId pdf_from pdf_to =
+         checkerror (Cpdf.copyId pdf_from pdf_to)
+       method removeId pdf =
+         checkerror (Cpdf.removeId pdf)
+       method setVersion pdf version =
+         checkerror (Cpdf.setVersion pdf version)
+       method setFullVersion pdf major minor =
+         checkerror (Cpdf.setFullVersion pdf major minor)
+       method removeDictEntry pdf key =
+         checkerror (Cpdf.removeDictEntry pdf (Js.to_string key))
+       method removeDictEntrySearch pdf key searchterm =
+         checkerror (Cpdf.removeDictEntrySearch pdf (Js.to_string key) (Js.to_string searchterm))
+       method replaceDictEntry pdf key newval =
+         checkerror (Cpdf.replaceDictEntry pdf (Js.to_string key) (Js.to_string newval))
+       method replaceDictEntrySearch pdf key newval searchterm =
+         checkerror (Cpdf.replaceDictEntrySearch pdf key (Js.to_string newval) (Js.to_string searchterm))
+       method getDictEntries pdf key =
+         checkerror (Cpdf.getDictEntries pdf (Js.to_string key)) (* data *)
+       method removeClipping pdf range =
+         checkerror (Cpdf.removeClipping pdf range)
     end)
