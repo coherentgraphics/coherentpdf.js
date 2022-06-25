@@ -363,14 +363,18 @@ let _ =
             linespacing bates font fontsize r g b underneath relative_to_cropbox outline
             opacity justification midline topline (Js.to_string filename) linewidth
             embed_fonts) (* position *)
-       method removeText =
-         Cpdf.removeText(* TODO *)
-       method addContent =
-         Cpdf.addContent(* TODO *)
-       method stampAsXObject =
-         Cpdf.stampAsXObject(* TODO *)
-       method textWidth =
-         Cpdf.textWidth(* TODO *)
+       method addTextSimple pdf range text position font fontsize =
+         (* CHECK ME *)
+         checkerror
+           (Cpdf.addText false pdf (range_of_array range) (Js.to_string text) 0 1.0 2.0 1.0 0 font fontsize 0. 0. 0. false false false 1.0 Cpdfaddtext.LeftJustify false false "" 0.0 false)
+       method removeText pdf range =
+         checkerror (Cpdf.removeText pdf range)
+       method addContent content before pdf range =
+         checkerror (Cpdf.addContent (Js.to_string content) before pdf range)
+       method stampAsXObject pdf range stamp_pdf =
+         checkerror (Js.string (Cpdf.stampAsXObject pdf (range_of_array range) stamp_pdf))
+       method textWidth font text =
+         checkerror (Cpdf.textWidth font (Js.to_string text))
 
        (* CHAPTER 9. Multipage facilities *)
        method twoUp pdf =
