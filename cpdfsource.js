@@ -512,11 +512,11 @@ after this call, and should be not be used again.
 @arg {string} filename file name
 @arg {boolean} linearize linearize if a linearizer is available
 @arg {boolean} preserve_objstm preserve existing object streams
-@arg {boolean} create_objstm create new object streams
+@arg {boolean} generate_objstm create new object streams
 @arg {boolean} compress_objstm compress new object streams */
-function toFileExt(pdf, filename, linearize, make_id, preserve_objstm, create_objstm, compress_objstm)
+function toFileExt(pdf, filename, linearize, make_id, preserve_objstm, generate_objstm, compress_objstm)
 {
-  cpdflib.cpdflib.toFileExt(pdf, caml_string_of_jsstring(filename), linearize, make_id, preserve_objstm, create_objstm, compress_objstm);
+  cpdflib.cpdflib.toFileExt(pdf, caml_string_of_jsstring(filename), linearize, make_id, preserve_objstm, generate_objstm, compress_objstm);
   checkError();
 }
 
@@ -541,12 +541,12 @@ after this call, and should be not be used again.
 @arg {pdf} pdf PDF document
 @arg {boolean} linearize linearize if a linearizer is available
 @arg {boolean} preserve_objstm preserve existing object streams
-@arg {boolean} create_objstm create new object streams
+@arg {boolean} generate_objstm create new object streams
 @arg {boolean} compress_objstm compress new object streams
 @result {Uint8Array} PDF file as a byte array */
-function toMemoryExt(pdf, linearize, make_id, preserve_objstm, create_objstm, compress_objstm)
+function toMemoryExt(pdf, linearize, make_id, preserve_objstm, generate_objstm, compress_objstm)
 {
-  var r = cpdflib.cpdflib.toMemoryExt(pdf, linearize, make_id, preserve_objstm, create_objstm, compress_objstm);
+  var r = cpdflib.cpdflib.toMemoryExt(pdf, linearize, make_id, preserve_objstm, generate_objstm, compress_objstm);
   checkError();
   return r.data;
 }
