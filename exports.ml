@@ -344,16 +344,25 @@ let _ =
        (* CHAPTER 7. Presentations *)
 
        (* CHAPTER 8. Logos, Watermarks and Stamps *)
-       method stampOn =
-         Cpdf.stampOn(* TODO *)
-       method stampUnder =
-         Cpdf.stampUnder(* TODO *)
-       method stampExtended =
-         Cpdf.stampExtended(* TODO *)
-       method combinePages =
-         Cpdf.combinePages(* TODO *)
-       method addText =
-         Cpdf.addText(* TODO *)
+       method stampOn stamp_pdf pdf range =
+         checkerror (Cpdf.stampOn stamp_pdf pdf (range_of_array range))
+       method stampUnder stamp_pdf pdf range =
+         checkerror (Cpdf.stampUnder stamp_pdf pdf (range_of_array range))
+       method stampExtended pdf pdf2 range isover scale_stamp_to_fit position relative_to_cropbox =
+         checkerror
+           (Cpdf.stampExtended pdf pdf2 (range_of_array range) isover scale_stamp_to_fit 1.0 2.0 0 relative_to_cropbox) (* position *)
+       method combinePages under over =
+         checkerror (Cpdf.combinePages under over)
+       method addText
+         metrics pdf range text position linespacing bates font fontsize r g b
+         underneath relative_to_cropbox outline opacity justification midline
+         topline filename linewidth embed_fonts
+       =
+         checkerror
+           (Cpdf.addText metrics pdf (range_of_array range) (Js.to_string text) 0 1.0 2.0
+            linespacing bates font fontsize r g b underneath relative_to_cropbox outline
+            opacity justification midline topline (Js.to_string filename) linewidth
+            embed_fonts) (* position *)
        method removeText =
          Cpdf.removeText(* TODO *)
        method addContent =
