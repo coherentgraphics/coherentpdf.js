@@ -394,58 +394,74 @@ let _ =
          checkerror (Cpdf.isLinearized (Js.to_string filename))
        method isLinearizedMemory data =
          checkerror (Cpdf.isLinearizedMemory data) (* data *)
-       method getTitle =
-         Cpdf.getTitle(* TODO *)
-       method getAuthor =
-         Cpdf.getAuthor(* TODO *)
-       method getSubject =
-         Cpdf.getSubject(* TODO *)
-       method getKeywords =
-         Cpdf.getKeywords(* TODO *)
-       method getCreator =
-         Cpdf.getCreator(* TODO *)
-       method getProducer =
-         Cpdf.getProducer(* TODO *)
-       method getCreationDate = 
-         Cpdf.getCreationDate(* TODO *)
-       method getModificationDate =
-         Cpdf.getModificationDate(* TODO *)
-       method getTitleXMP =
-         Cpdf.getTitleXMP(* TODO *)
-       method getAuthorXMP =
-         Cpdf.getAuthorXMP(* TODO *)
-       method getSubjectXMP =
-         Cpdf.getSubjectXMP(* TODO *)
-       method getKeywordsXMP =
-         Cpdf.getKeywordsXMP(* TODO *)
-       method getCreatorXMP =
-         Cpdf.getCreatorXMP(* TODO *)
-       method getProducerXMP =
-         Cpdf.getProducerXMP(* TODO *)
-       method getCreationDateXMP = 
-         Cpdf.getCreationDateXMP(* TODO *)
-       method getModificationDateXMP =
-         Cpdf.getModificationDateXMP(* TODO *)
-       method getDateComponents =
-         Cpdf.getDateComponents(* TODO *)
-       method dateStringOfComponents =
-         Cpdf.dateStringOfComponents(* TODO *)
-       method setTitle =
-         Cpdf.setTitle(* TODO *)
-       method setAuthor =
-         Cpdf.setAuthor(* TODO *)
-       method setSubject =
-         Cpdf.setSubject(* TODO *)
-       method setKeywords =
-         Cpdf.setKeywords(* TODO *)
-       method setCreator =
-         Cpdf.setCreator(* TODO *)
-       method setProducer =
-         Cpdf.setProducer(* TODO *)
-       method setCreationDate = 
-         Cpdf.setCreationDate(* TODO *)
-       method setModificationDate =
-         Cpdf.setModificationDate(* TODO *)
+       method getTitle pdf =
+         checkerror (Js.string (Cpdf.getTitle pdf))
+       method getAuthor pdf =
+         checkerror (Js.string (Cpdf.getAuthor pdf))
+       method getSubject pdf =
+         checkerror (Js.string (Cpdf.getSubject pdf))
+       method getKeywords pdf =
+         checkerror (Js.string (Cpdf.getKeywords pdf))
+       method getCreator pdf =
+         checkerror (Js.string (Cpdf.getCreator pdf))
+       method getProducer pdf =
+         checkerror (Js.string (Cpdf.getProducer pdf))
+       method getCreationDate pdf = 
+         checkerror (Js.string (Cpdf.getCreationDate pdf))
+       method getModificationDate pdf =
+         checkerror (Js.string (Cpdf.getModificationDate pdf))
+       method getTitleXMP pdf =
+         checkerror (Js.string (Cpdf.getTitleXMP pdf))
+       method getAuthorXMP pdf =
+         checkerror (Js.string (Cpdf.getAuthorXMP pdf))
+       method getSubjectXMP pdf =
+         checkerror (Js.string (Cpdf.getSubjectXMP pdf))
+       method getKeywordsXMP pdf =
+         checkerror (Js.string (Cpdf.getKeywordsXMP pdf))
+       method getCreatorXMP pdf =
+         checkerror (Js.string (Cpdf.getCreatorXMP pdf))
+       method getProducerXMP pdf =
+         checkerror (Js.string (Cpdf.getProducerXMP pdf))
+       method getCreationDateXMP pdf = 
+         checkerror (Js.string (Cpdf.getCreationDateXMP pdf))
+       method getModificationDateXMP pdf =
+         checkerror (Js.string (Cpdf.getModificationDateXMP pdf))
+       method getDateComponents s =
+         checkerror (Cpdf.getDateComponents (Js.to_string s)) (* array *)
+       method dateStringOfComponents y m d h min sec hour_offset minute_offset =
+         checkerror (Js.string (Cpdf.dateStringOfComponents y m d h min sec hour_offset minute_offset))
+       method setTitle pdf s =
+         checkerror (Cpdf.setTitle pdf (Js.to_string s))
+       method setAuthor pdf s =
+         checkerror (Cpdf.setAuthor pdf (Js.to_string s))
+       method setSubject pdf s =
+         checkerror (Cpdf.setSubject pdf (Js.to_string s))
+       method setKeywords pdf s =
+         checkerror (Cpdf.setKeywords pdf (Js.to_string s))
+       method setCreator pdf s =
+         checkerror (Cpdf.setCreator pdf (Js.to_string s))
+       method setProducer pdf s =
+         checkerror (Cpdf.setProducer pdf (Js.to_string s))
+       method setCreationDate pdf s = 
+         checkerror (Cpdf.setCreationDate pdf (Js.to_string s))
+       method setModificationDate pdf s =
+         checkerror (Cpdf.setModificationDate pdf (Js.to_string s))
+       method setTitleXMP pdf s =
+         checkerror (Cpdf.setTitleXMP pdf (Js.to_string s))
+       method setAuthorXMP pdf s =
+         checkerror (Cpdf.setAuthorXMP pdf (Js.to_string s))
+       method setSubjectXMP pdf s =
+         checkerror (Cpdf.setSubjectXMP pdf (Js.to_string s))
+       method setKeywordsXMP pdf s =
+         checkerror (Cpdf.setKeywordsXMP pdf (Js.to_string s))
+       method setCreatorXMP pdf s =
+         checkerror (Cpdf.setCreatorXMP pdf (Js.to_string s))
+       method setProducerXMP pdf s =
+         checkerror (Cpdf.setProducerXMP pdf (Js.to_string s))
+       method setCreationDateXMP pdf s =
+         checkerror (Cpdf.setCreationDateXMP pdf (Js.to_string s))
+       method setModificationDateXMP pdf s =
+         checkerror (Cpdf.setModificationDateXMP pdf (Js.to_string s))
        method markTrapped =
          Cpdf.markTrapped(* TODO *)
        method markUntrapped =
@@ -454,22 +470,6 @@ let _ =
          Cpdf.markTrappedXMP(* TODO *)
        method markUntrappedXMP =
          Cpdf.markUntrappedXMP(* TODO *)
-       method setTitleXMP =
-         Cpdf.setTitleXMP(* TODO *)
-       method setAuthorXMP =
-         Cpdf.setAuthorXMP(* TODO *)
-       method setSubjectXMP =
-         Cpdf.setSubjectXMP(* TODO *)
-       method setKeywordsXMP =
-         Cpdf.setKeywordsXMP(* TODO *)
-       method setCreatorXMP =
-         Cpdf.setCreatorXMP(* TODO *)
-       method setProducerXMP =
-         Cpdf.setProducerXMP(* TODO *)
-       method setCreationDateXMP =
-         Cpdf.setCreationDateXMP(* TODO *)
-       method setModificationDateXMP =
-         Cpdf.setModificationDateXMP(* TODO *)
        method hasBox =
          Cpdf.hasBox(* TODO *)
        method getPageRotation =
