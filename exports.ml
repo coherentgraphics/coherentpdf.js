@@ -364,36 +364,36 @@ let _ =
          Cpdf.textWidth(* TODO *)
 
        (* CHAPTER 9. Multipage facilities *)
-       method twoUp =
-         Cpdf.twoUp
-       method twoUpStack =
-         Cpdf.twoUpStack
-       method impose =
-         Cpdf.impose
-       method padBefore =
-         Cpdf.padBefore
-       method padAfter =
-         Cpdf.padAfter
-       method padEvery =
-         Cpdf.padEvery
-       method padMultiple =
-         Cpdf.padMultiple
-       method padMultipleBefore =
-         Cpdf.padMultipleBefore
+       method twoUp pdf =
+         checkerror (Cpdf.twoUp pdf)
+       method twoUpStack pdf =
+         checkerror (Cpdf.twoUpStack pdf)
+       method impose pdf x y fit columns rtl btt center margin spacing linewidth =
+         checkerror (Cpdf.impose pdf x y fit columns rtl btt center margin spacing linewidth)
+       method padBefore pdf range =
+         checkerror (Cpdf.padBefore pdf range)
+       method padAfter pdf range =
+         checkerror (Cpdf.padAfter pdf range)
+       method padEvery pdf n =
+         checkerror (Cpdf.padEvery pdf n)
+       method padMultiple pdf n =
+         checkerror (Cpdf.padMultiple pdf n)
+       method padMultipleBefore pdf n =
+         checkerror (Cpdf.padMultipleBefore pdf n)
 
        (* CHAPTER 10. Annotations *)
-       method annotationsJSON =
-         Cpdf.annotationsJSON (* data *)
+       method annotationsJSON pdf =
+         checkerror (Cpdf.annotationsJSON pdf) (* data *)
 
        (* CHAPTER 11. Document Information and Metadata *)
        method getVersion pdf =
          checkerror (Cpdf.getVersion pdf)
-       method getMajorVersion =
-         Cpdf.getMajorVersion(* TODO *)
+       method getMajorVersion pdf =
+         checkerror (Cpdf.getMajorVersion pdf)
        method isLinearized filename =
-         Cpdf.isLinearized (Js.to_string filename)
-       method isLinearizedMemory =
-         Cpdf.isLinearizedMemory(* TODO *)
+         checkerror (Cpdf.isLinearized (Js.to_string filename))
+       method isLinearizedMemory data =
+         checkerror (Cpdf.isLinearizedMemory data) (* data *)
        method getTitle =
          Cpdf.getTitle(* TODO *)
        method getAuthor =
