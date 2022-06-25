@@ -462,66 +462,66 @@ let _ =
          checkerror (Cpdf.setCreationDateXMP pdf (Js.to_string s))
        method setModificationDateXMP pdf s =
          checkerror (Cpdf.setModificationDateXMP pdf (Js.to_string s))
-       method markTrapped =
-         Cpdf.markTrapped(* TODO *)
-       method markUntrapped =
-         Cpdf.markUntrapped(* TODO *)
-       method markTrappedXMP =
-         Cpdf.markTrappedXMP(* TODO *)
-       method markUntrappedXMP =
-         Cpdf.markUntrappedXMP(* TODO *)
-       method hasBox =
-         Cpdf.hasBox(* TODO *)
-       method getPageRotation =
-         Cpdf.getPageRotation(* TODO *)
-       method setPageLayout =
-         Cpdf.setPageLayout(* TODO *)
-       method setPageMode =
-         Cpdf.setPageMode(* TODO *)
-       method hideToolbar =
-         Cpdf.hideToolbar(* TODO *)
-       method hideMenubar =
-         Cpdf.hideMenubar(* TODO *)
-       method hideWindowUi =
-         Cpdf.hideWindowUi(* TODO *)
-       method fitWindow =
-         Cpdf.fitWindow(* TODO *)
-       method centerWindow =
-         Cpdf.centerWindow(* TODO *)
-       method displayDocTitle =
-         Cpdf.displayDocTitle(* TODO *)
-       method openAtPage =
-         Cpdf.openAtPage(* TODO *)
-       method setMetadataFromFile =
-         Cpdf.setMetadataFromFile(* TODO *)
-       method setMetadataFromByteArray =
-         Cpdf.setMetadataFromByteArray(* TODO *)
-       method getMetadata =
-         Cpdf.getMetadata(* TODO *)
-       method removeMetadata =
-         Cpdf.removeMetadata(* TODO *)
-       method createMetadata =
-         Cpdf.createMetadata(* TODO *)
-       method setMetadataDate =
-         Cpdf.setMetadataDate(* TODO *)
-       method addPageLabels =
-         Cpdf.addPageLabels(* TODO *)
-       method removePageLabels =
-         Cpdf.removePageLabels(* TODO *)
-       method startGetPageLabels =
-         Cpdf.startGetPageLabels(* TODO *)
-       method getPageLabelStyle =
-         Cpdf.getPageLabelStyle(* TODO *)
-       method getPageLabelPrefix =
-         Cpdf.getPageLabelPrefix(* TODO *)
-       method getPageLabelOffset =
-         Cpdf.getPageLabelOffset(* TODO *)
-       method getPageLabelRange =
-         Cpdf.getPageLabelRange(* TODO *)
+       method markTrapped pdf =
+         checkerror (Cpdf.markTrapped pdf)
+       method markUntrapped pdf =
+         checkerror (Cpdf.markUntrapped pdf)
+       method markTrappedXMP pdf =
+         checkerror (Cpdf.markTrappedXMP pdf)
+       method markUntrappedXMP pdf =
+         checkerror (Cpdf.markUntrappedXMP pdf)
+       method hasBox pdf page box =
+         checkerror (Cpdf.hasBox pdf page (Js.to_string box))
+       method getPageRotation pdf page =
+         checkerror (Cpdf.getPageRotation pdf page)
+       method setPageLayout pdf layout =
+         checkerror (Cpdf.setPageLayout pdf layout)
+       method setPageMode pdf mode =
+         checkerror (Cpdf.setPageMode pdf mode)
+       method hideToolbar pdf flag =
+         checkerror (Cpdf.hideToolbar pdf flag)
+       method hideMenubar pdf flag =
+         checkerror (Cpdf.hideMenubar pdf flag)
+       method hideWindowUi pdf flag =
+         checkerror (Cpdf.hideWindowUi pdf flag)
+       method fitWindow pdf flag =
+         checkerror (Cpdf.fitWindow pdf flag)
+       method centerWindow pdf flag =
+         checkerror (Cpdf.centerWindow pdf flag)
+       method displayDocTitle pdf flag =
+         checkerror (Cpdf.displayDocTitle pdf flag)
+       method openAtPage pdf fit pagenumber =
+         checkerror (Cpdf.openAtPage pdf fit pagenumber)
+       method setMetadataFromFile pdf filename =
+         checkerror (Cpdf.setMetadataFromFile pdf (Js.to_string filename))
+       method setMetadataFromByteArray pdf data =
+         checkerror (Cpdf.setMetadataFromByteArray pdf data) (* data *)
+       method getMetadata pdf =
+         checkerror (Cpdf.getMetadata pdf) (* data *)
+       method removeMetadata pdf =
+         checkerror (Cpdf.removeMetadata pdf)
+       method createMetadata pdf =
+         checkerror (Cpdf.createMetadata pdf)
+       method setMetadataDate pdf date =
+         checkerror (Cpdf.setMetadataDate pdf (Js.to_string date))
+       method addPageLabels pdf style prefix offset range progress =
+         checkerror (Cpdf.addPageLabels pdf style (Js.to_string prefix) offset range progress)
+       method removePageLabels pdf =
+         checkerror (Cpdf.removePageLabels pdf)
+       method startGetPageLabels pdf =
+         checkerror (Cpdf.startGetPageLabels pdf)
+       method getPageLabelStyle n =
+         checkerror (Cpdf.getPageLabelStyle n)
+       method getPageLabelPrefix n =
+         checkerror (Js.string (Cpdf.getPageLabelPrefix n))
+       method getPageLabelOffset n =
+         checkerror (Cpdf.getPageLabelOffset n)
+       method getPageLabelRange n =
+         checkerror (Cpdf.getPageLabelRange n)
        method endGetPageLabels =
-         Cpdf.endGetPageLabels ()(* TODO *)
-       method getPageLabelStringForPage =
-         Cpdf.getPageLabelStringForPage(* TODO *)
+         checkerror (Cpdf.endGetPageLabels ())
+       method getPageLabelStringForPage pdf pagenumber =
+         checkerror (Js.string (Cpdf.getPageLabelStringForPage pdf pagenumber))
 
        (* CHAPTER 12. File Attachments *)
        method attachFile filename pdf =
