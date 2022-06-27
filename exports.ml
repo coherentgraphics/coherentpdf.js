@@ -454,12 +454,20 @@ let _ =
 
        (* CHAPTER 8. Logos, Watermarks and Stamps *)
        method stampOn stamp_pdf pdf range =
-         checkerror (Cpdf.stampOn stamp_pdf pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.stampOn stamp_pdf pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method stampUnder stamp_pdf pdf range =
-         checkerror (Cpdf.stampUnder stamp_pdf pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.stampUnder stamp_pdf pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method stampExtended pdf pdf2 range isover scale_stamp_to_fit position relative_to_cropbox =
-         checkerror
-           (Cpdf.stampExtended pdf pdf2 (range_of_array range) isover scale_stamp_to_fit 1.0 2.0 0 relative_to_cropbox) (* position *)
+         let range = range_of_array range in
+         let ret = Cpdf.stampExtended pdf pdf2 range isover scale_stamp_to_fit 1.0 2.0 0 relative_to_cropbox in (* position *)
+           Cpdf.deleterange range;
+           checkerror ret
        method combinePages under over =
          checkerror (Cpdf.combinePages under over)
        method addText
@@ -467,21 +475,38 @@ let _ =
          underneath relative_to_cropbox outline opacity justification midline
          topline filename linewidth embed_fonts
        =
-         checkerror
-           (Cpdf.addText metrics pdf (range_of_array range) (Js.to_string text) 0 1.0 2.0
+         let range = range_of_array range in
+         let ret = 
+           Cpdf.addText metrics pdf range (Js.to_string text) 0 1.0 2.0
             linespacing bates font fontsize r g b underneath relative_to_cropbox outline
             opacity justification midline topline (Js.to_string filename) linewidth
-            embed_fonts) (* position *)
+            embed_fonts (* position *)
+         in
+           Cpdf.deleterange range;
+           checkerror ret
        method addTextSimple pdf range text position font fontsize =
+         let range = range_of_array range in
          (* CHECK ME *)
-         checkerror
-           (Cpdf.addText false pdf (range_of_array range) (Js.to_string text) 0 1.0 2.0 1.0 0 font fontsize 0. 0. 0. false false false 1.0 Cpdfaddtext.LeftJustify false false "" 0.0 false)
+         let ret =
+           Cpdf.addText false pdf range (Js.to_string text) 0 1.0 2.0 1.0 0 font fontsize 0. 0. 0. false false false 1.0 Cpdfaddtext.LeftJustify false false "" 0.0 false
+         in
+           Cpdf.deleterange range;
+           checkerror ret
        method removeText pdf range =
-         checkerror (Cpdf.removeText pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.removeText pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method addContent content before pdf range =
-         checkerror (Cpdf.addContent (Js.to_string content) before pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.addContent (Js.to_string content) before pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method stampAsXObject pdf range stamp_pdf =
-         checkerror (Js.string (Cpdf.stampAsXObject pdf (range_of_array range) stamp_pdf))
+         let range = range_of_array range in
+         let ret = Js.string (Cpdf.stampAsXObject pdf range stamp_pdf) in
+           Cpdf.deleterange range;
+           checkerror ret
        method textWidth font text =
          checkerror (Cpdf.textWidth font (Js.to_string text))
 
@@ -758,17 +783,35 @@ let _ =
 
        (* CHAPTER 18. Miscellaneous *)
        method draft pdf range boxes =
-         checkerror (Cpdf.draft pdf (range_of_array range) boxes)
+         let range = range_of_array range in
+         let ret = Cpdf.draft pdf range boxes in
+           Cpdf.deleterange range;
+           checkerror ret
        method removeAllText pdf range =
-         checkerror (Cpdf.removeAllText pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.removeAllText pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method blackText pdf range =
-         checkerror (Cpdf.blackText pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.blackText pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method blackLines pdf range =
-         checkerror (Cpdf.blackLines pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.blackLines pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method blackFills pdf range =
-         checkerror (Cpdf.blackFills pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.blackFills pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method thinLines pdf range min_thickness =
-         checkerror (Cpdf.thinLines pdf (range_of_array range) min_thickness)
+         let range = range_of_array range in
+         let ret = Cpdf.thinLines pdf range min_thickness in
+           Cpdf.deleterange range;
+           checkerror ret
        method copyId pdf_from pdf_to =
          checkerror (Cpdf.copyId pdf_from pdf_to)
        method removeId pdf =
