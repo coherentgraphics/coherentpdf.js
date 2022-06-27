@@ -285,21 +285,45 @@ let _ =
 
        (* CHAPTER 3. Pages *)
        method scalePages pdf range sx sy =
-         checkerror (Cpdf.scalePages pdf (range_of_array range) sx sy)
+         let range = range_of_array range in
+         let ret = Cpdf.scalePages pdf range sx sy in
+           Cpdf.deleterange range;
+           checkerror ret
        method scaleToFit pdf range sx sy scale =
-         checkerror (Cpdf.scaleToFit pdf (range_of_array range) sx sy scale)
+         let range = range_of_array range in
+         let ret = Cpdf.scaleToFit pdf range sx sy scale in
+           Cpdf.deleterange range;
+           checkerror ret
        method scaleToFitPaper pdf range papersize s =
-         checkerror (Cpdf.scaleToFitPaper pdf (range_of_array range) papersize s)
+         let range = range_of_array range in
+         let ret = Cpdf.scaleToFitPaper pdf range papersize s in
+           Cpdf.deleterange range;
+           checkerror ret
        method scaleContents pdf range position scale =
-         checkerror (Cpdf.scaleContents pdf (range_of_array range) position scale) (* position *)
+         let range = range_of_array range in
+         let ret = Cpdf.scaleContents pdf range position scale in (* position *)
+           Cpdf.deleterange range;
+           checkerror ret
        method shiftContents pdf range dx dy =
-         checkerror (Cpdf.shiftContents pdf (range_of_array range) dx dy)
+         let range = range_of_array range in
+         let ret = Cpdf.shiftContents pdf range dx dy in
+           Cpdf.deleterange range;
+           checkerror ret
        method rotate pdf range rotation =
-         checkerror (Cpdf.rotate pdf (range_of_array range) rotation)
+         let range = range_of_array range in
+         let ret = Cpdf.rotate pdf range rotation in
+           Cpdf.deleterange range;
+           checkerror ret
        method rotateBy pdf range rotation =
-         checkerror (Cpdf.rotateBy pdf (range_of_array range) rotation)
+         let range = range_of_array range in
+         let ret = Cpdf.rotateBy pdf range rotation in
+           Cpdf.deleterange range;
+           checkerror ret
        method rotateContents pdf range angle =
-         checkerror (Cpdf.rotateContents pdf (range_of_array range) angle)
+         let range = range_of_array range in
+         let ret = Cpdf.rotateContents pdf range angle in
+           Cpdf.deleterange range;
+           checkerror ret
        method upright pdf =
          checkerror (Cpdf.upright pdf)
        method hFlip pdf =
@@ -307,17 +331,35 @@ let _ =
        method vFlip pdf =
          checkerror (Cpdf.vFlip pdf)
        method crop pdf range x y w h =
-         checkerror (Cpdf.crop pdf (range_of_array range) x y w h)
+         let range = range_of_array range in
+         let ret = Cpdf.crop pdf range x y w h in
+           Cpdf.deleterange range;
+           checkerror ret
        method setMediabox pdf range minx maxx miny maxy =
-         checkerror (Cpdf.setMediabox pdf (range_of_array range) minx maxx miny maxy)
+         let range = range_of_array range in
+         let ret = Cpdf.setMediabox pdf range minx maxx miny maxy in
+           Cpdf.deleterange range;
+           checkerror ret
        method setCropBox pdf range minx maxx miny maxy =
-         checkerror (Cpdf.setCropBox pdf (range_of_array range) minx maxx miny maxy)
+         let range = range_of_array range in
+         let ret = Cpdf.setCropBox pdf range minx maxx miny maxy in
+           Cpdf.deleterange range;
+           checkerror ret
        method setTrimBox pdf range minx maxx miny maxy =
-         checkerror (Cpdf.setTrimBox pdf (range_of_array range) minx maxx miny maxy)
+         let range = range_of_array range in
+         let ret = Cpdf.setTrimBox pdf range minx maxx miny maxy in
+           Cpdf.deleterange range;
+           checkerror ret
        method setArtBox pdf range minx maxx miny maxy =
-         checkerror (Cpdf.setArtBox pdf (range_of_array range) minx maxx miny maxy)
+         let range = range_of_array range in
+         let ret = Cpdf.setArtBox pdf range minx maxx miny maxy in
+           Cpdf.deleterange range;
+           checkerror ret
        method setBleedBox pdf range minx maxx miny maxy =
-         checkerror (Cpdf.setBleedBox pdf (range_of_array range) minx maxx miny maxy)
+         let range = range_of_array range in
+         let ret = Cpdf.setBleedBox pdf range minx maxx miny maxy in
+           Cpdf.deleterange range;
+           checkerror ret
        method getMediaBox pdf pagenumber =
          checkerror (Js.array (let (a, b, c, d) = Cpdf.getMediaBox pdf pagenumber in [|a; b; c; d|]))
        method getCropBox pdf pagenumber =
@@ -329,19 +371,40 @@ let _ =
        method getTrimBox pdf pagenumber =
          checkerror (Js.array (let (a, b, c, d) = Cpdf.getTrimBox pdf pagenumber in [|a; b; c; d|]))
        method removeCrop pdf range =
-         checkerror (Cpdf.removeCrop pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.removeCrop pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method removeArt pdf range =
-         checkerror (Cpdf.removeArt pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.removeArt pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method removeTrim pdf range =
-         checkerror (Cpdf.removeTrim pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.removeTrim pdf range in 
+           Cpdf.deleterange range;
+           checkerror ret
        method removeBleed pdf range =
-         checkerror (Cpdf.removeBleed pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.removeBleed pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method hardBox pdf range boxname =
-         checkerror (Cpdf.hardBox pdf (range_of_array range) (Js.to_string boxname))
+         let range = range_of_array range in
+         let ret = Cpdf.hardBox pdf range (Js.to_string boxname) in
+           Cpdf.deleterange range;
+           checkerror ret
        method trimMarks pdf range =
-         checkerror (Cpdf.trimMarks pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.trimMarks pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method showBoxes pdf range =
-         checkerror (Cpdf.showBoxes pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.showBoxes pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
 
        (* CHAPTER 4. Encryption and Decryption *)
 
