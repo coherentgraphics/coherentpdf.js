@@ -138,9 +138,9 @@ let _ =
        method deletePdf pdf =
          checkerror (Cpdf.deletePdf pdf)
        method parsePagespec pdf pagespec =
-         checkerror (Cpdf.parsePagespec pdf (Js.to_string pagespec))
+         checkerror (array_of_range (Cpdf.parsePagespec pdf (Js.to_string pagespec)))
        method stringOfPagespec pdf r =
-         checkerror (Js.string (Cpdf.stringOfPagespec pdf r))
+         checkerror (Js.string (Cpdf.stringOfPagespec pdf (range_of_array r)))
        method validatePagespec pagespec =
          checkerror (Cpdf.validatePagespec (Js.to_string pagespec))
        method ptOfCm x =
@@ -156,27 +156,27 @@ let _ =
        method inOfPt x =
          checkerror (Cpdf.inOfPt x)
        method range f t =
-         checkerror (Cpdf.range f t)
+         checkerror (array_of_range (Cpdf.range f t))
        method blankRange =
-         checkerror (Cpdf.blankrange ())
+         checkerror (array_of_range (Cpdf.blankrange ()))
        method rangeAdd r page =
-         checkerror (Cpdf.addtorange r page)
+         checkerror (array_of_range (Cpdf.addtorange (range_of_array r) page))
        method even x =
-         checkerror (Cpdf.even x)
+         checkerror (array_of_range (Cpdf.even (range_of_array x)))
        method odd x =
-         checkerror (Cpdf.odd x)
+         checkerror (array_of_range (Cpdf.odd (range_of_array x)))
        method rangeUnion a b =
-         checkerror (Cpdf.union a b)
+         checkerror (array_of_range (Cpdf.union (range_of_array a) (range_of_array b)))
        method rangeLength r =
-         checkerror (Cpdf.lengthrange r)
+         checkerror (Cpdf.lengthrange (range_of_array r))
        method rangeGet r n =
-         checkerror (Cpdf.readrange r n)
+         checkerror (Cpdf.readrange (range_of_array r) n)
        method difference a b =
-         checkerror (Cpdf.difference a b)
+         checkerror (array_of_range (Cpdf.difference (range_of_array a) (range_of_array b)))
        method removeDuplicates x =
-         checkerror (Cpdf.removeDuplicates x)
+         checkerror (array_of_range (Cpdf.removeDuplicates (range_of_array x)))
        method isInRange r page =
-         checkerror (Cpdf.isInRange r page)
+         checkerror (Cpdf.isInRange (range_of_array r) page)
        method fromFile filename userpw =
          checkerror (Cpdf.fromFile (Js.to_string filename) (Js.to_string userpw))
        method fromFileLazy filename userpw =
@@ -215,7 +215,7 @@ let _ =
        method pagesFastMemory password data =
          checkerror (Cpdf.pagesFastMemory (Js.to_string password) data) (* data *)
        method all pdf =
-         checkerror (Cpdf.all pdf)
+         checkerror (array_of_range (Cpdf.all pdf))
        method isEncrypted pdf =
          checkerror (Cpdf.isEncrypted pdf)
        method decryptPdf pdf userpw =
@@ -235,25 +235,25 @@ let _ =
        method mergeSame pdfs retain_numbering remove_duplicate_fonts ranges =
          checkerror (Cpdf.mergeSame pdfs retain_numbering remove_duplicate_fonts ranges) (* FIXME array of arrays *)
        method selectPages pdf range =
-         checkerror (Cpdf.selectPages pdf range)
+         checkerror (Cpdf.selectPages pdf (range_of_array range))
 
        (* CHAPTER 3. Pages *)
        method scalePages pdf range sx sy =
-         checkerror (Cpdf.scalePages pdf range sx sy)
+         checkerror (Cpdf.scalePages pdf (range_of_array range) sx sy)
        method scaleToFit pdf range sx sy scale =
-         checkerror (Cpdf.scaleToFit pdf range sx sy scale)
+         checkerror (Cpdf.scaleToFit pdf (range_of_array range) sx sy scale)
        method scaleToFitPaper pdf range papersize s =
-         checkerror (Cpdf.scaleToFitPaper pdf range papersize s)
+         checkerror (Cpdf.scaleToFitPaper pdf (range_of_array range) papersize s)
        method scaleContents pdf range position scale =
-         checkerror (Cpdf.scaleContents pdf range position scale) (* position *)
+         checkerror (Cpdf.scaleContents pdf (range_of_array range) position scale) (* position *)
        method shiftContents pdf range dx dy =
-         checkerror (Cpdf.shiftContents pdf range dx dy)
+         checkerror (Cpdf.shiftContents pdf (range_of_array range) dx dy)
        method rotate pdf range rotation =
-         checkerror (Cpdf.rotate pdf range rotation)
+         checkerror (Cpdf.rotate pdf (range_of_array range) rotation)
        method rotateBy pdf range rotation =
-         checkerror (Cpdf.rotateBy pdf range rotation)
+         checkerror (Cpdf.rotateBy pdf (range_of_array range) rotation)
        method rotateContents pdf range angle =
-         checkerror (Cpdf.rotateContents pdf range angle)
+         checkerror (Cpdf.rotateContents pdf (range_of_array range) angle)
        method upright pdf =
          checkerror (Cpdf.upright pdf)
        method hFlip pdf =
@@ -261,17 +261,17 @@ let _ =
        method vFlip pdf =
          checkerror (Cpdf.vFlip pdf)
        method crop pdf range x y w h =
-         checkerror (Cpdf.crop pdf range x y w h)
+         checkerror (Cpdf.crop pdf (range_of_array range) x y w h)
        method setMediabox pdf range minx maxx miny maxy =
-         checkerror (Cpdf.setMediabox pdf range minx maxx miny maxy)
+         checkerror (Cpdf.setMediabox pdf (range_of_array range) minx maxx miny maxy)
        method setCropBox pdf range minx maxx miny maxy =
-         checkerror (Cpdf.setCropBox pdf range minx maxx miny maxy)
+         checkerror (Cpdf.setCropBox pdf (range_of_array range) minx maxx miny maxy)
        method setTrimBox pdf range minx maxx miny maxy =
-         checkerror (Cpdf.setTrimBox pdf range minx maxx miny maxy)
+         checkerror (Cpdf.setTrimBox pdf (range_of_array range) minx maxx miny maxy)
        method setArtBox pdf range minx maxx miny maxy =
-         checkerror (Cpdf.setArtBox pdf range minx maxx miny maxy)
+         checkerror (Cpdf.setArtBox pdf (range_of_array range) minx maxx miny maxy)
        method setBleedBox pdf range minx maxx miny maxy =
-         checkerror (Cpdf.setBleedBox pdf range minx maxx miny maxy)
+         checkerror (Cpdf.setBleedBox pdf (range_of_array range) minx maxx miny maxy)
        method getMediaBox pdf pagenumber =
          checkerror (Js.array (let (a, b, c, d) = Cpdf.getMediaBox pdf pagenumber in [|a; b; c; d|]))
        method getCropBox pdf pagenumber =
@@ -283,19 +283,19 @@ let _ =
        method getTrimBox pdf pagenumber =
          checkerror (Js.array (let (a, b, c, d) = Cpdf.getTrimBox pdf pagenumber in [|a; b; c; d|]))
        method removeCrop pdf range =
-         checkerror (Cpdf.removeCrop pdf range)
+         checkerror (Cpdf.removeCrop pdf (range_of_array range))
        method removeArt pdf range =
-         checkerror (Cpdf.removeArt pdf range)
+         checkerror (Cpdf.removeArt pdf (range_of_array range))
        method removeTrim pdf range =
-         checkerror (Cpdf.removeTrim pdf range)
+         checkerror (Cpdf.removeTrim pdf (range_of_array range))
        method removeBleed pdf range =
-         checkerror (Cpdf.removeBleed pdf range)
+         checkerror (Cpdf.removeBleed pdf (range_of_array range))
        method hardBox pdf range boxname =
-         checkerror (Cpdf.hardBox pdf range (Js.to_string boxname))
+         checkerror (Cpdf.hardBox pdf (range_of_array range) (Js.to_string boxname))
        method trimMarks pdf range =
-         checkerror (Cpdf.trimMarks pdf range)
+         checkerror (Cpdf.trimMarks pdf (range_of_array range))
        method showBoxes pdf range =
-         checkerror (Cpdf.showBoxes pdf range)
+         checkerror (Cpdf.showBoxes pdf (range_of_array range))
 
        (* CHAPTER 4. Encryption and Decryption *)
 
@@ -368,9 +368,9 @@ let _ =
          checkerror
            (Cpdf.addText false pdf (range_of_array range) (Js.to_string text) 0 1.0 2.0 1.0 0 font fontsize 0. 0. 0. false false false 1.0 Cpdfaddtext.LeftJustify false false "" 0.0 false)
        method removeText pdf range =
-         checkerror (Cpdf.removeText pdf range)
+         checkerror (Cpdf.removeText pdf (range_of_array range))
        method addContent content before pdf range =
-         checkerror (Cpdf.addContent (Js.to_string content) before pdf range)
+         checkerror (Cpdf.addContent (Js.to_string content) before pdf (range_of_array range))
        method stampAsXObject pdf range stamp_pdf =
          checkerror (Js.string (Cpdf.stampAsXObject pdf (range_of_array range) stamp_pdf))
        method textWidth font text =
@@ -384,9 +384,9 @@ let _ =
        method impose pdf x y fit columns rtl btt center margin spacing linewidth =
          checkerror (Cpdf.impose pdf x y fit columns rtl btt center margin spacing linewidth)
        method padBefore pdf range =
-         checkerror (Cpdf.padBefore pdf range)
+         checkerror (Cpdf.padBefore pdf (range_of_array range))
        method padAfter pdf range =
-         checkerror (Cpdf.padAfter pdf range)
+         checkerror (Cpdf.padAfter pdf (range_of_array range))
        method padEvery pdf n =
          checkerror (Cpdf.padEvery pdf n)
        method padMultiple pdf n =
@@ -518,8 +518,8 @@ let _ =
        method setMetadataDate pdf date =
          checkerror (Cpdf.setMetadataDate pdf (Js.to_string date))
        method addPageLabels pdf style prefix offset range progress =
-         checkerror (Cpdf.addPageLabels pdf style (Js.to_string prefix) offset range progress)
-       method removePageLabels pdf =
+         checkerror (Cpdf.addPageLabels pdf style (Js.to_string prefix) offset (range_of_array range) progress)
+       method removePageLabels pdf = 
          checkerror (Cpdf.removePageLabels pdf)
        method startGetPageLabels pdf =
          checkerror (Cpdf.startGetPageLabels pdf)
@@ -593,7 +593,7 @@ let _ =
        method endGetFontInfo =
          checkerror (Cpdf.endGetFontInfo ())
        method copyFont docfrom docto range pagenumber fontname =
-         checkerror (Cpdf.copyFont docfrom docto range pagenumber (Js.to_string fontname))
+         checkerror (Cpdf.copyFont docfrom docto (range_of_array range) pagenumber (Js.to_string fontname))
        method removeFonts pdf =
          checkerror (Cpdf.removeFonts pdf)
 
@@ -637,17 +637,17 @@ let _ =
 
        (* CHAPTER 18. Miscellaneous *)
        method draft pdf range boxes =
-         checkerror (Cpdf.draft pdf range boxes)
+         checkerror (Cpdf.draft pdf (range_of_array range) boxes)
        method removeAllText pdf range =
-         checkerror (Cpdf.removeAllText pdf range)
+         checkerror (Cpdf.removeAllText pdf (range_of_array range))
        method blackText pdf range =
-         checkerror (Cpdf.blackText pdf range)
+         checkerror (Cpdf.blackText pdf (range_of_array range))
        method blackLines pdf range =
-         checkerror (Cpdf.blackLines pdf range)
+         checkerror (Cpdf.blackLines pdf (range_of_array range))
        method blackFills pdf range =
-         checkerror (Cpdf.blackFills pdf range)
+         checkerror (Cpdf.blackFills pdf (range_of_array range))
        method thinLines pdf range min_thickness =
-         checkerror (Cpdf.thinLines pdf range min_thickness)
+         checkerror (Cpdf.thinLines pdf (range_of_array range) min_thickness)
        method copyId pdf_from pdf_to =
          checkerror (Cpdf.copyId pdf_from pdf_to)
        method removeId pdf =
@@ -667,5 +667,5 @@ let _ =
        method getDictEntries pdf key =
          checkerror (Cpdf.getDictEntries pdf (Js.to_string key)) (* data *)
        method removeClipping pdf range =
-         checkerror (Cpdf.removeClipping pdf range)
+         checkerror (Cpdf.removeClipping pdf (range_of_array range))
     end)
