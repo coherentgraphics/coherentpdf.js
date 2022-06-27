@@ -493,9 +493,15 @@ let _ =
        method impose pdf x y fit columns rtl btt center margin spacing linewidth =
          checkerror (Cpdf.impose pdf x y fit columns rtl btt center margin spacing linewidth)
        method padBefore pdf range =
-         checkerror (Cpdf.padBefore pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.padBefore pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method padAfter pdf range =
-         checkerror (Cpdf.padAfter pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.padAfter pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
        method padEvery pdf n =
          checkerror (Cpdf.padEvery pdf n)
        method padMultiple pdf n =
@@ -627,7 +633,10 @@ let _ =
        method setMetadataDate pdf date =
          checkerror (Cpdf.setMetadataDate pdf (Js.to_string date))
        method addPageLabels pdf style prefix offset range progress =
-         checkerror (Cpdf.addPageLabels pdf style (Js.to_string prefix) offset (range_of_array range) progress)
+         let range = range_of_array range in
+         let ret = Cpdf.addPageLabels pdf style (Js.to_string prefix) offset range progress in
+           Cpdf.deleterange range;
+           checkerror ret
        method removePageLabels pdf = 
          checkerror (Cpdf.removePageLabels pdf)
        method startGetPageLabels pdf =
@@ -702,7 +711,10 @@ let _ =
        method endGetFontInfo =
          checkerror (Cpdf.endGetFontInfo ())
        method copyFont docfrom docto range pagenumber fontname =
-         checkerror (Cpdf.copyFont docfrom docto (range_of_array range) pagenumber (Js.to_string fontname))
+         let range = range_of_array range in
+         let ret = checkerror (Cpdf.copyFont docfrom docto range pagenumber (Js.to_string fontname)) in
+           Cpdf.deleterange range;
+           checkerror ret
        method removeFonts pdf =
          checkerror (Cpdf.removeFonts pdf)
 
