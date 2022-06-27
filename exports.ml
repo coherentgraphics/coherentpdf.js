@@ -138,9 +138,15 @@ let _ =
        method deletePdf pdf =
          checkerror (Cpdf.deletePdf pdf)
        method parsePagespec pdf pagespec =
-         checkerror (array_of_range (Cpdf.parsePagespec pdf (Js.to_string pagespec)))
+         let range = Cpdf.parsePagespec pdf (Js.to_string pagespec) in
+         let arr = array_of_range range in
+           Cpdf.deleterange range;
+           checkerror arr
        method stringOfPagespec pdf r =
-         checkerror (Js.string (Cpdf.stringOfPagespec pdf (range_of_array r)))
+         let range = range_of_array r in
+         let ret = Js.string (Cpdf.stringOfPagespec pdf range) in
+           Cpdf.deleterange range;
+           checkerror ret
        method validatePagespec pagespec =
          checkerror (Cpdf.validatePagespec (Js.to_string pagespec))
        method ptOfCm x =
@@ -156,27 +162,64 @@ let _ =
        method inOfPt x =
          checkerror (Cpdf.inOfPt x)
        method range f t =
-         checkerror (array_of_range (Cpdf.range f t))
+         let range = Cpdf.range f t in
+         let arr = array_of_range range in
+           Cpdf.deleterange range;
+           checkerror arr
        method blankRange =
-         checkerror (array_of_range (Cpdf.blankrange ()))
+         let range = Cpdf.blankrange () in
+         let arr = array_of_range range in
+           Cpdf.deleterange range;
+           checkerror arr
        method rangeAdd r page =
-         checkerror (array_of_range (Cpdf.addtorange (range_of_array r) page))
+         let range = range_of_array r in
+         let arr = array_of_range (Cpdf.addtorange range page) in
+           Cpdf.deleterange range;
+           checkerror arr
        method even x =
-         checkerror (array_of_range (Cpdf.even (range_of_array x)))
+         let range = range_of_array x in
+         let arr = array_of_range (Cpdf.even range) in
+           Cpdf.deleterange range;
+           checkerror arr
        method odd x =
-         checkerror (array_of_range (Cpdf.odd (range_of_array x)))
+         let range = range_of_array x in
+         let arr = array_of_range (Cpdf.odd range) in
+           Cpdf.deleterange range;
+           checkerror arr
        method rangeUnion a b =
-         checkerror (array_of_range (Cpdf.union (range_of_array a) (range_of_array b)))
+         let range_a = range_of_array a in
+         let range_b = range_of_array b in
+         let arr = array_of_range (Cpdf.union range_a range_b) in
+           Cpdf.deleterange range_a;
+           Cpdf.deleterange range_b;
+           arr
        method rangeLength r =
-         checkerror (Cpdf.lengthrange (range_of_array r))
+         let range = range_of_array r in
+         let ret = Cpdf.lengthrange range in
+           Cpdf.deleterange range;
+           checkerror ret
        method rangeGet r n =
-         checkerror (Cpdf.readrange (range_of_array r) n)
+         let range = range_of_array r in
+         let ret = Cpdf.readrange range n in
+           Cpdf.deleterange range;
+           checkerror ret
        method difference a b =
-         checkerror (array_of_range (Cpdf.difference (range_of_array a) (range_of_array b)))
+         let range_a = range_of_array a in
+         let range_b = range_of_array b in
+         let arr = array_of_range (Cpdf.difference range_a range_b) in
+           Cpdf.deleterange range_a;
+           Cpdf.deleterange range_b;
+           checkerror arr
        method removeDuplicates x =
-         checkerror (array_of_range (Cpdf.removeDuplicates (range_of_array x)))
+         let range = range_of_array x in
+         let arr = array_of_range (Cpdf.removeDuplicates range) in
+           Cpdf.deleterange range;
+           checkerror arr
        method isInRange r page =
-         checkerror (Cpdf.isInRange (range_of_array r) page)
+         let range = range_of_array r in
+         let ret = Cpdf.isInRange range page in
+           Cpdf.deleterange range;
+           checkerror ret
        method fromFile filename userpw =
          checkerror (Cpdf.fromFile (Js.to_string filename) (Js.to_string userpw))
        method fromFileLazy filename userpw =
@@ -215,7 +258,10 @@ let _ =
        method pagesFastMemory password data =
          checkerror (Cpdf.pagesFastMemory (Js.to_string password) data) (* data *)
        method all pdf =
-         checkerror (array_of_range (Cpdf.all pdf))
+         let range = Cpdf.all pdf in
+         let ret = array_of_range range in
+           Cpdf.deleterange range;
+           checkerror ret
        method isEncrypted pdf =
          checkerror (Cpdf.isEncrypted pdf)
        method decryptPdf pdf userpw =
