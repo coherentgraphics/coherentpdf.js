@@ -33,7 +33,10 @@ let range_of_array a =
 
 (* Pdfio.rawbytes to JavaScript typed array *)
 let data_out x =
-  Typed_array.from_genarray (Bigarray.genarray_of_array1 x) in
+  Typed_array.from_genarray (Bigarray.genarray_of_array1 x)
+
+let data_in x =
+  Bigarray.array1_of_genarray (Typed_array.to_genarray x)
 
 let _ =
   Js.export_all
@@ -229,9 +232,9 @@ let _ =
        method fromFileLazy filename userpw =
          checkerror (Cpdf.fromFileLazy (Js.to_string filename) (Js.to_string userpw))
        method fromMemory data userpw =
-         checkerror (Cpdf.fromMemory data (Js.to_string userpw)) (* data *)
+         checkerror (Cpdf.fromMemory (data_in data) (Js.to_string userpw))
        method fromMemoryLazy data userpw =
-         checkerror (Cpdf.fromMemoryLazy data (Js.to_string userpw)) (* data *)
+         checkerror (Cpdf.fromMemoryLazy (data_in data) (Js.to_string userpw))
        method toFile pdf filename linearize make_id =
          checkerror (Cpdf.toFile pdf (Js.to_string filename) linearize make_id)
        method toFileExt pdf filename linearize make_id preserve_objstm generate_objstm compress_objstm =
@@ -248,20 +251,19 @@ let _ =
            pdf encryption_method (Js.to_array permissions) (Js.to_string ownerpw) (Js.to_string userpw)
            linearize makeid preserve_objstm generate_objstm compress_objstm (Js.to_string filename))
        method toMemory pdf linearize make_id =
-
            checkerror (data_out (Cpdf.toFileMemory pdf linearize make_id))
        method toMemoryExt pdf linearize make_id preserve_objstm generate_objstm compress_objstm =
-         checkerror (Cpdf.toFileMemoryExt pdf linearize make_id preserve_objstm generate_objstm compress_objstm) (* data *)
+         checkerror (data_out (Cpdf.toFileMemoryExt pdf linearize make_id preserve_objstm generate_objstm compress_objstm))
        method toMemoryEncrypted pdf encryption_method permissions ownerpw userpw linearize makeid =
-         checkerror (Cpdf.toFileMemoryEncrypted pdf encryption_method permissions ownerpw userpw linearize makeid) (* data *)
+         checkerror (data_out (Cpdf.toFileMemoryEncrypted pdf encryption_method permissions ownerpw userpw linearize makeid))
        method toMemoryEncryptedExt pdf encryption_method permissions ownerpw userpw linearize makeid preserve_objstm generate_objstm compress_objstm =
-         checkerror (Cpdf.toFileMemoryEncryptedExt pdf encryption_method permissions ownerpw userpw linearize makeid preserve_objstm generate_objstm compress_objstm) (* data *)
+         checkerror (data_out (Cpdf.toFileMemoryEncryptedExt pdf encryption_method permissions ownerpw userpw linearize makeid preserve_objstm generate_objstm compress_objstm))
        method pages pdf =
          checkerror (Cpdf.pages pdf)
        method pagesFast password filename =
          checkerror (Cpdf.pagesFast (Js.to_string password) (Js.to_string filename))
        method pagesFastMemory password data =
-         checkerror (Cpdf.pagesFastMemory (Js.to_string password) data) (* data *)
+         checkerror (Cpdf.pagesFastMemory (Js.to_string password) (data_in data))
        method all pdf =
          let range = Cpdf.all pdf in
          let ret = array_of_range range in
@@ -449,9 +451,9 @@ let _ =
        method setBookmarkOpenStatus n status =
          checkerror (Cpdf.setBookmarkOpenStatus n status)
        method getBookmarksJSON pdf =
-         checkerror (Cpdf.getBookmarksJSON pdf) (* data *)
+         checkerror (data_out (Cpdf.getBookmarksJSON pdf))
        method setBookmarksJSON pdf data =
-         checkerror (Cpdf.setBookmarksJSON pdf data) (* data *)
+         checkerror (Cpdf.setBookmarksJSON pdf (data_in data))
        method tableOfContents pdf font fontsize title bookmark =
          checkerror (Cpdf.tableOfContents pdf font fontsize (Js.to_string title) bookmark)
 
@@ -470,7 +472,7 @@ let _ =
            checkerror ret
        method stampExtended pdf pdf2 range isover scale_stamp_to_fit anchor p1 p2 relative_to_cropbox =
          let range = range_of_array range in
-         let ret = Cpdf.stampExtended pdf pdf2 range isover scale_stamp_to_fit p1 p2 anchor relative_to_cropbox in (* position *)
+         let ret = Cpdf.stampExtended pdf pdf2 range isover scale_stamp_to_fit p1 p2 anchor relative_to_cropbox in
            Cpdf.deleterange range;
            checkerror ret
        method combinePages under over =
@@ -540,7 +542,7 @@ let _ =
 
        (* CHAPTER 10. Annotations *)
        method annotationsJSON pdf =
-         checkerror (Cpdf.annotationsJSON pdf) (* data *)
+         checkerror (data_out (Cpdf.annotationsJSON pdf))
 
        (* CHAPTER 11. Document Information and Metadata *)
        method getVersion pdf =
@@ -550,7 +552,7 @@ let _ =
        method isLinearized filename =
          checkerror (Cpdf.isLinearized (Js.to_string filename))
        method isLinearizedMemory data =
-         checkerror (Cpdf.isLinearizedMemory data) (* data *)
+         checkerror (Cpdf.isLinearizedMemory (data_in data))
        method getTitle pdf =
          checkerror (Js.string (Cpdf.getTitle pdf))
        method getAuthor pdf =
@@ -652,9 +654,9 @@ let _ =
        method setMetadataFromFile pdf filename =
          checkerror (Cpdf.setMetadataFromFile pdf (Js.to_string filename))
        method setMetadataFromByteArray pdf data =
-         checkerror (Cpdf.setMetadataFromByteArray pdf data) (* data *)
+         checkerror (Cpdf.setMetadataFromByteArray pdf (data_in data))
        method getMetadata pdf =
-         checkerror (Cpdf.getMetadata pdf) (* data *)
+         checkerror (data_out (Cpdf.getMetadata pdf))
        method removeMetadata pdf =
          checkerror (Cpdf.removeMetadata pdf)
        method createMetadata pdf =
@@ -689,9 +691,9 @@ let _ =
        method attachFileToPage filename pdf pagenumber =
          checkerror (Cpdf.attachFileToPage (Js.to_string filename) pdf pagenumber)
        method attachFileFromMemory data filename pdf =
-         checkerror (Cpdf.attachFileFromMemory data (Js.to_string filename) pdf) (* data *)
+         checkerror (Cpdf.attachFileFromMemory (data_in data) (Js.to_string filename) pdf)
        method attachFileToPageFromMemory data filename pdf pagenumber =
-         checkerror (Cpdf.attachFileToPageFromMemory data (Js.to_string filename) pdf pagenumber) (* data *)
+         checkerror (Cpdf.attachFileToPageFromMemory (data_in data) (Js.to_string filename) pdf pagenumber)
        method removeAttachedFiles pdf =
          checkerror (Cpdf.removeAttachedFiles pdf)
        method startGetAttachments pdf =
@@ -705,7 +707,7 @@ let _ =
        method getAttachmentPage n =
          checkerror (Cpdf.getAttachmentPage n)
        method getAttachmentData n =
-         checkerror (Cpdf.getAttachmentData n) (* data *)
+         checkerror (data_out (Cpdf.getAttachmentData n))
 
        (* CHAPTER 13. Images *)
        method startGetImageResolution pdf min_required_resolution =
@@ -749,13 +751,13 @@ let _ =
 
        (* CHAPTER 15. PDF and JSON *)
        method outputJSON filename parse_content no_stream_data decompress_streams pdf =
-         checkerror (Cpdf.outputJSON filename parse_content no_stream_data decompress_streams pdf) (* data *)
+         checkerror (Cpdf.outputJSON filename parse_content no_stream_data decompress_streams pdf)
        method outputJSONMemory parse_content no_stream_data decompress_streams pdf =
-         checkerror (Cpdf.outputJSONMemory parse_content no_stream_data decompress_streams pdf) (* data *)
+         checkerror (data_out (Cpdf.outputJSONMemory parse_content no_stream_data decompress_streams pdf))
        method fromJSON filename =
-         checkerror (Cpdf.fromJSON filename) (* data *)
+         checkerror (Cpdf.fromJSON filename)
        method fromJSONMemory data =
-         checkerror (Cpdf.fromJSONMemory data) (* data *)
+         checkerror (Cpdf.fromJSONMemory (data_in data))
 
        (* CHAPTER 16. Optional Content Groups *)
        method startGetOCGList pdf =
@@ -781,9 +783,9 @@ let _ =
        method textToPDFPaper papersize font fontsize filename =
          checkerror (Cpdf.textToPDFPaper papersize font fontsize (Js.to_string filename))
        method textToPDFMemory w h font fontsize data =
-         checkerror (Cpdf.textToPDFMemory w h font fontsize data) (* data *)
+         checkerror (Cpdf.textToPDFMemory w h font fontsize (data_in data))
        method textToPDFPaperMemory papersize font fontsize data =
-         checkerror (Cpdf.textToPDFPaperMemory papersize font fontsize data) (* data *)
+         checkerror (Cpdf.textToPDFPaperMemory papersize font fontsize (data_in data))
 
        (* CHAPTER 18. Miscellaneous *)
        method draft pdf range boxes =
@@ -833,7 +835,7 @@ let _ =
        method replaceDictEntrySearch pdf key newval searchterm =
          checkerror (Cpdf.replaceDictEntrySearch pdf key (Js.to_string newval) (Js.to_string searchterm))
        method getDictEntries pdf key =
-         checkerror (Cpdf.getDictEntries pdf (Js.to_string key)) (* data *)
+         checkerror (data_out (Cpdf.getDictEntries pdf (Js.to_string key)))
        method removeClipping pdf range =
          checkerror (Cpdf.removeClipping pdf (range_of_array range))
     end)
