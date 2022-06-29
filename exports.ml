@@ -286,7 +286,10 @@ let _ =
        method merge pdfs retain_numbering remove_duplicate_fonts =
          checkerror (Cpdf.merge (Js.to_array pdfs) retain_numbering remove_duplicate_fonts)
        method mergeSame pdfs retain_numbering remove_duplicate_fonts ranges =
-         checkerror (Cpdf.mergeSame pdfs retain_numbering remove_duplicate_fonts (Js.to_array ranges))
+         let ranges = Array.map range_of_array (Js.to_array ranges) in
+         let ret = Cpdf.mergeSame (Js.to_array pdfs) retain_numbering remove_duplicate_fonts ranges in
+           Array.iter Cpdf.deleterange ranges;
+           checkerror ret
        method selectPages pdf range =
          checkerror (Cpdf.selectPages pdf (range_of_array range))
 
@@ -331,12 +334,19 @@ let _ =
          let ret = Cpdf.rotateContents pdf range angle in
            Cpdf.deleterange range;
            checkerror ret
-       method upright pdf =
-         checkerror (Cpdf.upright pdf)
-       method hFlip pdf =
-         checkerror (Cpdf.hFlip pdf)
-       method vFlip pdf =
-         checkerror (Cpdf.vFlip pdf)
+       method upright pdf range =
+         let range = range_of_array range in
+         let ret = Cpdf.upright pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
+       method hFlip pdf range =
+         let range = range_of_array range in
+         let ret = Cpdf.hFlip pdf range in
+           checkerror ret
+       method vFlip pdf range =
+         let range = range_of_array range in
+         let ret = Cpdf.vFlip pdf range in
+           checkerror ret
        method crop pdf range x y w h =
          let range = range_of_array range in
          let ret = Cpdf.crop pdf range x y w h in
@@ -586,7 +596,8 @@ let _ =
        method getModificationDateXMP pdf =
          checkerror (Js.string (Cpdf.getModificationDateXMP pdf))
        method getDateComponents s =
-         checkerror (Cpdf.getDateComponents (Js.to_string s)) (* array *)
+         let t = Cpdf.getDateComponents (Js.to_string s) in
+         checkerror (Js.array [|t.year; t.month; t.day; t.hour; t.minute; t.second; t.hour_offset; t.minute_offset|])
        method dateStringOfComponents y m d h min sec hour_offset minute_offset =
          checkerror (Js.string (Cpdf.dateStringOfComponents y m d h min sec hour_offset minute_offset))
        method setTitle pdf s =
@@ -700,7 +711,7 @@ let _ =
          checkerror (Cpdf.startGetAttachments pdf)
        method endGetAttachments =
          checkerror (Cpdf.endGetAttachments ())
-       method numberGetAttachments pdf =
+       method numberGetAttachments =
          checkerror (Cpdf.numberGetAttachments ())
        method getAttachmentName n =
          checkerror (Cpdf.getAttachmentName n)
@@ -751,11 +762,11 @@ let _ =
 
        (* CHAPTER 15. PDF and JSON *)
        method outputJSON filename parse_content no_stream_data decompress_streams pdf =
-         checkerror (Cpdf.outputJSON filename parse_content no_stream_data decompress_streams pdf)
+         checkerror (Cpdf.outputJSON (Js.to_string filename) parse_content no_stream_data decompress_streams pdf)
        method outputJSONMemory parse_content no_stream_data decompress_streams pdf =
          checkerror (data_out (Cpdf.outputJSONMemory parse_content no_stream_data decompress_streams pdf))
        method fromJSON filename =
-         checkerror (Cpdf.fromJSON filename)
+         checkerror (Cpdf.fromJSON (Js.to_string filename))
        method fromJSONMemory data =
          checkerror (Cpdf.fromJSONMemory (data_in data))
 

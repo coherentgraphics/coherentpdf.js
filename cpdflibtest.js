@@ -358,7 +358,7 @@ cpdf.addText(false,
      textfile,
      all,
      "Some Text~~~~~~~~~~!",
-     (new cpdf.Position(cpdf.topLeft, 20.0, 20.0)),
+     cpdf.topLeft, 20.0, 20.0,
      1.0,
      1,
      cpdf.timesRoman,
@@ -377,7 +377,7 @@ cpdf.addText(false,
      1.0,
      false);
 console.log("---cpdf_addTextSimple()");
-cpdf.addTextSimple(textfile, all, "The text!", (new cpdf.Position(cpdf.topLeft, 20.0, 20.0)), cpdf.timesRoman, 50.0);
+cpdf.addTextSimple(textfile, all, "The text!", cpdf.topLeft, 20.0, 20.0, cpdf.timesRoman, 50.0);
 cpdf.toFile(textfile, "testoutputs/08added_text.pdf", false, false);
 console.log("---cpdf_removeText()");
 cpdf.removeText(textfile, all);
@@ -392,7 +392,7 @@ cpdf.stampOn(stamp, stampee, stamp_range);
 console.log("---cpdf_stampUnder()");
 cpdf.stampUnder(stamp, stampee, stamp_range);
 console.log("---cpdf_stampExtended()");
-cpdf.stampExtended(stamp, stampee, stamp_range, true, true, (new cpdf.Position(cpdf.topLeft, 20.0, 20.0)), true);
+cpdf.stampExtended(stamp, stampee, stamp_range, true, true, cpdf.topLeft, 20.0, 20.0, true);
 cpdf.toFile(stamp, "testoutputs/08stamp_after.pdf", false, false);
 cpdf.toFile(stampee, "testoutputs/08stampee_after.pdf", false, false);
 var c1 = cpdf.fromFile("testinputs/logo.pdf", "");
