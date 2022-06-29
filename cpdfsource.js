@@ -497,6 +497,24 @@ scale (typically 1.0)
 @arg {number} s scale */
 function scaleToFitPaper(pdf, range, papersize, s)
 
+/** Positions on the page. Used for scaling about a point, and adding text.
+
+A position is an anchor and zero or one or two parameters.
+
+posCentre: Two parameters, x and y<br/>
+posLeft: Two parameters, x and y<br/>
+posRight: Two parameters, x and y<br/>
+top: One parameter - distance from top<br/>
+topLeft: One parameter - distance from top left<br/>
+topRight: One parameter - distance from top right<br/>
+left: One parameter - distance from left middle<br/>
+bottomLeft: One parameter - distance from bottom left<br/>
+bottom: One parameter - distance from bottom<br/>
+bottomRight: One parameter - distance from bottom right<br/>
+right: One parameter - distance from right<br/>
+diagonal: Zero parameters<br/>
+reverseDiagonal: Zero parameters */
+
 /** Absolute centre */
 var posCentre = 0;
 
@@ -536,32 +554,15 @@ var diagonal = 11;
 /** Diagonal, top left to bottom right */
 var reversediagonal = 12;
 
-/** Positions on the page. Used for scaling about a point, and adding text.
-
-A position is an anchor and zero or one or two parameters.
-
-posCentre: Two parameters, x and y<br/>
-posLeft: Two parameters, x and y<br/>
-posRight: Two parameters, x and y<br/>
-top: One parameter - distance from top<br/>
-topLeft: One parameter - distance from top left<br/>
-topRight: One parameter - distance from top right<br/>
-left: One parameter - distance from left middle<br/>
-bottomLeft: One parameter - distance from bottom left<br/>
-bottom: One parameter - distance from bottom<br/>
-bottomRight: One parameter - distance from bottom right<br/>
-right: One parameter - distance from right<br/>
-diagonal: Zero parameters<br/>
-reverseDiagonal: Zero parameters */
-function Position(anchor, p1, p2)
-
 /** Scales the contents of the pages in the range about the point given by
 the position, by the scale given.
 @arg {pdf} pdf PDF document
 @arg {range} range page range
-@arg {position} position position
+@arg {anchor} anchor anchor to scale contents about
+@arg {number} p1 position argument 1
+@arg {number} p2 position argument 2
 @arg {number} scale scale */
-function scaleContents(pdf, range, position, scale)
+function scaleContents(pdf, range, anchor, p1, p2, scale)
 
 /** Shifts the content of the pages in the range.
 @arg {pdf} pdf PDF document
@@ -784,7 +785,9 @@ function stampUnder(stamp_pdf, pdf, range)
 @arg {pdf} pdf second PDF document
 @arg {boolean} isover pdf goes over pdf2, otherwise under
 @arg {boolean} scale_stamp_to_fit scales the stamp to fit the page
-@arg {position} pos gives the position to put the stamp
+@arg {anchor} anchor for position of stamp
+@arg {number} p1 position argument 1
+@arg {number} p2 position argument 2
 @arg {boolean} relative_to_cropbox pos is relative to cropbox not mediabox. */
 function stampExtended(pdf, pdf2, range, isover, scale_stamp_to_fit, position, relative_to_cropbox)
 
@@ -845,7 +848,9 @@ var rightJustify = 2;
 @arg {pdf} pdf PDF document
 @arg {range} range page range
 @arg {string} text text to add
-@arg {position} position position to add text at
+@arg {anchor} anchor anchor to add text at
+@arg {number} p1 position argument 1
+@arg {number} p2 position argument 2
 @arg {number} linespacing line spacing
 @arg {number} bates starting bates number
 @arg {font} font font
@@ -864,7 +869,7 @@ var rightJustify = 2;
 @arg {number} linewidth line width
 @arg {boolean} embed_fonts add font information
 */
-function addText(metrics, pdf, range, text, position, linespacing,
+function addText(metrics, pdf, range, text, anchor, p1, p2, linespacing,
                  bates, font, fontsize, r, g, b, underneath, relative_to_cropbox, outline,
                  opacity, justification, midline, topline, filename, linewidth, embed_fonts)
 
@@ -872,10 +877,12 @@ function addText(metrics, pdf, range, text, position, linespacing,
 @arg {pdf} pdf PDF document
 @arg {range} range page range
 @arg {string} text text to add
-@arg {position} position position to add text at
+@arg {anchor} anchor anchor to add text at
+@arg {number} p1 position argument 1
+@arg {number} p2 position argument 2
 @arg {font} font font
 @arg {number} fontsize font size */
-function addTextSimple(pdf, range, text, position, font, fontsize)
+function addTextSimple(pdf, range, text, anchor, p1, p2, font, fontsize)
 
 /** Removes any text added by cpdf from the given pages.
 @arg {pdf} pdf PDF document

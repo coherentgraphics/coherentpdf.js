@@ -299,9 +299,9 @@ let _ =
          let ret = Cpdf.scaleToFitPaper pdf range papersize s in
            Cpdf.deleterange range;
            checkerror ret
-       method scaleContents pdf range position scale =
+       method scaleContents pdf range anchor p1 p2 scale =
          let range = range_of_array range in
-         let ret = Cpdf.scaleContents pdf range position scale in (* position *)
+         let ret = Cpdf.scaleContents pdf range anchor p1 p2 scale in
            Cpdf.deleterange range;
            checkerror ret
        method shiftContents pdf range dx dy =
@@ -463,32 +463,31 @@ let _ =
          let ret = Cpdf.stampUnder stamp_pdf pdf range in
            Cpdf.deleterange range;
            checkerror ret
-       method stampExtended pdf pdf2 range isover scale_stamp_to_fit position relative_to_cropbox =
+       method stampExtended pdf pdf2 range isover scale_stamp_to_fit anchor p1 p2 relative_to_cropbox =
          let range = range_of_array range in
-         let ret = Cpdf.stampExtended pdf pdf2 range isover scale_stamp_to_fit 1.0 2.0 0 relative_to_cropbox in (* position *)
+         let ret = Cpdf.stampExtended pdf pdf2 range isover scale_stamp_to_fit p1 p2 anchor relative_to_cropbox in (* position *)
            Cpdf.deleterange range;
            checkerror ret
        method combinePages under over =
          checkerror (Cpdf.combinePages under over)
        method addText
-         metrics pdf range text position linespacing bates font fontsize r g b
+         metrics pdf range text anchor p1 p2 linespacing bates font fontsize r g b
          underneath relative_to_cropbox outline opacity justification midline
          topline filename linewidth embed_fonts
        =
          let range = range_of_array range in
          let ret = 
-           Cpdf.addText metrics pdf range (Js.to_string text) 0 1.0 2.0
+           Cpdf.addText metrics pdf range (Js.to_string text) anchor p1 p2
             linespacing bates font fontsize r g b underneath relative_to_cropbox outline
             opacity justification midline topline (Js.to_string filename) linewidth
             embed_fonts (* position *)
          in
            Cpdf.deleterange range;
            checkerror ret
-       method addTextSimple pdf range text position font fontsize =
+       method addTextSimple pdf range text anchor p1 p2 font fontsize =
          let range = range_of_array range in
-         (* CHECK ME *)
          let ret =
-           Cpdf.addText false pdf range (Js.to_string text) 0 1.0 2.0 1.0 0 font fontsize 0. 0. 0. false false false 1.0 Cpdfaddtext.LeftJustify false false "" 0.0 false
+           Cpdf.addText false pdf range (Js.to_string text) anchor p1 p2 1.0 0 font fontsize 0. 0. 0. false false false 1.0 Cpdfaddtext.LeftJustify false false "" 0.0 false
          in
            Cpdf.deleterange range;
            checkerror ret
