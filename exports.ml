@@ -31,6 +31,10 @@ let range_of_array a =
     done;
     !r
 
+(* Pdfio.rawbytes to JavaScript typed array *)
+let data_out x =
+  Typed_array.from_genarray (Bigarray.genarray_of_array1 x) in
+
 let _ =
   Js.export_all
     (object%js
@@ -244,7 +248,8 @@ let _ =
            pdf encryption_method (Js.to_array permissions) (Js.to_string ownerpw) (Js.to_string userpw)
            linearize makeid preserve_objstm generate_objstm compress_objstm (Js.to_string filename))
        method toMemory pdf linearize make_id =
-         checkerror (Cpdf.toFileMemory pdf linearize make_id) (* data *)
+
+           checkerror (data_out (Cpdf.toFileMemory pdf linearize make_id))
        method toMemoryExt pdf linearize make_id preserve_objstm generate_objstm compress_objstm =
          checkerror (Cpdf.toFileMemoryExt pdf linearize make_id preserve_objstm generate_objstm compress_objstm) (* data *)
        method toMemoryEncrypted pdf encryption_method permissions ownerpw userpw linearize makeid =
