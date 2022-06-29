@@ -279,7 +279,7 @@ let _ =
        method merge pdfs retain_numbering remove_duplicate_fonts =
          checkerror (Cpdf.merge (Js.to_array pdfs) retain_numbering remove_duplicate_fonts)
        method mergeSame pdfs retain_numbering remove_duplicate_fonts ranges =
-         checkerror (Cpdf.mergeSame pdfs retain_numbering remove_duplicate_fonts ranges) (* FIXME array of arrays *)
+         checkerror (Cpdf.mergeSame pdfs retain_numbering remove_duplicate_fonts (Js.to_array ranges))
        method selectPages pdf range =
          checkerror (Cpdf.selectPages pdf (range_of_array range))
 
