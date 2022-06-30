@@ -251,7 +251,7 @@ let _ =
            pdf encryption_method (Js.to_array permissions) (Js.to_string ownerpw) (Js.to_string userpw)
            linearize makeid preserve_objstm generate_objstm compress_objstm (Js.to_string filename))
        method toMemory pdf linearize make_id =
-           checkerror (data_out (Cpdf.toFileMemory pdf linearize make_id))
+         checkerror (data_out (Cpdf.toFileMemory pdf linearize make_id))
        method toMemoryExt pdf linearize make_id preserve_objstm generate_objstm compress_objstm =
          checkerror (data_out (Cpdf.toFileMemoryExt pdf linearize make_id preserve_objstm generate_objstm compress_objstm))
        method toMemoryEncrypted pdf encryption_method permissions ownerpw userpw linearize makeid =
