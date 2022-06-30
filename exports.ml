@@ -844,7 +844,7 @@ let _ =
        method replaceDictEntry pdf key newval =
          checkerror (Cpdf.replaceDictEntry pdf (Js.to_string key) (Js.to_string newval))
        method replaceDictEntrySearch pdf key newval searchterm =
-         checkerror (Cpdf.replaceDictEntrySearch pdf key (Js.to_string newval) (Js.to_string searchterm))
+         checkerror (Cpdf.replaceDictEntrySearch pdf (Js.to_string key) (Js.to_string newval) (Js.to_string searchterm))
        method getDictEntries pdf key =
          checkerror (data_out (Cpdf.getDictEntries pdf (Js.to_string key)))
        method removeClipping pdf range =

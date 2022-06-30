@@ -221,8 +221,7 @@ console.log("---cpdf_scaleToFitPaper()");
 cpdf.scaleToFitPaper(pagespdf3, r3, cpdf.a4portrait, 0.8);
 cpdf.toFile(pagespdf3, "testoutputs/03scaletofitpaper.pdf", false, false);
 console.log("---cpdf_scaleContents()");
-//var psc = new Position(cpdf.topleft, 20.0, 20.0);
-//cpdf.scaleContents(pagespdf4, r4, psc, 2.0);
+cpdf.scaleContents(pagespdf4, r4, cpdf.topLeft, 20., 20., 2.0);
 cpdf.toFile(pagespdf4, "testoutputs/03scalecontents.pdf", false, false);
 console.log("---cpdf_shiftContents()");
 cpdf.shiftContents(pagespdf5, r5, 1.5, 1.25);
@@ -874,13 +873,7 @@ console.log("---cpdf_replaceDictEntry()");
 cpdf.replaceDictEntry(misc14, "/Producer", "\"NewProducer\"");
 cpdf.toFile(misc14, "testoutputs/17replacedictentry.pdf", false, false);
 console.log("---cpdf_replaceDictEntrySearch()");
-try
-  {
 cpdf.replaceDictEntrySearch(misc15, "/Producer", "\"NewProducer2\"", "\"pdfTeX-1.40.22\"");
-  }
-catch (ignore)
-  {
-  }
 cpdf.toFile(misc15, "testoutputs/17replacedictentrysearch.pdf", false, false);
 console.log("---cpdf_getDictEntries()");
 var entries = cpdf.getDictEntries(misc16, "/Producer");

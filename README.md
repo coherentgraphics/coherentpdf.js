@@ -3,9 +3,7 @@ A JavaScript library for editing PDF files.
 Use
 ---
 
-For development server-side with node: cpdf.js / cpdflib.js
-
-(Minified versions cpdf.min.js and cpdflib.min.js)
+For development server-side with node: cpdf.js (minified version cpdf.min.js)
 
 Load with "const cpdf = require('cpdf.js')" if installed in npm, or "const cpdf
 = require('./cpdf.js')" to load from current directory.
@@ -41,14 +39,14 @@ cpdf.js is synchronous and non-re-entrant.
 Data types
 ----------
 
-Arguments are integers, floating point numbers, strings, or arrays of type
-UInt8Array. Page ranges are represented by arrays of numbers.
+Arguments are numbers, strings, or arrays (of type UInt8Array for data). Page
+ranges are represented by arrays of numbers.
 
 
 Memory Management
 -----------------
 
-A PDF n must be explicitly deallocated with deletePdf(n).
+A PDF p must be explicitly deallocated with deletePdf(p).
 
 
 Errors
