@@ -13,13 +13,9 @@ PDFMODS = pdfutil pdfio pdftransform pdfunits pdfpaper pdfcryptprimitives \
   cpdf
 
 SOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
-	  $(foreach x,$(PDFMODS),$(x).ml $(x).mli) exports.ml
+	  $(foreach x,$(PDFMODS),$(x).ml $(x).mli) cpdfcommand.ml cpdfcommandrun.ml
 
-XSOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \
-	  $(foreach x,$(PDFMODS),$(x).ml $(x).mli) cpdfcommand.ml \
-	  cpdfcommandrun.ml
-
-PACKS = unix js_of_ocaml,js_of_ocaml-ppx
+PACKS = unix js_of_ocaml js_of_ocaml-ppx
 
 OCAMLBCFLAGS = -g
 OCAMLLDFLAGS = -g
