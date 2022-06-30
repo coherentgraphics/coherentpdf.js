@@ -1,2 +1,2 @@
 #Also edit jsdoc default template to remove silly sorting before running this
-jsdoc -d manual cpdfsource.js README.md
+jsdoc -d manual cpdfdocs.js README.md
