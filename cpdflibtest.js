@@ -304,7 +304,6 @@ console.log("---cpdf_squeezeInMemory()");
 cpdf.squeezeInMemory(pdf16);
 cpdf.toFile(pdf16, "testoutputs/05squeezedinmemory.pdf", false, false);
 cpdf.deletePdf(pdf16);
-
  
 // CHAPTER 6. Bookmarks
 console.log("***** CHAPTER 6. Bookmarks");

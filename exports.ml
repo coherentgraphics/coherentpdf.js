@@ -177,25 +177,33 @@ let _ =
            checkerror arr
        method rangeAdd r page =
          let range = range_of_array r in
-         let arr = array_of_range (Cpdf.addtorange range page) in
+         let added = Cpdf.addtorange range page in
+         let arr = array_of_range added in
            Cpdf.deleterange range;
+           Cpdf.deleterange added;
            checkerror arr
        method even x =
          let range = range_of_array x in
-         let arr = array_of_range (Cpdf.even range) in
+         let even = Cpdf.even range in
+         let arr = array_of_range even in
            Cpdf.deleterange range;
+           Cpdf.deleterange even;
            checkerror arr
        method odd x =
          let range = range_of_array x in
-         let arr = array_of_range (Cpdf.odd range) in
+         let odd = Cpdf.odd range in
+         let arr = array_of_range odd in
            Cpdf.deleterange range;
+           Cpdf.deleterange odd;
            checkerror arr
        method rangeUnion a b =
          let range_a = range_of_array a in
          let range_b = range_of_array b in
-         let arr = array_of_range (Cpdf.union range_a range_b) in
+         let union = Cpdf.union range_a range_b in
+         let arr = array_of_range union in
            Cpdf.deleterange range_a;
            Cpdf.deleterange range_b;
+           Cpdf.deleterange union;
            arr
        method rangeLength r =
          let range = range_of_array r in
@@ -210,14 +218,18 @@ let _ =
        method difference a b =
          let range_a = range_of_array a in
          let range_b = range_of_array b in
-         let arr = array_of_range (Cpdf.difference range_a range_b) in
+         let diff = Cpdf.difference range_a range_b in
+         let arr = array_of_range diff in
            Cpdf.deleterange range_a;
            Cpdf.deleterange range_b;
+           Cpdf.deleterange diff;
            checkerror arr
        method removeDuplicates x =
          let range = range_of_array x in
-         let arr = array_of_range (Cpdf.removeDuplicates range) in
+         let deduped = Cpdf.removeDuplicates range in
+         let arr = array_of_range deduped in
            Cpdf.deleterange range;
+           Cpdf.deleterange deduped;
            checkerror arr
        method isInRange r page =
          let range = range_of_array r in
@@ -248,13 +260,13 @@ let _ =
            pdf encryption_method (Js.to_array permissions) (Js.to_string ownerpw) (Js.to_string userpw)
            linearize makeid preserve_objstm generate_objstm compress_objstm (Js.to_string filename))
        method toMemory pdf linearize make_id =
-         checkerror_unit (data_out (Cpdf.toFileMemory pdf linearize make_id))
+         checkerror (data_out (Cpdf.toFileMemory pdf linearize make_id))
        method toMemoryExt pdf linearize make_id preserve_objstm generate_objstm compress_objstm =
-         checkerror_unit (data_out (Cpdf.toFileMemoryExt pdf linearize make_id preserve_objstm generate_objstm compress_objstm))
+         checkerror (data_out (Cpdf.toFileMemoryExt pdf linearize make_id preserve_objstm generate_objstm compress_objstm))
        method toMemoryEncrypted pdf encryption_method permissions ownerpw userpw linearize makeid =
-         checkerror_unit (data_out (Cpdf.toFileMemoryEncrypted pdf encryption_method permissions ownerpw userpw linearize makeid))
+         checkerror (data_out (Cpdf.toFileMemoryEncrypted pdf encryption_method permissions ownerpw userpw linearize makeid))
        method toMemoryEncryptedExt pdf encryption_method permissions ownerpw userpw linearize makeid preserve_objstm generate_objstm compress_objstm =
-         checkerror_unit (data_out (Cpdf.toFileMemoryEncryptedExt pdf encryption_method permissions ownerpw userpw linearize makeid preserve_objstm generate_objstm compress_objstm))
+         checkerror (data_out (Cpdf.toFileMemoryEncryptedExt pdf encryption_method permissions ownerpw userpw linearize makeid preserve_objstm generate_objstm compress_objstm))
        method pages pdf =
          checkerror (Cpdf.pages pdf)
        method pagesFast password filename =
@@ -288,7 +300,10 @@ let _ =
            Array.iter Cpdf.deleterange ranges;
            checkerror ret
        method selectPages pdf range =
-         checkerror (Cpdf.selectPages pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.selectPages pdf range in
+           Cpdf.deleterange range;
+           checkerror ret
 
        (* CHAPTER 3. Pages *)
        method scalePages pdf range sx sy =
@@ -339,10 +354,12 @@ let _ =
        method hFlip pdf range =
          let range = range_of_array range in
          let ret = Cpdf.hFlip pdf range in
+           Cpdf.deleterange range;
            checkerror_unit ret
        method vFlip pdf range =
          let range = range_of_array range in
          let ret = Cpdf.vFlip pdf range in
+           Cpdf.deleterange range;
            checkerror_unit ret
        method crop pdf range x y w h =
          let range = range_of_array range in
@@ -846,5 +863,8 @@ let _ =
        method getDictEntries pdf key =
          checkerror (data_out (Cpdf.getDictEntries pdf (Js.to_string key)))
        method removeClipping pdf range =
-         checkerror_unit (Cpdf.removeClipping pdf (range_of_array range))
+         let range = range_of_array range in
+         let ret = Cpdf.removeClipping pdf range in
+           Cpdf.deleterange range;
+           checkerror_unit ret
     end)
