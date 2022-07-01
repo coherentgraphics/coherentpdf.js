@@ -928,20 +928,17 @@ imposed inputs.
 @arg {boolean} center unused
 @arg {number} margin margin around output pages
 @arg {number} spacing spacing between imposed pages
-@arg {number} linewidth line width
-@return {pdf} imposed document */
+@arg {number} linewidth line width */
 function impose(pdf, x, y, fit, columns, rtl, btt, center, margin, spacing, linewidth) {}
 
 /** Imposes a document two up. twoUp does so by shrinking the page size, to fit
 two pages on one.
-@arg {pdf} pdf PDF document
-@return {pdf} imposed document  */
+@arg {pdf} pdf PDF document */
 function twoUp(pdf) {}
 
 /** Impose a document two up. twoUpStack does so by doubling the page size,
 to fit two pages on one.
-@arg {pdf} pdf PDF document
-@return {pdf} imposed document */
+@arg {pdf} pdf PDF document */
 function twoUpStack(pdf) {}
 
 /** Adds a blank page before each page in the given range.
