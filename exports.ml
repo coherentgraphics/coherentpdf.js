@@ -43,6 +43,7 @@ let range_of_array a =
 let data_out x =
   Typed_array.from_genarray (Bigarray.genarray_of_array1 x)
 
+(* Javascript typed array to Pdfio.rawbytes *)
 let data_in x =
   Bigarray.array1_of_genarray (Typed_array.to_genarray x)
 
@@ -580,7 +581,7 @@ let _ =
        method isLinearized filename =
          checkerror_bool (Cpdf.isLinearized (Js.to_string filename))
        method isLinearizedMemory data =
-         checkerror (Cpdf.isLinearizedMemory (data_in data))
+         checkerror_bool (Cpdf.isLinearizedMemory (data_in data))
        method getTitle pdf =
          checkerror (Js.string (Cpdf.getTitle pdf))
        method getAuthor pdf =

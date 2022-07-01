@@ -23,7 +23,7 @@ can be used to detect if PDFs or ranges are being deallocated properly.
 Contrary to its name, it may be run at any time. */
 function onexit() {}
 
-//CHAPTER 1. Basics
+// CHAPTER 1. Basics
 
 /** Loads a PDF file from a given file. Supply a user password (possibly blank)
 in case the file is encrypted. It won't be decrypted, but sometimes the
