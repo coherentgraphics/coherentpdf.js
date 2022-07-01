@@ -16,6 +16,10 @@ let checkerror_unit x =
   ignore (checkerror x);
   Js.undefined
 
+let checkerror_bool x =
+  ignore (checkerror x);
+  Js.bool x
+
 (* Convert Cpdflib range to Javascript array of page numbers *)
 let array_of_range r =
   let a = Array.make (Cpdf.lengthrange r) 0 in
@@ -152,7 +156,7 @@ let _ =
            Cpdf.deleterange range;
            checkerror ret
        method validatePagespec pagespec =
-         checkerror (Cpdf.validatePagespec (Js.to_string pagespec))
+         checkerror_bool (Cpdf.validatePagespec (Js.to_string pagespec))
        method ptOfCm x =
          checkerror (Cpdf.ptOfCm x)
        method ptOfMm x =
@@ -235,7 +239,7 @@ let _ =
          let range = range_of_array r in
          let ret = Cpdf.isInRange range page in
            Cpdf.deleterange range;
-           checkerror ret
+           checkerror_bool ret
        method fromFile filename userpw =
          checkerror (Cpdf.fromFile (Js.to_string filename) (Js.to_string userpw))
        method fromFileLazy filename userpw =
@@ -279,13 +283,13 @@ let _ =
            Cpdf.deleterange range;
            checkerror ret
        method isEncrypted pdf =
-         checkerror (Cpdf.isEncrypted pdf)
+         checkerror_bool (Cpdf.isEncrypted pdf)
        method decryptPdf pdf userpw =
          checkerror_unit (Cpdf.decryptPdf pdf (Js.to_string userpw))
        method decryptPdfOwner pdf ownerpw =
          checkerror_unit (Cpdf.decryptPdfOwner pdf (Js.to_string ownerpw))
        method hasPermission pdf permission =
-         checkerror (Cpdf.hasPermission pdf permission)
+         checkerror_bool (Cpdf.hasPermission pdf permission)
        method encryptionKind pdf =
          checkerror (Cpdf.encryptionKind pdf)
 
@@ -461,7 +465,7 @@ let _ =
        method getBookmarkText n =
          checkerror (Js.string (Cpdf.getBookmarkText n))
        method getBookmarkOpenStatus n =
-         checkerror (Cpdf.getBookmarkOpenStatus n)
+         checkerror_bool (Cpdf.getBookmarkOpenStatus n)
        method startSetBookmarkInfo n =
          checkerror_unit (Cpdf.startSetBookmarkInfo n)
        method endSetBookmarkInfo pdf =
@@ -574,7 +578,7 @@ let _ =
        method getMajorVersion pdf =
          checkerror (Cpdf.getMajorVersion pdf)
        method isLinearized filename =
-         checkerror (Cpdf.isLinearized (Js.to_string filename))
+         checkerror_bool (Cpdf.isLinearized (Js.to_string filename))
        method isLinearizedMemory data =
          checkerror (Cpdf.isLinearizedMemory (data_in data))
        method getTitle pdf =
@@ -655,7 +659,7 @@ let _ =
        method markUntrappedXMP pdf =
          checkerror_unit (Cpdf.markUntrappedXMP pdf)
        method hasBox pdf page box =
-         checkerror (Cpdf.hasBox pdf page (Js.to_string box))
+         checkerror_bool (Cpdf.hasBox pdf page (Js.to_string box))
        method getPageRotation pdf page =
          checkerror (Cpdf.getPageRotation pdf page)
        method setPageLayout pdf layout =
