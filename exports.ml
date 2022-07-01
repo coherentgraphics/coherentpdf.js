@@ -268,9 +268,9 @@ let _ =
        method toMemoryExt pdf linearize make_id preserve_objstm generate_objstm compress_objstm =
          checkerror (data_out (Cpdf.toFileMemoryExt pdf linearize make_id preserve_objstm generate_objstm compress_objstm))
        method toMemoryEncrypted pdf encryption_method permissions ownerpw userpw linearize makeid =
-         checkerror (data_out (Cpdf.toFileMemoryEncrypted pdf encryption_method permissions ownerpw userpw linearize makeid))
+         checkerror (data_out (Cpdf.toFileMemoryEncrypted pdf encryption_method (Js.to_array permissions) (Js.to_string ownerpw) (Js.to_string userpw) linearize makeid))
        method toMemoryEncryptedExt pdf encryption_method permissions ownerpw userpw linearize makeid preserve_objstm generate_objstm compress_objstm =
-         checkerror (data_out (Cpdf.toFileMemoryEncryptedExt pdf encryption_method permissions ownerpw userpw linearize makeid preserve_objstm generate_objstm compress_objstm))
+         checkerror (data_out (Cpdf.toFileMemoryEncryptedExt pdf encryption_method (Js.to_array permissions) (Js.to_string ownerpw) (Js.to_string userpw) linearize makeid preserve_objstm generate_objstm compress_objstm))
        method pages pdf =
          checkerror (Cpdf.pages pdf)
        method pagesFast password filename =
