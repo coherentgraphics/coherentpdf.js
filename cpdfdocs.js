@@ -763,7 +763,6 @@ function tableOfContents(pdf, font, fontsize, title, bookmark) {}
 
 // CHAPTER 8. Logos, Watermarks and Stamps
    
-
 /** Stamps stamp_pdf on all the pages in the document which are in the
 range. The stamp is placed with its origin at the origin of the target
 document.
