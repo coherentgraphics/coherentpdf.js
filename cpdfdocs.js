@@ -846,7 +846,7 @@ var rightJustify = 2;
 @arg {boolean} metrics collect metrics only
 @arg {pdf} pdf PDF document
 @arg {range} range page range
-@arg {string} text text to add
+@arg {string} text text to add \\n for newline
 @arg {anchor} anchor anchor to add text at
 @arg {number} p1 position argument 1
 @arg {number} p2 position argument 2
@@ -875,7 +875,7 @@ function addText(metrics, pdf, range, text, anchor, p1, p2, linespacing,
 /** Adds text with most parameters default.
 @arg {pdf} pdf PDF document
 @arg {range} range page range
-@arg {string} text text to add
+@arg {string} text text to add. \\n for newline
 @arg {anchor} anchor anchor to add text at
 @arg {number} p1 position argument 1
 @arg {number} p2 position argument 2
