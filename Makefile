@@ -33,12 +33,13 @@ js :
 
 distrib:
 	cp cpdf.js dist/
-	js_of_ocaml -o cpdf.min.js -q nodestubs.js \
-	cpdfzlib.js cpdfcrypt.js cpdf.byte
+	js_of_ocaml -o cpdf.min.js --extern-fs -I . --file=hello.pdf -q \
+	nodestubs.js cpdfzlib.js cpdfcrypt.js cpdf.byte
 	uglifyjs cpdf.min.js --compress --mangle \
 	--output dist/cpdf.min.js
 	browserify cpdf.js -s cpdf -o cpdf.browser.js
-	uglifyjs cpdf.browser.js --compress --mangle --output cpdf.browser.min.js
+	browserify cpdf.min.js -s cpdf -o cpdf.browser.formin.js
+	uglifyjs cpdf.browser.formin.js --compress --mangle --output cpdf.browser.min.js
 	cp cpdf.browser.min.js cpdf.browser.js dist/
 
 clean ::
