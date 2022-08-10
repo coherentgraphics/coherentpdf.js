@@ -1,7 +1,49 @@
+// CHAPTER -1: Introduction
+
+Use
+---
+
+For development server-side with node: cpdf.js (minified version cpdf.min.js)
+
+Load with "const cpdf = require('cpdf.js')" if installed in npm, or "const cpdf
+= require('./cpdf.js')" to load from current directory.
+
+For development client-side with the browser : cpdf.browser.js
+
+(Minified version for deployment : cpdf.browser.min.js)
+
+Load with <script src="cpdf.browser.js"></script> or similar.
+
+
+Concurrency
+-----------
+
+cpdf.js is synchronous and non-re-entrant.
+
+
+Data types
+----------
+
+Arguments are numbers, strings, or arrays (of type UInt8Array for data). Page
+ranges are represented by arrays of numbers.
+
+
+Memory Management
+-----------------
+
+A PDF p must be explicitly deallocated with deletePdf(p).
+
+
+Errors
+------
+
+Any function may raise an exception, containing a string describing the problem. 
+
+
 // CHAPTER 0. Preliminaries
 
 /** Returns a string giving the version number of the CPDF library.
-@returns {string} version*/
+@returns {string} version */
 function version() {}
 
 /** Some operations have a fast mode. The default is 'slow' mode, which works
