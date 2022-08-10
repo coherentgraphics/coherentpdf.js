@@ -49,4 +49,4 @@ distrib:
 clean ::
 	rm -rf doc foo foo2 out.pdf out2.pdf foo.pdf decomp.pdf *.cmt *.cmti \
 	*.json test/*.pdf debug/*.pdf *.ps *.aux *.idx *.log *.out *.toc \
-	*.cut cpdflib.js cpdf.js all.js cpdf-browser.js dist/*.js*
+	*.cut cpdflib.js cpdf.js all.js cpdf-browser.js

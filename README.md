@@ -1,4 +1,9 @@
-A JavaScript library for editing PDF files.
+A JavaScript library for editing PDF files. The files in dist/ are distributed
+under the AGPL - see LICENSE.txt.
+
+https://www.coherentpdf.com/
+
+For commercial licenses, email contact@coherentgraphics.co.uk
 
 Use
 ---
