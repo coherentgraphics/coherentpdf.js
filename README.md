@@ -8,6 +8,10 @@ For commercial licenses, email contact@coherentgraphics.co.uk
 Use
 ---
 
+The file cpdflibtest.js uses every function in cpdf.js.
+
+In the dist/ directory:
+
 For development server-side with node: cpdf.js (minified version cpdf.min.js)
 
 Load with "const cpdf = require('cpdf.js')" if installed in npm, or "const cpdf
