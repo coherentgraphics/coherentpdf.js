@@ -35,7 +35,7 @@ jsdebug :
 	  nodestubs.js cpdfzlib.js cpdfcrypt.js \
 	  cpdf.byte
 
-distrib:
+distrib :
 	cp cpdf.js dist/
 	js_of_ocaml -o cpdf.min.js -q \
 	  nodestubs.js cpdfzlib.js cpdfcrypt.js cpdf.byte
@@ -45,6 +45,10 @@ distrib:
 	uglifyjs cpdf.browser.formin.js --compress --mangle \
 	  --output cpdf.browser.min.js
 	cp cpdf.browser.min.js cpdf.browser.js dist/
+
+browser :
+	browserify cpdf.js -s cpdf -o cpdf.browser.js
+	cp cpdf.browser.js dist/
 
 clean ::
 	rm -rf doc foo foo2 out.pdf out2.pdf foo.pdf decomp.pdf *.cmt *.cmti \
