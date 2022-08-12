@@ -968,12 +968,10 @@ Uint8Array(c),d=iC(a);return d}function
 a9s(e){var
 b=cpdf_crypto.createHash("sha512").update(eR(e)),c=b.digest().buffer,a=new
 Uint8Array(c),d=iC(a);return d}function
-a9t(b){var
-c=eR(b),a=cpdf_zlib.deflateSync(c);return iC(a)}function
-a9u(b){console.log("***camlpdf_caml_zlib_decompress pom pom");console.log(b);console.log("***printed the type");var
-a=eR(b);console.log("***made array for inflateSync");console.log(a);console.log("***printed the second type");console.log(cpdf_zlib);console.log(cpdf_zlib.inflateSync);console.log("Buffer.isBuffer: "+Buffer.isBuffer(a));var
-d=Buffer.from(a),e=cpdf_zlib.inflateSync(d);console.log("***inflateSync done.");var
-c=iC(e);console.log("***caml bytes built, returning...");return c}function
+a9t(c){var
+d=eR(c),a=Buffer.from(d),b=cpdf_zlib.deflateSync(a);return iC(b)}function
+a9u(c){var
+d=eR(c),a=Buffer.from(d),b=cpdf_zlib.inflateSync(a);return iC(b)}function
 a9v(a,b,c,d,e,f,g,h){console.log(uX)}function
 a9w(a){console.log(uX)}function
 Qy(a){console.log(uX)}function
