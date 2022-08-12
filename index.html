@@ -83,11 +83,13 @@ function ensureFooIsSet(timeout) {
 ensureFooIsSet(100000).then(function(){
     console.log('we have the file...');
     var arr = new Uint8Array(lib.foo);
+    var w = new Worker("cpdfworker.js");
     var pdf = cpdf.fromMemory(arr, "");
     cpdf.decryptPdf(pdf, "");
     cpdf.scalePages(pdf, cpdf.all(pdf), 0.5, 0.2);
     var mem = cpdf.toMemory(pdf, false, false);
     filedownload(mem, "download.pdf");
+    w.terminate();
 });
     </script>
   </body>
