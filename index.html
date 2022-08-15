@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html>
+  <!-- Load cpdf. We only use this for getting the version number. Everything else is done by the cpdfworker.js -->
   <script src="dist/cpdf.browser.js"></script>
+
+  <!-- Script for downloading the resultant file -->
   <script>
     function filedownload(data, filename, mime, bom) {
     var blobData = (typeof bom !== 'undefined') ? [bom, data] : [data]
     var blob = new Blob(blobData, {type: mime || 'application/octet-stream'});
     if (typeof window.navigator.msSaveBlob !== 'undefined') {
-        // IE workaround for "HTML7007: One or more blob URLs were
-        // revoked by closing the blob for which they were created.
-        // These URLs will no longer resolve as the data backing
-        // the URL has been freed."
         window.navigator.msSaveBlob(blob, filename);
     }
     else {
@@ -19,10 +18,6 @@
         tempLink.href = blobURL;
         tempLink.setAttribute('download', filename);
 
-        // Safari thinks _blank anchor are pop ups. We only want to set _blank
-        // target if the browser does not support the HTML5 download attribute.
-        // This allows you to download files in desktop safari if pop up blocking
-        // is enabled.
         if (typeof tempLink.download === 'undefined') {
             tempLink.setAttribute('target', '_blank');
         }
@@ -30,7 +25,6 @@
         document.body.appendChild(tempLink);
         tempLink.click();
 
-        // Fixes "webkit blob resource error 1"
         setTimeout(function() {
             document.body.removeChild(tempLink);
             window.URL.revokeObjectURL(blobURL);
@@ -38,10 +32,8 @@
     }
 }
   </script>
-  <script>
-    var lib = function() {};
-  </script>
 
+  <!-- The page itself -->
   <body>
     <h1>cpdf.js example</h1>
     <p>Choose a PDF file, and this web page will use a web worker to rotate the file 10 degrees, and then prompt you to download it.</p>
@@ -53,21 +45,26 @@
     <p>Pages: <b id="pages"></b></p>
     <p>Creator: <b id="creator"></b></p>
     <p>Producer: <b id="producer"></b></p>
+  </body>
+
+  <!-- Machinery for the file upload process -->
+  <script>
+    var lib = function() {};
+  </script>
     <script>
       const fileSelector = document.getElementById('file-selector');
       fileSelector.addEventListener('change', (event) => {
         const fileList = event.target.files;
         const reader = new FileReader();
-        console.log(fileList);
         reader.addEventListener('load', (event) => {
           const result = event.target.result;
           // Do something with result
           lib.foo = result;
-          console.log(result);
          });
         reader.readAsArrayBuffer(fileList[0]);
       });
     </script>
+  <!-- Main script. Start the worker and process messages from it. -->
     <script>
 
 function ensureFooIsSet(timeout) {
@@ -84,7 +81,6 @@ function ensureFooIsSet(timeout) {
     }
 }
 
-      console.log(globalThis);
       document.getElementById("demo").innerHTML = 'cpdf.js, loaded version: ' + cpdf.version();
 
 ensureFooIsSet(100000).then(function(){
@@ -117,5 +113,4 @@ ensureFooIsSet(100000).then(function(){
     }
 });
     </script>
-  </body>
 </html>
