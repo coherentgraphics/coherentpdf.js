@@ -69,7 +69,9 @@ Examples
 
 Server-side: cpdflibtest.js tests every function in cpdf.js.
 
-Client-side: index.html is an interactive browser example.
+Client-side: index.html is an interactive browser example. You will need to run
+this from a real server, for example http-server, rather than just loading
+index.html directly.
 
 
 Contact
