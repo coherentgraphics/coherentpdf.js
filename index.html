@@ -48,7 +48,11 @@
     <p>This happens entirely within the browser.</p>
     <p id="demo"></p>
     <input type="file" id="file-selector">
-    <p><b id="progress"></b></p>
+    <p><i><b id="progress">Choose a file to begin...</b></i></p>
+    <h3>PDF Information</h3>
+    <p>Pages: <b id="pages"></b></p>
+    <p>Creator: <b id="creator"></b></p>
+    <p>Producer: <b id="producer"></b></p>
     <script>
       const fileSelector = document.getElementById('file-selector');
       fileSelector.addEventListener('change', (event) => {
@@ -94,11 +98,20 @@ ensureFooIsSet(100000).then(function(){
       {
         case 'pdfout':
           filedownload(e.data.bytes, "download.pdf");
-          document.getElementById("progress").innerHTML = 'Procesing finished. Output PDF file downloaded.';
+          document.getElementById("progress").innerHTML = 'Processing finished. Output PDF file downloaded. Reload page to do another file.';
           w.terminate();
           break;
         case 'progress':
           document.getElementById("progress").innerHTML = e.data.message;
+          break;
+        case 'pages':
+          document.getElementById("pages").innerHTML = e.data.x;
+          break;
+        case 'creator':
+          document.getElementById("creator").innerHTML = e.data.x;
+          break;
+        case 'producer':
+          document.getElementById("producer").innerHTML = e.data.x;
           break;
       }
     }

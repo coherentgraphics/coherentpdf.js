@@ -6,6 +6,9 @@ self.onmessage = function(e) {
      case 'pdf':
        var pdf = cpdf.fromMemory(e.data.bytes, "");
        self.postMessage({mtype: 'progress', message: '(1/4) PDF loaded successfully from file ...'});
+       self.postMessage({mtype: 'pages', x: cpdf.pages(pdf)});
+       self.postMessage({mtype: 'creator', x: cpdf.getCreator(pdf)});
+       self.postMessage({mtype: 'producer', x: cpdf.getProducer(pdf)});
        cpdf.decryptPdf(pdf, "");
        self.postMessage({mtype: 'progress', message: '(2/4) File decrypted if necessary...'});
        cpdf.rotateContents(pdf, cpdf.all(pdf), 10);
