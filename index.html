@@ -44,8 +44,11 @@
 
   <body>
     <h1>cpdf.js example</h1>
+    <p>Choose a PDF file, and this web page will use a web worker to rotate the file 10 degrees, and then prompt you to download it.</p>
+    <p>This happens entirely within the browser.</p>
     <p id="demo"></p>
     <input type="file" id="file-selector">
+    <p><b id="progress"></b></p>
     <script>
       const fileSelector = document.getElementById('file-selector');
       fileSelector.addEventListener('change', (event) => {
@@ -78,18 +81,27 @@ function ensureFooIsSet(timeout) {
 }
 
       console.log(globalThis);
-      document.getElementById("demo").innerHTML = cpdf.version();
+      document.getElementById("demo").innerHTML = 'cpdf.js, loaded version: ' + cpdf.version();
 
 ensureFooIsSet(100000).then(function(){
-    console.log('we have the file...');
+    document.getElementById("progress").innerHTML = '(0/4) PDF File loaded from disc. Processing...';
     var arr = new Uint8Array(lib.foo);
     var w = new Worker("cpdfworker.js");
-    var pdf = cpdf.fromMemory(arr, "");
-    cpdf.decryptPdf(pdf, "");
-    cpdf.scalePages(pdf, cpdf.all(pdf), 0.5, 0.2);
-    var mem = cpdf.toMemory(pdf, false, false);
-    filedownload(mem, "download.pdf");
-    w.terminate();
+    w.postMessage({mtype: 'pdf', bytes: arr});
+    w.onmessage = function(e)
+    {
+      switch (e.data.mtype)
+      {
+        case 'pdfout':
+          filedownload(e.data.bytes, "download.pdf");
+          document.getElementById("progress").innerHTML = 'Procesing finished. Output PDF file downloaded.';
+          w.terminate();
+          break;
+        case 'progress':
+          document.getElementById("progress").innerHTML = e.data.message;
+          break;
+      }
+    }
 });
     </script>
   </body>
