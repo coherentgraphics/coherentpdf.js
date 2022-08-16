@@ -3,22 +3,15 @@
 Use
 ---
 
-For development server-side with node: cpdf.js (minified version cpdf.min.js)
+cpdf.js can be used from both node and the browser.
 
-Load with "const cpdf = require('cpdf.js')" if installed in npm, or "const cpdf
-= require('./cpdf.js')" to load from current directory.
+For development server-side with node: `cpdf.js` (minified version
+`cpdf.min.js`) Load with `const cpdf = require('cpdf.js')` if installed in npm,
+or `const cpdf = require('./cpdf.js')` to load from current directory.
 
-For development client-side with the browser : cpdf.browser.js
-
-(Minified version for deployment : cpdf.browser.min.js)
-
-Load with <script src="cpdf.browser.js"></script> or similar.
-
-
-Concurrency
------------
-
-cpdf.js is synchronous and non-re-entrant.
+For development client-side with the browser : `cpdf.browser.js` (minified
+version for deployment : `cpdf.browser.min.js`). Load with `<script
+src="cpdf.browser.js"></script>` or similar.
 
 
 Data types
@@ -38,6 +31,12 @@ Errors
 ------
 
 Any function may raise an exception, containing a string describing the problem. 
+
+
+Concurrency
+-----------
+
+cpdf.js is synchronous and non-re-entrant. In the browser, best used in a worker.
 
 
 // CHAPTER 0. Preliminaries
