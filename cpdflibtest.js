@@ -1,4 +1,4 @@
-const cpdf = require('dist/cpdf.js');
+const cpdf = require('./cpdf.js');
 
 //CHAPTER 0. Preliminaries
 console.log("***** CHAPTER 0. Preliminaries");
