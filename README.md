@@ -1,5 +1,5 @@
 A JavaScript library for editing PDF files. The files in dist/ are distributed
-under the AGPL - see LICENSE.txt.
+under the AGPL - see LICENSE.md. Check if you need a commercial license.
 
 https://www.coherentpdf.com/
 
@@ -8,7 +8,10 @@ For commercial licenses, email contact@coherentgraphics.co.uk
 Use
 ---
 
-The file cpdflibtest.js uses every function in cpdf.js.
+cpdf.js can be used from both node and the browser.
+
+The file cpdflibtest.js uses every function in cpdf.js. Call ./run to run it in
+node.
 
 In the dist/ directory:
 
