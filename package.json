@@ -1,0 +1,23 @@
+{
+  "name": "coherentpdf",
+  "version": "2.5.4",
+  "description": "Read, write and modify PDF files",
+  "main": "cpdf.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coherentgraphics/cpdf.js.git"
+  },
+  "keywords": [
+    "pdf",
+    "cpdf"
+  ],
+  "author": "Coherent Graphics Ltd",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/coherentgraphics/cpdf.js/issues"
+  },
+  "homepage": "https://github.com/coherentgraphics/cpdf.js#readme"
+}
