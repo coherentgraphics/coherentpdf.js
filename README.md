@@ -1,9 +1,12 @@
+cpdf.js
+=======
+
 A JavaScript library for editing PDF files. The files in `dist/` are distributed
 under the AGPL - see LICENSE.md. Check if you need a commercial license.
 
-https://www.coherentpdf.com/
+[https://www.coherentpdf.com/](https://www.coherentpdf.com/)
 
-For commercial licenses, email contact@coherentgraphics.co.uk
+For commercial licenses, email [contact@coherentgraphics.co.uk](mailto:contact@coherentgraphics.co.uk)
 
 Use
 ---
@@ -30,15 +33,15 @@ Documentation
 1. `cpdfjsmanual.pdf` contains the API documentation interleaved with the
    cpdf.js API. This is the primary source of documentation:
 
-   https://coherentpdf.com/cpdfjsmanual.pdf
+   [https://coherentpdf.com/cpdfjsmanual.pdf](https://coherentpdf.com/cpdfjsmanual.pdf)
 
    The command line tools can be found at:
 
-   https://community.coherentpdf.com/
+   [https://community.coherentpdf.com/](https://community.coherentpdf.com/)
 
 2. API documentation online at
 
-   https://www.coherentpdf.com/jscpdf/index.html
+   [https://www.coherentpdf.com/jscpdf/index.html](https://www.coherentpdf.com/jscpdf/index.html)
 
 
 Data types
@@ -79,6 +82,6 @@ Client-side: `index.html` is an interactive browser example with the worker
 Contact
 -------
 
-https://www.coherentpdf.com/
+[https://www.coherentpdf.com/](https://www.coherentpdf.com/)
 
-For commercial licenses, email contact@coherentgraphics.co.uk
+For commercial licenses, email [contact@coherentgraphics.co.uk](mailto:contact@coherentgraphics.co.uk)
