@@ -1,5 +1,6 @@
 // CHAPTER -1: Introduction
 
+/**
 Use
 ---
 
@@ -37,7 +38,7 @@ Concurrency
 -----------
 
 cpdf.js is synchronous and non-re-entrant. In the browser, best used in a worker.
-
+**/
 
 // CHAPTER 0. Preliminaries
 
