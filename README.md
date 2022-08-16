@@ -8,9 +8,9 @@ For commercial licenses, email contact@coherentgraphics.co.uk
 Use
 ---
 
-`cpdf.js` can be used from both node and the browser.
+cpdf.js can be used from both node and the browser.
 
-The file cpdflibtest.js uses every function in `cpdf.js`. Call `./run` to run
+The file `cpdflibtest.js` uses every function in cpdf.js. Call `./run` to run
 it in node.
 
 In the `dist/` directory:
