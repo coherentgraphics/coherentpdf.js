@@ -1,37 +1,39 @@
-cpdf.js
-=======
+coherentpdf.js
+==============
 
 A JavaScript library for editing PDF files. The files in `dist/` are distributed
 under the AGPL - see LICENSE.md. Check if you need a commercial license.
 
 [https://www.coherentpdf.com/](https://www.coherentpdf.com/)
 
-For commercial licenses, email [contact@coherentgraphics.co.uk](mailto:contact@coherentgraphics.co.uk)
+For commercial licenses, email
+[contact@coherentgraphics.co.uk](mailto:contact@coherentgraphics.co.uk)
 
 Use
 ---
 
-cpdf.js can be used from both node and the browser.
+coherentpdf.js can be used from both node and the browser.
 
-The file `cpdflibtest.js` uses every function in cpdf.js. Call `./run` to run
-it in node.
+The file `cpdflibtest.js` uses every function in coherentpdf.js. Call `./run`
+to run it in node.
 
 In the `dist/` directory:
 
-For development server-side with node: `cpdf.js` (minified version
-`cpdf.min.js`) Load with `const cpdf = require('cpdf.js')` if installed in npm,
-or `const cpdf = require('./cpdf.js')` to load from current directory.
+For development server-side with node: `coherentpdf.js` (minified version
+`coherentpdf.min.js`). Load with `const coherentpdf = require('coherentpdf')`
+if installed in npm, or `const coherentpdf = require('./coherentpdf.js')` to
+load from current directory.
 
-For development client-side with the browser : `cpdf.browser.js` (minified
-version for deployment : `cpdf.browser.min.js`). Load with `<script
-src="cpdf.browser.js"></script>` or similar.
+For development client-side with the browser : `coherentpdf.browser.js`
+(minified version for deployment : `coherentpdf.browser.min.js`). Load with
+`<script src="coherentpdf.browser.js"></script>` or similar.
 
 
 Documentation
 -------------
 
 1. `cpdfjsmanual.pdf` contains the API documentation interleaved with the
-   cpdf.js API. This is the primary source of documentation:
+   coherentpdf.js API. This is the primary source of documentation:
 
    [https://coherentpdf.com/cpdfjsmanual.pdf](https://coherentpdf.com/cpdfjsmanual.pdf)
 
@@ -54,7 +56,7 @@ ranges are represented by arrays of numbers.
 Memory Management
 -----------------
 
-A PDF p must be explicitly deallocated with deletePdf(p).
+A PDF `p` must be explicitly deallocated with `deletePdf(p)`.
 
 
 Errors
@@ -66,13 +68,14 @@ Any function may raise an exception, containing a string describing the problem.
 Concurrency
 -----------
 
-cpdf.js is synchronous and non-re-entrant. In the browser, best used in a worker.
+coherentpdf.js is synchronous and non-re-entrant. In the browser, best used in
+a worker.
 
 
 Examples
 --------
 
-Server-side: `cpdflibtest.js` tests every function in cpdf.js.
+Server-side: `cpdflibtest.js` tests every function in coherentpdf.js.
 
 Client-side: `index.html` is an interactive browser example with the worker
 `cpdfworker.js`. You will need to run this from a real server, for example
