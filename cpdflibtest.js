@@ -1,4 +1,4 @@
-const cpdf = require('./cpdf.js');
+const cpdf = require('./coherentpdf.js');
 
 //CHAPTER 0. Preliminaries
 console.log("***** CHAPTER 0. Preliminaries");

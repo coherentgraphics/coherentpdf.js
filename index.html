@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <!-- Load cpdf. We only use this for getting the version number. Everything else is done by the cpdfworker.js -->
-  <script src="dist/cpdf.browser.js"></script>
+  <script src="dist/coherentpdf.browser.js"></script>
 
   <!-- Script for downloading the resultant file -->
   <script>
@@ -35,7 +35,7 @@
 
   <!-- The page itself -->
   <body>
-    <h1>cpdf.js example</h1>
+    <h1>coherentpdf.js example</h1>
     <p>Choose a PDF file, and this web page will use a web worker to rotate the file 10 degrees, and then prompt you to download it.</p>
     <p>This happens entirely within the browser.</p>
     <p id="demo"></p>
@@ -81,7 +81,7 @@ function ensureFooIsSet(timeout) {
     }
 }
 
-      document.getElementById("demo").innerHTML = 'cpdf.js, loaded version: ' + cpdf.version();
+      document.getElementById("demo").innerHTML = 'coherentpdf.js, loaded version: ' + coherentpdf.version();
 
 ensureFooIsSet(100000).then(function(){
     document.getElementById("progress").innerHTML = '(0/4) PDF File loaded from disc. Processing...';
