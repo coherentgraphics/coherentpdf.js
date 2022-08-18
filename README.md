@@ -1,7 +1,28 @@
 coherentpdf.js
 ==============
 
-A JavaScript library for editing PDF files. The files in `dist/` are distributed
+A JavaScript library for editing PDF files. For example:
+
+- Quality Split and Merge, keeping bookmarks. Extract pages. Split on Bookmarks.
+- Impose files n-up
+- Create new PDFs. Convert text files to PDF
+- Losslessly squeeze files to reduce their size
+- Encrypt and Decrypt (including AES 128 and AES 256 encryption)
+- Read and set info and metadata from a PDF file. Set and read XMP Metadata.
+- Scale, rotate, crop and flip pages. Scale pages to fit.
+- Copy, Remove and Add bookmarks. Build table of contents from bookmarks.
+- Stamp logos, shapes, watermarks, page numbers and multiline text. Transparency.
+- List, copy or remove annotations
+- Add and remove file attachments to document or page. Extract attachments.
+- Thicken hairlines, blacken text, make draft documents
+- Reconstruct malformed files
+- Detect missing fonts, low resolution images. Remove images. Extract images.
+- Add printer's marks
+- Add, modify, remove, or print page labels.
+- Export PDF file to / Import PDF file from JSON.
+- Manipulate optional content groups
+
+The files in `dist/` are distributed
 under the AGPL - see LICENSE.md. Check if you need a commercial license.
 
 [https://www.coherentpdf.com/](https://www.coherentpdf.com/)
