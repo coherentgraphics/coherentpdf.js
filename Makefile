@@ -1,15 +1,18 @@
 # Build coherentpdf.js
-PDFMODS = pdfutil pdfio pdftransform pdfunits pdfpaper pdfcryptprimitives \
+PDFMODS = pdfe pdfutil pdfio pdftransform pdfunits pdfpaper pdfcryptprimitives \
   pdf pdfcrypt pdfflate pdfcodec pdfwrite pdfgenlex pdfread pdfjpeg pdfops \
   pdfdest pdfmarks pdfpagelabels pdfpage pdfannot pdffun pdfspace pdfimage \
-  pdfafm pdfafmdata pdfglyphlist pdftext pdfstandard14 pdfgraphics pdfshapes \
-  pdfdate pdfocg pdfcff pdftype1 pdftruetype pdftype0 pdfmerge \
-  cpdfyojson cpdfxmlm cpdfutil \
+  pdfafm pdfafmdata pdfglyphlist pdftext pdfstandard14  \
+  pdfdate pdfocg pdfmerge \
+  cpdfyojson cpdfxmlm \
   cpdfunicodedata cpdferror cpdfdebug cpdfjson cpdfstrftime cpdfcoord \
   cpdfattach cpdfpagespec cpdfposition cpdfpresent cpdfmetadata \
-  cpdfbookmarks cpdfpage cpdfaddtext cpdfimage cpdffont cpdftype \
-  cpdftexttopdf cpdftoc cpdfpad cpdfocg cpdfsqueeze cpdfdraft cpdfspot \
-  cpdfpagelabels cpdfcreate cpdfannot cpdfxobject cpdfimpose cpdftweak \
+  cpdfbookmarks cpdfpage cpdftruetype cpdfremovetext cpdfextracttext \
+  cpdfembed cpdffont cpdftype cpdfaddtext cpdfpad cpdfocg \
+  cpdfsqueeze cpdfdraft cpdfspot cpdfpagelabels cpdfcreate cpdfannot \
+  cpdfxobject cpdfimpose cpdfchop cpdftweak cpdftexttopdf cpdftoc \
+  cpdfjpeg cpdfjpeg2000 cpdfpng cpdfimage cpdfdraw cpdfcomposition \
+  cpdfshape cpdfcolours cpdfdrawcontrol cpdfcommand \
   cpdf
 
 SOURCES = flatestubs.c rijndael-alg-fst.c stubs-aes.c sha2.c stubs-sha2.c \

@@ -8,6 +8,6 @@ cp ../cpdflib-source/*.ml .
 cp ../cpdflib-source/*.mli .
 mv cpdflib.ml cpdf.ml
 mv cpdflib.mli cpdf.mli
-awk 'NR!~/^(132|144)$/' cpdfstrftime.ml > tmp.ml
+awk 'NR!~/^(127|139)$/' cpdfstrftime.ml > tmp.ml
 cp tmp.ml cpdfstrftime.ml
 make

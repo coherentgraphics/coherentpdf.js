@@ -580,8 +580,8 @@ let _ =
          checkerror (Cpdf.getMajorVersion pdf)
        method isLinearized filename =
          checkerror_bool (Cpdf.isLinearized (Js.to_string filename))
-       method isLinearizedMemory data =
-         checkerror_bool (Cpdf.isLinearizedMemory (data_in data))
+       (*method isLinearizedMemory data =
+         checkerror_bool (Cpdf.isLinearizedMemory (data_in data)) *) (* FIXME Why is this gone? *)
        method getTitle pdf =
          checkerror (Js.string (Cpdf.getTitle pdf))
        method getAuthor pdf =
