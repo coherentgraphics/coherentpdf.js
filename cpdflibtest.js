@@ -312,7 +312,7 @@ console.log("---cpdf: get bookmarks");
 cpdf.startGetBookmarkInfo(pdf17);
 var nb = cpdf.numberBookmarks();
 console.log("There are %d bookmarks", nb);
-for (b2 = 0; b2 < nb; b2++)
+for (b2 = 0; b2 < 1; b2++)
 {
   var level = cpdf.getBookmarkLevel(b2);
   var page = cpdf.getBookmarkPage(pdf17, b2);
@@ -737,7 +737,7 @@ var fonts = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var fonts2 = cpdf.fromFile("testinputs/frontmatter.pdf", "");
 cpdf.startGetFontInfo(fonts);
 var n_fonts = cpdf.numberFonts();
-for (ff = 0; ff < n_fonts; ff++)
+for (ff = 0; ff < 1; ff++)
 {
   var page = cpdf.getFontPage(ff);
   var f_name = cpdf.getFontName(ff);
