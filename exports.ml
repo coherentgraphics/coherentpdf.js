@@ -96,18 +96,18 @@ let _ =
        val right = 10
        val diagonal = 11
        val reversediagonal = 12
-       val timesRoman = 0
-       val timesBold = 1
-       val timesItalic = 2
-       val timesBoldItalic = 3
-       val helvetica = 4
-       val helveticaBold = 5
-       val helveticaOblique = 6
-       val helveticaBoldOblique = 7
-       val courier = 8
-       val courierBold = 9
-       val courierOblique = 10
-       val courierBoldOblique = 11
+       val timesRoman = Js.string "Times-Roman"
+       val timesBold = Js.string "Times-Bold"
+       val timesItalic = Js.string "Times-Italic"
+       val timesBoldItalic = Js.string "Times-BoldItalic"
+       val helvetica = Js.string "Helvetica"
+       val helveticaBold = Js.string "Helvetica-Bold"
+       val helveticaOblique = Js.string "Helvetica-Oblique"
+       val helveticaBoldOblique = Js.string "Helvetica-BoldOblique"
+       val courier = Js.string "Courier"
+       val courierBold = Js.string "Courier-Bold"
+       val courierOblique = Js.string "Courier-Oblique"
+       val courierBoldOblique = Js.string "Courier-BoldOblique"
        val leftJustify = 0
        val centreJustify = 1
        val rightJustify = 2
@@ -484,7 +484,7 @@ let _ =
        method setBookmarksJSON pdf data =
          checkerror_unit (Cpdf.setBookmarksJSON pdf (data_in data))
        method tableOfContents pdf font fontsize title bookmark =
-         checkerror_unit (Cpdf.tableOfContents pdf font fontsize (Js.to_string title) bookmark)
+         checkerror_unit (Cpdf.tableOfContents pdf (Js.to_string font) fontsize (Js.to_string title) bookmark)
 
        (* CHAPTER 7. Presentations *)
 
@@ -514,7 +514,7 @@ let _ =
          let range = range_of_array range in
          let ret = 
            Cpdf.addText metrics pdf range (Js.to_string text) anchor p1 p2
-            linespacing bates font fontsize r g b underneath relative_to_cropbox outline
+            linespacing bates (Js.to_string font) fontsize r g b underneath relative_to_cropbox outline
             opacity justification midline topline (Js.to_string filename) linewidth
             embed_fonts (* position *)
          in
@@ -523,7 +523,7 @@ let _ =
        method addTextSimple pdf range text anchor p1 p2 font fontsize =
          let range = range_of_array range in
          let ret =
-           Cpdf.addText false pdf range (Js.to_string text) anchor p1 p2 1.0 0 font fontsize 0. 0. 0. false false false 1.0 Cpdfaddtext.LeftJustify false false "" 0.0 false
+           Cpdf.addText false pdf range (Js.to_string text) anchor p1 p2 1.0 0 (Js.to_string font) fontsize 0. 0. 0. false false false 1.0 Cpdfaddtext.LeftJustify false false "" 0.0 false
          in
            Cpdf.deleterange range;
            checkerror_unit ret
@@ -543,7 +543,7 @@ let _ =
            Cpdf.deleterange range;
            checkerror ret
        method textWidth font text =
-         checkerror (Cpdf.textWidth font (Js.to_string text))
+         checkerror (Cpdf.textWidth (Js.to_string font) (Js.to_string text))
 
        (* CHAPTER 9. Multipage facilities *)
        method twoUp pdf =
@@ -810,13 +810,13 @@ let _ =
        method blankDocumentPaper papersize pages =
          checkerror (Cpdf.blankDocumentPaper papersize pages)
        method textToPDF w h font fontsize filename =
-         checkerror (Cpdf.textToPDF w h font fontsize (Js.to_string filename))
+         checkerror (Cpdf.textToPDF w h (Js.to_string font) fontsize (Js.to_string filename))
        method textToPDFPaper papersize font fontsize filename =
-         checkerror (Cpdf.textToPDFPaper papersize font fontsize (Js.to_string filename))
+         checkerror (Cpdf.textToPDFPaper papersize (Js.to_string font) fontsize (Js.to_string filename))
        method textToPDFMemory w h font fontsize data =
-         checkerror (Cpdf.textToPDFMemory w h font fontsize (data_in data))
+         checkerror (Cpdf.textToPDFMemory w h (Js.to_string font) fontsize (data_in data))
        method textToPDFPaperMemory papersize font fontsize data =
-         checkerror (Cpdf.textToPDFPaperMemory papersize font fontsize (data_in data))
+         checkerror (Cpdf.textToPDFPaperMemory papersize (Js.to_string font) fontsize (data_in data))
 
        (* CHAPTER 18. Miscellaneous *)
        method draft pdf range boxes =

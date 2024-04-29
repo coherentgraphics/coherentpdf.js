@@ -338,8 +338,8 @@ cpdf.setBookmarksJSON(marksjson, marksdata);
 cpdf.toFile(marksjson, "testoutputs/06jsonmarks.pdf", false, false);
 console.log("---cpdf_tableOfContents()");
 var toc = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-//cpdf.tableOfContents(toc, cpdf.timesRoman, 12.0, "Table of Contents", false);
-//cpdf.toFile(toc, "testoutputs/06toc.pdf", false, false);
+cpdf.tableOfContents(toc, cpdf.timesRoman, 12.0, "Table of Contents", false);
+cpdf.toFile(toc, "testoutputs/06toc.pdf", false, false);
 cpdf.deletePdf(pdf17);
 cpdf.deletePdf(marksjson);
 cpdf.deletePdf(toc);
@@ -352,36 +352,36 @@ console.log("***** CHAPTER 8. Logos, Watermarks and Stamps");
 var textfile = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 console.log("---cpdf_addText()");
 var all = cpdf.all(textfile);
-//cpdf.addText(false,
-//     textfile,
-//     all,
-//     "Some Text~~~~~~~~~~!",
-//     cpdf.topLeft, 20.0, 20.0,
-//     1.0,
-//     1,
-//     cpdf.timesRoman,
-//     20.0,
-//     0.5,
-//     0.5,
-//     0.5,
-//     false,
-//     false,
-//     true,
-//     0.5,
-//     cpdf.leftJustify,
-//     false,
-//     false,
-//     "",
-//     1.0,
-//     false);
+cpdf.addText(false,
+     textfile,
+     all,
+     "Some Text~~~~~~~~~~!",
+     cpdf.topLeft, 20.0, 20.0,
+     1.0,
+     1,
+     cpdf.timesRoman,
+     20.0,
+     0.5,
+     0.5,
+     0.5,
+     false,
+     false,
+     true,
+     0.5,
+     cpdf.leftJustify,
+     false,
+     false,
+     "",
+     1.0,
+     false);
 console.log("---cpdf_addTextSimple()");
-//cpdf.addTextSimple(textfile, all, "The text!", cpdf.topLeft, 20.0, 20.0, cpdf.timesRoman, 50.0);
+cpdf.addTextSimple(textfile, all, "The text!", cpdf.topLeft, 20.0, 20.0, cpdf.timesRoman, 50.0);
 cpdf.toFile(textfile, "testoutputs/08added_text.pdf", false, false);
 console.log("---cpdf_removeText()");
 cpdf.removeText(textfile, all);
 cpdf.toFile(textfile, "testoutputs/08removed_text.pdf", false, false);
 console.log("---cpdf_textWidth()");
-//var w = cpdf.textWidth(cpdf.timesRoman, "What is the width of this?");
+var w = cpdf.textWidth(cpdf.timesRoman, "What is the width of this?");
 var stamp = cpdf.fromFile("testinputs/logo.pdf", "");
 var stampee = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var stamp_range = cpdf.all(stamp);
@@ -801,7 +801,7 @@ var new1 = cpdf.blankDocument(100.0, 200.0, 20);
 var new2 = cpdf.blankDocumentPaper(cpdf.a4portrait, 10);
 cpdf.toFile(new1, "testoutputs/01blank.pdf", false, false);
 cpdf.toFile(new2, "testoutputs/01blanka4.pdf", false, false);
-//console.log("---cpdf_textToPDF()");
+console.log("---cpdf_textToPDF()");
 //var ttpdf = cpdf.textToPDF(500.0, 600.0, cpdf.timesItalic, 8.0, "../cpdflib-source/cpdflibtest.c");
 //console.log("---cpdf_textToPDFPaper()");
 //var ttpdfpaper = cpdf.textToPDFPaper(cpdf.a4portrait, cpdf.timesBoldItalic, 10.0, "../cpdflib-source/cpdflibtest.c");
