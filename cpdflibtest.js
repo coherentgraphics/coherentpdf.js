@@ -812,8 +812,11 @@ cpdf.deletePdf(new2);
 //cpdf.deletePdf(ttpdf);
 //cpdf.deletePdf(ttpdfpaper);
 
-// CHAPTER 18. Miscellaneous
-console.log("***** CHAPTER 18. Miscellaneous");
+// CHAPTER 18. Drawing on PDFs
+console.log("***** CHAPTER 18. Drawing on PDFs");
+
+// CHAPTER 19. Miscellaneous
+console.log("***** CHAPTER 19. Miscellaneous");
 var misc = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var misc2 = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var misc3 = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
