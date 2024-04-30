@@ -9,6 +9,12 @@ console.log("---cpdf_setFast()");
 cpdf.setFast();
 console.log("---cpdf_setSlow()");
 cpdf.setSlow();
+console.log("---cpdf_embedStd14()");
+cpdf.embedStd14(true);
+console.log("---cpdf_embedStd14Dir()");
+cpdf.embedStd14Dir("fonts");
+console.log("---cpdf_JSONUTF8()");
+cpdf.jsonUTF8(true);
 console.log("---cpdf_clearError()");
 
 // CHAPTER 1. Basics
@@ -115,7 +121,16 @@ console.log("id2:%s", id2);
 console.log("---cpdf_hasAcroForm()");
 var acroform = cpdf.hasAcroForm(pdf);
 console.log("hasAcroForm:%i", acroform ? 1 : 0);
-
+console.log("---cpdf_startGetSubformats()");
+var nsubformats = cpdf.startGetSubformats(pdf);
+console.log("n subformats: %i", nsubformats);
+console.log("---cpdf_getSubformat()");
+for (x = 0; x < nsubformats; x++)
+{
+    console.log("Subformat: %s", cpdf.getSubformat(x));
+}
+console.log("---cpdf_endGetSubformats()");
+cpdf.endGetSubformats();
 var pdf400 = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var pdf401 = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var permissions = [cpdf.noEdit];

@@ -132,6 +132,12 @@ let _ =
          checkerror_unit (Cpdf.setFast ())
        method setSlow =
          checkerror_unit (Cpdf.setSlow ())
+       method embedStd14 b =
+         checkerror_unit (Cpdf.embedStd14 b)
+       method embedStd14Dir d =
+         checkerror_unit (Cpdf.embedStd14Dir (Js.to_string d))
+       method jsonUTF8 b =
+         checkerror_unit (Cpdf.jsonUTF8 b)
        method version =
          checkerror ((fun () -> Js.string Cpdf.version) ())
        method onexit =
@@ -593,6 +599,12 @@ let _ =
          checkerror (Js.string (Cpdf.id2 pdf))
        method hasAcroForm pdf =
          checkerror (Cpdf.hasAcroForm pdf)
+       method startGetSubformats pdf =
+         checkerror (Cpdf.startGetSubformats pdf)
+       method getSubformat n =
+         checkerror (Js.string (Cpdf.getSubformat n))
+       method endGetSubformats =
+         checkerror_unit (Cpdf.endGetSubformats ())
        method getTitle pdf =
          checkerror (Js.string (Cpdf.getTitle pdf))
        method getAuthor pdf =
@@ -831,7 +843,9 @@ let _ =
        method textToPDFPaperMemory papersize font fontsize data =
          checkerror (Cpdf.textToPDFPaperMemory papersize (Js.to_string font) fontsize (data_in data))
 
-       (* CHAPTER 18. Miscellaneous *)
+       (* CHAPTER 18. Drawing on PDFs *)
+
+       (* CHAPTER 19. Miscellaneous *)
        method draft pdf range boxes =
          let range = range_of_array range in
          let ret = Cpdf.draft pdf range boxes in
