@@ -336,6 +336,11 @@ let _ =
          let ret = Cpdf.shiftContents pdf range dx dy in
            Cpdf.deleterange range;
            checkerror_unit ret
+       method shiftBoxes pdf range dx dy =
+         let range = range_of_array range in
+         let ret = Cpdf.shiftBoxes pdf range dx dy in
+           Cpdf.deleterange range;
+           checkerror_unit ret
        method rotate pdf range rotation =
          let range = range_of_array range in
          let ret = Cpdf.rotate pdf range rotation in
@@ -580,8 +585,14 @@ let _ =
          checkerror (Cpdf.getMajorVersion pdf)
        method isLinearized filename =
          checkerror_bool (Cpdf.isLinearized (Js.to_string filename))
-       (*method isLinearizedMemory data =
-         checkerror_bool (Cpdf.isLinearizedMemory (data_in data)) *) (* FIXME Why is this gone? *)
+       method hasObjectStreams pdf =
+         checkerror_bool (Cpdf.hasObjectStreams pdf)
+       method id1 pdf =
+         checkerror (Js.string (Cpdf.id1 pdf))
+       method id2 pdf =
+         checkerror (Js.string (Cpdf.id2 pdf))
+       method hasAcroForm pdf =
+         checkerror (Cpdf.hasAcroForm pdf)
        method getTitle pdf =
          checkerror (Js.string (Cpdf.getTitle pdf))
        method getAuthor pdf =
@@ -661,6 +672,8 @@ let _ =
          checkerror_unit (Cpdf.markUntrappedXMP pdf)
        method hasBox pdf page box =
          checkerror_bool (Cpdf.hasBox pdf page (Js.to_string box))
+       method numAnnots pdf page =
+         checkerror (Cpdf.numAnnots pdf page)
        method getPageRotation pdf page =
          checkerror (Cpdf.getPageRotation pdf page)
        method setPageLayout pdf layout =
