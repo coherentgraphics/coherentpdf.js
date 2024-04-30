@@ -12,3 +12,9 @@ Expected test output differences compared with other cpdflib implementations
    17draft.pdf
 
    Differing zlib compression libraries.
+
+3.  ---cpdf\_compositionJSON()
+    -Contains 231 bytes of data
+    +Contains 230 bytes of data
+
+    Difference in floating point maths.
