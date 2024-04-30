@@ -470,6 +470,12 @@ cpdf.impose(mp25, 5.0, 4.0, false, false, false, false, false, 40.0, 20.0, 2.0);
 cpdf.toFile(mp25, "testoutputs/09mp25.pdf", false, false);
 cpdf.impose(mp26, 2000.0, 1000.0, true, false, false, false, false, 40.0, 20.0, 2.0);
 cpdf.toFile(mp26, "testoutputs/09mp26.pdf", false, false);
+console.log("---cpdf_chop()");
+chop = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
+all = cpdf.all(chop);
+cpdf.chop(chop, all, 2, 3, false, false, false);
+console.log("---cpdf_chopH()");
+console.log("---cpdf_chopV()");
 console.log("---cpdf_padBefore()");
 var r = cpdf.range(1, 10);
 cpdf.padBefore(mp3, r);
@@ -502,6 +508,10 @@ console.log("---cpdf_annotationsJSON()");
 var annot = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 var annotjson = cpdf.annotationsJSON(annot);
 console.log("Contains %d bytes of data", annotjson.length);
+console.log("---cpdf_removeAnnotations()");
+cpdf.removeAnnotations(annot, cpdf.range(1, 1));
+console.log("---cpdf_setAnnotationsJSON()");
+cpdf.setAnnotationsJSON(annot, annotjson);
 cpdf.deletePdf(annot);
 
 // CHAPTER 11. Document Information and Metadata
@@ -562,6 +572,9 @@ console.log("creationdateXMP: %s", creationdatexmp);
 console.log("---cpdf_getModificationDateXMP()");
 var modificationdatexmp = cpdf.getModificationDateXMP(pdf30);
 console.log("modificationdateXMP: %s", modificationdatexmp);
+console.log("---cpdf_pageInfoJSON()");
+var pageinfojson = cpdf.pageInfoJSON(pdf30);
+console.log("Contains %i bytes of data", pageinfojson.length);
 console.log("---cpdf_setTitle()");
 cpdf.setTitle(pdf30, "title");
 console.log("---cpdf_setAuthor()");
@@ -712,6 +725,9 @@ cpdf.toFile(pdf30, "testoutputs/11pagelabels.pdf", false, false);
 console.log("---cpdf_getPageLabelStringForPage()");
 var pl = cpdf.getPageLabelStringForPage(pdf30, 1);
 console.log("Label string is %s", pl);
+console.log("---cpdf_compositionJSON()");
+composition = cpdf.compositionJSON(1000000, pdf30);
+console.log("Contains %i bytes of data", composition.length);
 cpdf.deletePdf(pdf30);
 
 // CHAPTER 12. File Attachments

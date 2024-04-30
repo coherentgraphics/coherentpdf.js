@@ -1,5 +1,7 @@
 open Js_of_ocaml
 
+(* FIXME v2.7 check the checkerror stuff *)
+
 exception CPDFError of string
 
 (* Check and raise in case of an error. *)
@@ -563,6 +565,21 @@ let _ =
          checkerror_unit (Cpdf.twoUpStack pdf)
        method impose pdf x y fit columns rtl btt center margin spacing linewidth =
          checkerror_unit (Cpdf.impose pdf x y fit columns rtl btt center margin spacing linewidth)
+       method chop pdf range x y columns rtl btt =
+         let range = range_of_array range in
+         let ret = Cpdf.chop pdf range x y columns rtl btt in
+           Cpdf.deleterange range;
+           checkerror_unit ret
+       method chopH pdf range columns y =
+         let range = range_of_array range in
+         let ret = Cpdf.chopH pdf range columns y in
+           Cpdf.deleterange range;
+           checkerror_unit ret
+       method chopV pdf range columns x =
+         let range = range_of_array range in
+         let ret = Cpdf.chopV pdf range columns x in
+           Cpdf.deleterange range;
+           checkerror_unit ret
        method padBefore pdf range =
          let range = range_of_array range in
          let ret = Cpdf.padBefore pdf range in
@@ -583,6 +600,13 @@ let _ =
        (* CHAPTER 10. Annotations *)
        method annotationsJSON pdf =
          checkerror (data_out (Cpdf.annotationsJSON pdf))
+       method removeAnnotations pdf range =
+         let range = range_of_array range in
+         let ret = Cpdf.removeAnnotations pdf range in
+           Cpdf.deleterange range;
+           checkerror_unit ret
+       method setAnnotationsJSON pdf data =
+         checkerror_unit (Cpdf.setAnnotationsJSON pdf (data_in data))
 
        (* CHAPTER 11. Document Information and Metadata *)
        method getVersion pdf =
@@ -637,6 +661,8 @@ let _ =
          checkerror (Js.string (Cpdf.getCreationDateXMP pdf))
        method getModificationDateXMP pdf =
          checkerror (Js.string (Cpdf.getModificationDateXMP pdf))
+       method pageInfoJSON pdf =
+         checkerror (data_out (Cpdf.pageInfoJSON pdf))
        method getDateComponents s =
          let t = Cpdf.getDateComponents (Js.to_string s) in
          checkerror (Js.array [|t.year; t.month; t.day; t.hour; t.minute; t.second; t.hour_offset; t.minute_offset|])
@@ -739,6 +765,8 @@ let _ =
          checkerror_unit (Cpdf.endGetPageLabels ())
        method getPageLabelStringForPage pdf pagenumber =
          checkerror (Js.string (Cpdf.getPageLabelStringForPage pdf pagenumber))
+       method compositionJSON filesize pdf =
+         checkerror (data_out (Cpdf.compositionJSON filesize pdf))
 
        (* CHAPTER 12. File Attachments *)
        method attachFile filename pdf =
