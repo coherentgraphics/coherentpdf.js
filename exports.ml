@@ -812,7 +812,7 @@ let _ =
 
        (* CHAPTER 14. Fonts *)
        method numberFonts =
-         checkerror (Cpdf.numberFonts ())
+         checkerror (Cpdf.numberFonts ()) (*FIXME?*)
        method getFontPage n =
          checkerror (Cpdf.getFontPage n)
        method getFontName n =
@@ -872,6 +872,131 @@ let _ =
          checkerror (Cpdf.textToPDFPaperMemory papersize (Js.to_string font) fontsize (data_in data))
 
        (* CHAPTER 18. Drawing on PDFs *)
+       method drawBegin =
+         checkerror_unit (Cpdf.drawBegin ())
+       method drawEnd pdf range =
+         let range = range_of_array range in
+         let ret = checkerror_unit (Cpdf.drawEnd pdf range) in
+           Cpdf.deleterange range;
+           checkerror_unit ret
+       method drawTo a b =
+         checkerror_unit (Cpdf.drawTo a b)
+       method drawLine a b =
+         checkerror_unit (Cpdf.drawLine a b)
+       method drawStroke =
+         checkerror_unit (Cpdf.drawStroke ())
+       method drawRect a b c d =
+         checkerror_unit (Cpdf.drawRect a b c d)
+       method drawBez a b c d e f =
+         checkerror_unit (Cpdf.drawBez a b c d e f)
+       method drawBez23 a b c d =
+         checkerror_unit (Cpdf.drawBez23 a b c d)
+       method drawBez13 a b c d =
+         checkerror_unit (Cpdf.drawBez13 a b c d)
+       method drawCircle a b c =
+         checkerror_unit (Cpdf.drawCircle a b c)
+       method drawStrokeColGrey a =
+         checkerror_unit (Cpdf.drawStrokeColGrey a)
+       method drawStrokeColRGB a b c =
+         checkerror_unit (Cpdf.drawStrokeColRGB a b c)
+       method drawStrokeColCYMK a b c d =
+         checkerror_unit (Cpdf.drawStrokeColCYMK a b c d)
+       method drawFillColGrey a =
+         checkerror_unit (Cpdf.drawFillColGrey a)
+       method drawFillColRGB a b c =
+         checkerror_unit (Cpdf.drawFillColRGB a b c)
+       method drawFillColCYMK a b c d =
+         checkerror_unit (Cpdf.drawFillColCYMK a b c d)
+       method drawFill =
+         checkerror_unit (Cpdf.drawFill ())
+       method drawFillEo =
+         checkerror_unit (Cpdf.drawFillEo ())
+       method drawStrokeFill =
+         checkerror_unit (Cpdf.drawStrokeFill ())
+       method drawStrokeFillEo =
+         checkerror_unit (Cpdf.drawStrokeFillEo ())
+       method drawClose =
+         checkerror_unit (Cpdf.drawClose ())
+       method drawClip =
+         checkerror_unit (Cpdf.drawClip ())
+       method drawClipEo =
+         checkerror_unit (Cpdf.drawClipEo ())
+       method drawThick a =
+         checkerror_unit (Cpdf.drawThick a)
+       method drawCap a =
+         checkerror_unit (Cpdf.drawCap a)
+       method drawJoin a =
+         checkerror_unit (Cpdf.drawJoin a)
+       method drawMiter a =
+         checkerror_unit (Cpdf.drawMiter a)
+       method drawDash a =
+         checkerror_unit (Cpdf.drawDash (Js.to_string a))
+       method drawPush =
+         checkerror_unit (Cpdf.drawPush ())
+       method drawPop =
+         checkerror_unit (Cpdf.drawPop ())
+       method drawMatrix a b c d e f =
+         checkerror_unit (Cpdf.drawMatrix a b c d e f)
+       method drawMTrans a b =
+         checkerror_unit (Cpdf.drawMTrans a b)
+       method drawMRot a b c =
+         checkerror_unit (Cpdf.drawMRot a b c)
+       method drawMScale a b c d =
+         checkerror_unit (Cpdf.drawMScale a b c d)
+       method drawMShearX a b c =
+         checkerror_unit (Cpdf.drawMShearX a b c)
+       method drawMShearY a b c =
+         checkerror_unit (Cpdf.drawMShearY a b c)
+       method drawXObjBBox a b c d =
+         checkerror_unit (Cpdf.drawXObjBBox a b c d)
+       method drawXObj a =
+         checkerror_unit (Cpdf.drawXObj (Js.to_string a))
+       method drawEndXObj =
+         checkerror_unit (Cpdf.drawEndXObj ())
+       method drawUse a =
+         checkerror_unit (Cpdf.drawUse (Js.to_string a))
+       method drawJPEG a b =
+         checkerror_unit (Cpdf.drawJPEG (Js.to_string a) (Js.to_string b))
+       method drawPNG a b =
+         checkerror_unit (Cpdf.drawPNG (Js.to_string a) (Js.to_string b))
+       method drawJPEGMemory a b =
+         checkerror_unit (Cpdf.drawJPEGMemory (Js.to_string a) (data_in b))
+       method drawPNGMemory a b =
+         checkerror_unit (Cpdf.drawPNGMemory (Js.to_string a) (data_in b))
+       method drawImage a =
+         checkerror_unit (Cpdf.drawImage (Js.to_string a))
+       method drawFillOpacity a =
+         checkerror_unit (Cpdf.drawFillOpacity a)
+       method drawStrokeOpacity a =
+         checkerror_unit (Cpdf.drawStrokeOpacity a)
+       method drawBT =
+         checkerror_unit (Cpdf.drawBT ())
+       method drawET =
+         checkerror_unit (Cpdf.drawET ())
+       method loadFont a b =
+         checkerror_unit (Cpdf.loadFont (Js.to_string a) (Js.to_string b))
+       method drawFont a =
+         checkerror_unit (Cpdf.drawFont (Js.to_string a))
+       method drawFontSize a =
+         checkerror_unit (Cpdf.drawFontSize a)
+       method drawText a =
+         checkerror_unit (Cpdf.drawText (Js.to_string a))
+       method drawSText a =
+         checkerror_unit (Cpdf.drawSText (Js.to_string a))
+       method drawLeading a =
+         checkerror_unit (Cpdf.drawLeading a)
+       method drawCharSpace a =
+         checkerror_unit (Cpdf.drawCharSpace a)
+       method drawWordSpace a =
+         checkerror_unit (Cpdf.drawWordSpace a)
+       method drawTextScale a =
+         checkerror_unit (Cpdf.drawTextScale a)
+       method drawRenderMode a =
+         checkerror_unit (Cpdf.drawRenderMode a)
+       method drawNL =
+         checkerror_unit (Cpdf.drawNL ())
+       method drawNewPage =
+         checkerror_unit (Cpdf.drawNewPage ())
 
        (* CHAPTER 19. Miscellaneous *)
        method draft pdf range boxes =
