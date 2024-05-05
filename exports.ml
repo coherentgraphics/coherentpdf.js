@@ -996,6 +996,8 @@ let _ =
          checkerror_unit (Cpdf.drawWordSpace a)
        method drawTextScale a =
          checkerror_unit (Cpdf.drawTextScale a)
+       method drawRise a =
+         checkerror_unit (Cpdf.drawRise a)
        method drawRenderMode a =
          checkerror_unit (Cpdf.drawRenderMode a)
        method drawNL =
