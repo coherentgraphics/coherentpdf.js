@@ -864,7 +864,10 @@ cpdf.deletePdf(new2);
 
 // CHAPTER 18. Drawing on PDFs
 console.log("***** CHAPTER 18. Drawing on PDFs");
+var draw = cpdf.fromFile("hello.pdf", "");
+var drawall = cpdf.all(draw);
 console.log("---cpdf_drawBegin()");
+cpdf.drawBegin();
 console.log("---cpdf_drawTo()");
 console.log("---cpdf_drawLine()");
 console.log("---cpdf_drawStroke()");
@@ -927,6 +930,10 @@ console.log("---cpdf_drawLeading()");
 console.log("---cpdf_drawNL()");
 console.log("---cpdf_drawNewPage()");
 console.log("---cpdf_drawEndExtended()");
+//console.log("---cpdf_drawEnd()");
+//cpdf.drawEnd(draw, drawall);
+cpdf.drawEndExtended(draw, drawall, true, 10, "filename.txt");
+cpdf.toFile(draw, "testoutputs/drawn.pdf", false, false);
 
 // CHAPTER 19. Miscellaneous
 console.log("***** CHAPTER 19. Miscellaneous");

@@ -876,7 +876,12 @@ let _ =
          checkerror_unit (Cpdf.drawBegin ())
        method drawEnd pdf range =
          let range = range_of_array range in
-         let ret = checkerror_unit (Cpdf.drawEnd pdf range) in
+         let ret = Cpdf.drawEnd pdf range in
+           Cpdf.deleterange range;
+           checkerror_unit ret
+       method drawEndExtended pdf range underneath bates filename =
+         let range = range_of_array range in
+         let ret = Cpdf.drawEndExtended pdf range underneath bates (Js.to_string filename) in
            Cpdf.deleterange range;
            checkerror_unit ret
        method drawTo a b =
