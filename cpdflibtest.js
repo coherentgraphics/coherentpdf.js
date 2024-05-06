@@ -875,6 +875,7 @@ cpdf.deletePdf(ocg);
 console.log("***** CHAPTER 17. Creating New PDFs");
 console.log("---cpdf_blankDocument()");
 console.log("---cpdf_blankDocumentPaper()");
+//cpdf.loadFont("A", "testinputs/NotoSans-Black.ttf");
 var new1 = cpdf.blankDocument(100.0, 200.0, 20);
 var new2 = cpdf.blankDocumentPaper(cpdf.a4portrait, 10);
 cpdf.toFile(new1, "testoutputs/01blank.pdf", false, false);
@@ -886,9 +887,10 @@ var ttpdfpaper = cpdf.textToPDFPaper(cpdf.a4portrait, cpdf.timesBoldItalic, 10.0
 cpdf.toFile(ttpdf, "testoutputs/01ttpdf.pdf", false, false);
 cpdf.toFile(ttpdfpaper, "testoutputs/01ttpdfpaper.pdf", false, false);
 console.log("---cpdf_textToPDFMemory()");
-//FIXME add this
+var data = new Uint8Array("Hello, World!");
+var ttpdf2 = cpdf.textToPDFMemory(500, 600, cpdf.timesItalic, 8, data);
 console.log("---cpdf_textToPDFPaperMemory()");
-//FIXME add this
+var ttpdfpaper2 = cpdf.textToPDFPaperMemory(cpdf.a4portrait, cpdf.timesItalic, 10.0, data);
 cpdf.deletePdf(new1);
 cpdf.deletePdf(new2);
 console.log("---cpdf_fromPNG()");
