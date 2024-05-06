@@ -764,8 +764,23 @@ cpdf.deletePdf(attachments);
 
 // CHAPTER 13. Images.
 console.log("***** CHAPTER 13. Images");
-console.log("---cpdf: get image resolution");
+console.log("---cpdf: get images");
 var image_pdf = cpdf.fromFile("testinputs/image.pdf", "");
+var n2 = cpdf.startGetImages(image_pdf);
+for (x = 0; x < n2; x++) {
+  var objnum = cpdf.getImageObjNum(x);
+  var pages = cpdf.getImagePages(x);
+  var name = cpdf.getImageName(x);
+  var w = cpdf.getImageWidth(x);
+  var h = cpdf.getImageHeight(x);
+  var size = cpdf.getImageSize(x);
+  var bpc = cpdf.getImageBPC(x);
+  var colspace = cpdf.getImageColSpace(x);
+  var filter = cpdf.getImageFilter(x);
+  console.log("IMAGE: %d, %s, %s, %d, %d, %d, %d, %s, %s", objnum, pages, name, w, h, size, bpc, colspace, filter);
+}
+cpdf.endGetImages();
+console.log("---cpdf: get image resolution");
 var im_n = cpdf.startGetImageResolution(image_pdf, 2.0);
 for (im = 0; im < im_n; im++)
 {
@@ -775,9 +790,17 @@ for (im = 0; im < im_n; im++)
   var im_yp = cpdf.getImageResolutionYPixels(im);
   var im_xres = cpdf.getImageResolutionXRes(im);
   var im_yres = cpdf.getImageResolutionYRes(im);
-  console.log("IMAGE: %d, %s, %d, %d, %s, %s", im_p, im_name, im_xp, im_yp, im_xres.toFixed(6), im_yres.toFixed(6));
+  var objnum = cpdf.getImageResolutionObjNum(im);
+  console.log("IMAGE: %d, %s, %d, %d, %s, %s, %d", im_p, im_name, im_xp, im_yp, im_xres.toFixed(6), im_yres.toFixed(6), objnum);
 }
 cpdf.endGetImageResolution();
+console.log("---cpdf_imageResolutionJSON()");
+imageResolutionJSON = cpdf.imageResolutionJSON(image_pdf, 300);
+console.log("Contains %i bytes of data", imageResolutionJSON.length);
+console.log("---cpdf_imagesJSON()");
+imagesJSON = cpdf.imagesJSON(image_pdf);
+console.log("Contains %i bytes of data", imagesJSON.length);
+
 cpdf.deletePdf(image_pdf);
 
 // CHAPTER 14. Fonts.
@@ -796,6 +819,10 @@ for (ff = 0; ff < 1; ff++)
   console.log("Page %d, font %s has type %s and encoding %s", page, f_name, type, encoding);
 }
 cpdf.endGetFontInfo();
+console.log("---cpdf_fontsJSON()");
+var fontsjson = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
+fontsdata = cpdf.fontsJSON(fontsjson);
+console.log("Contains %i bytes of data", fontsdata.length);
 console.log("---cpdf_removeFonts()");
 cpdf.removeFonts(fonts);
 cpdf.toFile(fonts, "testoutputs/14remove_fonts.pdf", false, false);

@@ -793,6 +793,28 @@ let _ =
          checkerror (data_out (Cpdf.getAttachmentData n))
 
        (* CHAPTER 13. Images *)
+       method startGetImages pdf =
+         checkerror (Cpdf.startGetImages pdf)
+       method getImageObjNum n =
+         checkerror (Cpdf.getImageObjNum n)
+       method getImagePages n =
+         checkerror (Js.string (Cpdf.getImagePages n))
+       method getImageName n =
+         checkerror (Js.string (Cpdf.getImageName n))
+       method getImageWidth n =
+         checkerror (Cpdf.getImageWidth n)
+       method getImageHeight n =
+         checkerror (Cpdf.getImageHeight n)
+       method getImageSize n =
+         checkerror (Cpdf.getImageSize n)
+       method getImageBPC n =
+         checkerror (Cpdf.getImageBPC n)
+       method getImageColSpace n =
+         checkerror (Js.string (Cpdf.getImageColSpace n))
+       method getImageFilter n =
+         checkerror (Js.string (Cpdf.getImageFilter n))
+       method endGetImages =
+         checkerror (Cpdf.endGetImages ())
        method startGetImageResolution pdf min_required_resolution =
          checkerror (Cpdf.startGetImageResolution pdf min_required_resolution)
        method getImageResolutionPageNumber n =
@@ -807,8 +829,14 @@ let _ =
          checkerror (Cpdf.getImageResolutionXRes n)
        method getImageResolutionYRes n =
          checkerror (Cpdf.getImageResolutionYRes n)
+       method getImageResolutionObjNum n =
+         checkerror (Cpdf.getImageResolutionObjNum n)
        method endGetImageResolution =
          checkerror_unit (Cpdf.endGetImageResolution ())
+       method imagesJSON pdf =
+         checkerror (data_out (Cpdf.imagesJSON pdf))
+       method imageResolutionJSON pdf res =
+         checkerror (data_out (Cpdf.imageResolutionJSON pdf res))
 
        (* CHAPTER 14. Fonts *)
        method numberFonts =
@@ -825,6 +853,8 @@ let _ =
          checkerror_unit (Cpdf.startGetFontInfo pdf)
        method endGetFontInfo =
          checkerror_unit (Cpdf.endGetFontInfo ())
+       method fontsJSON pdf =
+         checkerror (data_out (Cpdf.fontsJSON pdf))
        method copyFont docfrom docto range pagenumber fontname =
          let range = range_of_array range in
          let ret = checkerror (Cpdf.copyFont docfrom docto range pagenumber (Js.to_string fontname)) in
