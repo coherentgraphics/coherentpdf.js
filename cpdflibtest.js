@@ -1,4 +1,5 @@
 const cpdf = require('./coherentpdf.js');
+var fs = require("fs");
 
 //CHAPTER 0. Preliminaries
 console.log("***** CHAPTER 0. Preliminaries");
@@ -879,13 +880,35 @@ var new2 = cpdf.blankDocumentPaper(cpdf.a4portrait, 10);
 cpdf.toFile(new1, "testoutputs/01blank.pdf", false, false);
 cpdf.toFile(new2, "testoutputs/01blanka4.pdf", false, false);
 console.log("---cpdf_textToPDF()");
-//var ttpdf = cpdf.textToPDF(500.0, 600.0, cpdf.timesItalic, 8.0, "../cpdflib-source/cpdflibtest.c");
-//console.log("---cpdf_textToPDFPaper()");
-//var ttpdfpaper = cpdf.textToPDFPaper(cpdf.a4portrait, cpdf.timesBoldItalic, 10.0, "../cpdflib-source/cpdflibtest.c");
-//cpdf.toFile(ttpdf, "testoutputs/01ttpdf.pdf", false, false);
-//cpdf.toFile(ttpdfpaper, "testoutputs/01ttpdfpaper.pdf", false, false);
+var ttpdf = cpdf.textToPDF(500.0, 600.0, cpdf.timesItalic, 8.0, "../cpdflib-source/cpdflibtest.c");
+console.log("---cpdf_textToPDFPaper()");
+var ttpdfpaper = cpdf.textToPDFPaper(cpdf.a4portrait, cpdf.timesBoldItalic, 10.0, "../cpdflib-source/cpdflibtest.c");
+cpdf.toFile(ttpdf, "testoutputs/01ttpdf.pdf", false, false);
+cpdf.toFile(ttpdfpaper, "testoutputs/01ttpdfpaper.pdf", false, false);
+console.log("---cpdf_textToPDFMemory()");
+//FIXME add this
+console.log("---cpdf_textToPDFPaperMemory()");
+//FIXME add this
 cpdf.deletePdf(new1);
 cpdf.deletePdf(new2);
+console.log("---cpdf_fromPNG()");
+var png = cpdf.fromPNG("testinputs/png.png");
+cpdf.toFile(png, "testoutputs/17png.pdf", false, false);
+console.log("---cpdf_fromPNGMemory()");
+var pngfile = fs.readFileSync("testinputs/png.png");
+var png2 = cpdf.fromPNGMemory(pngfile);
+cpdf.toFile(png2, "testoutputs/17png2.pdf", false, false);
+console.log("---cpdf_fromJPEG()");
+var jpg = cpdf.fromJPEG("testinputs/jpg.jpg");
+cpdf.toFile(jpg, "testoutputs/17jpg.pdf", false, false);
+console.log("---cpdf_fromJPEGMemory()");
+var jpgfile = fs.readFileSync("testinputs/jpg.jpg")
+var jpg2 = cpdf.fromJPEGMemory(jpgfile);
+cpdf.toFile(jpg2, "testoutputs/17jpg2.pdf", false, false);
+cpdf.deletePdf(png);
+cpdf.deletePdf(jpg);
+cpdf.deletePdf(png2);
+cpdf.deletePdf(jpg2);
 //cpdf.deletePdf(ttpdf);
 //cpdf.deletePdf(ttpdfpaper);
 
@@ -1075,7 +1098,6 @@ cpdf.drawMScale(0, 0, 100, 100);
 console.log("---cpdf_drawJPEG()");
 cpdf.drawJPEG("A", "testinputs/jpg.jpg");
 console.log("---cpdf_drawJPEGMemory()");
-var fs = require("fs");
 var jpeg = fs.readFileSync("testinputs/jpg.jpg");
 cpdf.drawJPEGMemory("A2", jpeg);
 console.log("---cpdf_drawPNG()");

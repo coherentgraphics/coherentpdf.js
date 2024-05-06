@@ -900,6 +900,14 @@ let _ =
          checkerror (Cpdf.textToPDFMemory w h (Js.to_string font) fontsize (data_in data))
        method textToPDFPaperMemory papersize font fontsize data =
          checkerror (Cpdf.textToPDFPaperMemory papersize (Js.to_string font) fontsize (data_in data))
+       method fromPNG filename =
+         checkerror (Cpdf.fromPNG (Js.to_string filename))
+       method fromPNGMemory d =
+         checkerror (Cpdf.fromPNGMemory (data_in d))
+       method fromJPEG filename =
+         checkerror (Cpdf.fromJPEG (Js.to_string filename))
+       method fromJPEGMemory d =
+         checkerror (Cpdf.fromJPEGMemory (data_in d))
 
        (* CHAPTER 18. Drawing on PDFs *)
        method drawBegin =
