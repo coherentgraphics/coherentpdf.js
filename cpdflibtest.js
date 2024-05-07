@@ -17,6 +17,7 @@ cpdf.embedStd14Dir("fonts");
 console.log("---cpdf_JSONUTF8()");
 cpdf.jsonUTF8(true);
 console.log("---cpdf_clearError()");
+cpdf.loadFont("A", "testinputs/NotoSans-Black.ttf");
 
 // CHAPTER 1. Basics
 console.log("***** CHAPTER 1. Basics");
@@ -370,7 +371,7 @@ cpdf.setBookmarksJSON(marksjson, marksdata);
 cpdf.toFile(marksjson, "testoutputs/06jsonmarks.pdf", false, false);
 console.log("---cpdf_tableOfContents()");
 var toc = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
-cpdf.tableOfContents(toc, cpdf.timesRoman, 12.0, "Table of Contents", false);
+cpdf.tableOfContents(toc, "A", 12.0, "Table of Contents", false);
 cpdf.toFile(toc, "testoutputs/06toc.pdf", false, false);
 cpdf.deletePdf(pdf17);
 cpdf.deletePdf(marksjson);
@@ -905,7 +906,7 @@ cpdf.deletePdf(ocg);
 console.log("***** CHAPTER 17. Creating New PDFs");
 console.log("---cpdf_blankDocument()");
 console.log("---cpdf_blankDocumentPaper()");
-//cpdf.loadFont("A", "testinputs/NotoSans-Black.ttf");
+
 var new1 = cpdf.blankDocument(100.0, 200.0, 20);
 var new2 = cpdf.blankDocumentPaper(cpdf.a4portrait, 10);
 cpdf.toFile(new1, "testoutputs/17blank.pdf", false, false);
