@@ -17,7 +17,7 @@ cpdf.embedStd14Dir("fonts");
 console.log("---cpdf_JSONUTF8()");
 cpdf.jsonUTF8(true);
 console.log("---cpdf_clearError()");
-cpdf.loadFont("A", "testinputs/NotoSans-Black.ttf");
+
 
 // CHAPTER 1. Basics
 console.log("***** CHAPTER 1. Basics");
@@ -371,6 +371,7 @@ cpdf.setBookmarksJSON(marksjson, marksdata);
 cpdf.toFile(marksjson, "testoutputs/06jsonmarks.pdf", false, false);
 console.log("---cpdf_tableOfContents()");
 var toc = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
+cpdf.loadFont("A", "testinputs/NotoSans-Black.ttf");
 cpdf.tableOfContents(toc, "A", 12.0, "Table of Contents", false);
 cpdf.toFile(toc, "testoutputs/06toc.pdf", false, false);
 cpdf.deletePdf(pdf17);
@@ -385,6 +386,7 @@ console.log("***** CHAPTER 8. Logos, Watermarks and Stamps");
 var textfile = cpdf.fromFile("testinputs/cpdflibmanual.pdf", "");
 console.log("---cpdf_addText()");
 var all = cpdf.all(textfile);
+cpdf.loadFont("A", "testinputs/NotoSans-Black.ttf");
 cpdf.addText(false,
      textfile,
      all,
@@ -912,16 +914,16 @@ var new2 = cpdf.blankDocumentPaper(cpdf.a4portrait, 10);
 cpdf.toFile(new1, "testoutputs/17blank.pdf", false, false);
 cpdf.toFile(new2, "testoutputs/17blanka4.pdf", false, false);
 console.log("---cpdf_textToPDF()");
-var ttpdf = cpdf.textToPDF(500.0, 600.0, cpdf.timesItalic, 8.0, "../cpdflib-source/cpdflibtest.c");
+var ttpdf = cpdf.textToPDF(500.0, 600.0, "A", 8.0, "../cpdflib-source/cpdflibtest.c");
 console.log("---cpdf_textToPDFMemory()");
-var data = new Uint8Array("Hello, World!");
-var ttpdf2 = cpdf.textToPDFMemory(500, 600, cpdf.timesItalic, 8, data);
+var data = Buffer.from("Hello, World!");
+var ttpdf2 = cpdf.textToPDFMemory(500, 600, "A", 8, data);
 console.log("---cpdf_textToPDFPaper()");
-var ttpdfpaper = cpdf.textToPDFPaper(cpdf.a4portrait, cpdf.timesBoldItalic, 10.0, "../cpdflib-source/cpdflibtest.c");
+var ttpdfpaper = cpdf.textToPDFPaper(cpdf.a4portrait, "A", 10.0, "../cpdflib-source/cpdflibtest.c");
 cpdf.toFile(ttpdf, "testoutputs/17ttpdf.pdf", false, false);
 cpdf.toFile(ttpdfpaper, "testoutputs/17ttpdfpaper.pdf", false, false);
 console.log("---cpdf_textToPDFPaperMemory()");
-var ttpdfpaper2 = cpdf.textToPDFPaperMemory(cpdf.a4portrait, cpdf.timesItalic, 10.0, data);
+var ttpdfpaper2 = cpdf.textToPDFPaperMemory(cpdf.a4portrait, "A", 10.0, data);
 cpdf.toFile(ttpdf2, "testoutputs/17ttpdf2.pdf", false, false);
 cpdf.toFile(ttpdfpaper2, "testoutputs/17ttpdfpaper2.pdf", false, false);
 cpdf.deletePdf(new1);
