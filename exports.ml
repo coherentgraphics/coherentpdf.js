@@ -716,6 +716,28 @@ let _ =
          checkerror (Cpdf.getPageRotation pdf page)
        method setPageLayout pdf layout =
          checkerror_unit (Cpdf.setPageLayout pdf layout)
+       method getPageLayout pdf =
+         checkerror (Cpdf.getPageLayout pdf)
+       method getPageMode pdf =
+         checkerror (Cpdf.getPageMode pdf)
+       method getHideToolbar pdf =
+         checkerror (Cpdf.getHideToolbar pdf)
+       method getHideMenubar pdf =
+         checkerror (Cpdf.getHideMenubar pdf)
+       method getHideWindowUi pdf =
+         checkerror (Cpdf.getHideWindowUi pdf)
+       method getFitWindow pdf =
+         checkerror (Cpdf.getFitWindow pdf)
+       method getCenterWindow pdf =
+         checkerror (Cpdf.getCenterWindow pdf)
+       method getDisplayDocTitle pdf =
+         checkerror (Cpdf.getDisplayDocTitle pdf)
+       method nonFullPageScreenMode pdf mode =
+         checkerror (Cpdf.nonFullScreenPageMode pdf mode)
+       method getNonFullScreenPageMode pdf =
+         checkerror (Cpdf.getNonFullScreenPageMode pdf)
+       method openAtPageCustom pdf s =
+         checkerror (Cpdf.openAtPageCustom pdf (Js.to_string s))
        method setPageMode pdf mode =
          checkerror_unit (Cpdf.setPageMode pdf mode)
        method hideToolbar pdf flag =
