@@ -394,7 +394,7 @@ cpdf.addText(false,
      cpdf.topLeft, 20.0, 20.0,
      1.0,
      1,
-     cpdf.timesRoman,
+     "A",
      20.0,
      0.5,
      0.5,
@@ -705,7 +705,7 @@ cpdf.displayDocTitle(pdf30, true);
 console.log("---cpdf_getDisplayDocTitle()");
 var displaydoctitle = cpdf.getDisplayDocTitle(pdf30);
 console.log("---cpdf_nonFullScreenPageMode()");
-cpdf.nonFullPageScreenMode(cpdf.useOutlines);
+cpdf.nonFullPageScreenMode(pdf30, cpdf.useOutlines);
 console.log("---cpdf_getNonFullScreenPageMode()");
 var nonfullscreenpagemode = cpdf.getNonFullScreenPageMode(pdf30);
 console.log("---cpdf_openAtPage()");
@@ -761,7 +761,7 @@ var pl = cpdf.getPageLabelStringForPage(pdf30, 1);
 console.log("Label string is %s", pl);
 console.log("---cpdf_compositionJSON()");
 composition = cpdf.compositionJSON(1000000, pdf30);
-console.log("Contains %i bytes of data", composition.length - 1); //float difference is ok.
+console.log("Contains %i bytes of data", composition.length);
 cpdf.deletePdf(pdf30);
 
 // CHAPTER 12. File Attachments
