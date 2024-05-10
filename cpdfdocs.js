@@ -1955,7 +1955,9 @@ given font and font size.
 @result {pdf} PDF document */
 function textToPDFPaperMemory(papersize, font, fontsize, data) {}
 
-//CHAPTER 18. Miscellaneous
+//CHAPTER 18. Drawing on PDFs
+
+//CHAPTER 19. Miscellaneous
 
 /** Removes images on the given pages, replacing them with crossed boxes if
 'boxes' is true.
