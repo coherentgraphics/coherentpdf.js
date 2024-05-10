@@ -998,7 +998,7 @@ cpdf.drawFillColRGB(0.5, 0, 0.5);
 cpdf.drawCircle(500, 500, 50);
 cpdf.drawFill();
 console.log("---cpdf_drawFillColCYMK()");
-cpdf.drawFillColRGB(0.5, 0, 0.5);
+cpdf.drawFillColCYMK(0.3, 0.4, 0.5, 0.1);
 cpdf.drawCircle(500, 520, 50);
 cpdf.drawFill();
 console.log("---cpdf_drawFill()");
