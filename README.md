@@ -22,13 +22,14 @@ A JavaScript library for editing PDF files. For example:
 - Export PDF file to / Import PDF file from JSON.
 - Manipulate optional content groups
 
-The files in `dist/` and the file coherentpdf.js are distributed
-under the AGPL - see LICENSE.md. Check if you need a commercial license.
+coherentpdf.js is distributed under the AGPL - see LICENSE.md. If you are unable
+to abide by the terms of the AGPL, you will need a commercial license.
 
 [https://www.coherentpdf.com/](https://www.coherentpdf.com/)
 
 For commercial licenses, email
 [contact@coherentgraphics.co.uk](mailto:contact@coherentgraphics.co.uk)
+
 
 Use
 ---
